@@ -10,6 +10,7 @@ function_63();
 var_225();
 var_226();
 var_227();
+// DEAD CODE: Class_4 encryption class is only instantiated in function_72() which is never called. Used for legacy TSSE license validation.
 class Class_4
 {
     public $AnahtarKelime = NULL;
@@ -48,6 +49,7 @@ function function_63()
         function_64("PHP allow_url_fopen or CURL must be turned on for this script to work!");
     }
 }
+// DEAD CODE: function_65() is only called by function_67() to get INSTALL_IP, but INSTALL_IP is never used anywhere. Legacy IP detection via templateshares.biz.
 function function_65()
 {
     $var_228 = "./../../cache/ip.srv";
@@ -82,6 +84,7 @@ function function_65()
         @unlink($var_228);
     }
 }
+// DEAD CODE: function_66() is only called by unused function_65(). Helper for IP validation.
 function function_66($ip)
 {
     return $ip != "127.0.0.1" && $ip != "::1" && filter_var($ip, FILTER_VALIDATE_IP);
@@ -94,6 +97,7 @@ function function_67()
     define("ADMIN_CACHE", @file_get_contents(CACHED_ADMIN_FILE));
     define("TSSE2020CHECKTOOLPHP", true);
 }
+// DEAD CODE: function_68() is never called. Legacy TSSE license validation that checks for license.php files and ADMIN_CACHE validity.
 function function_68()
 {
     if (!defined("IN-TSSE-STAFF-PANEL")) {
@@ -112,10 +116,12 @@ function function_68()
         }
     }
 }
+// DEAD CODE: function_69() is never called. Legacy function to clear PEER config in database.
 function function_69()
 {
     mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE ts_config SET $content = \"\" WHERE `configname` = \"PEER\"");
 }
+// DEAD CODE: function_70() is never called. Legacy TSSE license key response parser - validates license key format and MD5 hash.
 function function_70()
 {
     $var_230 = var_231();
@@ -134,6 +140,7 @@ function function_70()
         function_64("System Error: Invalid Response!");
     }
 }
+// DEAD CODE: function_72() is never called. Legacy TSSE license validation via HTTP POST to templateshares.info (domain likely defunct).
 function function_72()
 {
     $GLOBALS["Sifrele"] = new Class_4("TSSE8.02020httpstemplateshares.net!");
@@ -175,6 +182,7 @@ function function_72()
     }
     function_64("Connection Error: fsockopen / Curl (PHP allow_url_fopen or Curl must be turned on for this script to work).");
 }
+// DEAD CODE: function_71() is only called by unused function_70(). Validates license key format using regex pattern.
 function function_71($installkey = "")
 {
     $var_97 = "{########-####-####-####-############}";
@@ -190,10 +198,12 @@ function function_64($message = "")
     echo "\r\n\t<html>\r\n\t\t<head>\r\n\t\t\t<title>TS SE: Critical Error!</title>\r\n\t\t\t<meta http-$equiv = \"Content-Type\" $content = \"text/html; $charset = UTF-8\" />\r\n\t\t\t<style>\r\n\t\t\t\t*{padding: 0; margin: 0}\r\n\t\t\t\t.alert\r\n\t\t\t\t{\r\n\t\t\t\t\tfont-weight: bold;\r\n\t\t\t\t\tcolor: #fff;\r\n\t\t\t\t\tfont: 14px verdana, geneva, lucida, \"lucida grande\", arial, helvetica, sans-serif;\r\n\t\t\t\t\tbackground: #ffacac;\r\n\t\t\t\t\ttext-align: center;\t\t\t\t\t\r\n\t\t\t\t\tborder-bottom: 4px solid #000;\r\n\t\t\t\t\tpadding: 20px;\r\n\t\t\t\t}\r\n\t\t\t</style>\r\n\t\t</head>\r\n\t\t<body>\r\n\t\t\t<div class=\"alert\">\r\n\t\t\t\t" . $message . "\r\n\t\t\t</div>\r\n\t\t</body>\r\n\t</html>\r\n\t";
     exit;
 }
+// DEAD CODE: function_74() is never called. Helper to strip http/https/www prefixes from URLs.
 function function_74($url)
 {
     return str_replace(["http://www.", "https://www.", "http://", "https://", "www."], "", $url);
 }
+// DEAD CODE: function_73() is only called by unused function_72(). Wrapper for Class_4 encryption.
 function function_73($data)
 {
     return $GLOBALS["Sifrele"]->function_17($data);
