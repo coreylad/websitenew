@@ -1,0 +1,25 @@
+<config>
+	<auto_start>true</auto_start>	
+	<player_skin>flashradiotemplate.swf</player_skin>	
+	<main_title>WINAMP</main_title>
+	<playlist_title>PLAYLIST</playlist_title>
+	<time_text>TOTAL TIME</time_text>
+	<pan_labels>L,R</pan_labels>	
+	<playlist_show>GENRE</playlist_show>
+	<genre_title>Genre</genre_title>
+	<station_title>Station</station_title>
+	<quality_title>Quality</quality_title>
+	<quality_icon>*</quality_icon>
+	<scroller_speed>3</scroller_speed>
+	<scroller_marquee_content>#CURRENT_SONG#</scroller_marquee_content>
+	<shuffle_is_enabled>false</shuffle_is_enabled>
+	<default_volume>100</default_volume>
+	<default_pan>0</default_pan>
+	<music_error_message>Please open WebRadio in Mozilla</music_error_message>
+	<quality_timeout>2</quality_timeout>	
+	<musicname_timeout>5</musicname_timeout>	
+	<station url="www.that_will_be_changed_automatically.zz">
+		<name>Templateshares</name>
+		<genre>Pop</genre>
+	</station>
+</config>

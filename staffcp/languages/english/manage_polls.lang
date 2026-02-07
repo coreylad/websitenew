@@ -1,0 +1,43 @@
+TS SE Message
+Server Tools
+Manage Polls
+Create Poll
+Poll Question
+Created
+Votes
+Status
+Action
+Active
+Disabled
+Edit Poll
+Delete Poll
+Are you sure that you want to delete this Poll?
+Poll '{1}' has been deleted by {2}.
+Poll '{1}' has been edited by {2}.
+Poll '{1}' has been added by {2}.
+Invalid Poll Specified!
+Option {1}
+Votes
+Poll Options
+Additional Option 1
+Additional Option 1
+Remember to keep the poll options short and to the point
+Poll Timeout
+If you would like this poll to automatically close after a period of time, enter a number of days here. Set this to 0 if you would like the poll to remain open indefinitely.
+Close poll
+days after {1}
+Make votes public: Displays all users who voted, and what choice they voted for.
+To close this poll, check this box.
+Note: Closing this poll makes it impossible to vote.
+Save Changes
+Reset Changes
+Please complete both the question field and at least 2 option fields. Press the back button, correct the problem and try again.
+There is a new poll has been added: {1} by {2}.
+Multiple Choice Poll.
+Allow multiple choice: Give users the ability to select more than one answer
+There is no poll to show. Click <a href="{1}">here</a> to create a new one.
+Zone
+Tracker
+Forums
+Thread ID
+Enter Thread ID here to add a "Discuss this poll on Forums" link.

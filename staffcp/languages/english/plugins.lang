@@ -1,0 +1,35 @@
+TS SE Message
+Tracker Tools
+Manage Plugins
+Plugins has been updated by {1}.
+Edit Plugin
+Delete Plugin
+Are you sure you want to delete this Plugin?
+Sort
+Save
+Create New Plugin
+Position
+Left
+Middle
+Right
+Click to Enable this plugin.
+Click to Disable this plugin.
+Plugin Name
+This is name of this plugin (case sensitive). This must be same as file and content name.
+Plugin Description
+Please enter description of this plugin.
+Plugin Content
+Put contents here if you don't want to use file system for this plugin.
+Reset
+Cancel
+Select plugin position.
+Plugin Active
+Yes
+No
+You can disable or active this plugin here.
+Select plugin display order.
+Plugin Permissions
+Please select usergroup(s) that you want to view this plugin.
+Select Usergroup(s)
+Guest
+ALL

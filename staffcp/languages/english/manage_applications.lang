@@ -1,0 +1,39 @@
+TS SE Message
+Server Tools
+Manage Applications
+Please Complete All Required Fields!
+Edit Application
+Delete Application
+New Application
+Title
+Description
+Status
+Application '{1}' has been posted by {2}.
+Application '{1}' has been deleted by {2}.
+Application '{1}' has been edited by {2}.
+There is no Application. Click <a href="{1}">here</a> to post a new Application.
+Save
+Reset
+Posted By
+Date/Time
+Action
+Enabled
+Disabled
+Requirements
+Requests
+Where did you get duty before?
+Approve Request
+Deny Request
+Delete Request
+There is no request for this Application.
+Username
+Info
+Pending
+Approved
+Denied
+Application Request '{1}' has been approved by {2}.
+Application Request '{1}' has been denied by {2}.
+Application Request '{1}' has been deleted by {2}.
+Status of your Application Request!
+Hi, your application request has been approved. Please contact us for more information. Have a nice day.
+Hi, your application request has been denied. Please contact us for more information. Have a nice day.

@@ -1,0 +1,54 @@
+TS SE Message
+Tracker Tools
+Manage Cronjobs
+Delete Cronjob
+Edit Cronjob
+Run Cronjob
+Click to Disable
+Click to Active
+Filename
+Description
+Run Period
+Next Run
+Log Action
+Status
+Action
+Yes
+No
+Actived
+Disabled
+Cronjob Logs
+Query Count
+Execute Time
+Last Run
+Create a New Cronjob
+Save Cron
+Reset Cron
+Are you sure that you want to delete this cron?
+Cronjobs has been updated by {1}.
+year
+years
+month
+months
+week
+weeks
+day
+days
+hour
+hours
+minute
+minutes
+second
+seconds
+Cron has been deleted!
+Cron has been updated!
+Invalid Cron!
+File does not exists!
+Please fill all required fields!
+Please enter filename of this cron.
+Please enter description of this cron.
+Please select Run Time of this cron.
+Here you can active/disable this cron.
+Save cron logs..
+Cron has been added!
+Manage Cleanup Settings

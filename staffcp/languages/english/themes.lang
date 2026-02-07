@@ -1,0 +1,62 @@
+TS SE Message
+Tracker Tools
+Manage Themes
+TID
+Theme Name
+Users
+Action
+Edit Theme
+Copy Theme
+Delete Theme
+Are you sure you want to delete this theme?
+Sorry, you can not delete the default theme.
+Manage Theme Styles
+SID
+Style Name
+Edit Style
+Cancel
+To create a new theme, please click on Copy Theme button on Default Theme and Edit theme to change details.
+Theme "{1}" has been updated by {2}.
+Style "{1}" has been updated by {2}.
+Save
+Reset
+Description
+Manage Styles
+Please enter theme name(case sensitive).<br /><b>Note:</b> This must be same as folder name in <b>include/templates</b> folder.<br /><b>Example:</b> include/templates/default
+Please enter theme name.
+This theme folder doesn't exists: " {1} ".
+Please enter style.
+Theme "{1}" has been copied by {2}.
+Theme "{1}" has been deleted by {2}.
+Required Version
+Theme Version
+Author
+Theme "{1}" has been imported by {2}.
+Theme File
+Select a file to import. You can either import the theme file from your computer.
+Import Theme
+Invalid Theme. Allowed file type: XML
+I can't get Theme Contents!
+I can't insert this Theme into database!
+This theme already exists!
+Incompatible Theme Version!
+Ignore Version Compatibility
+Should this theme be installed regardless of the version of TS SE it was created for?
+Check this box to ignore version compatibility (not recommend).
+Invalid theme contents!
+Export Theme
+Please enter Theme description.
+Manage HTML
+HTML contents can't be empty!
+<b>header.php</b> isn't writable.
+<b>footer.php</b> isn't writable.
+I can't write contents!
+Header Contents
+Footer Contents
+<font color="green">is writable</font>.
+<font color="red">isn't writable</font>.
+Theme "{1}" HTML Contents has been updated by {2}.
+Add New Style
+Style Contents
+Please enter style name.
+A New Style "{1}" for the theme "{2}" has been added by {3}.

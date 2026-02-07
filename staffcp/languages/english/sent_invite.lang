@@ -1,0 +1,18 @@
+TS SE Message
+Staff Tools
+Sent Invite
+Subject
+Message<br /><small>(HTML Allowed)</small>
+Send
+Reset
+Email Addresses<br /><small>(separated by comma)</small>
+Please Complete All Required Fields!
+Waiting a few seconds to clear system memory.. Please do not close this page unless you see the Done Message.
+Message has been sent.
+Sending mail to:
+Done!
+Failed!
+Staff Member {1} has been sent mass invite to following email(s): {2}. Message Title was: {3}.
+Please wait...
+Hi,<br /><br />you have been invited to {1}.<br /><br />Your registration link: {2}/signup.php?invitehash={3}&type=invite<br /><br />Have a good day.<br />{1} Staff.
+This email address is already exists!

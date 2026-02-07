@@ -1,0 +1,26 @@
+TS SE Message
+Server Tools
+Hit & Run System
+No Matches Found!
+User Name
+Torrent Name
+Uploaded / Seed Time
+Downloaded / Leech Time
+Ratio
+Times Warned
+Click <a href="index.php?do=manage_settings&tab=1&stab=100">here</a> to Manage Hit & Run Settings.
+Hit & Run Warning!
+You have been warned due Hit & Run on the following torrent: {1}. Please seed the torrent and get a good ratio within 1 week.
+Following Users have been warned: {1}. Reason: Hit & Run Torrent: {2}.
+Following Users have been banned: {1}. Reason: Hit & Run Torrent: {2}.
+Banned by {1}. Reason: Hit & Run. Torrent: {2}.
+Torrent Details
+Warned by {1}. Reason: Hit & Run. Torrent: {2}.
+Invalid User Specified!
+warn selected users
+ban selected users
+Keyword(s)
+Search by Torrent ID
+Search by User ID
+Search by User Name
+Search

@@ -1,0 +1,40 @@
+TS SE Message
+User Tools
+Manage Inactive Users
+User Name
+Email
+Join Date
+Last Activity
+Status
+Post Warning Email to Inactive Users
+Check and Delete Warned Inactive Users
+User '{1}' is deleted due inactivity.
+Warning message is being posted to:
+Inactive User Configuration
+Perpage
+Show Inactive Users Per Page
+Days
+Enter the amount of Days after which inactive Users should be informed about their upcoming removal.
+Delete After
+Enter the amount of Days that should pass after the Warning before the User is being deleted.
+Get Results
+Reset
+Warned at <b>{1}</b> till <b>{2}</b>.
+Not Warned
+Uploaded
+Downloaded
+Done!
+All users have been warned due inativity.
+{1} - Account Inactive!
+{1} - Account Deleted!
+Failed!
+<p>Dear {1},</p><p>It has come to our attention that you have registered at <b>{2}</b> more then <b>{3} days ago</b>, but didn't login again since.</p><p>Did you forget about us?</p><p>We would be happy to see you around again!</p><p>If you don't login again within <b>{4} days</b> from now, we will <b><font color=red>delete</font></b> your account.</p><p>&nbsp;</p><p>Sincerely,</p><p>{2} Team</p><p><a href="{5}">{5}</a></p><p>&nbsp;</p><p><b>DO NOT REPLY TO THIS EMAIL!</b></p>
+No Matches Found!
+Total '{1}' user(s) have been warned due inactivity!
+Total '{1}' user(s) have been deleted due inactivity!
+Usergroups
+Mail Limit
+How many mails we can sent at a same time?
+Wait Limit
+How many second(s) we should wait before sent another mail?
+Please wait {1} seconds.

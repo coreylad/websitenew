@@ -1,0 +1,14 @@
+TS SE Message
+Tracker Tools
+Uploader Inactivity Settings
+'Uploader Inactivity' settings has been updated by {1}.
+Usergroups
+Select the usergroup to which you want this demotion to apply. A user must be a member of this usergroup if they are to be considered for this demotion. 
+Select Usergroup(s)
+Demote Uploader to Usergroup
+if a user meets the criteria for this demotion then they will be made a member of this usergroup. 
+Time-Limit
+This is the boundary value for the number of days a user has not been uploaded that is used to determine if a user should be promoted. 
+Save Settings
+Reset Settings
+Please Note: Uploader Inacitity cronjob must be enabled to get this feature work. Click here to manage cronjobs.

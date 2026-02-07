@@ -1,0 +1,29 @@
+TS SE Message
+Tracker Tools
+User Ranks
+Rank "{1}" has been deleted by {2}.
+Rank "{1}" has been updated by {2}.
+Cancel
+Edit Rank
+Usergroup
+This is the usergroup to which this rank applies. The users to whom is applied depends on the value of the "Display Type" setting. If you select "Always", all users with this usergroup in his/her primary or  secondary groups will receive this rank. If you select "If Displaygroup = This Group", then only users that identify themselves as this group will receive this rank. Select "All Usergroups" to have this rank apply to everyone regardless of their usergroup.
+Minimum Posts
+This is the minimum number of posts required for a user to obtain this rank. When a user in the specified usergroup reaches this many posts then they will be given this rank.
+Display Type
+Always: This rank will always be displayed if a member has this rank's usergroup as their primary or one of their secondary groups. <br />If Displaygroup = This Group: This rank will only be displayed if a member's displaygroup is equal to this rank's usergroup.
+Image
+Enter a file path to an image for this rank.
+OR you may enter text
+If you want to display text for this rank instead of an image, then leave the previous field blank and fill in this field instead. You can use HTML code in this field.
+All Usergroups
+Always
+If Usergroup == This Usergroup
+Save
+Reset
+Rank "{1}" has been added by {2}.
+Add New User Rank
+Are you sure you want to delete this rank?
+User Rank
+Action
+Delete Rank
+Manage User Ranks

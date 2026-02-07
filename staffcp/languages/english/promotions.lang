@@ -1,0 +1,38 @@
+TS SE Message
+Tracker Tools
+Promotions
+Title
+Promote User to Usergroup
+Demote User to Usergroup
+Type
+Usergroup
+Uploaded
+Ratio
+Days Registered
+Posts
+Select the usergroup to which you want this promotion to apply. A user must be a member of this usergroup if they are to be considered for this promotion.
+This is the boundary value for the number of days a user has been registered that is used to determine if a user should be promoted.
+This is the boundary value for post count that is used to determine if a user should be promoted.
+This is the boundary value for ratio that is used to determine if a user should be promoted.
+This is the boundary value for upload count that is used to determine if a user should be promoted.
+Promotion has been deleted by {1}.
+Promotion has been updated.
+Action
+Edit Promotion
+Delete Promotion
+Are you sure that you want to delete this promotion?
+Demotions
+Invalid Promotion..
+Add a New Promotion
+Please enter title of this promotion.
+if a user meets the criteria for this promotion then they will be made a member of this usergroup.
+Save Promotion
+Reset Promotion
+You must select at least one criteria.
+This is the boundary value for warned count that is used to determine if a user should be promoted.
+Warns
+Promotion has been added.
+Promotion
+Demotion
+Please select type of this promotion.
+Please Note: Promotions cronjob must be enabled to get this feature work. Click here to manage cronjobs.

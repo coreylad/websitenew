@@ -1,0 +1,24 @@
+TS SE Message
+Control Panel Tools
+Create Custom Page
+Save
+Reset
+<b>Page Title</b><br /><small>example: My First Page</small>
+<b>Page Contents</b><br /><small>HTML Allowed</small>
+<b>View Permissions</b><br /><small>Leave empty to allow guest view
+Page Title, File Name and Page Contents can't be empty!
+<b>Save as</b><br /><small>example: myfirstpage.php</small>
+The page has been created.
+Select Method to Create File
+Create the file on root folder (CHMOD required)
+Just download the file.
+Upload into FTP server.
+Advertising
+Yes, show ADS on this page.
+No, do not show ADS on this page.
+I can not create the file on root folder. Please try to upload it yourself.
+FTP Server URL / IP
+FTP Server Port
+FTP Username
+FTP Password
+FTP Upload Path

@@ -1,0 +1,17 @@
+TS SE Message
+Server Tools
+Manage Countries
+Invalid Country Specified!
+Please Complete All Required Fields!
+Country Name
+Country Flag
+Action
+Edit Country
+Delete Country
+Add New Country
+Save Changes
+Reset Changes
+Country '{1}' has been deleted by {2}.
+Country '{1}' has been edited by {2}.
+Country '{1}' has been added by {2}.
+There is no country to show. Click <a href="{1}">here</a> to create a new one.

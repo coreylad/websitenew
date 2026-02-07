@@ -1,0 +1,28 @@
+TS SE Message
+Server Tools
+Manage FAQ
+Please Complete All Required Fields!
+Edit Category
+Delete Category
+Add Child Item
+Create New Category
+Save
+Reset
+Display Order
+Action
+FAQ Title
+FAQ Description
+Are you sure that you want to delete this FAQ Category?
+There is no FAQ Item.
+There is no FAQ Category. Click <a href="{1}">here</a> to create a new one.
+Are you sure that you want to delete this FAQ Item?
+Edit Item
+Delete Item
+FAQ Category '{1}' has been deleted by {2}.
+FAQ Category '{1}' has been edited by {2}.
+FAQ Category '{1}' has been added by {2}.
+FAQ Sub-Category '{1}' has been deleted by {2}.
+FAQ Sub-Category '{1}' has been edited by {2}.
+FAQ Sub-Category '{1}' has been added by {2}.
+FAQ Category
+HTML Allowed

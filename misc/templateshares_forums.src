@@ -1,0 +1,11 @@
+<SEARCH version="1.0"
+	name="Template Shares Forum Search"
+        description="Search on Template Shares Forums"
+        method="post"
+        action="https://templateshares.net/tsf_forums/tsf_search.php"
+        searchform="https://templateshares.net/tsf_forums/tsf_search.php"
+        queryCharset="UTF-8">
+        
+	<input name="keywords" user>
+	<input name="action" value="do_search">
+</search>

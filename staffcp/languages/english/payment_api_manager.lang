@@ -1,0 +1,19 @@
+TS SE Message
+Paid Subscriptions
+Payment Api Manager
+Title
+Supported Currency
+Active
+Manage
+Yes
+No
+Edit
+{1} Email
+Please enter your {1} email, all references to the subscription service will use this email.
+{1} Secret Word / Identity Token / Application Code
+Secret Word in lowercase as typed into your {1} Profile
+Edit API
+Update
+Reset
+Please don't leave required fields empty!
+Currency Codes must be supported by Paypal, Moneybookers or Payza. Saperate codes with ,

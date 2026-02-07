@@ -1,0 +1,11 @@
+<?php
+/*
+ * @ https://EasyToYou.eu - IonCube v11 Decoder Online
+ * @ PHP 7.2 & 7.3
+ * @ Decoder version: 1.0.6
+ * @ Release: 10/08/2022
+ */
+
+$_downloadspeed = ["1" => ["id" => "1", "name" => "64kbps"], "2" => ["id" => "2", "name" => "128kbps"], "3" => ["id" => "3", "name" => "256kbps"], "4" => ["id" => "4", "name" => "512kbps"], "5" => ["id" => "5", "name" => "768kbps"], "6" => ["id" => "6", "name" => "1Mbps"], "7" => ["id" => "7", "name" => "1.5Mbps"], "8" => ["id" => "8", "name" => "2Mbps"], "9" => ["id" => "9", "name" => "3Mbps"], "10" => ["id" => "10", "name" => "4Mbps"], "11" => ["id" => "11", "name" => "5Mbps"], "12" => ["id" => "12", "name" => "6Mbps"], "13" => ["id" => "13", "name" => "7Mbps"], "14" => ["id" => "14", "name" => "8Mbps"], "15" => ["id" => "15", "name" => "9Mbps"], "16" => ["id" => "16", "name" => "10Mbps"], "17" => ["id" => "17", "name" => "48Mbps"], "18" => ["id" => "18", "name" => "100Mbit"], "19" => ["id" => "19", "name" => "1gps"]];
+
+?>

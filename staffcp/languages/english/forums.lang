@@ -1,0 +1,110 @@
+TS SE Message
+Tracker Tools
+Manage Forums
+Forum Name
+Display Order
+Moderators
+Add Moderator
+Action
+Edit Forum
+View Forum
+Delete Forum
+Add Child Forum
+Add Announcement
+Permissions
+Save Display Order
+Reset Display Order
+Forums display orders has been updated by {1}.
+Save
+Reset
+Please enter name of this forum.
+Forum Description
+Please enter description of this forum.
+Forum Image
+Please select an image for this forum.
+Moderate
+Select this 'Yes' to require staff validation before new threads, posts and attachments are displayed in this forum.
+Yes
+No
+This determines the order in which forums are displayed anywhere they are listed.
+Parent Forum
+If you want this to be a subforum of another forum, select that forum from this list. If not, select (No One).
+No One.
+Forum Password
+If you set a password, a user will be required to enter that password before being allowed to enter this forum. The user must have cookies turned on to enter a password-protected forum. Not required for Main Forums, use only for Subforums.
+Forum "{1}" has been updated by {2}.
+Add New Forum
+Cancel
+You must set permissions of this main forum!
+Are you sure you want to delete the forum?\n\nNote that any sub-forums will also be deleted!\n\nThis action cannot be undone.
+Forum "{1}" has been deleted by {2}.
+Usergroup
+Can View Forum
+Can View Threads
+Can Post Threads
+Can Post Replies
+Can Edit Own Posts
+Can Delete Own Posts
+Can Delete Own Threads
+Can Upload Attachment
+Can Search
+Select ALL
+Forum Permissions "{1}" has been updated by {2}.
+Forum "{1}" moderators has been updated by {2}.
+Moderator Name
+Check this Box to Remove this Moderator
+Apply This Moderator(s) to Child Forums
+Title
+This is what will show on the forum listing screen as the name of the announcement.
+Description
+Please enter description of this announcement.
+Forum
+This is the forum that the announcement should show in. If you select a forum with sub-forums, the announcement will show in all sub-forums as well as the parent forum.
+New Announcement to "{1}" has been added by {2}.
+Edit Announcement
+Delete Announcement
+Announcement "{1}" has been updated by {2}.
+Manage Forum Announcements
+Announcement "{1}" has been deleted by {2}.
+Posted
+Are you sure you want to delete this announcement?
+You are being redirected...
+Forum Settings
+Forum settings has been updated by {1}.
+Forum Active
+From time to time, you may want to turn your forum off to the public while you perform maintenance, update versions, etc. When you turn your forum off, visitors will receive a message that states that the forum is temporarily unavailable. Administrators will still be able to see the forum.
+Reason For Turning Forum Off
+The text that is presented when the forum is closed.
+Forum Name
+Name of your forum. This appears in the title of every forum page.
+Upload Path
+Path to Attachments. Chmod 0777 required.
+Max Filesize (in bytes)
+You can set the maximum size of uploaded files per type. This number is in bytes.
+Allowed Extensions
+This is the extension of the file - the letter(s) after the dot in the filename. For example, the filename templateshares.net has an extension of net. Saperate multiple extensions with ,
+Threads Per Page
+The number of threads to display on a forumdisplay page before splitting it over multiple pages.
+Posts Per Page
+The number of posts to display on a thread page before splitting it over multiple pages.
+Minimum Characters Per Post/Threads
+Users must enter at least that number of characters in each new post/threads.
+Avatar Max. Width
+Max. width of avatars (in pixel).
+Avatar Max. Height
+Max. height of avatars (in pixel).
+Avatar Max. Size (in bytes)
+You can set the maximum size of avatars. This number is in bytes.
+Show Board Statistics
+Enable this feature to show detailed statistics on forum home page.
+Sub-Forums Per Line
+The number of sub-forums to display on forum home page before use line breaks.
+Enable Social Bookmarking
+Enable this feature to show Social Bookmarking links on showthread page.
+Advertisements
+Paste your advertisements code here. Those ads will be shown on showthread page (after first post).
+Staff Only
+Resize Avatars
+Enable this feature to resize all uploaded avatars while showing on the screen.
+Thanks Before Download
+Force users thank to uploader before allow them to download any attachment on forums?

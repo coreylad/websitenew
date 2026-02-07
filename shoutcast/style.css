@@ -1,0 +1,85 @@
+a:link
+{
+	color: #00248c;
+}
+a:visited
+{
+	color: #00248c;
+}
+a:hover, a:active
+{
+	color: #de0000;
+}
+td, th, p, li
+{
+	font: 10pt verdana;
+}
+body
+{
+	background: #FFFFFF;
+	color: #000000;
+	font: 10pt verdana;
+	margin: 0px 0px 0px 0px;
+	padding: 0px;
+}
+.tborder
+{
+	color: #000000;
+	font-family: verdana;
+	border: 1px solid #0B198C;
+}
+.tcat
+{
+	background: #869BBF;
+	color: #FFFFFF;
+	font: bold 10pt verdana;
+}
+.tcat a:link
+{
+	color: #FFFFFF;
+	text-decoration: underline;
+}
+.tcat a:visited
+{
+	color: #FFFFFF;
+	text-decoration: underline;
+}
+.tcat a:hover, .tcat a:active
+{
+	color: #FFFF66;
+	text-decoration: underline;
+}
+.thead
+{
+	background: #5C7099;
+	color: #FFFFFF;
+	font: bold 11px verdana;
+}
+.thead a:link
+{
+	color: #FFFFFF;
+}
+.thead a:visited
+{
+	color: #FFFFFF;
+}
+.thead a:hover, .thead a:active
+{
+	color: #FFFF00;
+}
+.alt1, .alt1Active
+{
+	color: #000000;
+	font-family: verdana;
+}
+.alt2, .alt2Active
+{
+	background: #E1E4F2;
+	color: #000000;
+	font-family: verdana;
+}
+.smallfont
+{
+	font: 11px verdana;
+}
+

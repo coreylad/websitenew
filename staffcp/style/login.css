@@ -1,0 +1,140 @@
+body
+{
+	* {padding: 0; margin: 0};
+	font-family:'Helvetica Neue',Arial,sans-serif;
+}
+
+#loginPanel
+{
+	width: 490px;
+	height: 276px;
+	position: relative;
+	margin: 100px auto 0 auto;
+	background: url('./../images/Login-Panel.png') no-repeat;
+}
+
+#copyrightNotice
+{
+	width: 490px;
+	position: relative;
+	margin: 10px auto;
+	font-size: 11px;
+	text-align: center;
+}
+
+#username
+{
+	border: 1px solid #fff;
+	background: #e1e2e3;
+	color: #aaa9af;
+	font-size: 11px;
+	width: 257px;
+	height: 25px;
+	position: absolute;
+	top: 90px;
+	left: 175px;
+	padding: 0 5px;
+}
+
+#password
+{
+	border: 1px solid #fff;
+	background: #e1e2e3;
+	color: #aaa9af;
+	font-size: 11px;
+	width: 257px;
+	height: 25px;
+	position: absolute;
+	top: 125px;
+	left: 175px;
+	padding: 0 5px;
+}
+
+#pincode
+{
+	border: 1px solid #fff;
+	background: #e1e2e3;
+	color: #aaa9af;
+	font-size: 11px;
+	width: 257px;
+	height: 25px;
+	position: absolute;
+	top: 160px;
+	left: 175px;
+	padding: 0 5px;
+}
+
+#staffcplanguage
+{
+	border: 1px solid #fff;
+	background: #e1e2e3;
+	color: #aaa9af;
+	font-size: 13px;
+	position: absolute;
+	left: 39px;
+	bottom: 30px;
+	padding: 7px;
+}
+
+#submit
+{
+	width: 124px;
+	height: 33px;
+	border: 0;
+	color: #fff;
+	text-align: left;
+	padding-left: 19px;
+	font-weight: bold;
+	cursor: pointer;
+	position: absolute;
+	right: 48px;
+	bottom: 30px;
+	background: url('./../images/Login-Panel-Submit.png') no-repeat;
+}
+
+.loading
+{
+	position: absolute;
+	right: 180px;
+	bottom: 38px;
+	text-align: center;
+	display: none;
+}
+
+#ipLogged
+{
+	position: fixed;
+	top: 0;
+	left: 0;
+	text-align: center;
+	border-bottom: 1px solid #fff;
+	background: red;
+	color: #fff;
+	width: 100%;
+	padding: 10px 0;
+	font-weight: bold;
+	margin-top: -40px;
+}
+
+.transparent
+{		
+	/* Theoretically for IE 8 & 9 (more valid) */	
+	/* ...but not required as filter works too */
+	/* should come BEFORE filter */
+	-ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=70)";
+	
+	/* This works in IE 8 & 9 too */
+	/* ... but also 5, 6, 7 */
+	filter: alpha(opacity=70);
+	
+	/* Older than Firefox 0.9 */
+	-moz-opacity:0.7;
+	
+	/* Safari 1.x (pre WebKit!) */
+	-khtml-opacity: 0.7;
+    
+	/* Modern!
+	/* Firefox 0.9+, Safari 2?, Chrome any?
+	/* Opera 9+, IE 9+ */
+	opacity: 0.7;
+}

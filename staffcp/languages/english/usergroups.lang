@@ -1,0 +1,206 @@
+TS SE Message
+Tracker Tools
+Manage Usergroups
+Edit Usergroup
+Delete Usergroup
+ID
+Title
+Description
+Total Users
+Action
+Are you sure you want to delete the usergroup called -{1}-?\n\nThis action cannot be undone.
+You can not delete default usergroups.
+Move all users in this group to:
+Usergroup "{1}" has been deleted by {2}. All users in this group has been moved to "{3}".
+Cancel
+You are about to delete the usergroup called "{1}".
+Add New Usergroup
+This is the name of this usergroup.
+Enter a description for this group.
+Namestyle
+Username HTML Markup.<br /><br /><b>Example:</b> <span style="color: red;">{username}</span><br /><br /><b>Note:</b> Do not remove "<b>{username}</b>" tag.
+Save
+Reset
+Usergroup "{1}" has been added by {2}.
+Yes
+No
+Is 'Banned' Group?
+If this group is a 'banned' usergroup, users will be able to be 'banned' into this usergroup.
+Is 'VIP' Group?
+If this group is a 'VIP' usergroup, users will have same special permissions.
+Can FreeLeech?
+This permission allows members of this group to download torrents free.
+Show on 'STAFF' Page?
+Should this usergroup be shown on the Staff Team page?
+Staff Only
+Can Send PM?
+This permission allows members of this group to send private messages.
+Can Download?
+This permission allows members of this group to download torrents.
+Can Upload?
+This permission allows members of this group to upload torrents.
+Moderate
+Can Upload External Torrents?
+If this option is enabled then members of this group will be able to upload external torrents.
+Can Transfer?
+If this option is enabled then members of this group will be able to transfer upload amount to another user.
+Can Request?
+This permission allows members of this group to request a torrents.
+Can Post Comments?
+This permission is pretty self-explanatory. If a user doesn't have this permission then they cannot post new comments.
+Can Report?
+If this option is enabled then members of this group will be able to use report system.
+Can Bookmark?
+If this option is enabled then members of this group will be able to bookmark torrents.
+Can Post Polls (Forum)
+This permission will allow members of this group to post polls when they post a new thread.
+Can Vote On Polls?
+This permission is self-explanatory. If this is set to "Yes" then members of this group will be able to vote on polls.
+Can Rate?
+This permission allows members of this group to rate threads/torrents/users.
+Can Thanks?
+This permission allows members of this group to thank posts/torrents.
+Can Shout?
+This permission allows members of this group to post shouts.
+Can Invite?
+This permission allows members of this group to send invites.
+Can Use Bonus Points?
+This permission allows members of this group to use Bonus System.
+Can Reset Passkey?
+This permission allows members of this group to reset passkey in UserCP.
+Can Add Bad-User?
+This permission allows members of this group to add a bad user.
+General Permissions
+Tracker View Permissions
+Can View Profiles?
+If this option is disabled then members of this group will not be able to view user profiles.
+Can View Memberlist?
+If this option is disabled then members of this group will not be able to view member list.
+Can use Friends List?
+If this is set to yes, the user is allowed to use the "Friends" features.
+Can View Snatch List?
+If this is set to yes, the user is allowed to see snatch list of torrents.
+Can View Peer List?
+If this is set to yes, the user is allowed to see peer list of torrents.
+Can View TOP-10 Page?
+If this is set to yes, the user is allowed to see TOP-10 Page.
+Can View VIP Categories?
+If this is set to yes, the user is allowed to see private VIP categories.
+User CP Permissions
+Can Email Notification?
+This permission allows members of this group to use Email Notification feature.
+Can Use Signature?
+This permission allows members of this group to use Signature feature.
+Can Setup Seedbox?
+This permission allows members of this group to use Seedbox feature.
+Administrator Permissions
+Can Access Settings Panel?
+This permission allows members of this group to manage Tracker Settings.
+Can Access Staff Panel?
+This permission allows members of this group to access Staff Panel.
+Is Super Moderator?
+If this group is a 'Super-Moderator' usergroup, users will have same special permissions.
+Is Forum Moderator?
+If this group is a 'Forum-Moderator' usergroup, users will have same special permissions.
+Can Mass Delete / Merge?
+This permission allows members of this group to use Mass Delete and Merge features.
+Can Access Tracker?
+If tracker turned off, this group will still be able to see the tracker.
+Can Delete Torrent?
+This permission allows members of this group to Delete own torrents.
+Limitations
+PM Quota
+Here you can set the maximum number of stored pms for this group. Set to 0 to disable this.
+Flood Limit
+Set the time (in seconds) users have to wait between posting, to be in effect. Set to 0 to disable this.
+Slot Limit
+Set the slot users have to wait between downloading, to be in effect. Set to 0 to disable this.
+Wait Limit
+Set the time (in hours) users have to wait between downloading, to be in effect. Set to 0 to disable this.
+Automatic Invites
+Should this usergroup get Invites every month (This must be also enabled in Cleanup Settings)? Set to 0 to disable this.
+Social Group Permissions
+Can View Social Groups?
+This permission, when set to "yes" allows the user to view Social Groups.
+Can Create Social Groups?
+This permission, when set to "yes" allows the user to Create Social Groups (Also requires the "Can View Social Groups" and "Can Join Social Groups" permissions).
+Can Post Messages?
+This permission, when set to "yes" allows the user to post Messages in Groups.
+Can Delete Own Social Groups?
+This permission, when set to "yes" allows the user to delete their own Social Groups.
+Can Join Social Groups?
+This permission, when set to "yes" allows the user to Join Social Groups (Also requires the "Can View Social Groups" permission).
+Can Edit Own Social Groups?
+This permission, when set to "yes" allows the user to edit the details of their own Social Groups. 	
+Can Manage Own Social Group Messages?
+This permission, when set to "yes" allows the user to manage their own Messages within a Social Group.
+Can Manage Own Social Groups?
+Allowing a user to manage his/her own social groups grants the following options on social groups created by that user: Delete messages, Edit messages, Kick members from the group.
+Blog Permissions
+Can View Blogs
+This permission, when set to "yes" allows the user to view Blogs.
+Can Create Blogs
+This permission, when set to "yes" allows the user to Create Blogs (Also requires the "Can View Blogs" permission).
+Can Edit Own Blog
+This permission, when set to "yes" allows the user to edit their own Blog.
+Can Delete Own Blog
+This permission, when set to "yes" allows the user to delete their own Blogs. 	
+Can Post Comment
+This permission, when set to "yes" allows the user to post Comments in Blogs.
+Can Edit Own Comment
+This permission, when set to "yes" allows the user to edit their own Comments.
+Can Delete Own Comment
+This permission, when set to "yes" allows the user to delete their own Comments.
+Can Enable/Disable Own Blog Comments
+This permission, when set to "yes" allows the user to enable/disable comment feature their own Blog. 	
+Maximum Custom Blocks
+Set to 0 to disable custom block creation.
+Usergroup "{1}" has been updated by {2}.
+Default Usergroups
+Custom Usergroups
+Display Order
+Save Display Order
+Reset Display Order
+Usergroup(s) display orders has been updated by {1}.
+Other Permissions/Options
+Show Advertisement
+Shall we show advertisements to this usergroup?
+Edit User Permissions
+Can Change Username?
+Can Change Username in Edit User Tool?
+Can Change Password?
+Can Change Password in Edit User Tool?
+Can Change Email?
+Can Change Email in Edit User Tool?
+Can Change Usergroup?
+Can Change Usergroup (Promote/Demote) in Edit User Tool?
+Can Manage Donation Status?
+Can Manage Donation Status options in Edit User Tool?
+Can Manage Time Options?
+Can Manage Time Options in Edit User Tool?
+Can Manage Account Details?
+Can Manage Account Details in Edit User Tool?
+Can Manage Account Permissions?
+Can Manage Account Permissions in Edit User Tool?
+Can Manage Account Warning Details?
+Can Manage Account Warning Details in Edit User Tool?
+Can Manage Account History?
+Can Manage Account History in Edit User Tool?
+Can Manage Support Options?
+Can Manage Support Options in Edit User Tool?
+Can Manage Contact Details?
+Can Manage Contact Details in Edit User Tool?
+Profile Customization Permissions
+Can Customize Profile?
+Setting this option to yes will allow users to customize their own profile page.
+Can Edit Font Family?
+This permission, when set to "yes" allows the user to edit the Font Family on their profile page.
+Can Edit Font Size?
+This permission, when set to "yes" allows the user to edit the Font Size on their profile page.
+Can Edit Colors?
+This permission, when set to "yes" allows the user to edit the Colors on their profile page.
+Clone Usergroup
+Can Direct Download?
+This permission, when set to "yes" allows the user to download the torrent file directly.
+Can Upload Direct Download?
+This permission, when set to "yes" allows the uploader to manage direct download links.

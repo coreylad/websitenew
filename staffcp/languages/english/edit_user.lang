@@ -1,0 +1,102 @@
+TS SE Message
+User Tools
+Edit User
+Invalid User Specified!
+User Name
+Search
+Reset
+This user can not be editable!
+Required Informations
+Password
+Email
+Usergroup
+Ip Address
+Passkey
+Country
+Title
+Avatar
+Signature
+Account History
+Comments
+Support Options
+Language
+Details
+Account Details
+Uploaded
+Downloaded
+Seed Bonus
+Invites
+Times Warned
+Total Posts
+Visitor Count
+Posts Per Page
+Torrents Per Page
+Account Permissions
+Account Status
+Confirmed
+Pending
+Account Enabled
+Yes
+No
+Can Upload
+Can Download
+Can Comment
+Can PM
+Can Shout
+Account Warning Details
+Is Warned
+Warned Until
+Leech Warned
+Leech Warned Until
+Warn User
+Remove Warn
+Account Donation Status
+Is Donor
+Remove Donor Status
+Donor Until
+Last Donation
+Total Donation
+Find IP
+Disable
+Delete
+Bad User
+IP Info
+Threads
+Posts
+Enable
+Time Options
+Join Date
+Last Login
+Last Acitivity
+Last Forum Visit
+Last Forum Acitivity
+Birthday
+Contact Details
+ICQ
+AIM
+Skype
+MSN
+Yahoo!
+Unread PM Count
+Last Invite
+Inviter
+Time Options
+Update Account
+Save Changes
+Reset Changes
+User '{1}' account has been updated by '{2}'.
+Invite Tree
+Update Funds
+Add a Comment into User Account History
+Can View Forums
+XBT Permissions
+Can Leech
+0 if the user can't leech (download the files inside the torrent). 1 if the user can.
+Wait Time
+The time  (in seconds) the user must wait between the date of the torrent and the download. Leave 0 to disable this.
+Peers Limit
+The number of different computers the user is allowed to use simultaneously. Leave 0 to disable this.
+Torrents Limit
+The number of simultaneous torrents the user is allowed to leech at the same time. Leave 0 to disable this.
+Hidden
+View Profile

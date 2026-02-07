@@ -1,0 +1,62 @@
+#columns .column{
+	margin: 5px 10px 10px 0;
+	min-height: 400px;
+}
+
+#columns .menu{	
+	width: 250px;	
+	float: left;
+	
+}
+
+#columns .blocks{	
+	width: 250px;	
+	float: left;
+}
+
+#columns .sidebar{	
+	width: 250px;	
+	float: left;
+}
+
+.block .draghandle{
+	cursor: move;
+}
+
+/* all columns */
+#columns .menu div, #columns .blocks div, #columns .sidebar div{	
+	background-color: white;
+	margin-bottom: 10px;
+	border-bottom: 1px solid #F3F3F3;
+}
+
+#columns .menu div h1, #columns .blocks div h1, #columns .sidebar div h1{	
+	padding: 5px;	
+	background-color: #e0e0e0;
+	font-size: 11px;
+}
+
+#columns .menu div p, #columns .blocks div p, #columns .sidebar div p{	
+	font-size: 11px;	
+	padding: 5px;
+}
+
+#columns .menu, #columns .blocks, #columns .sidebar{	
+	border: 1px solid #F3F3F3;	
+	padding: 0px;
+}
+
+#columns .target {	
+	padding: 3px;	
+	border: 2px dashed #ccc;	
+}
+
+
+/* column specific styles */
+#columns .menu div h1{
+	background-color: #ccc;
+}
+
+#columns .sidebar div h1{
+	background-color: #e6e6e6;
+}

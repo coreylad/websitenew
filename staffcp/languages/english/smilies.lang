@@ -1,0 +1,20 @@
+TS SE Message
+Tracker Tools
+Manage Smilies
+Edit Smilie
+Delete Smilie
+Are you sure you want to delete this smilie?
+Update
+Display Order
+Image
+Title
+This is the title of the image and will be displayed with the image (except in the case of smilies).
+Text to Replace
+This is what the user will type to have transformed into a smilie. For example :) or :( - keep in mind, this is case-sensitive. S:) and s:) are not the same thing.
+Smilie File Path
+Please enter smilie file path.
+This determines the order in which images are shown. This can be changed later.
+Save
+Reset
+Click here to Add a Single Smilie
+Smilies has been updated by {1}.

@@ -1,0 +1,20 @@
+TS SE Message
+Server Tools
+Manage Events
+Event Date
+Event Title
+Description
+Action
+Create New Event
+Edit Event
+Delete Event
+Month
+Day
+Year
+Save
+Reset
+There is no event to show. Click <a href="{1}">here</a> to create a new one.
+Event '{1}' has been deleted by {2}.
+Event '{1}' has been updated by {2}.
+Event '{1}' has been added by {2}.
+Please Complete All Required Fields!

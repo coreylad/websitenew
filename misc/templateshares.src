@@ -1,0 +1,11 @@
+<SEARCH version="1.0"
+	name="Template Shares Torrent Search"
+        description="Torrent Search on Template Shares"
+        method="post"
+        action="https://templateshares.net/browse.php"
+        queryCharset="UTF-8">
+
+	<input name="keywords" user>
+	<input name="do" value="search">
+	<input name="search_type" value="t_both">
+</search>

@@ -1,0 +1,82 @@
+Options -Indexes +FollowSymLinks
+
+ErrorDocument 400 /ts_error.php?errorid=400
+ErrorDocument 401 /ts_error.php?errorid=401
+ErrorDocument 403 /ts_error.php?errorid=403
+ErrorDocument 404 /index.php?errorid=404
+ErrorDocument 500 /ts_error.php?errorid=500
+
+php_flag short_open_tag on
+
+<IfModule mod_rewrite.c>
+	# //seo_mod_start
+	RewriteEngine On	
+	# Uncomment the following and add your tracker path if rewrites arent working properly
+	#RewriteBase /
+
+	RewriteRule ^forum-([0-9]+)/(.*)$ tsf_forums/index.php?fid=$1&$2 [L,NC] #New
+	RewriteRule ^threads-([0-9]+)/(.*)$ tsf_forums/forumdisplay.php?fid=$1&$2 [L,NC] #New
+	RewriteRule ^thread-([0-9]+)/(.*)$ tsf_forums/showthread.php?tid=$1&$2 [L,NC] #New
+	
+	RewriteRule ^torrent-category-([0-9]+)/(.*)$ browse.php?category=$1$2 [L,NC] #torrent-category-1/Default-Category
+	RewriteRule ^download-torrent-([0-9]+)/(.*)$ download.php?id=$1$2 [L,NC] #download-torrent-2/1-jpg
+	RewriteRule ^download-torrent-ssl-([0-9]+)/(.*)$ download.php?id=$1$2&type=ssl [L,NC] #download-torrent-ssl-2/1-jpg
+	RewriteRule ^torrent-details-([0-9]+)/(.*)$ details.php?id=$1$2 [L,NC] #torrent-details-2/1-jpg
+	RewriteRule ^user-profile-([0-9]+)/(.*)$ userdetails.php?id=$1$2 [L,NC] #user-profile-1/admin
+
+	#Support for old links with old seo
+	RewriteRule ^(.*)-c-([0-9]+).ts(.*)$ browse.php?category=$2 [QSA,L]
+	RewriteRule ^(.*)-d-([0-9]+).ts(.*)$ download.php?id=$2 [QSA,L]
+	RewriteRule ^(.*)-s-([0-9]+).ts(.*)$ details.php?id=$2 [QSA,L]
+	RewriteRule ^(.*)-a-(.*).ts(.*)$ announce.php?passkey=$2 [QSA,L]
+	RewriteRule ^(.*)-u?([0-9]+).ts(.*)$ userdetails.php?id=$2$3 [QSA,L]
+	RewriteRule ^(.*)-f([0-9]+).tsf(.*)$ tsf_forums/index.php?fid=$2$3 [QSA,L]
+	RewriteRule ^(.*)-fd([0-9]+).tsf(.*)$ tsf_forums/forumdisplay.php?fid=$2$3 [QSA,L]
+	RewriteRule ^(.*)-t([0-9]+).tsf(.*)$ tsf_forums/showthread.php?tid=$2$3 [QSA,L]
+</IfModule>
+
+<IfModule mod_expires.c>
+	ExpiresActive On
+	ExpiresByType image/x-icon "access plus 2592000 seconds"
+	ExpiresByType image/jpeg "access plus 2592000 seconds"
+	ExpiresByType image/png "access plus 2592000 seconds"
+	ExpiresByType image/gif "access plus 2592000 seconds"
+	ExpiresByType application/x-shockwave-flash "access plus 2592000 seconds"
+	ExpiresByType text/css "access plus 604800 seconds"
+	ExpiresByType text/javascript "access plus 216000 seconds"
+	ExpiresByType application/javascript "access plus 216000 seconds"
+	ExpiresByType application/x-javascript "access plus 216000 seconds"
+</ifModule>
+
+<IfModule mod_headers.c>
+	# MONTH
+	<FilesMatch "\.(flv|gif|jpg|jpeg|png|ico|swf)$">
+		Header set Cache-Control "max-age=2592000"
+	</FilesMatch>
+
+	# WEEK
+	<FilesMatch "\.(js|css|pdf|txt)$">
+		Header set Cache-Control "max-age=604800"
+	</FilesMatch>
+
+	# DAY
+	<FilesMatch "\.(html|htm)$">
+		Header set Cache-Control "max-age=43200"
+	</FilesMatch>
+
+	Header unset X-Powered-By
+	Header unset Etag
+	Header unset Server
+</IfModule>
+
+<FilesMatch "\.(htaccess|htpasswd|ini|log|sh|inc|bak|phtml|sql)$">
+    Order Allow,Deny
+    Deny from all
+</FilesMatch>
+
+#Mod_security can interfere with uploading of content such as attachments. If you
+#cannot attach files, remove the "#" from the lines below.
+#<IfModule mod_security.c>
+#	SecFilterEngine Off
+#	SecFilterScanPOST Off
+#</IfModule>

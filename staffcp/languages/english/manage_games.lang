@@ -1,0 +1,35 @@
+TS SE Message
+Game "{1}" has been deleted by {2}.
+Manage Games
+File Name
+Description
+Sort
+Action
+Edit Game
+Delete Game
+Add New Game
+Are you sure that you want to delete this Game?
+Tracker Tools
+Required fields can not be empty!
+Game "{1}" has been updated by {2}.
+Save Game
+Reset Game
+Game "{1}" has been added by {2}.
+Cancel
+Title
+Width
+Height
+Objective
+Shortkeys
+Save Score
+Yes
+No
+Category
+Case Sensitive. Must be same as filename in ts_games/game_files folder..
+Game File does not exists:
+Reset Champions List
+Reset Scores
+Game "{1}" Champion List has been reset by {2}.
+Game "{1}" Score List has been reset by {2}.
+Delete Comments
+Game "{1}" Comments has been deleted by {2}.
