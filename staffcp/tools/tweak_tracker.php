@@ -10,7 +10,7 @@ var_235();
 $Language = file("languages/" . function_75() . "/tweak_tracker.lang");
 $Message = "";
 $Users = [];
-$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id FROM users WHERE enabled = 'yes' AND status = 'confirmed'");
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id FROM users WHERE $enabled = 'yes' AND $status = 'confirmed'");
 while ($user = mysqli_fetch_assoc($query)) {
     $Users[] = $user["id"];
 }
@@ -21,7 +21,7 @@ while ($torrent = mysqli_fetch_assoc($query)) {
     $Torrents[] = $torrent["id"];
 }
 $Torrents = "0, " . implode(", ", $Torrents);
-echo "\r\n<div id=\"sending\" name=\"sending\">\r\n\t\r\n\t<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" class=\"mainTable\">\r\n\t\t<tr>\r\n\t\t\t<td class=\"tcat\">" . $Language[4] . "</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\">";
+echo "\r\n<div $id = \"sending\" $name = \"sending\">\r\n\t\r\n\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t<tr>\r\n\t\t\t<td class=\"tcat\">" . $Language[4] . "</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\">";
 mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM addedrequests WHERE userid NOT IN (" . $Users . ")");
 function_156("addedrequests");
 mysqli_query($GLOBALS["DatabaseConnect"], "OPTIMIZE TABLE addedrequests");
@@ -197,7 +197,7 @@ function function_78($url)
     if (!headers_sent()) {
         header("Location: " . $url);
     } else {
-        echo "\r\n\t\t<script type=\"text/javascript\">\r\n\t\t\twindow.location.href=\"" . $url . "\";\r\n\t\t</script>\r\n\t\t<noscript>\r\n\t\t\t<meta http-equiv=\"refresh\" content=\"0;url=" . $url . "\" />\r\n\t\t</noscript>";
+        echo "\r\n\t\t<script $type = \"text/javascript\">\r\n\t\t\twindow.location.$href = \"" . $url . "\";\r\n\t\t</script>\r\n\t\t<noscript>\r\n\t\t\t<meta http-$equiv = \"refresh\" $content = \"0;$url = " . $url . "\" />\r\n\t\t</noscript>";
     }
     exit;
 }

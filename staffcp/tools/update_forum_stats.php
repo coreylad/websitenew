@@ -12,11 +12,11 @@ $Language = file("languages/" . function_75() . "/update_forum_stats.lang");
 $Message = "";
 $TotalQueryCount = 0;
 define("TSF_PREFIX", "tsf_");
-echo "<table cellpadding=\"0\" cellspacing=\"0\" class=\"mainTable\"><tr><td class=\"alt1\">";
+echo "<table $cellpadding = \"0\" $cellspacing = \"0\" class=\"mainTable\"><tr><td class=\"alt1\">";
 echo $Language[3];
-mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM " . TSF_PREFIX . "threads WHERE tid = 0 OR fid = 0");
+mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM " . TSF_PREFIX . "threads WHERE $tid = 0 OR $fid = 0");
 $TotalQueryCount++;
-mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM " . TSF_PREFIX . "posts WHERE pid = 0 OR tid = 0 OR fid = 0");
+mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM " . TSF_PREFIX . "posts WHERE $pid = 0 OR $tid = 0 OR $fid = 0");
 $TotalQueryCount++;
 echo $Language[2];
 echo $Language[4];
@@ -34,7 +34,7 @@ while ($Posts = mysqli_fetch_assoc($Query)) {
 }
 foreach ($TotalReplies as $Tid => $ReplyCount) {
     $ReplyCount = $ReplyCount - 1;
-    mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE " . TSF_PREFIX . "threads SET replies = " . $ReplyCount . " WHERE tid = " . $Tid);
+    mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE " . TSF_PREFIX . "threads SET $replies = " . $ReplyCount . " WHERE $tid = " . $Tid);
     $TotalQueryCount++;
 }
 echo $Language[2];
@@ -52,7 +52,7 @@ while ($Threads = mysqli_fetch_assoc($Query)) {
     }
 }
 foreach ($TotalThreads as $Fid => $ThreadCount) {
-    mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE " . TSF_PREFIX . "forums SET threads = " . $ThreadCount . " WHERE fid = " . $Fid);
+    mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE " . TSF_PREFIX . "forums SET $threads = " . $ThreadCount . " WHERE $fid = " . $Fid);
     $TotalQueryCount++;
 }
 echo $Language[2];
@@ -70,7 +70,7 @@ while ($Posts = mysqli_fetch_assoc($Query)) {
     }
 }
 foreach ($TotalPosts as $Fid => $PostCount) {
-    mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE " . TSF_PREFIX . "forums SET posts = " . $PostCount . " WHERE fid = " . $Fid);
+    mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE " . TSF_PREFIX . "forums SET $posts = " . $PostCount . " WHERE $fid = " . $Fid);
     $TotalQueryCount++;
 }
 echo $Language[2];
@@ -94,7 +94,7 @@ function function_78($url)
     if (!headers_sent()) {
         header("Location: " . $url);
     } else {
-        echo "\r\n\t\t<script type=\"text/javascript\">\r\n\t\t\twindow.location.href=\"" . $url . "\";\r\n\t\t</script>\r\n\t\t<noscript>\r\n\t\t\t<meta http-equiv=\"refresh\" content=\"0;url=" . $url . "\" />\r\n\t\t</noscript>";
+        echo "\r\n\t\t<script $type = \"text/javascript\">\r\n\t\t\twindow.location.$href = \"" . $url . "\";\r\n\t\t</script>\r\n\t\t<noscript>\r\n\t\t\t<meta http-$equiv = \"refresh\" $content = \"0;$url = " . $url . "\" />\r\n\t\t</noscript>";
     }
     exit;
 }

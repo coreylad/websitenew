@@ -57,9 +57,9 @@ $language['signup'] = array
 	'gender'=>'Gender:',
 	'male'=>'Male',
 	'female'=>'Female',
-	'weak'=>'<font color="red">Weak</font>',
-	'medium'=>'<font color="blue">Medium</font>',
-	'strong'=>'<font color="green">Strong</font>',
+	'weak'=>'<font $color = "red">Weak</font>',
+	'medium'=>'<font $color = "blue">Medium</font>',
+	'strong'=>'<font $color = "green">Strong</font>',
 	'signup'=>'Sign Up',
 	'usernamexists'=>'This User Name already exists!',
 	'emailexists'=>'This Email Address already exists!',
@@ -92,7 +92,7 @@ unwanted spam and malicious abuse.
 
 To activate your account, simply click on the following link:
 
-{2}/confirm.php?id={3}&secret={4}
+{2}/confirm.php?$id = {3}&$secret = {4}
 
 (AOL Email users may need to copy and paste the link into your web browser).
 
@@ -103,7 +103,7 @@ Not working?
 If you could not validate your registration by clicking on the link, please
 visit this page:
 
-{2}/confirm.php?act=manual
+{2}/confirm.php?$act = manual
 
 It will ask you for a user id number, and your secret key. These are shown
 below:

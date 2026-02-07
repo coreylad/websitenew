@@ -25,14 +25,14 @@ if (isset($_POST["action"]) && $_POST["action"] == "save_quick_edit" && 0 < $CUR
     if ($usergroups["cancomment"] == "no") {
         show_msg($lang->global["nopermission"]);
     }
-    ($query = sql_query("SELECT cancomment FROM ts_u_perm WHERE userid = " . sqlesc($CURUSER["id"]))) || sqlerr(__FILE__, 100);
+    ($query = sql_query("SELECT cancomment FROM ts_u_perm WHERE $userid = " . sqlesc($CURUSER["id"]))) || sqlerr(__FILE__, 100);
     if (0 < mysqli_num_rows($query)) {
         $commentperm = mysqli_fetch_assoc($query);
         if ($commentperm["cancomment"] == "0") {
             show_msg($lang->global["nopermission"]);
         }
     }
-    ($res = sql_query("SELECT c.text, c.user, t.id as torrentid FROM comments AS c JOIN torrents AS t ON c.torrent = t.id WHERE c.id= " . sqlesc($commentid))) || sqlerr(__FILE__, 110);
+    ($res = sql_query("SELECT c.text, c.user, t.id as torrentid FROM comments AS c JOIN torrents AS t ON c.$torrent = t.id WHERE c.$id = " . sqlesc($commentid))) || sqlerr(__FILE__, 110);
     $arr = mysqli_fetch_assoc($res);
     if (!$arr) {
         show_msg($lang->global["notorrentid"]);
@@ -62,10 +62,10 @@ if (isset($_POST["action"]) && $_POST["action"] == "save_quick_edit" && 0 < $CUR
             }
         }
         $editedat = get_date_time();
-        sql_query("UPDATE comments SET text = " . sqlesc($msgtext) . ", editedat=" . sqlesc($editedat) . ", editedby=" . sqlesc($CURUSER["id"]) . " WHERE id= " . sqlesc($commentid)) || sqlerr(__FILE__, 150);
+        sql_query("UPDATE comments SET $text = " . sqlesc($msgtext) . ", $editedat = " . sqlesc($editedat) . ", $editedby = " . sqlesc($CURUSER["id"]) . " WHERE $id = " . sqlesc($commentid)) || sqlerr(__FILE__, 150);
         $edit_date = my_datee($dateformat, $editedat);
         $edit_time = my_datee($timeformat, $editedat);
-        $p_text = "<p><font size='1' class='small'>" . $lang->global["lastedited"] . " <a href='" . $BASEURL . "/userdetails.php?id=" . $CURUSER["id"] . "'><b>" . $CURUSER["username"] . "</b></a> " . $edit_date . " " . $edit_time . "</font></p>\n";
+        $p_text = "<p><font $size = '1' class='small'>" . $lang->global["lastedited"] . " <a $href = '" . $BASEURL . "/userdetails.php?$id = " . $CURUSER["id"] . "'><b>" . $CURUSER["username"] . "</b></a> " . $edit_date . " " . $edit_time . "</font></p>\n";
     }
     show_msg(format_comment($_POST["text"]) . (isset($p_text) ? $p_text : ""), false, NULL, false);
 } else {
@@ -78,14 +78,14 @@ if (isset($_POST["action"]) && $_POST["action"] == "save_quick_edit" && 0 < $CUR
         if ($usergroups["cancomment"] == "no") {
             show_msg($lang->global["nopermission"]);
         }
-        ($query = sql_query("SELECT cancomment FROM ts_u_perm WHERE userid = " . sqlesc($CURUSER["id"]))) || sqlerr(__FILE__, 169);
+        ($query = sql_query("SELECT cancomment FROM ts_u_perm WHERE $userid = " . sqlesc($CURUSER["id"]))) || sqlerr(__FILE__, 169);
         if (0 < mysqli_num_rows($query)) {
             $commentperm = mysqli_fetch_assoc($query);
             if ($commentperm["cancomment"] == "0") {
                 show_msg($lang->global["nopermission"]);
             }
         }
-        ($res = sql_query("SELECT c.text, c.user, t.id as torrentid FROM comments AS c JOIN torrents AS t ON c.torrent = t.id WHERE c.id= " . sqlesc($commentid))) || sqlerr(__FILE__, 179);
+        ($res = sql_query("SELECT c.text, c.user, t.id as torrentid FROM comments AS c JOIN torrents AS t ON c.$torrent = t.id WHERE c.$id = " . sqlesc($commentid))) || sqlerr(__FILE__, 179);
         $arr = mysqli_fetch_assoc($res);
         if (!$arr) {
             show_msg($lang->global["notorrentid"]);
@@ -109,7 +109,7 @@ if (isset($_POST["action"]) && $_POST["action"] == "save_quick_edit" && 0 < $CUR
             if (!is_valid_id($tid)) {
                 show_msg($lang->tsf_forums["invalid_tid"]);
             }
-            ($query = sql_query("SELECT\n\t\t\tt.subject as threadsubject, t.closed, t.sticky, f.type, f.name as currentforum, f.fid as currentforumid, f.moderate, ff.name as deepforum, ff.fid as deepforumid, ff.moderate as moderaterf\n\t\t\tFROM " . TSF_PREFIX . "threads t\n\t\t\tLEFT JOIN " . TSF_PREFIX . "forums f ON (f.fid=t.fid)\n\t\t\tLEFT JOIN " . TSF_PREFIX . "forums ff ON (ff.fid=f.pid)\n\t\t\tWHERE t.tid = " . sqlesc($tid) . " LIMIT 0, 1")) || show_msg("dberror1");
+            ($query = sql_query("SELECT\n\t\t\tt.subject as threadsubject, t.closed, t.sticky, f.type, f.name as currentforum, f.fid as currentforumid, f.moderate, ff.name as deepforum, ff.fid as deepforumid, ff.moderate as moderaterf\n\t\t\tFROM " . TSF_PREFIX . "threads t\n\t\t\tLEFT JOIN " . TSF_PREFIX . "forums f ON (f.$fid = t.fid)\n\t\t\tLEFT JOIN " . TSF_PREFIX . "forums ff ON (ff.$fid = f.pid)\n\t\t\tWHERE t.$tid = " . sqlesc($tid) . " LIMIT 0, 1")) || show_msg("dberror1");
             if (mysqli_num_rows($query) == 0) {
                 show_msg($lang->tsf_forums["invalid_tid"]);
             }
@@ -120,7 +120,7 @@ if (isset($_POST["action"]) && $_POST["action"] == "save_quick_edit" && 0 < $CUR
                 $thread["moderaterf"] = 0;
             }
             $visible = $thread["moderate"] == 1 || $thread["moderaterf"] == 1 ? 0 : 1;
-            $query = sql_query("SELECT * FROM " . TSF_PREFIX . "forumpermissions WHERE gid = " . sqlesc($CURUSER["usergroup"])) or ($query = sql_query("SELECT * FROM " . TSF_PREFIX . "forumpermissions WHERE gid = " . sqlesc($CURUSER["usergroup"]))) || show_msg("dberror2");
+            $query = sql_query("SELECT * FROM " . TSF_PREFIX . "forumpermissions WHERE $gid = " . sqlesc($CURUSER["usergroup"])) or ($query = sql_query("SELECT * FROM " . TSF_PREFIX . "forumpermissions WHERE $gid = " . sqlesc($CURUSER["usergroup"]))) || show_msg("dberror2");
             while ($perm = mysqli_fetch_assoc($query)) {
                 $permissions[$perm["fid"]] = $perm;
             }
@@ -163,36 +163,36 @@ if (isset($_POST["action"]) && $_POST["action"] == "save_quick_edit" && 0 < $CUR
             $sticky = $_POST["stickthread"] == "1" && ($moderator || $forummoderator) ? 1 : 0;
             $subscribe = isset($_POST["subscribe"]) && $_POST["subscribe"] == "yes" ? 1 : 0;
             if ($subscribe) {
-                ($query = sql_query("SELECT userid FROM " . TSF_PREFIX . "subscribe WHERE tid = " . sqlesc($tid) . " AND userid = " . $uid)) || show_msg("dberror3");
+                ($query = sql_query("SELECT userid FROM " . TSF_PREFIX . "subscribe WHERE $tid = " . sqlesc($tid) . " AND $userid = " . $uid)) || show_msg("dberror3");
                 if (mysqli_num_rows($query) == 0) {
                     sql_query("INSERT INTO " . TSF_PREFIX . "subscribe (tid,userid) VALUES (" . sqlesc($tid) . "," . $uid . ")") || show_msg("dberror4");
                 }
             }
             $extraquery = "";
             if ($moderator || $forummoderator) {
-                $extraquery = ", closed = " . sqlesc($closed) . ", sticky = " . sqlesc($sticky);
+                $extraquery = ", $closed = " . sqlesc($closed) . ", $sticky = " . sqlesc($sticky);
             }
             if (strlen($_POST["message"]) < $f_minmsglength) {
                 show_msg($lang->tsf_forums["too_short"]);
             }
-            ($query = sql_query("SELECT dateline FROM " . TSF_PREFIX . "posts WHERE uid = " . sqlesc($CURUSER["id"]) . " ORDER by dateline DESC LIMIT 1")) || sqlerr(__FILE__, 314);
+            ($query = sql_query("SELECT dateline FROM " . TSF_PREFIX . "posts WHERE $uid = " . sqlesc($CURUSER["id"]) . " ORDER by dateline DESC LIMIT 1")) || sqlerr(__FILE__, 314);
             if (mysqli_num_rows($query)) {
                 $Result = mysqli_fetch_assoc($query);
                 $last_post = $Result["dateline"];
                 $floodcheck = flood_check($lang->tsf_forums["a_post"], $last_post, true);
                 if ($floodcheck != "") {
-                    show_msg(str_replace(["<font color=\"#9f040b\" size=\"2\">", "</font>", "<b>", "</b>"], "", $floodcheck));
+                    show_msg(str_replace(["<font $color = \"#9f040b\" $size = \"2\">", "</font>", "<b>", "</b>"], "", $floodcheck));
                 }
             }
             sql_query("INSERT INTO " . TSF_PREFIX . "posts (tid,replyto,fid,subject,uid,username,dateline,message,ipaddress,visible) VALUES (" . $tid . "," . $replyto . "," . $fid . ", " . sqlesc($subject) . ", " . $uid . ", " . $username . ", " . $dateline . ", " . sqlesc($message) . ", " . $ipaddress . "," . $visible . ")") || show_msg("dberror5");
             $pid = mysqli_insert_id($GLOBALS["DatabaseConnect"]);
-            sql_query("UPDATE " . TSF_PREFIX . "threads SET replies = replies + 1, lastpost = " . $dateline . ", lastposter = " . $username . ", lastposteruid = " . $uid . $extraquery . " WHERE tid = " . sqlesc($tid)) || show_msg("dberror6");
-            sql_query("UPDATE " . TSF_PREFIX . "forums SET posts = posts + 1, lastpost = " . $dateline . ", lastposter = " . $username . ", lastposteruid = " . $uid . ", lastposttid = " . $tid . ", lastpostsubject = " . sqlesc($subject) . " WHERE fid = '" . $fid . "'") || show_msg("dberror7");
+            sql_query("UPDATE " . TSF_PREFIX . "threads SET $replies = replies + 1, $lastpost = " . $dateline . ", $lastposter = " . $username . ", $lastposteruid = " . $uid . $extraquery . " WHERE $tid = " . sqlesc($tid)) || show_msg("dberror6");
+            sql_query("UPDATE " . TSF_PREFIX . "forums SET $posts = posts + 1, $lastpost = " . $dateline . ", $lastposter = " . $username . ", $lastposteruid = " . $uid . ", $lastposttid = " . $tid . ", $lastpostsubject = " . sqlesc($subject) . " WHERE $fid = '" . $fid . "'") || show_msg("dberror7");
             if ($useparent) {
-                sql_query("UPDATE " . TSF_PREFIX . "forums SET lastpost = " . $dateline . ", lastposter = " . $username . ", lastposteruid = " . $uid . ", lastposttid = " . $tid . ", lastpostsubject = " . sqlesc($subject) . " WHERE fid = '" . $thread["deepforumid"] . "'") || show_msg("dberror7");
+                sql_query("UPDATE " . TSF_PREFIX . "forums SET $lastpost = " . $dateline . ", $lastposter = " . $username . ", $lastposteruid = " . $uid . ", $lastposttid = " . $tid . ", $lastpostsubject = " . sqlesc($subject) . " WHERE $fid = '" . $thread["deepforumid"] . "'") || show_msg("dberror7");
             }
-            sql_query("UPDATE users SET totalposts = totalposts + 1 WHERE id = " . $uid) || show_msg("dberror8");
-            sql_query("REPLACE INTO " . TSF_PREFIX . "threadsread SET tid='" . $tid . "', uid='" . $CURUSER["id"] . "', dateline='" . TIMENOW . "'");
+            sql_query("UPDATE users SET $totalposts = totalposts + 1 WHERE $id = " . $uid) || show_msg("dberror8");
+            sql_query("REPLACE INTO " . TSF_PREFIX . "threadsread SET $tid = '" . $tid . "', $uid = '" . $CURUSER["id"] . "', $dateline = '" . TIMENOW . "'");
             $TSSEConfig->TSLoadConfig("KPS");
             KPS("+", isset($kpscomment) && $kpscomment ? $kpscomment : "", $CURUSER["id"]);
             $lastseen = my_datee($dateformat, $CURUSER["last_access"]) . " " . my_datee($timeformat, $CURUSER["last_access"]);
@@ -207,7 +207,7 @@ if (isset($_POST["action"]) && $_POST["action"] == "save_quick_edit" && 0 < $CUR
             } else {
                 $tooltip = sprintf($lang->tsf_forums["tooltip"], $lastseen, $downloaded, $uploaded, $ratio);
             }
-            $poster = "<a href=\"javascript:void(0);\" id=\"quickmenu" . $pid . "\"><i onmouseover=\"ddrivetip('" . $tooltip . "', 200)\"; onmouseout=\"hideddrivetip()\">" . get_user_color(htmlspecialchars_uni($CURUSER["username"]), $usergroups["namestyle"]) . "</i></a>";
+            $poster = "<a $href = \"javascript:void(0);\" $id = \"quickmenu" . $pid . "\"><i $onmouseover = \"ddrivetip('" . $tooltip . "', 200)\"; $onmouseout = \"hideddrivetip()\">" . get_user_color(htmlspecialchars_uni($CURUSER["username"]), $usergroups["namestyle"]) . "</i></a>";
             include_once INC_PATH . "/functions_icons.php";
             $usericons = get_user_icons(array_merge($CURUSER, $usergroups));
             $usertitle = "";
@@ -222,26 +222,26 @@ if (isset($_POST["action"]) && $_POST["action"] == "save_quick_edit" && 0 < $CUR
             $join_date = $lang->tsf_forums["jdate"] . my_datee($regdateformat, $CURUSER["added"]);
             $totalposts = $lang->tsf_forums["totalposts"] . ts_nf($CURUSER["totalposts"] + 1);
             $UserOn = sprintf($lang->tsf_forums["user_online"], $CURUSER["username"]);
-            $status = "<img src=\"" . $pic_base_url . "friends/online.png\" border=\"0\" alt=\"" . $UserOn . "\" title=\"" . $UserOn . "\" class=\"inlineimg\" />";
+            $status = "<img $src = \"" . $pic_base_url . "friends/online.png\" $border = \"0\" $alt = \"" . $UserOn . "\" $title = \"" . $UserOn . "\" class=\"inlineimg\" />";
             $CURUSER["countryname"] = "";
             $CURUSER["flagpic"] = "";
-            ($query = @sql_query("SELECT flagpic,name as countryname FROM countries WHERE id = " . @sqlesc($CURUSER["country"]))) || show_msg("dberror9");
+            ($query = @sql_query("SELECT flagpic,name as countryname FROM countries WHERE $id = " . @sqlesc($CURUSER["country"]))) || show_msg("dberror9");
             if (0 < mysqli_num_rows($query)) {
                 $Result = mysqli_fetch_assoc($query);
                 $CURUSER["countryname"] = $Result["countryname"];
                 $CURUSER["flagpic"] = $Result["flagpic"];
             }
-            $country = $lang->tsf_forums["country"] . "<img src='" . $pic_base_url . "flag/" . $CURUSER["flagpic"] . "' alt='" . $CURUSER["countryname"] . "' title='" . $CURUSER["countryname"] . "' style='margin-center: 2pt' height='10px' class='inlineimg'>";
+            $country = $lang->tsf_forums["country"] . "<img $src = '" . $pic_base_url . "flag/" . $CURUSER["flagpic"] . "' $alt = '" . $CURUSER["countryname"] . "' $title = '" . $CURUSER["countryname"] . "' $style = 'margin-center: 2pt' $height = '10px' class='inlineimg'>";
             $signature = "";
             if (!empty($CURUSER["signature"]) && TS_Match($CURUSER["options"], "H1")) {
-                $signature = "<hr align=\"left\" size=\"1\" width=\"65%\">" . format_comment($CURUSER["signature"], true, true, true, true, "signatures");
+                $signature = "<hr $align = \"left\" $size = \"1\" $width = \"65%\">" . format_comment($CURUSER["signature"], true, true, true, true, "signatures");
             }
             $ABuffer = [];
-            ($AwardQuery = sql_query("SELECT a.id, a.userid, a.reason, a.date, aw.award_name, aw.award_image FROM ts_awards_users a LEFT JOIN ts_awards aw ON (a.award_id=aw.award_id)")) || sqlerr(__FILE__, 407);
+            ($AwardQuery = sql_query("SELECT a.id, a.userid, a.reason, a.date, aw.award_name, aw.award_image FROM ts_awards_users a LEFT JOIN ts_awards aw ON (a.$award_id = aw.award_id)")) || sqlerr(__FILE__, 407);
             if (mysqli_num_rows($AwardQuery)) {
                 while ($Award = mysqli_fetch_assoc($AwardQuery)) {
                     $ATooltip = "<strong>" . htmlspecialchars_uni($Award["award_name"]) . "</strong><br /><small>" . addslashes(htmlspecialchars_uni($Award["reason"])) . "</small>";
-                    $ABuffer[$Award["userid"]][$Award["id"]] = "\n\t\t\t<i onmouseover=\"ddrivetip('" . $ATooltip . "', 200)\"; onmouseout=\"hideddrivetip()\"><img src=\"" . $pic_base_url . "awardmedals/" . htmlspecialchars_uni($Award["award_image"]) . "\" border=\"0\" alt=\"\" title=\"\" class=\"inlineimg\" width=\"10\" height=\"19\" style=\"padding-top: 3px; cursor: pointer;\" /></i>&nbsp;";
+                    $ABuffer[$Award["userid"]][$Award["id"]] = "\n\t\t\t<i $onmouseover = \"ddrivetip('" . $ATooltip . "', 200)\"; $onmouseout = \"hideddrivetip()\"><img $src = \"" . $pic_base_url . "awardmedals/" . htmlspecialchars_uni($Award["award_image"]) . "\" $border = \"0\" $alt = \"\" $title = \"\" class=\"inlineimg\" $width = \"10\" $height = \"19\" $style = \"padding-top: 3px; cursor: pointer;\" /></i>&nbsp;";
                 }
             }
             if (isset($ABuffer[$CURUSER["id"]])) {
@@ -252,45 +252,45 @@ if (isset($_POST["action"]) && $_POST["action"] == "save_quick_edit" && 0 < $CUR
             }
             $imagepath = $pic_base_url . "friends/";
             if (TS_Match($CURUSER["options"], "L1")) {
-                $UserGender = "<img src=\"" . $imagepath . "Male.png\" alt=\"" . $lang->global["male"] . "\" title=\"" . $lang->global["male"] . "\" border=\"0\" class=\"inlineimg\" />";
+                $UserGender = "<img $src = \"" . $imagepath . "Male.png\" $alt = \"" . $lang->global["male"] . "\" $title = \"" . $lang->global["male"] . "\" $border = \"0\" class=\"inlineimg\" />";
             } else {
                 if (TS_Match($CURUSER["options"], "L2")) {
-                    $UserGender = "<img src=\"" . $imagepath . "Female.png\" alt=\"" . $lang->global["female"] . "\" title=\"" . $lang->global["female"] . "\" border=\"0\" class=\"inlineimg\" />";
+                    $UserGender = "<img $src = \"" . $imagepath . "Female.png\" $alt = \"" . $lang->global["female"] . "\" $title = \"" . $lang->global["female"] . "\" $border = \"0\" class=\"inlineimg\" />";
                 } else {
-                    $UserGender = "<img src=\"" . $imagepath . "NA.png\" alt=\"--\" title=\"--\" border=\"0\" class=\"inlineimg\" />";
+                    $UserGender = "<img $src = \"" . $imagepath . "NA.png\" $alt = \"--\" $title = \"--\" $border = \"0\" class=\"inlineimg\" />";
                 }
             }
             include_once INC_PATH . "/function_warnlevel.php";
             $_warnlevel = get_warn_level($CURUSER["timeswarned"]);
-            $deletebutton = "<input value=\"" . $lang->tsf_forums["delete_post"] . "\" onclick=\"jumpto('" . $BASEURL . "/tsf_forums/deletepost.php?tid=" . $tid . "\\&amp;pid=" . $pid . "&amp;page=" . (isset($_POST["page"]) ? intval($_POST["page"]) : 0) . "');\" type=\"button\">";
+            $deletebutton = "<input $value = \"" . $lang->tsf_forums["delete_post"] . "\" $onclick = \"jumpto('" . $BASEURL . "/tsf_forums/deletepost.php?$tid = " . $tid . "\\&amp;$pid = " . $pid . "&amp;$page = " . (isset($_POST["page"]) ? intval($_POST["page"]) : 0) . "');\" $type = \"button\">";
             $post_date = my_datee($dateformat, TIMENOW) . " " . my_datee($timeformat, TIMENOW);
             define("IS_THIS_USER_POSTED", true);
             $deletebutton = "";
             $editbutton = "";
             $quotebutton = "";
             $quickreplybutton = "";
-            $showpagenumber = isset($_POST["page"]) && is_valid_id($_POST["page"]) ? "&amp;page=" . intval($_POST["page"]) : "";
+            $showpagenumber = isset($_POST["page"]) && is_valid_id($_POST["page"]) ? "&amp;$page = " . intval($_POST["page"]) : "";
             if ($moderator || $forummoderator || $permissions[$fid]["candeleteposts"] == "yes" && $closed != "yes") {
-                $deletebutton = "<input value=\"" . $lang->tsf_forums["delete_post"] . "\" onclick=\"jumpto('" . $BASEURL . "/tsf_forums/deletepost.php?tid=" . $tid . "&amp;pid=" . $pid . "&amp;page=" . (isset($_POST["page"]) ? intval($_POST["page"]) : 0) . "');\" type=\"button\" />";
+                $deletebutton = "<input $value = \"" . $lang->tsf_forums["delete_post"] . "\" $onclick = \"jumpto('" . $BASEURL . "/tsf_forums/deletepost.php?$tid = " . $tid . "&amp;$pid = " . $pid . "&amp;$page = " . (isset($_POST["page"]) ? intval($_POST["page"]) : 0) . "');\" $type = \"button\" />";
             }
             if ($moderator || $forummoderator || $permissions[$fid]["canpostreplys"] == "yes" && $closed != "yes") {
                 if ($visible == 0 && !$moderator && !$forummoderator) {
                     $quotebutton = "";
                     $quickreplybutton = "";
                 } else {
-                    $QuoteTag = htmlspecialchars(mysqli_real_escape_string($GLOBALS["DatabaseConnect"], "[quote=" . $CURUSER["username"] . "]" . $message . "[/quote]"));
-                    $quotebutton = "<input value=\"" . $lang->tsf_forums["quote_post"] . "\" onclick=\"jumpto('" . $BASEURL . "/tsf_forums/newreply.php?tid=" . $tid . "&amp;pid=" . $pid . "');\" type=\"button\" />";
-                    $quickreplybutton = "<input type=\"button\" id=\"quote_" . $pid . "\" value=\"" . $lang->tsf_forums["quick_reply"] . "\" onclick=\"parseQuote('" . $QuoteTag . "', 'message', " . $tid . ", " . $pid . ");\" />";
+                    $QuoteTag = htmlspecialchars(mysqli_real_escape_string($GLOBALS["DatabaseConnect"], "[$quote = " . $CURUSER["username"] . "]" . $message . "[/quote]"));
+                    $quotebutton = "<input $value = \"" . $lang->tsf_forums["quote_post"] . "\" $onclick = \"jumpto('" . $BASEURL . "/tsf_forums/newreply.php?$tid = " . $tid . "&amp;$pid = " . $pid . "');\" $type = \"button\" />";
+                    $quickreplybutton = "<input $type = \"button\" $id = \"quote_" . $pid . "\" $value = \"" . $lang->tsf_forums["quick_reply"] . "\" $onclick = \"parseQuote('" . $QuoteTag . "', 'message', " . $tid . ", " . $pid . ");\" />";
                 }
             }
             if ($moderator || $forummoderator || $permissions[$fid]["caneditposts"] == "yes" && $closed != "yes") {
-                $onclick = "onclick=\"jumpto('" . $BASEURL . "/tsf_forums/editpost.php?tid=" . $tid . "&amp;pid=" . $pid . $showpagenumber . "');\"";
+                $onclick = "onclick=\"jumpto('" . $BASEURL . "/tsf_forums/editpost.php?$tid = " . $tid . "&amp;$pid = " . $pid . $showpagenumber . "');\"";
                 if ($useajax == "yes") {
-                    $onclick = "onclick=\"TSQuickEditPost('post_message_" . $pid . "','" . $tid . "','" . $BASEURL . "/tsf_forums/editpost.php?tid=" . $tid . "&amp;pid=" . $pid . $showpagenumber . "');bookmarkscroll.scrollTo('post_message_" . $pid . "');\"";
+                    $onclick = "onclick=\"TSQuickEditPost('post_message_" . $pid . "','" . $tid . "','" . $BASEURL . "/tsf_forums/editpost.php?$tid = " . $tid . "&amp;$pid = " . $pid . $showpagenumber . "');bookmarkscroll.scrollTo('post_message_" . $pid . "');\"";
                 }
-                $editbutton = "<input value=\"" . $lang->tsf_forums["edit_post"] . "\" " . $onclick . " type=\"button\" />";
+                $editbutton = "<input $value = \"" . $lang->tsf_forums["edit_post"] . "\" " . $onclick . " $type = \"button\" />";
             }
-            $str2 = "\n\t\t<!-- start: post#" . $pid . " -->\n\t\t<br />\n\t\t<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"5\" style=\"clear: both;\">\n\t\t\t<tr>\n\t\t\t\t<td colspan=\"2\" class=\"subheader\" name=\"pid" . $pid . "\">\n\t\t\t\t\t<div style=\"float: right;\">\n\t\t\t\t\t\t<strong>" . $lang->tsf_forums["post"] . "<a href=\"" . tsf_seo_clean_text(htmlspecialchars_uni($threadsubject), "t", $tid, "#pid" . $pid) . "\">#" . intval($_POST["postcount"]) . "</a></strong>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div style=\"float: left;\">\n\t\t\t\t\t\t<a name=\"pid" . $pid . "\" id=\"pid" . $pid . "\"></a><img src=\"" . $BASEURL . "/tsf_forums/images/post_old.gif\" border=\"0\" class=\"inlineimg\" /> " . $post_date . "\n\t\t\t\t\t</div>\n\t\t\t\t</td>\n\t\t\t</tr>\n\t\t\t<tr>\n\t\t\t\t<td class=\"trow1\" style=\"text-align: center;\" valign=\"top\" width=\"20%\">\n\t\t\t\t\t" . $poster . "<br />\n\t\t\t\t\t" . $usertitle . "\n\t\t\t\t\t" . $avatar . "<br />\n\t\t\t\t\t" . user_rank($CURUSER) . "<br />\n\t\t\t\t\t" . $join_date . "<br />\n\t\t\t\t\t" . $totalposts . "<br />\n\t\t\t\t\t" . $country . "<br />\n\t\t\t\t\t" . (isset($UserAwards) ? $UserAwards . "<br />" : "") . "\n\t\t\t\t\t" . $UserGender . " " . $status . " " . $usericons . "\n\t\t\t\t\t" . $_warnlevel . "\n\t\t\t\t</td>\n\t\t\t\t<script type=\"text/javascript\">\n\t\t\t\t\tmenu_register(\"quickmenu" . $pid . "\", false);\n\t\t\t\t</script>\n\t\t\t\t<td class=\"trow1\" style=\"text-align: left;\" valign=\"top\" width=\"80%\">\n\t\t\t\t\t" . ($visible == 1 ? "<img src=\"" . $BASEURL . "/tsf_forums/images/icons/icon1.gif\" border=\"0\" class=\"inlineimg\" />" : "<img src=\"" . $BASEURL . "/tsf_forums/images/moderation.png\" alt=\"" . $lang->tsf_forums["moderatemsg7"] . "\" title=\"" . $lang->tsf_forums["moderatemsg7"] . "\" border=\"0\" class=\"inlineimg\" />") . "\n\t\t\t\t\t<span class=\"smalltext\"><strong>" . htmlspecialchars_uni($threadsubject) . "</strong></span><hr />\n\t\t\t\t\t" . ($thread["moderate"] == 0 && $thread["moderaterf"] == 0 ? "" : show_notice($lang->tsf_forums["moderatemsg1"]) . "<hr />") . "\n\t\t\t\t\t<div id=\"post_message_" . $pid . "\" name=\"post_message_" . $pid . "\" style=\"display: inline;\">" . format_comment($message) . "</div>\n\t\t\t\t\t" . $signature . "\n\t\t\t\t</td>\n\t\t\t</tr>\n\t\t\t<tr>\n\t\t\t\t<td class=\"subheader\" width=\"15%\" valign=\"middle\" style=\"white-space: nowrap; text-align: center;\">\n\t\t\t\t\t<input value=\"" . $lang->tsf_forums["top"] . "\"  onclick=\"bookmarkscroll.scrollTo('top');\" type=\"button\" /> <input value=\"" . $lang->tsf_forums["report_post"] . "\" onclick=\"TSOpenPopup('" . $BASEURL . "/report.php?type=4&reporting=" . $pid . "&extra=" . $tid . "&page=" . (isset($_POST["page"]) ? intval($_POST["page"]) : 0) . "', 'report', 500, 300); return false;\" type=\"button\" />\n\t\t\t\t</td>\n\t\t\t\t<td class=\"subheader\" style=\"text-align: center;\" valign=\"top\">\n\t\t\t\t\t<div style=\"float: right;\">\n\t\t\t\t\t\t" . $deletebutton . "\n\t\t\t\t\t\t" . $editbutton . "\n\t\t\t\t\t\t" . $quotebutton . "\n\t\t\t\t\t\t" . $quickreplybutton . "\n\t\t\t\t\t</div>\n\t\t\t\t</td>\n\t\t\t</tr>\n\t\t</table>\n\t\t<!-- end: post#" . $pid . " -->\n\n\t<div id=\"quickmenu" . $pid . "_menu\" class=\"menu_popup\" style=\"display:none;\">\n\t\t<table border=\"1\" cellspacing=\"0\" cellpadding=\"5\">\n\t\t\t<tr>\n\t\t\t\t<td align=\"center\" class=\"thead\"><b>" . $lang->global["quickmenu"] . " " . $CURUSER["username"] . "</b></td>\n\t\t\t</tr>\n\n\t\t\t<tr>\n\t\t\t\t<td class=\"subheader\"><a href=\"" . tsf_seo_clean_text($poster, "u", $CURUSER["id"]) . "\">" . $lang->global["qinfo1"] . "</a></td>\n\t\t\t</tr>\n\n\t\t\t<tr>\n\t\t\t\t<td class=\"subheader\"><a href=\"" . $BASEURL . "/sendmessage.php?receiver=" . $CURUSER["id"] . "\">" . sprintf($lang->global["qinfo2"], $CURUSER["username"]) . "</td>\n\t\t\t</tr>\n\n\t\t\t<tr>\n\t\t\t\t<td class=\"subheader\"><a href=\"" . $BASEURL . "/tsf_forums/tsf_search.php?action=finduserposts&amp;id=" . $CURUSER["id"] . "\">" . sprintf($lang->global["qinfo3"], $CURUSER["username"]) . "</a></td>\n\t\t\t</tr>\n\n\t\t\t<tr>\n\t\t\t\t<td class=\"subheader\"><a href=\"" . $BASEURL . "/tsf_forums/tsf_search.php?action=finduserthreads&amp;id=" . $CURUSER["id"] . "\">" . sprintf($lang->global["qinfo4"], $CURUSER["username"]) . "</a></td>\n\t\t\t</tr>\n\n\t\t\t<tr>\n\t\t\t\t<td class=\"subheader\"><a href=\"" . $BASEURL . "/friends.php?action=add_friend&amp;friendid=" . $CURUSER["id"] . "\">" . sprintf($lang->global["qinfo5"], $CURUSER["username"]) . "</td>\n\t\t\t</tr>\n\n\t\t\t" . ($moderator ? "\n\t\t\t<tr>\n\t\t\t\t<td class=\"subheader\"><a href=\"" . $BASEURL . "/" . $staffcp_path . "/index.php?do=edit_user&amp;username=" . $CURUSER["username"] . "\">" . $lang->global["qinfo6"] . "</a></td>\n\t\t\t</tr>\n\t\t\t<tr>\n\t\t\t\t<td class=\"subheader\"><a href=\"" . $BASEURL . "/" . $staffcp_path . "/index.php?do=warn_user&amp;username=" . $CURUSER["username"] . "\">" . $lang->global["qinfo7"] . "</a></td>\n\t\t\t</tr>\n\t\t\t<tr>" : "") . "\n\t\t</table>\n\t</div>";
+            $str2 = "\n\t\t<!-- start: post#" . $pid . " -->\n\t\t<br />\n\t\t<table $width = \"100%\" $border = \"0\" $cellspacing = \"0\" $cellpadding = \"5\" $style = \"clear: both;\">\n\t\t\t<tr>\n\t\t\t\t<td $colspan = \"2\" class=\"subheader\" $name = \"pid" . $pid . "\">\n\t\t\t\t\t<div $style = \"float: right;\">\n\t\t\t\t\t\t<strong>" . $lang->tsf_forums["post"] . "<a $href = \"" . tsf_seo_clean_text(htmlspecialchars_uni($threadsubject), "t", $tid, "#pid" . $pid) . "\">#" . intval($_POST["postcount"]) . "</a></strong>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div $style = \"float: left;\">\n\t\t\t\t\t\t<a $name = \"pid" . $pid . "\" $id = \"pid" . $pid . "\"></a><img $src = \"" . $BASEURL . "/tsf_forums/images/post_old.gif\" $border = \"0\" class=\"inlineimg\" /> " . $post_date . "\n\t\t\t\t\t</div>\n\t\t\t\t</td>\n\t\t\t</tr>\n\t\t\t<tr>\n\t\t\t\t<td class=\"trow1\" $style = \"text-align: center;\" $valign = \"top\" $width = \"20%\">\n\t\t\t\t\t" . $poster . "<br />\n\t\t\t\t\t" . $usertitle . "\n\t\t\t\t\t" . $avatar . "<br />\n\t\t\t\t\t" . user_rank($CURUSER) . "<br />\n\t\t\t\t\t" . $join_date . "<br />\n\t\t\t\t\t" . $totalposts . "<br />\n\t\t\t\t\t" . $country . "<br />\n\t\t\t\t\t" . (isset($UserAwards) ? $UserAwards . "<br />" : "") . "\n\t\t\t\t\t" . $UserGender . " " . $status . " " . $usericons . "\n\t\t\t\t\t" . $_warnlevel . "\n\t\t\t\t</td>\n\t\t\t\t<script $type = \"text/javascript\">\n\t\t\t\t\tmenu_register(\"quickmenu" . $pid . "\", false);\n\t\t\t\t</script>\n\t\t\t\t<td class=\"trow1\" $style = \"text-align: left;\" $valign = \"top\" $width = \"80%\">\n\t\t\t\t\t" . ($visible == 1 ? "<img $src = \"" . $BASEURL . "/tsf_forums/images/icons/icon1.gif\" $border = \"0\" class=\"inlineimg\" />" : "<img $src = \"" . $BASEURL . "/tsf_forums/images/moderation.png\" $alt = \"" . $lang->tsf_forums["moderatemsg7"] . "\" $title = \"" . $lang->tsf_forums["moderatemsg7"] . "\" $border = \"0\" class=\"inlineimg\" />") . "\n\t\t\t\t\t<span class=\"smalltext\"><strong>" . htmlspecialchars_uni($threadsubject) . "</strong></span><hr />\n\t\t\t\t\t" . ($thread["moderate"] == 0 && $thread["moderaterf"] == 0 ? "" : show_notice($lang->tsf_forums["moderatemsg1"]) . "<hr />") . "\n\t\t\t\t\t<div $id = \"post_message_" . $pid . "\" $name = \"post_message_" . $pid . "\" $style = \"display: inline;\">" . format_comment($message) . "</div>\n\t\t\t\t\t" . $signature . "\n\t\t\t\t</td>\n\t\t\t</tr>\n\t\t\t<tr>\n\t\t\t\t<td class=\"subheader\" $width = \"15%\" $valign = \"middle\" $style = \"white-space: nowrap; text-align: center;\">\n\t\t\t\t\t<input $value = \"" . $lang->tsf_forums["top"] . "\"  $onclick = \"bookmarkscroll.scrollTo('top');\" $type = \"button\" /> <input $value = \"" . $lang->tsf_forums["report_post"] . "\" $onclick = \"TSOpenPopup('" . $BASEURL . "/report.php?$type = 4&$reporting = " . $pid . "&$extra = " . $tid . "&$page = " . (isset($_POST["page"]) ? intval($_POST["page"]) : 0) . "', 'report', 500, 300); return false;\" $type = \"button\" />\n\t\t\t\t</td>\n\t\t\t\t<td class=\"subheader\" $style = \"text-align: center;\" $valign = \"top\">\n\t\t\t\t\t<div $style = \"float: right;\">\n\t\t\t\t\t\t" . $deletebutton . "\n\t\t\t\t\t\t" . $editbutton . "\n\t\t\t\t\t\t" . $quotebutton . "\n\t\t\t\t\t\t" . $quickreplybutton . "\n\t\t\t\t\t</div>\n\t\t\t\t</td>\n\t\t\t</tr>\n\t\t</table>\n\t\t<!-- end: post#" . $pid . " -->\n\n\t<div $id = \"quickmenu" . $pid . "_menu\" class=\"menu_popup\" $style = \"display:none;\">\n\t\t<table $border = \"1\" $cellspacing = \"0\" $cellpadding = \"5\">\n\t\t\t<tr>\n\t\t\t\t<td $align = \"center\" class=\"thead\"><b>" . $lang->global["quickmenu"] . " " . $CURUSER["username"] . "</b></td>\n\t\t\t</tr>\n\n\t\t\t<tr>\n\t\t\t\t<td class=\"subheader\"><a $href = \"" . tsf_seo_clean_text($poster, "u", $CURUSER["id"]) . "\">" . $lang->global["qinfo1"] . "</a></td>\n\t\t\t</tr>\n\n\t\t\t<tr>\n\t\t\t\t<td class=\"subheader\"><a $href = \"" . $BASEURL . "/sendmessage.php?$receiver = " . $CURUSER["id"] . "\">" . sprintf($lang->global["qinfo2"], $CURUSER["username"]) . "</td>\n\t\t\t</tr>\n\n\t\t\t<tr>\n\t\t\t\t<td class=\"subheader\"><a $href = \"" . $BASEURL . "/tsf_forums/tsf_search.php?$action = finduserposts&amp;$id = " . $CURUSER["id"] . "\">" . sprintf($lang->global["qinfo3"], $CURUSER["username"]) . "</a></td>\n\t\t\t</tr>\n\n\t\t\t<tr>\n\t\t\t\t<td class=\"subheader\"><a $href = \"" . $BASEURL . "/tsf_forums/tsf_search.php?$action = finduserthreads&amp;$id = " . $CURUSER["id"] . "\">" . sprintf($lang->global["qinfo4"], $CURUSER["username"]) . "</a></td>\n\t\t\t</tr>\n\n\t\t\t<tr>\n\t\t\t\t<td class=\"subheader\"><a $href = \"" . $BASEURL . "/friends.php?$action = add_friend&amp;$friendid = " . $CURUSER["id"] . "\">" . sprintf($lang->global["qinfo5"], $CURUSER["username"]) . "</td>\n\t\t\t</tr>\n\n\t\t\t" . ($moderator ? "\n\t\t\t<tr>\n\t\t\t\t<td class=\"subheader\"><a $href = \"" . $BASEURL . "/" . $staffcp_path . "/index.php?do=edit_user&amp;$username = " . $CURUSER["username"] . "\">" . $lang->global["qinfo6"] . "</a></td>\n\t\t\t</tr>\n\t\t\t<tr>\n\t\t\t\t<td class=\"subheader\"><a $href = \"" . $BASEURL . "/" . $staffcp_path . "/index.php?do=warn_user&amp;$username = " . $CURUSER["username"] . "\">" . $lang->global["qinfo7"] . "</a></td>\n\t\t\t</tr>\n\t\t\t<tr>" : "") . "\n\t\t</table>\n\t</div>";
             function send_sub_mails()
             {
                 global $CURUSER;
@@ -302,7 +302,7 @@ if (isset($_POST["action"]) && $_POST["action"] == "save_quick_edit" && 0 < $CUR
                 global $lang;
                 global $rootpath;
                 require_once INC_PATH . "/functions_pm.php";
-                ($query = sql_query("SELECT s.*, u.email, u.username FROM " . TSF_PREFIX . "subscribe s LEFT JOIN users u ON (s.userid=u.id) WHERE s.tid = " . sqlesc($tid) . " AND s.userid != " . sqlesc($CURUSER["id"]))) || sqlerr(__FILE__, 584);
+                ($query = sql_query("SELECT s.*, u.email, u.username FROM " . TSF_PREFIX . "subscribe s LEFT JOIN users u ON (s.$userid = u.id) WHERE s.$tid = " . sqlesc($tid) . " AND s.userid != " . sqlesc($CURUSER["id"]))) || sqlerr(__FILE__, 584);
                 if (0 < mysqli_num_rows($query)) {
                     while ($sub = mysqli_fetch_assoc($query)) {
                         send_pm($sub["userid"], sprintf($lang->tsf_forums["msubs"], $sub["username"], $subject, $CURUSER["username"], $BASEURL, $tid, $SITENAME), $subject);
@@ -325,7 +325,7 @@ if (isset($_POST["action"]) && $_POST["action"] == "save_quick_edit" && 0 < $CUR
                 if ($usergroups["cancomment"] == "no") {
                     show_msg($lang->global["nopermission"]);
                 }
-                ($query = sql_query("SELECT cancomment FROM ts_u_perm WHERE userid = " . sqlesc($CURUSER["id"]))) || sqlerr(__FILE__, 616);
+                ($query = sql_query("SELECT cancomment FROM ts_u_perm WHERE $userid = " . sqlesc($CURUSER["id"]))) || sqlerr(__FILE__, 616);
                 if (0 < mysqli_num_rows($query)) {
                     $commentperm = mysqli_fetch_assoc($query);
                     if ($commentperm["cancomment"] == "0") {
@@ -352,7 +352,7 @@ if (isset($_POST["action"]) && $_POST["action"] == "save_quick_edit" && 0 < $CUR
                         }
                     }
                 }
-                ($query = sql_query("SELECT added FROM comments WHERE user = " . sqlesc($CURUSER["id"]) . " ORDER by added DESC LIMIT 1")) || sqlerr(__FILE__, 652);
+                ($query = sql_query("SELECT added FROM comments WHERE $user = " . sqlesc($CURUSER["id"]) . " ORDER by added DESC LIMIT 1")) || sqlerr(__FILE__, 652);
                 if (0 < mysqli_num_rows($query)) {
                     $Result = mysqli_fetch_assoc($query);
                     $last_comment = $Result["added"];
@@ -360,10 +360,10 @@ if (isset($_POST["action"]) && $_POST["action"] == "save_quick_edit" && 0 < $CUR
                     $last_comment = "";
                 }
                 $floodmsg = flood_check($lang->comment["floodcomment"], $last_comment, true);
-                $res = sql_query("SELECT name, owner FROM torrents WHERE id = " . sqlesc($torrentid));
+                $res = sql_query("SELECT name, owner FROM torrents WHERE $id = " . sqlesc($torrentid));
                 $arr = mysqli_fetch_assoc($res);
                 if (!empty($floodmsg)) {
-                    show_msg(str_replace(["<font color=\"#9f040b\" size=\"2\">", "</font>", "<b>", "</b>"], "", $floodmsg));
+                    show_msg(str_replace(["<font $color = \"#9f040b\" $size = \"2\">", "</font>", "<b>", "</b>"], "", $floodmsg));
                 } else {
                     if (!$arr) {
                         show_msg($lang->global["notorrentid"]);
@@ -375,7 +375,7 @@ if (isset($_POST["action"]) && $_POST["action"] == "save_quick_edit" && 0 < $CUR
                 }
                 $commentposted = false;
                 if (!$is_mod && 0 < $CURUSER["id"]) {
-                    $query = sql_query("SELECT id, user, text FROM comments WHERE torrent = " . sqlesc($torrentid) . " ORDER by added DESC LIMIT 1");
+                    $query = sql_query("SELECT id, user, text FROM comments WHERE $torrent = " . sqlesc($torrentid) . " ORDER by added DESC LIMIT 1");
                     if (0 < mysqli_num_rows($query)) {
                         $Result = mysqli_fetch_assoc($query);
                         $lastcommentuserid = $Result["user"];
@@ -393,11 +393,11 @@ if (isset($_POST["action"]) && $_POST["action"] == "save_quick_edit" && 0 < $CUR
                             }
                             $newtext = $text = $oldtext . $eol . $eol . $text;
                             if ($usergroups["cancomment"] == "moderate") {
-                                $message = sprintf($lang->comment["modmsg"], $CURUSER["username"], "[URL]" . $BASEURL . "/details.php?id=" . $torrentid . "&tab=comments&showlast=true&viewcomm=" . $newid . "#cid" . $newid . "[/URL]");
+                                $message = sprintf($lang->comment["modmsg"], $CURUSER["username"], "[URL]" . $BASEURL . "/details.php?$id = " . $torrentid . "&$tab = comments&$showlast = true&$viewcomm = " . $newid . "#cid" . $newid . "[/URL]");
                                 sql_query("INSERT INTO staffmessages (sender, added, msg, subject) VALUES(0, NOW(), " . sqlesc($message) . ", " . sqlesc($lang->comment["modmsgsubject"]) . ")");
-                                sql_query("UPDATE comments SET text = " . $newtext . ", visible = 0 WHERE id = '" . $newid . "'");
+                                sql_query("UPDATE comments SET $text = " . $newtext . ", $visible = 0 WHERE $id = '" . $newid . "'");
                             } else {
-                                sql_query("UPDATE comments SET text = " . sqlesc($newtext) . " WHERE id = '" . $newid . "'");
+                                sql_query("UPDATE comments SET $text = " . sqlesc($newtext) . " WHERE $id = '" . $newid . "'");
                             }
                             if (mysqli_affected_rows($GLOBALS["DatabaseConnect"])) {
                                 $commentposted = true;
@@ -408,15 +408,15 @@ if (isset($_POST["action"]) && $_POST["action"] == "save_quick_edit" && 0 < $CUR
                 if (!$commentposted) {
                     sql_query("INSERT INTO comments (user, torrent, added, text, visible) VALUES (" . sqlesc($CURUSER["id"]) . ", " . sqlesc($torrentid) . ", " . sqlesc(get_date_time()) . ", " . sqlesc($text) . ", " . ($usergroups["cancomment"] == "moderate" ? 0 : 1) . ")");
                     $cid = mysqli_insert_id($GLOBALS["DatabaseConnect"]);
-                    sql_query("UPDATE torrents SET comments = comments + 1 WHERE id = " . sqlesc($torrentid));
-                    $ras = sql_query("SELECT options FROM users WHERE id = " . sqlesc($arr["owner"]));
+                    sql_query("UPDATE torrents SET $comments = comments + 1 WHERE $id = " . sqlesc($torrentid));
+                    $ras = sql_query("SELECT options FROM users WHERE $id = " . sqlesc($arr["owner"]));
                     $arg = mysqli_fetch_assoc($ras);
                     if (TS_Match($arg["options"], "C1") && $CURUSER["id"] != $arr["owner"]) {
                         require_once INC_PATH . "/functions_pm.php";
-                        send_pm($arr["owner"], sprintf($lang->comment["newcommenttxt"], "[url=" . $BASEURL . "/details.php?id=" . $torrentid . "#startcomments]" . $arr["name"] . "[/url]"), $lang->comment["newcommentsub"]);
+                        send_pm($arr["owner"], sprintf($lang->comment["newcommenttxt"], "[$url = " . $BASEURL . "/details.php?$id = " . $torrentid . "#startcomments]" . $arr["name"] . "[/url]"), $lang->comment["newcommentsub"]);
                     }
                     if ($usergroups["cancomment"] == "moderate") {
-                        $message = sprintf($lang->comment["modmsg"], $CURUSER["username"], "[URL]" . $BASEURL . "/details.php?id=" . $torrentid . "&tab=comments&showlast=true&viewcomm=" . $cid . "#cid" . $cid . "[/URL]");
+                        $message = sprintf($lang->comment["modmsg"], $CURUSER["username"], "[URL]" . $BASEURL . "/details.php?$id = " . $torrentid . "&$tab = comments&$showlast = true&$viewcomm = " . $cid . "#cid" . $cid . "[/URL]");
                         sql_query("INSERT INTO staffmessages (sender, added, msg, subject) VALUES(0, NOW(), " . sqlesc($message) . ", " . sqlesc($lang->comment["modmsgsubject"]) . ")");
                     } else {
                         KPS("+", isset($kpscomment) && $kpscomment ? $kpscomment : "", $CURUSER["id"]);
@@ -424,7 +424,7 @@ if (isset($_POST["action"]) && $_POST["action"] == "save_quick_edit" && 0 < $CUR
                 }
                 require_once INC_PATH . "/commenttable.php";
                 require_once INC_PATH . "/functions_quick_editor.php";
-                ($subres = sql_query("SELECT c.id, c.torrent as torrentid, c.text, c.user, c.added, c.editedby, c.editedat, c.modnotice, c.modeditid, c.modeditusername, c.modedittime, c.totalvotes, c.visible, uu.username as editedbyuname, gg.namestyle as editbynamestyle, u.added as registered, u.enabled, u.warned, u.leechwarn, u.username, u.title, u.usergroup, u.last_access, u.options, u.donor, u.uploaded, u.downloaded, u.avatar as useravatar, u.signature, g.title as grouptitle, g.namestyle FROM comments c LEFT JOIN users uu ON (c.editedby=uu.id) LEFT JOIN usergroups gg ON (uu.usergroup=gg.gid) LEFT JOIN users u ON (c.user=u.id) LEFT JOIN usergroups g ON (u.usergroup=g.gid) WHERE c.id = " . sqlesc($cid) . " ORDER BY c.id")) || sqlerr(__FILE__, 753);
+                ($subres = sql_query("SELECT c.id, c.torrent as torrentid, c.text, c.user, c.added, c.editedby, c.editedat, c.modnotice, c.modeditid, c.modeditusername, c.modedittime, c.totalvotes, c.visible, uu.username as editedbyuname, gg.namestyle as editbynamestyle, u.added as registered, u.enabled, u.warned, u.leechwarn, u.username, u.title, u.usergroup, u.last_access, u.options, u.donor, u.uploaded, u.downloaded, u.avatar as useravatar, u.signature, g.title as grouptitle, g.namestyle FROM comments c LEFT JOIN users uu ON (c.$editedby = uu.id) LEFT JOIN usergroups gg ON (uu.$usergroup = gg.gid) LEFT JOIN users u ON (c.$user = u.id) LEFT JOIN usergroups g ON (u.$usergroup = g.gid) WHERE c.$id = " . sqlesc($cid) . " ORDER BY c.id")) || sqlerr(__FILE__, 753);
                 $allrows = [];
                 while ($subrow = mysqli_fetch_assoc($subres)) {
                     $allrows[] = $subrow;
@@ -449,7 +449,7 @@ if (isset($_POST["action"]) && $_POST["action"] == "save_quick_edit" && 0 < $CUR
                     if (12 < strlen($username)) {
                         show_msg($lang->signup["une2"], false);
                     }
-                    $query = sql_query("SELECT username FROM users WHERE username = " . sqlesc($username));
+                    $query = sql_query("SELECT username FROM users WHERE $username = " . sqlesc($username));
                     if (0 < mysqli_num_rows($query)) {
                         show_msg($lang->signup["une4"], false);
                     } else {
@@ -474,7 +474,7 @@ if (isset($_POST["action"]) && $_POST["action"] == "save_quick_edit" && 0 < $CUR
                                 show_msg($lang->signup["invalidemail2"], false);
                             }
                         }
-                        $query = sql_query("SELECT email FROM users WHERE email = " . sqlesc($email));
+                        $query = sql_query("SELECT email FROM users WHERE $email = " . sqlesc($email));
                         if (mysqli_num_rows($query) == 0) {
                             show_msg($lang->signup["eavailable"], false, "green");
                         } else {
@@ -487,7 +487,7 @@ if (isset($_POST["action"]) && $_POST["action"] == "save_quick_edit" && 0 < $CUR
                             $Vid = $_POST["vid"] == "1" ? "1" : "-1";
                             if (is_valid_id($Cid) && is_valid_id($Uid)) {
                                 sql_query("REPLACE INTO comments_votes VALUES ('" . $Cid . "', '" . $Uid . "', '" . $Vid . "')") || sqlerr(__FILE__, 838);
-                                ($Query = sql_query("SELECT vid FROM comments_votes WHERE cid = '" . $Cid . "'")) || sqlerr(__FILE__, 839);
+                                ($Query = sql_query("SELECT vid FROM comments_votes WHERE $cid = '" . $Cid . "'")) || sqlerr(__FILE__, 839);
                                 $Negative = 0;
                                 $Positive = 0;
                                 if (0 < mysqli_num_rows($Query)) {
@@ -505,7 +505,7 @@ if (isset($_POST["action"]) && $_POST["action"] == "save_quick_edit" && 0 < $CUR
                                         $Positive += 1;
                                     }
                                 }
-                                sql_query("UPDATE comments SET totalvotes = '" . $Positive . "|" . $Negative . "' WHERE id = '" . $Cid . "'") || sqlerr(__FILE__, 869);
+                                sql_query("UPDATE comments SET $totalvotes = '" . $Positive . "|" . $Negative . "' WHERE $id = '" . $Cid . "'") || sqlerr(__FILE__, 869);
                                 echo $Positive - $Negative;
                                 exit;
                             }
@@ -530,7 +530,7 @@ function show_response($message)
     header("Last-Modified: " . gmdate("D, d M Y H:i:s") . "GMT");
     header("Cache-Control: no-cache, must-revalidate");
     header("Pragma: no-cache");
-    header("Content-type: text/plain; charset=" . $shoutboxcharset);
+    header("Content-type: text/plain; $charset = " . $shoutboxcharset);
     exit($message);
 }
 function show_msg($message = "", $error = true, $color = "red", $strong = true, $extra = "", $extra2 = "")
@@ -540,24 +540,24 @@ function show_msg($message = "", $error = true, $color = "red", $strong = true, 
     header("Last-Modified: " . gmdate("D, d M Y H:i:s") . "GMT");
     header("Cache-Control: no-cache, must-revalidate");
     header("Pragma: no-cache");
-    header("Content-type: text/html; charset=" . $shoutboxcharset);
+    header("Content-type: text/html; $charset = " . $shoutboxcharset);
     if ($error) {
         exit("<error>" . $message . "</error>");
     }
-    exit($extra . (!empty($color) ? "<font color=\"" . $color . "\">" : "") . ($strong ? "<strong>" : "") . $message . ($strong ? "</strong>" : "") . (!empty($color) ? "</font>" : "") . $extra2);
+    exit($extra . (!empty($color) ? "<font $color = \"" . $color . "\">" : "") . ($strong ? "<strong>" : "") . $message . ($strong ? "</strong>" : "") . (!empty($color) ? "</font>" : "") . $extra2);
 }
 function is_forum_mod($forumid = 0, $userid = 0)
 {
     if (!$forumid || !$userid) {
         return false;
     }
-    ($query = sql_query("SELECT userid FROM " . TSF_PREFIX . "moderators WHERE forumid=" . $forumid . " AND userid=" . $userid)) || sqlerr(__FILE__, 63);
+    ($query = sql_query("SELECT userid FROM " . TSF_PREFIX . "moderators WHERE $forumid = " . $forumid . " AND $userid = " . $userid)) || sqlerr(__FILE__, 63);
     return 0 < mysqli_num_rows($query) ? true : false;
 }
 function allowcomments($torrentid = 0)
 {
     global $is_mod;
-    $query = sql_query("SELECT allowcomments FROM torrents WHERE id = " . sqlesc($torrentid));
+    $query = sql_query("SELECT allowcomments FROM torrents WHERE $id = " . sqlesc($torrentid));
     if (!mysqli_num_rows($query)) {
         return false;
     }

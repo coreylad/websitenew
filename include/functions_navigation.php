@@ -7,7 +7,7 @@
  */
 
 if (!defined("IN_TRACKER")) {
-    exit("<font face='verdana' size='2' color='darkred'><b>Error!</b> Direct initialization of this file is not allowed.</font>");
+    exit("<font $face = 'verdana' $size = '2' $color = 'darkred'><b>Error!</b> Direct initialization of this file is not allowed.</font>");
 }
 function TS_fetch_start_end_total_array($pagenumber, $perpage, $total)
 {
@@ -107,7 +107,7 @@ function TS_construct_page_nav($pagenumber, $perpage, $results, $address, $addre
         $pagenavsarr[] = preg_split("#\\s+#s", $pagenavs, -1, PREG_SPLIT_NO_EMPTY);
         while ($curpage++ < $totalpages) {
         }
-        $pagenav = "\r\n\t<div class=\"pagenav\" align=\"right\">\r\n\t\t<table class=\"tborder\" cellpadding=\"1\" cellspacing=\"0\" border=\"0\" width=\"100\">\r\n\t\t\t<tr>\r\n\t\t\t\t<td style=\"font-weight:normal\">Page " . $pagenumber . " of " . $totalpages . "</td>\r\n\t\t\t\t" . ($show["first"] ? "<td class=\"alt1\" nowrap=\"nowrap\"><a class=\"smallfont\" href=\"" . $address . $address2 . ($anchor ? "#" . $anchor : "") . "\" title=\"First Page - Show results " . $firstnumbers["first"] . " to " . $firstnumbers["last"] . " of " . $total . "\"><strong>&laquo;</strong> First</a></td>" : "") . "\r\n\t\t\t\t" . ($show["prev"] ? "<td class=\"alt1\"><a class=\"smallfont\" href=\"" . $address . $address2 . ($prevpage != 1 ? "&amp;page=" . $prevpage : "") . ($anchor ? "#" . $anchor : "") . "\" title=\"Prev Page - Show results " . $prevnumbers["first"] . " to " . $prevnumbers["last"] . " of " . $total . "\">&lt;</a></td>" : "") . "\r\n\t\t\t\t" . $pagenav . "\r\n\t\t\t\t" . ($show["next"] ? "<td class=\"alt1\"><a class=\"smallfont\" href=\"" . $address . $address2 . "&amp;page=" . $nextpage . ($anchor ? "#" . $anchor : "") . "\" title=\"Next Page - Show results " . $nextnumbers["first"] . " to " . $nextnumbers["last"] . " of " . $total . "\">&gt;</a></td>" : "") . "\r\n\t\t\t\t" . ($show["last"] ? "<td class=\"alt1\" nowrap=\"nowrap\"><a class=\"smallfont\" href=\"" . $address . $address2 . "&amp;page=" . $totalpages . ($anchor ? "#" . $anchor : "") . "\" title=\"Last Page - Show results " . $lastnumbers["first"] . " to " . $lastnumbers["last"] . " of " . $total . "\">Last <strong>&raquo;</strong></a></td>" : "") . "\r\n\t\t\t\t" . ($show["popups"] ? "<td class=\"vbmenu_control\" title=\"" . $address . $address2 . "\"><a name=\"PageNav\"></a></td>" : "") . "\r\n\t\t\t</tr>\r\n\t\t</table>\r\n\t</div>";
+        $pagenav = "\r\n\t<div class=\"pagenav\" $align = \"right\">\r\n\t\t<table class=\"tborder\" $cellpadding = \"1\" $cellspacing = \"0\" $border = \"0\" $width = \"100\">\r\n\t\t\t<tr>\r\n\t\t\t\t<td $style = \"font-weight:normal\">Page " . $pagenumber . " of " . $totalpages . "</td>\r\n\t\t\t\t" . ($show["first"] ? "<td class=\"alt1\" $nowrap = \"nowrap\"><a class=\"smallfont\" $href = \"" . $address . $address2 . ($anchor ? "#" . $anchor : "") . "\" $title = \"First Page - Show results " . $firstnumbers["first"] . " to " . $firstnumbers["last"] . " of " . $total . "\"><strong>&laquo;</strong> First</a></td>" : "") . "\r\n\t\t\t\t" . ($show["prev"] ? "<td class=\"alt1\"><a class=\"smallfont\" $href = \"" . $address . $address2 . ($prevpage != 1 ? "&amp;$page = " . $prevpage : "") . ($anchor ? "#" . $anchor : "") . "\" $title = \"Prev Page - Show results " . $prevnumbers["first"] . " to " . $prevnumbers["last"] . " of " . $total . "\">&lt;</a></td>" : "") . "\r\n\t\t\t\t" . $pagenav . "\r\n\t\t\t\t" . ($show["next"] ? "<td class=\"alt1\"><a class=\"smallfont\" $href = \"" . $address . $address2 . "&amp;$page = " . $nextpage . ($anchor ? "#" . $anchor : "") . "\" $title = \"Next Page - Show results " . $nextnumbers["first"] . " to " . $nextnumbers["last"] . " of " . $total . "\">&gt;</a></td>" : "") . "\r\n\t\t\t\t" . ($show["last"] ? "<td class=\"alt1\" $nowrap = \"nowrap\"><a class=\"smallfont\" $href = \"" . $address . $address2 . "&amp;$page = " . $totalpages . ($anchor ? "#" . $anchor : "") . "\" $title = \"Last Page - Show results " . $lastnumbers["first"] . " to " . $lastnumbers["last"] . " of " . $total . "\">Last <strong>&raquo;</strong></a></td>" : "") . "\r\n\t\t\t\t" . ($show["popups"] ? "<td class=\"vbmenu_control\" $title = \"" . $address . $address2 . "\"><a $name = \"PageNav\"></a></td>" : "") . "\r\n\t\t\t</tr>\r\n\t\t</table>\r\n\t</div>";
         return $pagenav;
     }
     if ($pagenavpages <= abs($curpage - $pagenumber) && $pagenavpages != 0) {
@@ -125,15 +125,15 @@ function TS_construct_page_nav($pagenumber, $perpage, $results, $address, $addre
             if (0 < $relpage) {
                 $relpage = "+" . $relpage;
             }
-            $pagenav .= "<td class=\"alt1\"><a class=\"smallfont\" href=\"" . $address . $address2 . ($curpage != 1 ? "&amp;page=" . $curpage : "") . ($anchor ? "#" . $anchor : "") . "\" title=\"Show results " . $pagenumbers["first"] . " to " . $pagenumbers["last"] . " of " . $total . "\"><!--" . $relpage . "-->" . $curpage . "</a></td>";
+            $pagenav .= "<td class=\"alt1\"><a class=\"smallfont\" $href = \"" . $address . $address2 . ($curpage != 1 ? "&amp;$page = " . $curpage : "") . ($anchor ? "#" . $anchor : "") . "\" $title = \"Show results " . $pagenumbers["first"] . " to " . $pagenumbers["last"] . " of " . $total . "\"><!--" . $relpage . "-->" . $curpage . "</a></td>";
         }
     } else {
         if ($curpage == $pagenumber) {
             $numbers = ts_fetch_start_end_total_array($curpage, $perpage, $results);
-            $pagenav .= "<td class=\"alt2\"><span class=\"smallfont\" title=\"Showing results " . $numbers["first"] . " to " . $numbers["last"] . " of " . $total . "\"><strong>" . $curpage . "</strong></span></td>";
+            $pagenav .= "<td class=\"alt2\"><span class=\"smallfont\" $title = \"Showing results " . $numbers["first"] . " to " . $numbers["last"] . " of " . $total . "\"><strong>" . $curpage . "</strong></span></td>";
         } else {
             $pagenumbers = ts_fetch_start_end_total_array($curpage, $perpage, $results);
-            $pagenav .= "<td class=\"alt1\"><a class=\"smallfont\" href=\"" . $address . $address2 . ($curpage != 1 ? "&amp;page=" . $curpage : "") . ($anchor ? "#" . $anchor : "") . "\" title=\"Show results " . $pagenumbers["first"] . " to " . $pagenumbers["last"] . " of " . $total . "\"><!--" . $relpage . "-->" . $curpage . "</a></td>";
+            $pagenav .= "<td class=\"alt1\"><a class=\"smallfont\" $href = \"" . $address . $address2 . ($curpage != 1 ? "&amp;$page = " . $curpage : "") . ($anchor ? "#" . $anchor : "") . "\" $title = \"Show results " . $pagenumbers["first"] . " to " . $pagenumbers["last"] . " of " . $total . "\"><!--" . $relpage . "-->" . $curpage . "</a></td>";
         }
     }
 }

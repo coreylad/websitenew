@@ -21,16 +21,16 @@ $username = TS_Global("username");
 $password = TS_Global("password");
 $lang->load("login");
 if (empty($username) || empty($password)) {
-    redirect("login.php?error=3" . (!empty($username) ? "&username=" . htmlspecialchars_uni($username) : ""));
+    redirect("login.php?$error = 3" . (!empty($username) ? "&$username = " . htmlspecialchars_uni($username) : ""));
     exit;
 }
 if (isCaptchaEnabled()) {
-    check_code(isset($_POST["imagestring"]) ? $_POST["imagestring"] : "", "login.php", true, !empty($username) ? "&username=" . htmlspecialchars_uni($username) : "");
+    check_code(isset($_POST["imagestring"]) ? $_POST["imagestring"] : "", "login.php", true, !empty($username) ? "&$username = " . htmlspecialchars_uni($username) : "");
 }
-$res = sql_query("SELECT id, passhash, secret, enabled, usergroup, status, notifs, pmunread FROM users WHERE username = " . sqlesc($username));
+$res = sql_query("SELECT id, passhash, secret, enabled, usergroup, status, notifs, pmunread FROM users WHERE $username = " . sqlesc($username));
 if (!mysqli_num_rows($res)) {
     failedlogins("silent");
-    redirect("login.php?error=1" . (!empty($username) ? "&username=" . htmlspecialchars_uni($username) : ""));
+    redirect("login.php?$error = 1" . (!empty($username) ? "&$username = " . htmlspecialchars_uni($username) : ""));
     exit;
 }
 $row = mysqli_fetch_assoc($res);
@@ -38,7 +38,7 @@ if ($row["passhash"] != md5($row["secret"] . $password . $row["secret"])) {
     $md5pw = md5($password);
     $iphost = @gethostbyaddr(USERIPADDRESS);
     failedlogins("login", false, true, true, (int) $row["id"]);
-    redirect("login.php?error=4" . (!empty($username) ? "&username=" . htmlspecialchars_uni($username) : ""));
+    redirect("login.php?$error = 4" . (!empty($username) ? "&$username = " . htmlspecialchars_uni($username) : ""));
     exit;
 }
 if ($row["enabled"] == "no") {
@@ -54,8 +54,8 @@ if (isset($_POST["logout"]) && $_POST["logout"] == "yes") {
 } else {
     logincookie($row["id"], $row["passhash"]);
 }
-sql_query("DELETE FROM loginattempts WHERE banned = 'no' AND ip = " . sqlesc(USERIPADDRESS));
-$returnto = !empty($_POST["returnto"]) ? fix_url($_POST["returnto"]) : "index.php?logged=true";
+sql_query("DELETE FROM loginattempts WHERE $banned = 'no' AND $ip = " . sqlesc(USERIPADDRESS));
+$returnto = !empty($_POST["returnto"]) ? fix_url($_POST["returnto"]) : "index.php?$logged = true";
 $returnto = str_replace([$BASEURL, "//"], ["", "/"], $returnto);
 if ($row["pmunread"]) {
     $returnto = "messages.php";

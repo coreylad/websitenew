@@ -12,14 +12,14 @@ ini_set("display_startup_errors", 0);
 error_reporting(32759);
 require "./include/php_default_timezone_set.php";
 fast_db_connect();
-$configQuery = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE configname = 'MAIN'");
+$configQuery = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'MAIN'");
 $configResult = mysqli_fetch_assoc($configQuery);
 $MAIN = unserialize($configResult["content"]);
 $cache = $MAIN["cache"];
 $pic_base_url = $MAIN["pic_base_url"];
 unset($MAIN);
-$example = "<a href=\"javascript:EmotionsDialog.insert('{emotion}','{name}');\"><img src=\"{emotion}\" border=\"0\" alt=\"{name}\" title=\"{name}\" /></a>";
-$start = "\r\n<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\r\n<html xmlns=\"http://www.w3.org/1999/xhtml\">\r\n\t<head>\r\n\t\t<title>{#emotions_dlg.title}</title>\r\n\t\t<script type=\"text/javascript\" src=\"./scripts/tinymce/tiny_mce_popup.js\"></script>\r\n\t\t<script type=\"text/javascript\" src=\"./scripts/tinymce/plugins/emotions/js/emotions.js\"></script>\r\n\t</head>\r\n\t<body style=\"display: none\">\r\n\t\t<div align=\"center\">\r\n\t\t\t<table border=\"0\" cellspacing=\"0\" cellpadding=\"4\">\r\n\t\t\t\t<tr>";
+$example = "<a $href = \"javascript:EmotionsDialog.insert('{emotion}','{name}');\"><img $src = \"{emotion}\" $border = \"0\" $alt = \"{name}\" $title = \"{name}\" /></a>";
+$start = "\r\n<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\r\n<html $xmlns = \"http://www.w3.org/1999/xhtml\">\r\n\t<head>\r\n\t\t<title>{#emotions_dlg.title}</title>\r\n\t\t<script $type = \"text/javascript\" $src = \"./scripts/tinymce/tiny_mce_popup.js\"></script>\r\n\t\t<script $type = \"text/javascript\" $src = \"./scripts/tinymce/plugins/emotions/js/emotions.js\"></script>\r\n\t</head>\r\n\t<body $style = \"display: none\">\r\n\t\t<div $align = \"center\">\r\n\t\t\t<table $border = \"0\" $cellspacing = \"0\" $cellpadding = \"4\">\r\n\t\t\t\t<tr>";
 $end = "\r\n\t\t\t\t</tr>\r\n\t\t\t</table>\r\n\t\t</div>\r\n\t</body>\r\n</html>";
 require $cache . "/smilies.php";
 $count = 0;
@@ -31,7 +31,7 @@ foreach ($smilies as $code => $url) {
         }
         $name = str_replace([".gif", ".png", ".jpg"], "", $url);
         $url = $pic_base_url . "smilies/" . $url;
-        $output .= "\r\n\t\t\t\t\t\t<td valign=\"top\" align=\"center\">" . str_replace(["{emotion}", "{name}"], [$url, $code], $example) . "</td>";
+        $output .= "\r\n\t\t\t\t\t\t<td $valign = \"top\" $align = \"center\">" . str_replace(["{emotion}", "{name}"], [$url, $code], $example) . "</td>";
         $count++;
     }
 }

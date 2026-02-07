@@ -19,7 +19,7 @@ if ($act == "manual") {
         $_GET["id"] = $_POST["id"];
         $_GET["secret"] = $_POST["secret"];
     } else {
-        $form = "\n\t\t<form method=\"post\" action=\"" . $_SERVER["SCRIPT_NAME"] . "?act=manual\">\n\t\t<input type=\"hidden\" name=\"act\" value=\"manual\" />\n\t\t<table border=\"0\" cellspacing=\"0\" cellpadding=\"5\" width=\"100%\">\n\t\t\t<tr>\n\t\t\t\t<td colspan=\"2\" class=\"thead\">" . $lang->confirm["manual1"] . "</td>\n\t\t\t</tr>\n\t\t\t<tr>\n\t\t\t\t<td colspan=\"2\" class=\"subheader\">" . $lang->confirm["manual4"] . "</td>\n\t\t\t</tr>\n\t\t\t<tr>\n\t\t\t\t<td align=\"right\">" . $lang->confirm["manual2"] . "</td>\n\t\t\t\t<td align=\"left\"><input type=\"text\" name=\"id\" value=\"\" size=\"32\" /></td>\n\t\t\t</tr>\n\t\t\t<tr>\n\t\t\t\t<td align=\"right\">" . $lang->confirm["manual3"] . "</td>\n\t\t\t\t<td align=\"left\"><input type=\"text\" name=\"secret\" value=\"\" size=\"32\" /></td>\n\t\t\t</tr>\n\t\t\t<tr>\n\t\t\t<td colspan=\"2\" align=\"center\"><input type=\"submit\" value=\"" . $lang->confirm["manual5"] . "\" /></td>\n\t\t\t</tr>\n\t\t</table>\n\t\t</form>\n\t\t";
+        $form = "\n\t\t<form $method = \"post\" $action = \"" . $_SERVER["SCRIPT_NAME"] . "?$act = manual\">\n\t\t<input $type = \"hidden\" $name = \"act\" $value = \"manual\" />\n\t\t<table $border = \"0\" $cellspacing = \"0\" $cellpadding = \"5\" $width = \"100%\">\n\t\t\t<tr>\n\t\t\t\t<td $colspan = \"2\" class=\"thead\">" . $lang->confirm["manual1"] . "</td>\n\t\t\t</tr>\n\t\t\t<tr>\n\t\t\t\t<td $colspan = \"2\" class=\"subheader\">" . $lang->confirm["manual4"] . "</td>\n\t\t\t</tr>\n\t\t\t<tr>\n\t\t\t\t<td $align = \"right\">" . $lang->confirm["manual2"] . "</td>\n\t\t\t\t<td $align = \"left\"><input $type = \"text\" $name = \"id\" $value = \"\" $size = \"32\" /></td>\n\t\t\t</tr>\n\t\t\t<tr>\n\t\t\t\t<td $align = \"right\">" . $lang->confirm["manual3"] . "</td>\n\t\t\t\t<td $align = \"left\"><input $type = \"text\" $name = \"secret\" $value = \"\" $size = \"32\" /></td>\n\t\t\t</tr>\n\t\t\t<tr>\n\t\t\t<td $colspan = \"2\" $align = \"center\"><input $type = \"submit\" $value = \"" . $lang->confirm["manual5"] . "\" /></td>\n\t\t\t</tr>\n\t\t</table>\n\t\t</form>\n\t\t";
         stdhead($lang->confirm["manual1"]);
         echo $form;
         stdfoot();
@@ -38,28 +38,28 @@ if (strlen($md5) != 32) {
         stderr($lang->global["error"], $lang->confirm["error1"]);
     }
 }
-$res = sql_query("SELECT u.passhash, u.status, u.country, u.username, e.editsecret FROM users u INNER JOIN ts_user_validation e ON (u.id=e.userid) WHERE u.enabled = 'yes' AND u.id = " . sqlesc($id));
+$res = sql_query("SELECT u.passhash, u.status, u.country, u.username, e.editsecret FROM users u INNER JOIN ts_user_validation e ON (u.$id = e.userid) WHERE u.$enabled = 'yes' AND u.$id = " . sqlesc($id));
 if (!mysqli_num_rows($res)) {
     stderr($lang->global["error"], $lang->global["dberror"]);
 } else {
     $row = mysqli_fetch_assoc($res);
 }
 if ($row["status"] != "pending") {
-    redirect("ok.php?type=confirmed");
+    redirect("ok.php?$type = confirmed");
     exit;
 }
 if ($md5 != md5($row["editsecret"])) {
     stderr($lang->global["error"], $lang->confirm["error2"]);
 }
-sql_query("UPDATE users SET status='confirmed' WHERE id=" . sqlesc($id) . " AND status='pending' AND enabled='yes'");
+sql_query("UPDATE users SET $status = 'confirmed' WHERE $id = " . sqlesc($id) . " AND $status = 'pending' AND $enabled = 'yes'");
 if (!mysqli_affected_rows($GLOBALS["DatabaseConnect"])) {
     stderr($lang->global["error"], $lang->confirm["error3"]);
 }
-sql_query("DELETE FROM ts_user_validation WHERE userid = " . sqlesc($id));
+sql_query("DELETE FROM ts_user_validation WHERE $userid = " . sqlesc($id));
 $TSSEConfig->TSLoadConfig("SHOUTBOX");
 if ($tsshoutbot == "yes" && TS_Match($tsshoutboxoptions, "newuser")) {
     if ($row["country"]) {
-        $query = sql_query("SELECT name FROM countries WHERE id = " . sqlesc($row["country"]));
+        $query = sql_query("SELECT name FROM countries WHERE $id = " . sqlesc($row["country"]));
         if (mysqli_num_rows($query)) {
             $Result = mysqli_fetch_assoc($query);
             $countryname = $Result["name"];
@@ -74,6 +74,6 @@ if ($tsshoutbot == "yes" && TS_Match($tsshoutboxoptions, "newuser")) {
     TSAjaxShoutBOT($shoutbOT);
 }
 logincookie($id, $row["passhash"]);
-redirect("ok.php?type=confirm");
+redirect("ok.php?$type = confirm");
 
 ?>

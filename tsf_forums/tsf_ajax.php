@@ -27,7 +27,7 @@ if ($ajax_action == "thanks" && strtoupper($_SERVER["REQUEST_METHOD"]) == "POST"
     if (!is_valid_id($tid) || !is_valid_id($pid)) {
         xmlhttp_error($lang->tsf_forums["invalid_tid"]);
     }
-    ($query = sql_query("SELECT p.uid as posterid, t.closed, f.type, f.fid as currentforumid, ff.fid as deepforumid, u.username, g.namestyle\r\n\t\t\tFROM " . TSF_PREFIX . "posts p\r\n\t\t\tLEFT JOIN " . TSF_PREFIX . "threads t ON (p.tid=t.tid)\t\r\n\t\t\tLEFT JOIN " . TSF_PREFIX . "forums f ON (f.fid=t.fid)\r\n\t\t\tLEFT JOIN " . TSF_PREFIX . "forums ff ON (ff.fid=f.pid)\r\n\t\t\tLEFT JOIN users u ON (p.uid=u.id)\r\n\t\t\tLEFT JOIN usergroups g ON (u.usergroup=g.gid)\r\n\t\t\tWHERE p.tid = " . sqlesc($tid) . " AND p.pid = " . sqlesc($pid) . " LIMIT 1")) || sqlerr(__FILE__, 63);
+    ($query = sql_query("SELECT p.uid as posterid, t.closed, f.type, f.fid as currentforumid, ff.fid as deepforumid, u.username, g.namestyle\r\n\t\t\tFROM " . TSF_PREFIX . "posts p\r\n\t\t\tLEFT JOIN " . TSF_PREFIX . "threads t ON (p.$tid = t.tid)\t\r\n\t\t\tLEFT JOIN " . TSF_PREFIX . "forums f ON (f.$fid = t.fid)\r\n\t\t\tLEFT JOIN " . TSF_PREFIX . "forums ff ON (ff.$fid = f.pid)\r\n\t\t\tLEFT JOIN users u ON (p.$uid = u.id)\r\n\t\t\tLEFT JOIN usergroups g ON (u.$usergroup = g.gid)\r\n\t\t\tWHERE p.$tid = " . sqlesc($tid) . " AND p.$pid = " . sqlesc($pid) . " LIMIT 1")) || sqlerr(__FILE__, 63);
     if (mysqli_num_rows($query) == 0) {
         xmlhttp_error($lang->tsf_forums["invalid_tid"]);
     }
@@ -42,14 +42,14 @@ if ($ajax_action == "thanks" && strtoupper($_SERVER["REQUEST_METHOD"]) == "POST"
         xmlhttp_error($lang->tsf_forums["noperm"]);
     }
     if (isset($_POST["removethanks"])) {
-        sql_query("DELETE FROM " . TSF_PREFIX . "thanks WHERE tid = '" . $tid . "' AND pid = '" . $pid . "' AND uid = '" . $CURUSER["id"] . "'");
+        sql_query("DELETE FROM " . TSF_PREFIX . "thanks WHERE $tid = '" . $tid . "' AND $pid = '" . $pid . "' AND $uid = '" . $CURUSER["id"] . "'");
         if (mysqli_affected_rows($GLOBALS["DatabaseConnect"])) {
             $TSSEConfig->TSLoadConfig("KPS");
             KPS("-", $kpsthanks, $kpsuserid);
         }
         show_thanks(true);
     } else {
-        $query = sql_query("SELECT uid FROM " . TSF_PREFIX . "thanks WHERE tid = '" . $tid . "' AND pid = '" . $pid . "' AND uid = '" . $CURUSER["id"] . "'");
+        $query = sql_query("SELECT uid FROM " . TSF_PREFIX . "thanks WHERE $tid = '" . $tid . "' AND $pid = '" . $pid . "' AND $uid = '" . $CURUSER["id"] . "'");
         if (0 < mysqli_num_rows($query)) {
             xmlhttp_error($lang->tsf_forums["thanked"]);
         }
@@ -72,7 +72,7 @@ if ($ajax_action == "save_quick_edit" && strtoupper($_SERVER["REQUEST_METHOD"]) 
     if (!is_valid_id($tid) || !is_valid_id($pid)) {
         xmlhttp_error($lang->tsf_forums["invalid_tid"]);
     }
-    ($query = sql_query("SELECT p.uid as posterid,  p.message, t.closed, f.type, f.fid as currentforumid, f.moderate, ff.fid as deepforumid, ff.moderate as moderaterf \r\n\t\t\tFROM " . TSF_PREFIX . "posts p\r\n\t\t\tLEFT JOIN " . TSF_PREFIX . "threads t ON (p.tid=t.tid)\t\r\n\t\t\tLEFT JOIN " . TSF_PREFIX . "forums f ON (f.fid=t.fid)\r\n\t\t\tLEFT JOIN " . TSF_PREFIX . "forums ff ON (ff.fid=f.pid)\r\n\t\t\tWHERE p.tid = " . sqlesc($tid) . " AND p.pid = " . sqlesc($pid) . " LIMIT 1")) || sqlerr(__FILE__, 135);
+    ($query = sql_query("SELECT p.uid as posterid,  p.message, t.closed, f.type, f.fid as currentforumid, f.moderate, ff.fid as deepforumid, ff.moderate as moderaterf \r\n\t\t\tFROM " . TSF_PREFIX . "posts p\r\n\t\t\tLEFT JOIN " . TSF_PREFIX . "threads t ON (p.$tid = t.tid)\t\r\n\t\t\tLEFT JOIN " . TSF_PREFIX . "forums f ON (f.$fid = t.fid)\r\n\t\t\tLEFT JOIN " . TSF_PREFIX . "forums ff ON (ff.$fid = f.pid)\r\n\t\t\tWHERE p.$tid = " . sqlesc($tid) . " AND p.$pid = " . sqlesc($pid) . " LIMIT 1")) || sqlerr(__FILE__, 135);
     if (mysqli_num_rows($query) == 0) {
         xmlhttp_error($lang->tsf_forums["invalid_tid"]);
     }
@@ -115,7 +115,7 @@ if ($ajax_action == "save_quick_edit" && strtoupper($_SERVER["REQUEST_METHOD"]) 
         if (strlen($text) < $f_minmsglength) {
             xmlhttp_error($lang->tsf_forums["too_short"]);
         }
-        ($query = sql_query("SELECT dateline FROM " . TSF_PREFIX . "posts WHERE uid = " . $uid . " ORDER by dateline DESC LIMIT 1")) || sqlerr(__FILE__, 194);
+        ($query = sql_query("SELECT dateline FROM " . TSF_PREFIX . "posts WHERE $uid = " . $uid . " ORDER by dateline DESC LIMIT 1")) || sqlerr(__FILE__, 194);
         if (0 < mysqli_num_rows($query)) {
             $Result = mysqli_fetch_assoc($query);
             $last_post = $Result["dateline"];
@@ -126,9 +126,9 @@ if ($ajax_action == "save_quick_edit" && strtoupper($_SERVER["REQUEST_METHOD"]) 
         }
         $eq0 = "";
         if ($usergroups["cansettingspanel"] != "yes") {
-            $eq0 = ", edituid = " . $uid . ", edittime = " . $dateline;
+            $eq0 = ", $edituid = " . $uid . ", $edittime = " . $dateline;
         }
-        @sql_query("UPDATE " . TSF_PREFIX . "posts SET visible = " . $visible . ", message = " . @sqlesc($text) . $eq0 . " WHERE tid = " . @sqlesc($tid) . " AND pid = " . @sqlesc($pid)) || sqlerr(__FILE__, 211);
+        @sql_query("UPDATE " . TSF_PREFIX . "posts SET $visible = " . $visible . ", $message = " . @sqlesc($text) . $eq0 . " WHERE $tid = " . @sqlesc($tid) . " AND $pid = " . @sqlesc($pid)) || sqlerr(__FILE__, 211);
     }
     if ($thread["moderate"] == 0 && $thread["moderaterf"] == 0) {
         define("IS_THIS_USER_POSTED", true);
@@ -146,7 +146,7 @@ if ($ajax_action == "quick_edit" && strtoupper($_SERVER["REQUEST_METHOD"]) == "G
     if (!is_valid_id($tid) || !is_valid_id($pid)) {
         xmlhttp_error($lang->tsf_forums["invalid_tid"]);
     }
-    ($query = sql_query("SELECT p.uid as posterid,  p.message, t.closed, f.type, f.fid as currentforumid, ff.fid as deepforumid \r\n\t\t\tFROM " . TSF_PREFIX . "posts p\r\n\t\t\tLEFT JOIN " . TSF_PREFIX . "threads t ON (p.tid=t.tid)\t\r\n\t\t\tLEFT JOIN " . TSF_PREFIX . "forums f ON (f.fid=t.fid)\r\n\t\t\tLEFT JOIN " . TSF_PREFIX . "forums ff ON (ff.fid=f.pid)\r\n\t\t\tWHERE p.tid = " . sqlesc($tid) . " AND p.pid = " . sqlesc($pid) . " LIMIT 1")) || sqlerr(__FILE__, 242);
+    ($query = sql_query("SELECT p.uid as posterid,  p.message, t.closed, f.type, f.fid as currentforumid, ff.fid as deepforumid \r\n\t\t\tFROM " . TSF_PREFIX . "posts p\r\n\t\t\tLEFT JOIN " . TSF_PREFIX . "threads t ON (p.$tid = t.tid)\t\r\n\t\t\tLEFT JOIN " . TSF_PREFIX . "forums f ON (f.$fid = t.fid)\r\n\t\t\tLEFT JOIN " . TSF_PREFIX . "forums ff ON (ff.$fid = f.pid)\r\n\t\t\tWHERE p.$tid = " . sqlesc($tid) . " AND p.$pid = " . sqlesc($pid) . " LIMIT 1")) || sqlerr(__FILE__, 242);
     if (mysqli_num_rows($query) == 0) {
         xmlhttp_error($lang->tsf_forums["invalid_tid"]);
     }
@@ -173,7 +173,7 @@ if ($ajax_action == "edit_subject" && strtoupper($_SERVER["REQUEST_METHOD"]) == 
     if (!is_valid_id($ajax_tid)) {
         xmlhttp_error($lang->tsf_forums["invalid_tid"]);
     }
-    ($query = sql_query("SELECT t.subject, t.fid as ofid, t.closed, t.uid as posterid, t.firstpost, f.type, f.name as currentforum, f.fid as currentforumid, ff.name as deepforum, ff.fid as deepforumid \r\n\t\t\t\tFROM " . TSF_PREFIX . "threads t\r\n\t\t\t\tLEFT JOIN " . TSF_PREFIX . "forums f ON (f.fid=t.fid)\r\n\t\t\t\tLEFT JOIN " . TSF_PREFIX . "forums ff ON (ff.fid=f.pid)\r\n\t\t\t\tWHERE t.tid = " . sqlesc($ajax_tid) . " LIMIT 1")) || sqlerr(__FILE__, 284);
+    ($query = sql_query("SELECT t.subject, t.fid as ofid, t.closed, t.uid as posterid, t.firstpost, f.type, f.name as currentforum, f.fid as currentforumid, ff.name as deepforum, ff.fid as deepforumid \r\n\t\t\t\tFROM " . TSF_PREFIX . "threads t\r\n\t\t\t\tLEFT JOIN " . TSF_PREFIX . "forums f ON (f.$fid = t.fid)\r\n\t\t\t\tLEFT JOIN " . TSF_PREFIX . "forums ff ON (ff.$fid = f.pid)\r\n\t\t\t\tWHERE t.$tid = " . sqlesc($ajax_tid) . " LIMIT 1")) || sqlerr(__FILE__, 284);
     if (mysqli_num_rows($query) == 0) {
         xmlhttp_error($lang->tsf_forums["invalid_tid"]);
     }
@@ -193,7 +193,7 @@ if ($ajax_action == "edit_subject" && strtoupper($_SERVER["REQUEST_METHOD"]) == 
     if (strlen($_POST["value"]) < $f_minmsglength) {
         xmlhttp_error($lang->tsf_forums["too_short"]);
     }
-    ($query = sql_query("SELECT dateline FROM " . TSF_PREFIX . "posts WHERE uid = " . sqlesc($CURUSER["id"]) . " ORDER by dateline DESC LIMIT 1")) || sqlerr(__FILE__, 313);
+    ($query = sql_query("SELECT dateline FROM " . TSF_PREFIX . "posts WHERE $uid = " . sqlesc($CURUSER["id"]) . " ORDER by dateline DESC LIMIT 1")) || sqlerr(__FILE__, 313);
     if (0 < mysqli_num_rows($query)) {
         $Result = mysqli_fetch_assoc($query);
         $last_post = $Result["dateline"];
@@ -216,9 +216,9 @@ if ($ajax_action == "edit_subject" && strtoupper($_SERVER["REQUEST_METHOD"]) == 
             }
         }
     }
-    sql_query("UPDATE " . TSF_PREFIX . "threads SET subject = " . sqlesc($subject) . " WHERE tid = " . sqlesc($ajax_tid));
-    sql_query("UPDATE " . TSF_PREFIX . "posts SET subject = " . sqlesc($subject) . ", edituid = " . $CURUSER["id"] . ", edittime = " . TIMENOW . " WHERE tid = " . sqlesc($ajax_tid) . " AND pid = " . sqlesc($thread["firstpost"]));
-    sql_query("UPDATE " . TSF_PREFIX . "forums SET lastpostsubject = " . sqlesc($subject) . " WHERE lastposttid = " . sqlesc($ajax_tid) . " AND fid = " . sqlesc($thread["ofid"]));
+    sql_query("UPDATE " . TSF_PREFIX . "threads SET $subject = " . sqlesc($subject) . " WHERE $tid = " . sqlesc($ajax_tid));
+    sql_query("UPDATE " . TSF_PREFIX . "posts SET $subject = " . sqlesc($subject) . ", $edituid = " . $CURUSER["id"] . ", $edittime = " . TIMENOW . " WHERE $tid = " . sqlesc($ajax_tid) . " AND $pid = " . sqlesc($thread["firstpost"]));
+    sql_query("UPDATE " . TSF_PREFIX . "forums SET $lastpostsubject = " . sqlesc($subject) . " WHERE $lastposttid = " . sqlesc($ajax_tid) . " AND $fid = " . sqlesc($thread["ofid"]));
     xmlhttp_show($_POST["value"]);
 }
 function xmlhttp_show($message)
@@ -228,7 +228,7 @@ function xmlhttp_show($message)
     header("Last-Modified: " . gmdate("D, d M Y H:i:s") . "GMT");
     header("Cache-Control: no-cache, must-revalidate");
     header("Pragma: no-cache");
-    header("Content-type: text/html; charset=" . $shoutboxcharset);
+    header("Content-type: text/html; $charset = " . $shoutboxcharset);
     echo $message;
     exit;
 }
@@ -239,7 +239,7 @@ function xmlhttp_error($message)
     header("Last-Modified: " . gmdate("D, d M Y H:i:s") . "GMT");
     header("Cache-Control: no-cache, must-revalidate");
     header("Pragma: no-cache");
-    header("Content-type: text/html; charset=" . $shoutboxcharset);
+    header("Content-type: text/html; $charset = " . $shoutboxcharset);
     echo "<error>" . $message . "</error>";
     exit;
 }
@@ -250,15 +250,15 @@ function show_thanks($Remove = false)
     global $pid;
     global $posterforthanks;
     $array = [];
-    $Query = sql_query("SELECT t.uid, u.username, g.namestyle FROM tsf_thanks t LEFT JOIN users u ON (t.uid=u.id) LEFT JOIN usergroups g ON (u.usergroup=g.gid) WHERE t.tid = '" . $tid . "' AND t.pid = '" . $pid . "' ORDER BY u.username");
+    $Query = sql_query("SELECT t.uid, u.username, g.namestyle FROM tsf_thanks t LEFT JOIN users u ON (t.$uid = u.id) LEFT JOIN usergroups g ON (u.$usergroup = g.gid) WHERE t.$tid = '" . $tid . "' AND t.$pid = '" . $pid . "' ORDER BY u.username");
     if (mysqli_num_rows($Query) == 0) {
         exit;
     }
     while ($T = mysqli_fetch_assoc($Query)) {
-        $array[] = "<a href=\"" . ts_seo($T["uid"], $T["username"]) . "\">" . get_user_color($T["username"], $T["namestyle"]) . "</a>";
+        $array[] = "<a $href = \"" . ts_seo($T["uid"], $T["username"]) . "\">" . get_user_color($T["username"], $T["namestyle"]) . "</a>";
     }
     $ThanksCount = count($array);
-    exit("\r\n\t<table width=\"100%\" align=\"center\" border=\"0\" cellpadding=\"5\" cellspacing=\"0\" style=\"clear: both;\">\r\n\t\t<tbody>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"subheader\" style=\"padding: 0px;\">\r\n\t\t\t\t\t<strong>" . (1 < $ThanksCount ? sprintf($lang->tsf_forums["thanks"], ts_nf($ThanksCount), $posterforthanks) : sprintf($lang->tsf_forums["thank"], $posterforthanks)) . "</strong>\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td>\r\n\t\t\t\t\t<div>\r\n\t\t\t\t\t\t" . implode(", ", $array) . "\r\n\t\t\t\t\t</div>\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t</tbody>\r\n\t</table>");
+    exit("\r\n\t<table $width = \"100%\" $align = \"center\" $border = \"0\" $cellpadding = \"5\" $cellspacing = \"0\" $style = \"clear: both;\">\r\n\t\t<tbody>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"subheader\" $style = \"padding: 0px;\">\r\n\t\t\t\t\t<strong>" . (1 < $ThanksCount ? sprintf($lang->tsf_forums["thanks"], ts_nf($ThanksCount), $posterforthanks) : sprintf($lang->tsf_forums["thank"], $posterforthanks)) . "</strong>\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td>\r\n\t\t\t\t\t<div>\r\n\t\t\t\t\t\t" . implode(", ", $array) . "\r\n\t\t\t\t\t</div>\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t</tbody>\r\n\t</table>");
 }
 
 ?>

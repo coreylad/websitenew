@@ -68,7 +68,7 @@ $language['index'] = array
 	'activeusers'		=>'Active users: ',
 	'diclaimer'			=>'Disclaimer',
 	'diclaimermessage'=>'None of the files shown here are actually hosted on this server. The links are provided solely by this site\'s users. The administrator of this site ({1}) cannot be held responsible for what its users post, or any other actions of its users. You may not use this site ({1}) to distribute or download any material when you do not have the legal rights to do so. It is your own responsibility to adhere to these terms.',
-	'note'					=>'This site is best viewed with <a href="https://www.mozilla.com/en-US/firefox/" title="Get Firefox - The Browser, Reloaded."><b>FireFox</b></a> and with 1280*1024 in resolution. Recommended BitTorrent client\'s: <a href="https://www.utorrent.com/download.php" title="Get uTorrent"><b>uTorrent</b></a> - <a href="http://pingpong-abc.sourceforge.net/download.php" title="Get ABC"><b>ABC</b></a>', // Updated in v7.0
+	'note'					=>'This site is best viewed with <a $href = "https://www.mozilla.com/en-US/firefox/" $title = "Get Firefox - The Browser, Reloaded."><b>FireFox</b></a> and with 1280*1024 in resolution. Recommended BitTorrent client\'s: <a $href = "https://www.utorrent.com/download.php" $title = "Get uTorrent"><b>uTorrent</b></a> - <a $href = "http://pingpong-abc.sourceforge.net/download.php" $title = "Get ABC"><b>ABC</b></a>', // Updated in v7.0
 	'uploaddat'			=>'Uploaded at',
 	'showlast'			=>'Show Last Shouts', // Added v3.6
 	'size'=>'Size',//Added v4.1

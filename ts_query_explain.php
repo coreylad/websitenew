@@ -26,7 +26,7 @@ if (is_array($_POST["queries"])) {
         $v = explode(",", base64_decode($v));
         $query_explain = explain_query(base64_decode($v[1]));
         $calcTime = @calcTime($v[0]);
-        $str .= "\r\n\t\t<table width=\"100%\" align=\"center\" cellspacing=\"0\" cellpadding=\"5\" border=\"0\">\r\n\t\t\t<tr>\r\n\t\t\t\t<td  class=\"thead\" width=\"100%\" align=\"left\"><span style=\"float: right;\"><i>Query Time: " . $calcTime . "</i></span>Query Debug (" . $id . ")</td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td  align=\"left\">\r\n\t\t\t\t\t" . $query_explain . "\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t</table>\r\n\t\t<br />";
+        $str .= "\r\n\t\t<table $width = \"100%\" $align = \"center\" $cellspacing = \"0\" $cellpadding = \"5\" $border = \"0\">\r\n\t\t\t<tr>\r\n\t\t\t\t<td  class=\"thead\" $width = \"100%\" $align = \"left\"><span $style = \"float: right;\"><i>Query Time: " . $calcTime . "</i></span>Query Debug (" . $id . ")</td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td  $align = \"left\">\r\n\t\t\t\t\t" . $query_explain . "\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t</table>\r\n\t\t<br />";
         $id++;
         $querytime += $v[0];
     }
@@ -39,9 +39,9 @@ if (is_array($_POST["queries"])) {
         $included_files[] = "<strong>" . basename($incfile) . "</strong>";
     }
     sort($included_files);
-    $str .= "\r\n\t<table width=\"100%\" align=\"center\" cellspacing=\"0\" cellpadding=\"5\" border=\"0\">\r\n\t\t<tr>\r\n\t\t\t<td  class=\"thead\" width=\"100%\" align=\"left\">System Debug</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td align=\"left\">\r\n\t\t\t\t<b>Generated in</b> " . htmlspecialchars_uni($_POST["totaltime"]) . " seconds (" . $percentphp . "% PHP / " . $percentsql . "% MySQL)<br />\r\n\t\t\t\t<b>MySQL Queries:</b> " . ($id - 1) . " / <b>Global Parsing Time:</b> " . $querytime . $memory_usage . "<br />\r\n\t\t\t\t<b>PHP version:</b> " . phpversion() . " / <b>Server Load:</b> " . server_load() . " / <b>GZip Compression:</b> " . ($gzipcompress == "yes" ? "Enabled" : "Disabled") . "\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t</table>\r\n\t<br />\r\n\t<table width=\"100%\" align=\"center\" cellspacing=\"0\" cellpadding=\"5\" border=\"0\">\r\n\t\t<tr>\r\n\t\t\t<td class=\"thead\" width=\"100%\" align=\"left\">Included Files (" . ts_nf(count($included_files)) . ")</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td align=\"left\">\r\n\t\t\t\t" . implode(", ", $included_files) . "\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t</table>";
+    $str .= "\r\n\t<table $width = \"100%\" $align = \"center\" $cellspacing = \"0\" $cellpadding = \"5\" $border = \"0\">\r\n\t\t<tr>\r\n\t\t\t<td  class=\"thead\" $width = \"100%\" $align = \"left\">System Debug</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td $align = \"left\">\r\n\t\t\t\t<b>Generated in</b> " . htmlspecialchars_uni($_POST["totaltime"]) . " seconds (" . $percentphp . "% PHP / " . $percentsql . "% MySQL)<br />\r\n\t\t\t\t<b>MySQL Queries:</b> " . ($id - 1) . " / <b>Global Parsing Time:</b> " . $querytime . $memory_usage . "<br />\r\n\t\t\t\t<b>PHP version:</b> " . phpversion() . " / <b>Server Load:</b> " . server_load() . " / <b>GZip Compression:</b> " . ($gzipcompress == "yes" ? "Enabled" : "Disabled") . "\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t</table>\r\n\t<br />\r\n\t<table $width = \"100%\" $align = \"center\" $cellspacing = \"0\" $cellpadding = \"5\" $border = \"0\">\r\n\t\t<tr>\r\n\t\t\t<td class=\"thead\" $width = \"100%\" $align = \"left\">Included Files (" . ts_nf(count($included_files)) . ")</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td $align = \"left\">\r\n\t\t\t\t" . implode(", ", $included_files) . "\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t</table>";
     if ($UseMemcached) {
-        $str .= "\r\n\t\t<br />\r\n\t\t<table width=\"100%\" align=\"center\" cellspacing=\"0\" cellpadding=\"5\" border=\"0\">\r\n\t\t<tr>\r\n\t\t\t<td class=\"thead\" width=\"100%\" align=\"left\" colspan=\"2\">Memcached Status</td>\r\n\t\t</tr>\r\n\t\t\t" . printDetails($TSMemcache->stats()) . "\r\n\t\t</table>";
+        $str .= "\r\n\t\t<br />\r\n\t\t<table $width = \"100%\" $align = \"center\" $cellspacing = \"0\" $cellpadding = \"5\" $border = \"0\">\r\n\t\t<tr>\r\n\t\t\t<td class=\"thead\" $width = \"100%\" $align = \"left\" $colspan = \"2\">Memcached Status</td>\r\n\t\t</tr>\r\n\t\t\t" . printDetails($TSMemcache->stats()) . "\r\n\t\t</table>";
     }
     stdhead("DEBUG MODE");
     echo $str;
@@ -87,28 +87,28 @@ function calcTime($time)
 {
     $stat = round($time * 100 / 1, 3);
     if ($stat <= 40) {
-        return $time . " (<font color='green'>Excellent</font>)";
+        return $time . " (<font $color = 'green'>Excellent</font>)";
     }
     if (40 < $stat && $stat <= 70) {
-        return $time . " (<font color='darkgreen'>Good</font>)";
+        return $time . " (<font $color = 'darkgreen'>Good</font>)";
     }
     if (70 < $stat && $stat <= 98) {
-        return $time . " (<font color='red'>Regular</font>) ";
+        return $time . " (<font $color = 'red'>Regular</font>) ";
     }
     if (98 < $stat) {
-        return $time . " (<font color='darkred'>Bad</font>) ";
+        return $time . " (<font $color = 'darkred'>Bad</font>) ";
     }
 }
 function explain_query($sql)
 {
-    $output = "\r\n\t<table width=\"100%\" cellpadding=\"2\" cellspacing=\"0\" border=\"0\">\r\n\t\t<tr>\r\n\t\t\t<td colspan=\"10\" class=\"thead\">\r\n\t\t\t\tExplain Query\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"subheader\">id</td>\r\n\t\t\t<td class=\"subheader\">select_type</td>\r\n\t\t\t<td class=\"subheader\">table</td>\r\n\t\t\t<td class=\"subheader\">type</td>\r\n\t\t\t<td class=\"subheader\">possible_keys</td>\r\n\t\t\t<td class=\"subheader\">key</td>\r\n\t\t\t<td class=\"subheader\">key_len</td>\r\n\t\t\t<td class=\"subheader\">ref</td>\r\n\t\t\t<td class=\"subheader\">rows</td>\r\n\t\t\t<td class=\"subheader\">Extra</td>\r\n\t\t</tr>";
+    $output = "\r\n\t<table $width = \"100%\" $cellpadding = \"2\" $cellspacing = \"0\" $border = \"0\">\r\n\t\t<tr>\r\n\t\t\t<td $colspan = \"10\" class=\"thead\">\r\n\t\t\t\tExplain Query\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"subheader\">id</td>\r\n\t\t\t<td class=\"subheader\">select_type</td>\r\n\t\t\t<td class=\"subheader\">table</td>\r\n\t\t\t<td class=\"subheader\">type</td>\r\n\t\t\t<td class=\"subheader\">possible_keys</td>\r\n\t\t\t<td class=\"subheader\">key</td>\r\n\t\t\t<td class=\"subheader\">key_len</td>\r\n\t\t\t<td class=\"subheader\">ref</td>\r\n\t\t\t<td class=\"subheader\">rows</td>\r\n\t\t\t<td class=\"subheader\">Extra</td>\r\n\t\t</tr>";
     if (TS_Match($sql, "SELECT")) {
         $explain = @sql_query("EXPLAIN " . $sql);
         while ($results = @mysqli_fetch_assoc($explain)) {
             $output .= "\r\n\t\t\t<tr>\r\n\t\t\t\t<td>" . $results["id"] . "</td>\r\n\t\t\t\t<td>" . $results["select_type"] . "</td>\r\n\t\t\t\t<td>" . $results["table"] . "</td>\r\n\t\t\t\t<td>" . $results["type"] . "</td>\r\n\t\t\t\t<td>" . $results["possible_keys"] . "</td>\r\n\t\t\t\t<td>" . $results["key"] . "</td>\r\n\t\t\t\t<td>" . $results["key_len"] . "</td>\r\n\t\t\t\t<td>" . $results["ref"] . "</td>\r\n\t\t\t\t<td>" . $results["rows"] . "</td>\r\n\t\t\t\t<td>" . $results["Extra"] . "</td>\r\n\t\t\t</tr>\r\n\t\t\t";
         }
     } else {
-        $output .= "<tr><td colspan=\"10\">I can't explain this query.</td></tr>";
+        $output .= "<tr><td $colspan = \"10\">I can't explain this query.</td></tr>";
     }
     $output .= "</table><br />";
     $output .= format_comment("[sql]" . $sql . "[/sql]");

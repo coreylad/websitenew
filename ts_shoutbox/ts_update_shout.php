@@ -52,7 +52,7 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
     }
     $imagepath = $pic_base_url . "friends/";
     $output = "";
-    $query = sql_query("SELECT s.*, u.username, u.enabled, u.donor, u.leechwarn, u.warned, u.options, u.last_access, u.avatar, g.namestyle FROM ts_shoutbox s LEFT JOIN users u ON (s.uid=u.id) LEFT JOIN usergroups g ON (u.usergroup=g.gid) WHERE channel = " . sqlesc($channel) . " ORDER BY s.date " . ($FBShoutbox ? "ASC" : "DESC" . ($S_SPERPAGE ? " LIMIT " . $S_SPERPAGE : "")));
+    $query = sql_query("SELECT s.*, u.username, u.enabled, u.donor, u.leechwarn, u.warned, u.options, u.last_access, u.avatar, g.namestyle FROM ts_shoutbox s LEFT JOIN users u ON (s.$uid = u.id) LEFT JOIN usergroups g ON (u.$usergroup = g.gid) WHERE $channel = " . sqlesc($channel) . " ORDER BY s.date " . ($FBShoutbox ? "ASC" : "DESC" . ($S_SPERPAGE ? " LIMIT " . $S_SPERPAGE : "")));
     if (mysqli_num_rows($query)) {
         $dt = TIMENOW - 300;
         $lang->load("shoutbox");
@@ -82,37 +82,37 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
             $manage = [];
             if ($shouts["enabled"] == "yes") {
                 if ($shouts["donor"] == "yes") {
-                    $UserPics .= "<img src=\"" . $BASEURL . "/ts_shoutbox/images/donor.gif\" alt=\"" . $lang->global["imgdonated"] . "\" title=\"" . $lang->global["imgdonated"] . "\" border=\"0\" class=\"inlineimg\" height=\"11\" width=\"11\" />";
+                    $UserPics .= "<img $src = \"" . $BASEURL . "/ts_shoutbox/images/donor.gif\" $alt = \"" . $lang->global["imgdonated"] . "\" $title = \"" . $lang->global["imgdonated"] . "\" $border = \"0\" class=\"inlineimg\" $height = \"11\" $width = \"11\" />";
                 }
                 if ($shouts["leechwarn"] == "yes" || $shouts["warned"] == "yes") {
-                    $UserPics .= "<img src=\"" . $BASEURL . "/ts_shoutbox/images/warned.gif\" alt=\"" . $lang->global["imgwarned"] . "\" title=\"" . $lang->global["imgwarned"] . "\" border=\"0\" class=\"inlineimg\" height=\"11\" width=\"11\" />";
+                    $UserPics .= "<img $src = \"" . $BASEURL . "/ts_shoutbox/images/warned.gif\" $alt = \"" . $lang->global["imgwarned"] . "\" $title = \"" . $lang->global["imgwarned"] . "\" $border = \"0\" class=\"inlineimg\" $height = \"11\" $width = \"11\" />";
                 }
             } else {
-                $UserPics .= "<img src=\"" . $BASEURL . "/ts_shoutbox/images/banned.gif\" alt=\"" . $lang->global["disabled"] . "\" title=\"" . $lang->global["disabled"] . "\" border=\"0\" class=\"inlineimg\" height=\"11\" width=\"11\" />";
+                $UserPics .= "<img $src = \"" . $BASEURL . "/ts_shoutbox/images/banned.gif\" $alt = \"" . $lang->global["disabled"] . "\" $title = \"" . $lang->global["disabled"] . "\" $border = \"0\" class=\"inlineimg\" $height = \"11\" $width = \"11\" />";
             }
             if (isset($CURUSER) && ($is_mod || $S_CANEDIT == "yes" && $shouts["uid"] == $CURUSER["id"])) {
-                $manage[] = "<a href=\"javascript:void(0);\" onclick=\"EditShout(" . $shouts["sid"] . "); return false;\"><img src=\"" . $BASEURL . "/ts_shoutbox/images/edit.gif\" alt=\"\" border=\"0\" class=\"inlineimg\" height=\"11\" width=\"11\" /></a>";
+                $manage[] = "<a $href = \"javascript:void(0);\" $onclick = \"EditShout(" . $shouts["sid"] . "); return false;\"><img $src = \"" . $BASEURL . "/ts_shoutbox/images/edit.gif\" $alt = \"\" $border = \"0\" class=\"inlineimg\" $height = \"11\" $width = \"11\" /></a>";
             }
             if (isset($CURUSER) && ($is_mod || $S_CANDELETE == "yes" && $shouts["uid"] == $CURUSER["id"])) {
-                $manage[] = "<a href=\"javascript:void(0);\" onclick=\"DeleteShout(" . $shouts["sid"] . "); return false;\"><img src=\"" . $BASEURL . "/ts_shoutbox/images/delete.gif\" alt=\"\" border=\"0\" class=\"inlineimg\" height=\"11\" width=\"11\" /></a>";
+                $manage[] = "<a $href = \"javascript:void(0);\" $onclick = \"DeleteShout(" . $shouts["sid"] . "); return false;\"><img $src = \"" . $BASEURL . "/ts_shoutbox/images/delete.gif\" $alt = \"\" $border = \"0\" class=\"inlineimg\" $height = \"11\" $width = \"11\" /></a>";
             }
             if (!$SKIP && isset($CURUSER)) {
-                $manage[] = "<a href=\"" . $BASEURL . "/sendmessage.php?receiver=" . $shouts["uid"] . "\"><img src=\"" . $BASEURL . "/ts_shoutbox/images/pm.png\" alt=\"" . sprintf($lang->shoutbox["pm"], $shouts["username"]) . "\" title=\"" . sprintf($lang->shoutbox["pm"], $shouts["username"]) . "\" border=\"0\" width=\"11\" height=\"11\" class=\"inlineimg\" /></a>";
+                $manage[] = "<a $href = \"" . $BASEURL . "/sendmessage.php?$receiver = " . $shouts["uid"] . "\"><img $src = \"" . $BASEURL . "/ts_shoutbox/images/pm.png\" $alt = \"" . sprintf($lang->shoutbox["pm"], $shouts["username"]) . "\" $title = \"" . sprintf($lang->shoutbox["pm"], $shouts["username"]) . "\" $border = \"0\" $width = \"11\" $height = \"11\" class=\"inlineimg\" /></a>";
                 if (in_array($CURUSER["usergroup"], $s_cansendps)) {
-                    $manage[] = "<img src=\"" . $BASEURL . "/ts_shoutbox/images/private.png\" alt=\"" . $lang->shoutbox["private"] . "\" title=\"" . $lang->shoutbox["private"] . "\" border=\"0\" width=\"11\" height=\"11\" class=\"inlineimg\" style=\"cursor: pointer;\" onclick=\"PrivateShout('" . $shouts["username"] . "');\" />";
+                    $manage[] = "<img $src = \"" . $BASEURL . "/ts_shoutbox/images/private.png\" $alt = \"" . $lang->shoutbox["private"] . "\" $title = \"" . $lang->shoutbox["private"] . "\" $border = \"0\" $width = \"11\" $height = \"11\" class=\"inlineimg\" $style = \"cursor: pointer;\" $onclick = \"PrivateShout('" . $shouts["username"] . "');\" />";
                 }
             }
             $vAvatar = get_user_avatar($shouts["avatar"], false, "", "", "max-width: 24px; border-bottom: 4px solid " . ($offline ? "red" : "green") . " !important; vertical-align: top;");
-            $vName = "<a href=\"" . ts_seo($shouts["uid"], $shouts["username"]) . "\">" . get_user_color($shouts["username"], $shouts["namestyle"]) . "</a>";
+            $vName = "<a $href = \"" . ts_seo($shouts["uid"], $shouts["username"]) . "\">" . get_user_color($shouts["username"], $shouts["namestyle"]) . "</a>";
             if ($FBShoutbox) {
-                $output .= "\r\n\t\t\t\t<div class=\"fb-shoutbox-shout-msg" . ($IsPrivate ? " fb-shoutbox-private-shout" : ($SKIP ? " fb-shoutbox-notice-shout" : "")) . "\" id=\"shout_" . $shouts["sid"] . "\">\r\n\t\t\t\t\t<div class=\"fb-shoutbox-manage\">" . implode("&nbsp;&nbsp;", $manage) . "</div>\r\n\t\t\t\t\t<div class=\"fb-shoutbox-info\"><time>" . my_datee($timeformat, $shouts["date"]) . "</time><br />" . $vAvatar . "</div>\r\n\t\t\t\t\t<span class=\"fb-shoutbox-username\">" . (!$SKIP ? $vName . " " . $UserPics : "") . ($IsPrivate ? " => " . $shouts["receiver"] . "&nbsp;&nbsp;" : "") . "</span> \r\n\t\t\t\t\t<span class=\"fb-shoutbox-message\" id=\"shout_msg_" . $shouts["sid"] . "\">" . format_comment($shouts["shout"]) . "</span>\r\n\t\t\t\t\t<div class=\"clear\"></div>\r\n\t\t\t\t</div>";
+                $output .= "\r\n\t\t\t\t<div class=\"fb-shoutbox-shout-msg" . ($IsPrivate ? " fb-shoutbox-private-shout" : ($SKIP ? " fb-shoutbox-notice-shout" : "")) . "\" $id = \"shout_" . $shouts["sid"] . "\">\r\n\t\t\t\t\t<div class=\"fb-shoutbox-manage\">" . implode("&nbsp;&nbsp;", $manage) . "</div>\r\n\t\t\t\t\t<div class=\"fb-shoutbox-info\"><time>" . my_datee($timeformat, $shouts["date"]) . "</time><br />" . $vAvatar . "</div>\r\n\t\t\t\t\t<span class=\"fb-shoutbox-username\">" . (!$SKIP ? $vName . " " . $UserPics : "") . ($IsPrivate ? " => " . $shouts["receiver"] . "&nbsp;&nbsp;" : "") . "</span> \r\n\t\t\t\t\t<span class=\"fb-shoutbox-message\" $id = \"shout_msg_" . $shouts["sid"] . "\">" . format_comment($shouts["shout"]) . "</span>\r\n\t\t\t\t\t<div class=\"clear\"></div>\r\n\t\t\t\t</div>";
             } else {
-                $output .= "\r\n\t\t\t\t<div class=\"shoutbox " . ($SKIP ? "shoutboxnotice" : ($IsPrivate ? "shoutboxprivatemsg" : "smallfont")) . "\" id=\"whole_shout_" . $shouts["sid"] . "\" name=\"whole_shout_" . $shouts["sid"] . "\" style=\"position: relative; \" rel=\"shoutRows\" data=\"" . $shouts["sid"] . "\">\r\n\t\t\t\t\t<div id=\"manage_shout_" . $shouts["sid"] . "\" style=\"position: absolute; right: 2px; top: 0px; background: #ddd; border: 1px solid #fff; padding: 1px 5px 5px 5px; opacity: 0.9; display: none;\">" . implode("&nbsp;&nbsp;", $manage) . "</div>\r\n\t\t\t\t\t\r\n\t\t\t\t\t<div style=\"float: left; text-align: left; margin-right: 5px; font-size: 11px; !important;\">\r\n\t\t\t\t\t\t" . my_datee($timeformat, $shouts["date"]) . "\t\t\t\t\r\n\t\t\t\t\t\t" . (!$SKIP ? "\r\n\t\t\t\t\t\t<span style=\"right: 0 5px;\">" . $vAvatar . "</span>\r\n\t\t\t\t\t\t<span>" . $vName . " " . $UserPics . "</span>\r\n\t\t\t\t\t\t" : "") . "\r\n\t\t\t\t\t</div>\r\n\r\n\t\t\t\t\t<div style=\"text-align: left; font-size: 11px !important;\" id=\"shout_" . $shouts["sid"] . "\" name=\"shout_" . $shouts["sid"] . "\">" . ($IsPrivate ? " => " . $shouts["receiver"] . "&nbsp;&nbsp;" : "") . format_comment($shouts["shout"]) . "</div>\r\n\t\t\t\t\t\r\n\t\t\t\t\t<div style=\"clear: both;\"></div>\r\n\t\t\t\t</div>";
+                $output .= "\r\n\t\t\t\t<div class=\"shoutbox " . ($SKIP ? "shoutboxnotice" : ($IsPrivate ? "shoutboxprivatemsg" : "smallfont")) . "\" $id = \"whole_shout_" . $shouts["sid"] . "\" $name = \"whole_shout_" . $shouts["sid"] . "\" $style = \"position: relative; \" $rel = \"shoutRows\" $data = \"" . $shouts["sid"] . "\">\r\n\t\t\t\t\t<div $id = \"manage_shout_" . $shouts["sid"] . "\" $style = \"position: absolute; right: 2px; top: 0px; background: #ddd; border: 1px solid #fff; padding: 1px 5px 5px 5px; opacity: 0.9; display: none;\">" . implode("&nbsp;&nbsp;", $manage) . "</div>\r\n\t\t\t\t\t\r\n\t\t\t\t\t<div $style = \"float: left; text-align: left; margin-right: 5px; font-size: 11px; !important;\">\r\n\t\t\t\t\t\t" . my_datee($timeformat, $shouts["date"]) . "\t\t\t\t\r\n\t\t\t\t\t\t" . (!$SKIP ? "\r\n\t\t\t\t\t\t<span $style = \"right: 0 5px;\">" . $vAvatar . "</span>\r\n\t\t\t\t\t\t<span>" . $vName . " " . $UserPics . "</span>\r\n\t\t\t\t\t\t" : "") . "\r\n\t\t\t\t\t</div>\r\n\r\n\t\t\t\t\t<div $style = \"text-align: left; font-size: 11px !important;\" $id = \"shout_" . $shouts["sid"] . "\" $name = \"shout_" . $shouts["sid"] . "\">" . ($IsPrivate ? " => " . $shouts["receiver"] . "&nbsp;&nbsp;" : "") . format_comment($shouts["shout"]) . "</div>\r\n\t\t\t\t\t\r\n\t\t\t\t\t<div $style = \"clear: both;\"></div>\r\n\t\t\t\t</div>";
             }
         }
     } else {
         $lang->load("shoutbox");
-        $output = "<div id=\"noShoutYet\">" . $lang->shoutbox["noshout"] . "</div>";
+        $output = "<div $id = \"noShoutYet\">" . $lang->shoutbox["noshout"] . "</div>";
     }
     show_message($output);
 }
@@ -123,7 +123,7 @@ function show_message($msg, $strip = false)
     header("Last-Modified: " . gmdate("D, d M Y H:i:s") . "GMT");
     header("Cache-Control: no-cache, must-revalidate");
     header("Pragma: no-cache");
-    header("Content-type: text/html; charset=" . $shoutboxcharset);
+    header("Content-type: text/html; $charset = " . $shoutboxcharset);
     exit($strip ? strip_tags($msg) : $msg);
 }
 

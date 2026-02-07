@@ -31,7 +31,7 @@ $language['global'] = array
 	'notavailable'				=>'Unfortunately, this feature currently disabled.',
 	'nopermission'				=>'Sorry, permission denied!',
 	'permissionlogmessage'	=>'Unauthorized access detected.<br />To Page: {1},<br /> Query String: {2} <br />Username: {3},<br />IP: {4}.<br />This unwanted access has been successful blocked.',
-	'print_no_permission'		=>'<table border="0" cellspacing="0" cellpadding="4" class="tborder">
+	'print_no_permission'		=>'<table $border = "0" $cellspacing = "0" $cellpadding = "4" class="tborder">
 <tr>
 <td class="thead"><span class="smalltext"><strong>{1}</strong></span></td>
 </tr>
@@ -50,7 +50,7 @@ You do not have permission to access this page. This could be because of one of 
 	'print_no_permission_i' =>'Feel free to contact us about this error message.',
 	'invalidid'					=>'Invalid ID!',
 	'invalididlogged'		=>'Invalid ID! For security reason, we have logged this action!',
-	'invalididlogged2'		=>'<div class="error" align="center"><b>Error: Invalid ID! For security reason, we have logged this action!</b></div>',
+	'invalididlogged2'		=>'<div class="error" $align = "center"><b>Error: Invalid ID! For security reason, we have logged this action!</b></div>',
 	'invalididlogmsg'		=>'Invalid ID Attempt: URL: {1} - Username: {2} - UserIP : {3} at {4}.',
 	'noresultswiththisid'	=>'There is no results returned with this ID!',
 	'invalidimagecode'		=>'The string you entered for the image verification did not match what was displayed.<br />You have <b>{1}</b> remaining tries.',
@@ -58,7 +58,7 @@ You do not have permission to access this page. This could be because of one of 
 	'nousername'			=>'No user with this NAME!',
 	'notorrentid'				=>'No torrent with this ID!',
 	'notorrentname'		=>'No torrent with this NAME!',
-	'accountdisabled'		=>'<b><font color="red">This account has been disabled!</font></b>',
+	'accountdisabled'		=>'<b><font $color = "red">This account has been disabled!</font></b>',
 	'sorry'						=>'Sorry',
 	'invalidaction'			=>'Unknown Action!',
 	'dberror'					=>'Database error, please try again later.',
@@ -69,7 +69,7 @@ You do not have permission to access this page. This could be because of one of 
 	'flooderror'				=>'This tracker requires that you wait <b>{1}</b> seconds between sending {2}. Please try again in <b>{3}</b> seconds.',
 	'dontleavefieldsblank'	=>'Please don\'t leave required fields blank!',
 	'allfieldsrequired'		=>'All fields are required!',
-	'viptorrent'				=>'You have no permission to view this torrent. It\'s <b><a href="donate.php">VIP MEMBERS</a></b> only Torrent.',
+	'viptorrent'				=>'You have no permission to view this torrent. It\'s <b><a $href = "donate.php">VIP MEMBERS</a></b> only Torrent.',
 	'torrentbanned'		=>'This torrent has been banned!',// Global Error Messages
 	'welcomeback'			=>'Welcome back,', // Header Messages
 	'logout'					=>'logout',//TSSE 8.0 [ ] removed.
@@ -99,8 +99,8 @@ You do not have permission to access this page. This could be because of one of 
 	'fakeaccount'			=>'We come to believe you are using a fake account, therefore we\'ve logged this action!',
 	'alreadylogged'			=>'You are already logged in!',
 	'nowaitmessage'		=>'Click here if you don\'t want to wait any longer.',
-	'cachedmessage'		=>'<div align="center" class="smalltext">This content was last cached on <strong>{1}</strong>. Stats are updated every <strong>{2}</strong> minutes.</div>',
-	'browsermessage'		=>'<p class="error" align="justify">If you enable cookies and are still unable to log in, perhaps something happened to cause a problem with your login cookie. We suggest delete your cookies and trying again. To delete cookies in Internet Explorer, go to Tools > Internet Options... and click on the Delete Cookies button. Note that this will delete all cookies stored on your system for other sites as well.</p>',
+	'cachedmessage'		=>'<div $align = "center" class="smalltext">This content was last cached on <strong>{1}</strong>. Stats are updated every <strong>{2}</strong> minutes.</div>',
+	'browsermessage'		=>'<p class="error" $align = "justify">If you enable cookies and are still unable to log in, perhaps something happened to cause a problem with your login cookie. We suggest delete your cookies and trying again. To delete cookies in Internet Explorer, go to Tools > Internet Options... and click on the Delete Cookies button. Note that this will delete all cookies stored on your system for other sites as well.</p>',
 	'mailerror'				=>'Unable to send mail. Please contact an administrator about this error.',
 	'success'					=>'Success',
 	'mailsent'				=>'A confirmation email has been mailed to <b>{1}</b>. Please allow a few minutes for the mail to arrive.',
@@ -118,11 +118,11 @@ You do not have permission to access this page. This could be because of one of 
 	'nodupeaccount2'		=>'Sorry, the IP address you are on has been used before, if you believe this is incorrect then contact us!',
 	'secimage'				=>'Security Image:<br />(Case sensitive)',
 	'seccode'				=>'Security Code: ',
-	'slots'						=>'Slots: <font color="white">{1}</font>&nbsp;&nbsp;',
-	'serverload'				=>'<html><head><meta http-equiv="refresh" content="5 {1}"></head><body><table border=0 width=100% height=100%><tr><td><h3 align=center>The server load is very high at the moment. Retrying, please wait...</h3></td></tr></table></body></html>',
+	'slots'						=>'Slots: <font $color = "white">{1}</font>&nbsp;&nbsp;',
+	'serverload'				=>'<html><head><meta http-$equiv = "refresh" $content = "5 {1}"></head><body><table $border = 0 $width = 100% $height = 100%><tr><td><h3 $align = center>The server load is very high at the moment. Retrying, please wait...</h3></td></tr></table></body></html>',
 	'toomanyusers'			=>'Too many users. Please press the Refresh button in your browser to retry.',
 	'ipbanned'				=>'<html><body><h1>403 Forbidden</h1>Unauthorized IP address.</body></html>',
-	'trackerclosed'			=>'<font color="red"><b>Sorry, Site is down for maintenance, please check back again later...</b></font>',
+	'trackerclosed'			=>'<font $color = "red"><b>Sorry, Site is down for maintenance, please check back again later...</b></font>',
 	'newmessage'			=>'inbox (There is a new message since your last visit, click here to read.)',
 	'nonewmessage'		=>'inbox (No new messages)',
 	'annoucementempty'	=>'Empty!',
@@ -156,8 +156,8 @@ You do not have permission to access this page. This could be because of one of 
 	'uploader'				=>'Uploader',
 	'action'					=>'Action',
 	'none'						=>'None',
-	'greenyes'				=>'<font color="green">Yes</font>',
-	'redno'					=>'<font color="red">No</font>',
+	'greenyes'				=>'<font $color = "green">Yes</font>',
+	'redno'					=>'<font $color = "red">No</font>',
 	'yes'						=>'<b>yes</b>',
 	'no'						=>'<b>no</b>',
 	'anonymous'			=>'<i>[Anonymous]</i>',
@@ -167,7 +167,7 @@ You do not have permission to access this page. This could be because of one of 
 	'disabled'					=>'Disabled',
 	'parked'					=>'Your account is parked.',
 	'legend'					=>'<fieldset class="fieldset"><legend><b>Legend</b></legend><center>
-&nbsp;<b><font color="darkred">Staff Leader</font>&nbsp;&nbsp;<font color=#2587A7>Sysop</font>&nbsp;&nbsp;<font color=#B000B0>Admin</font>&nbsp;&nbsp;<font color=#ff5151>Moderator</font>&nbsp;&nbsp;<font color=#6464FF>Uploader</font>&nbsp;&nbsp;<font color=#009F00>VIP</font>&nbsp;&nbsp;<font color=#f9a200>Power User</font>&nbsp;&nbsp;<font color=black>User</font>&nbsp;&nbsp;Donor\'s<img src="{1}star.gif" border=0 style="vertical-align: middle;">&nbsp;&nbsp;Warned Users<img src="{1}warned.gif" border=0 style="vertical-align: middle;">&nbsp;&nbsp;Banned Users<img src="{1}disabled.gif" border=0 style="vertical-align: middle;"></b></center></fieldset>',
+&nbsp;<b><font $color = "darkred">Staff Leader</font>&nbsp;&nbsp;<font $color = #2587A7>Sysop</font>&nbsp;&nbsp;<font $color = #B000B0>Admin</font>&nbsp;&nbsp;<font $color = #ff5151>Moderator</font>&nbsp;&nbsp;<font $color = #6464FF>Uploader</font>&nbsp;&nbsp;<font $color = #009F00>VIP</font>&nbsp;&nbsp;<font $color = #f9a200>Power User</font>&nbsp;&nbsp;<font $color = black>User</font>&nbsp;&nbsp;Donor\'s<img $src = "{1}star.gif" $border = 0 $style = "vertical-align: middle;">&nbsp;&nbsp;Warned Users<img $src = "{1}warned.gif" $border = 0 $style = "vertical-align: middle;">&nbsp;&nbsp;Banned Users<img $src = "{1}disabled.gif" $border = 0 $style = "vertical-align: middle;"></b></center></fieldset>',
 	'pagedown'				=>'Sorry, this page is down for maintenance, please check back again later...',//
 	'pleasewait'				=>'Please wait ...',
 	'sqlerror'					=>'SQL ERROR',
@@ -235,7 +235,7 @@ You do not have permission to access this page. This could be because of one of 
 	'imgupdated'			=>'Updated',
 	'imgshowhide'			=>'Show/Hide',
 	'imgnew'					=>'New',	// Image titles
-	'modnotice'				=>'<strong><a href="userdetails.php?id={1}"><span style="color: darkred;"><strong><em>{2}</em></strong></span></a> edited this post at {3} because:</strong>
+	'modnotice'				=>'<strong><a $href = "userdetails.php?$id = {1}"><span $style = "color: darkred;"><strong><em>{2}</em></strong></span></a> edited this post at {3} because:</strong>
 	<br /><p>{4}</p>',
 	'usergroup'			=>'Usergroup:',
 	'smilies'				=>'Smilies',
@@ -276,7 +276,7 @@ You do not have permission to access this page. This could be because of one of 
 	'today'				=>'Today',
 	'yesterday'			=>'Yesterday',
 	'noactiveusersonline'	=>'There have been no active users in the last 15 minutes.',
-	'logout_error'		=>'An error occurred while attempting to log you out. Click <a href="logout.php?logouthash={1}" target="_self">here</a> to log out.', // Added v3.6
+	'logout_error'		=>'An error occurred while attempting to log you out. Click <a $href = "logout.php?$logouthash = {1}" $target = "_self">here</a> to log out.', // Added v3.6
 	'click_to_add'		=>'Click a smilie to insert it into your message', // Added v3.6
 	'smilies_listing'		=>'Smilies Listing', // Added v3.6
 	'more_smilies'		=>'more smilies', // Added v3.6 // Updated v3.7
@@ -289,7 +289,7 @@ You do not have permission to access this page. This could be because of one of 
 	'refresh'				=>'refresh', //Added v3.7
 	'noenter'				=>'Unfortunately this button has been disabled!\n\nPlease use \'Shout\' button!', //Added v3.7
 	'newmessagebox'	=>'There is a new message since your last visit, click OK to read.', // Added v3.8
-	'connectablealert' => 'You are showing as Unconnectable on {1} of your torrents. Please visit the <a href="{2}">Forums</a> or see <a href="{3}">FAQ</a> page for advice on how to make yourself connectable.', // Added v3.8
+	'connectablealert' => 'You are showing as Unconnectable on {1} of your torrents. Please visit the <a $href = "{2}">Forums</a> or see <a $href = "{3}">FAQ</a> page for advice on how to make yourself connectable.', // Added v3.8
 	'advancedbutton'	=>'Go Advanced', // Added v3.9
 	'quickmenu'	=>'Quick Menu', // Added v3.9
 	'qinfo1' => 'View public profile', //Added v3.9
@@ -302,7 +302,7 @@ You do not have permission to access this page. This could be because of one of 
 	'qinfo8' =>'Find all comments by {1}', //Added v3.9
 	'qinfo9' =>'Find all uploads by {1}', //Added v3.9
 	'warningweeks'								=>'{1} week(s).',// Added v4.2
-	'warningmessage2'					=>"You have been [url=rules.php#warning]warned[/url] for {1} by {2}\n\nReason: {3}",// Added v4.2
+	'warningmessage2'					=>"You have been [$url = rules.php#warning]warned[/url] for {1} by {2}\n\nReason: {3}",// Added v4.2
 	'modcommentwarning2'				=>"{1} - Warned for {2} by {3}\nReason: {4}\n{5}",// Added v4.2
 	'warningsubject'					=>'You have been warned!',// Added v4.2
 	'modcommentwarningremovedby'		=>"{1} - Warning removed by {2}\n{3}",// Added v4.2
@@ -322,7 +322,7 @@ You do not have permission to access this page. This could be because of one of 
 	'buttonthanks2'=>'Remove Your Thank',//Added in v5.4
 	'storrent'=>'Torrent Search',//Added in v5.4
 	'storrent2'=>'Keyword(s):',//Added in v5.4
-	'unregistered'=>'You are Unregistered, please <a href="{1}/signup.php?"><u>register</u></a> or <a href="javascript:void(0);" onclick="showLoginBox(\'loginbox\');"><u>login</u></a> to gain Full access',//Added in v5.6 -- Updated in v7.1 -- Re-Updated in v7.2
+	'unregistered'=>'You are Unregistered, please <a $href = "{1}/signup.php?"><u>register</u></a> or <a $href = "javascript:void(0);" $onclick = "showLoginBox(\'loginbox\');"><u>login</u></a> to gain Full access',//Added in v5.6 -- Updated in v7.1 -- Re-Updated in v7.2
 	'h1' => 'You must reply to see the hidden information contained here.',//Added in v5.6
 	'h2'	=> 'Hidden Content',//Added in v5.6
 	'h3'	=>	'Un-Hidden Content',//Added in v5.6

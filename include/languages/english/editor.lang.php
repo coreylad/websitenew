@@ -26,7 +26,7 @@ if(!defined('IN_TRACKER'))
 $language['editor'] = array
 (
 	'editor'		=>	 '
-		var editor_language = {
+		var $editor_language = {
 		title_bold: "Insert bold text",
 		title_italic: "Insert italic text",
 		title_underline: "Insert underlined text",

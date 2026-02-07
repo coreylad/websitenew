@@ -16,12 +16,12 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
     $new_pincode2 = isset($_POST["new_pincode2"]) ? trim($_POST["new_pincode2"]) : "";
     if ($current_pincode && $new_pincode1 && $new_pincode2) {
         if ($new_pincode1 === $new_pincode2) {
-            $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT pincode, sechash FROM pincode WHERE area = 2");
+            $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT pincode, sechash FROM pincode WHERE $area = 2");
             if (mysqli_num_rows($Query)) {
                 $Pincode = mysqli_fetch_assoc($Query);
                 if ($Pincode["pincode"] === md5(md5($Pincode["sechash"]) . md5($current_pincode))) {
-                    mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM pincode WHERE area = 2");
-                    $Q = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE configname = 'MAIN'");
+                    mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM pincode WHERE $area = 2");
+                    $Q = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'MAIN'");
                     $Result = mysqli_fetch_assoc($Q);
                     $MAIN = unserialize($Result["content"]);
                     $sechash = md5($MAIN["SITENAME"]);
@@ -44,7 +44,7 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
         $Message = function_76($Language[3]);
     }
 }
-echo "\r\n\r\n" . $Message . "\r\n<form method=\"post\" action=\"index.php?do=setup_pincode\">\r\n<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" class=\"mainTable\">\r\n\t<tr>\r\n\t\t<td class=\"tcat\" colspan=\"2\" align=\"center\">\r\n\t\t\t" . $Language[2] . "\r\n\t\t</td>\r\n\t</tr>\r\n\t<tr>\r\n\t\t<td class=\"alt1\">" . $Language[4] . "</td>\r\n\t\t<td class=\"alt1\"><input type=\"password\" name=\"current_pincode\" value=\"\" size=\"35\" autocomplete=\"off\" /></td>\r\n\t</tr>\r\n\t<tr>\r\n\t\t<td class=\"alt1\">" . $Language[5] . "</td>\r\n\t\t<td class=\"alt1\"><input type=\"password\" name=\"new_pincode1\" value=\"\" size=\"35\" autocomplete=\"off\" /></td>\r\n\t</tr>\r\n\t<tr>\r\n\t\t<td class=\"alt1\">" . $Language[6] . "</td>\r\n\t\t<td class=\"alt1\"><input type=\"password\" name=\"new_pincode2\" value=\"\" size=\"35\" autocomplete=\"off\" /></td>\r\n\t</tr>\r\n\t<tr>\r\n\t\t<td class=\"tcat2\"></td>\r\n\t\t<td class=\"tcat2\"><input type=\"submit\" value=\"" . $Language[7] . "\" /></td>\r\n\t</tr>\r\n</table>\r\n</form>";
+echo "\r\n\r\n" . $Message . "\r\n<form $method = \"post\" $action = \"index.php?do=setup_pincode\">\r\n<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t<tr>\r\n\t\t<td class=\"tcat\" $colspan = \"2\" $align = \"center\">\r\n\t\t\t" . $Language[2] . "\r\n\t\t</td>\r\n\t</tr>\r\n\t<tr>\r\n\t\t<td class=\"alt1\">" . $Language[4] . "</td>\r\n\t\t<td class=\"alt1\"><input $type = \"password\" $name = \"current_pincode\" $value = \"\" $size = \"35\" $autocomplete = \"off\" /></td>\r\n\t</tr>\r\n\t<tr>\r\n\t\t<td class=\"alt1\">" . $Language[5] . "</td>\r\n\t\t<td class=\"alt1\"><input $type = \"password\" $name = \"new_pincode1\" $value = \"\" $size = \"35\" $autocomplete = \"off\" /></td>\r\n\t</tr>\r\n\t<tr>\r\n\t\t<td class=\"alt1\">" . $Language[6] . "</td>\r\n\t\t<td class=\"alt1\"><input $type = \"password\" $name = \"new_pincode2\" $value = \"\" $size = \"35\" $autocomplete = \"off\" /></td>\r\n\t</tr>\r\n\t<tr>\r\n\t\t<td class=\"tcat2\"></td>\r\n\t\t<td class=\"tcat2\"><input $type = \"submit\" $value = \"" . $Language[7] . "\" /></td>\r\n\t</tr>\r\n</table>\r\n</form>";
 function function_75()
 {
     if (isset($_COOKIE["staffcplanguage"]) && is_dir("languages/" . $_COOKIE["staffcplanguage"]) && is_file("languages/" . $_COOKIE["staffcplanguage"] . "/staffcp.lang")) {
@@ -64,13 +64,13 @@ function function_78($url, $timeout = false)
         if (!$timeout) {
             header("Location: " . $url);
         } else {
-            header("Refresh: 5; url=" . $url);
+            header("Refresh: 5; $url = " . $url);
         }
     } else {
         if (!$timeout) {
-            echo "\r\n\t\t\t\t<script type=\"text/javascript\">\r\n\t\t\t\t\twindow.location.href=\"" . $url . "\";\r\n\t\t\t\t</script>\r\n\t\t\t\t<noscript>\r\n\t\t\t\t\t<meta http-equiv=\"refresh\" content=\"0;url=" . $url . "\" />\r\n\t\t\t\t</noscript>";
+            echo "\r\n\t\t\t\t<script $type = \"text/javascript\">\r\n\t\t\t\t\twindow.location.$href = \"" . $url . "\";\r\n\t\t\t\t</script>\r\n\t\t\t\t<noscript>\r\n\t\t\t\t\t<meta http-$equiv = \"refresh\" $content = \"0;$url = " . $url . "\" />\r\n\t\t\t\t</noscript>";
         } else {
-            echo "\r\n\t\t\t<script type=\"text/javascript\">\r\n\t\t\t\tsetTimeout( \"window.location.href='" . $url . "'\", 5000);\r\n\t\t\t</script>\r\n\t\t\t<noscript>\r\n\t\t\t\t<meta http-equiv=\"refresh\" content=\"5;url=" . $url . "\" />\r\n\t\t\t</noscript>\r\n\t\t\t";
+            echo "\r\n\t\t\t<script $type = \"text/javascript\">\r\n\t\t\t\tsetTimeout( \"window.location.$href = '" . $url . "'\", 5000);\r\n\t\t\t</script>\r\n\t\t\t<noscript>\r\n\t\t\t\t<meta http-$equiv = \"refresh\" $content = \"5;$url = " . $url . "\" />\r\n\t\t\t</noscript>\r\n\t\t\t";
         }
     }
     exit;

@@ -31,17 +31,17 @@ function TinyMceEditorIndex($type = 2, $mode = "exact", $elements = "message")
 function insert_editor($subject = true, $subjectvalue = "", $textarevalue = "", $head1 = "", $head2 = "", $postoptionstitle = "", $postoptions = "", $preview = true, $extrasubject = "", $buttonname = "", $javascript = "", $textareasubject = "", $FirstTabs = [])
 {
     global $lang;
-    $StartContent = "\r\n\t<!-- begin editor -->\r\n\t<table border=\"0\" cellspacing=\"0\" cellpadding=\"5\" width=\"100%\">\r\n\t\t<tr>\r\n\t\t\t<td class=\"thead\" valign=\"top\">\r\n\t\t\t\t<strong>" . $head1 . "</strong>\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"subheader\" valign=\"top\">\r\n\t\t\t\t<span class=\"smalltext\"><strong>" . $head2 . "</strong></span>\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t";
+    $StartContent = "\r\n\t<!-- begin editor -->\r\n\t<table $border = \"0\" $cellspacing = \"0\" $cellpadding = \"5\" $width = \"100%\">\r\n\t\t<tr>\r\n\t\t\t<td class=\"thead\" $valign = \"top\">\r\n\t\t\t\t<strong>" . $head1 . "</strong>\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"subheader\" $valign = \"top\">\r\n\t\t\t\t<span class=\"smalltext\"><strong>" . $head2 . "</strong></span>\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t";
     $SubjectContent = "";
     if ($subject) {
-        $SubjectContent = "\r\n\t\t<tr>\r\n\t\t\t<td>\r\n\t\t\t\t<strong>" . $lang->global["subject"] . "</strong>\r\n\t\t\t\t<br />\r\n\t\t\t\t<input type=\"text\" name=\"subject\" style=\"width: 100%\" value=\"" . (!empty($subjectvalue) ? htmlspecialchars_uni($subjectvalue) : "") . "\" tabindex=\"1\"" . (defined("SUBJECT_EXTRA") ? SUBJECT_EXTRA : "") . " />\r\n\t\t\t</td>\r\n\t\t</tr>";
+        $SubjectContent = "\r\n\t\t<tr>\r\n\t\t\t<td>\r\n\t\t\t\t<strong>" . $lang->global["subject"] . "</strong>\r\n\t\t\t\t<br />\r\n\t\t\t\t<input $type = \"text\" $name = \"subject\" $style = \"width: 100%\" $value = \"" . (!empty($subjectvalue) ? htmlspecialchars_uni($subjectvalue) : "") . "\" $tabindex = \"1\"" . (defined("SUBJECT_EXTRA") ? SUBJECT_EXTRA : "") . " />\r\n\t\t\t</td>\r\n\t\t</tr>";
     }
     if (!empty($extrasubject)) {
         foreach ($extrasubject as $left => $right) {
             $SubjectContent .= "\r\n\t\t\t<tr>\r\n\t\t\t\t<td>\r\n\t\t\t\t\t<strong>" . $left . "</strong>\r\n\t\t\t\t\t<br />\r\n\t\t\t\t\t" . $right . "\r\n\t\t\t\t</td>\r\n\t\t\t</tr>";
         }
     }
-    $TextareaContent = "\r\n\t<tr>\r\n\t\t<td>\r\n\t\t\t<textarea id=\"message\" name=\"message\" style=\"width: 100%; height: 305px; visibility: hidden;\" tabindex=\"2\">" . (!empty($textarevalue) ? $textarevalue : "") . "</textarea>\r\n\t\t</td>\r\n\t</tr>";
+    $TextareaContent = "\r\n\t<tr>\r\n\t\t<td>\r\n\t\t\t<textarea $id = \"message\" $name = \"message\" $style = \"width: 100%; height: 305px; visibility: hidden;\" $tabindex = \"2\">" . (!empty($textarevalue) ? $textarevalue : "") . "</textarea>\r\n\t\t</td>\r\n\t</tr>";
     $PostContent = "";
     if (!empty($postoptions)) {
         foreach ($postoptions as $p => $v) {
@@ -50,7 +50,7 @@ function insert_editor($subject = true, $subjectvalue = "", $textarevalue = "", 
             }
         }
     }
-    $ButtonContent = "\r\n\t\t<tr>\r\n\t\t\t<td class=\"subheader\" align=\"center\">\r\n\t\t\t\t<input type=\"submit\" name=\"submit\" value=\"" . (empty($buttonname) ? $lang->global["buttonsave"] : $buttonname) . "\" tabindex=\"3\" accesskey=\"s\"" . $javascript . " /> " . ($preview ? "<input type=\"submit\" name=\"previewpost\" value=\"" . $lang->global["buttonpreview"] . "\" tabindex=\"4\" />" : "") . "\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t";
+    $ButtonContent = "\r\n\t\t<tr>\r\n\t\t\t<td class=\"subheader\" $align = \"center\">\r\n\t\t\t\t<input $type = \"submit\" $name = \"submit\" $value = \"" . (empty($buttonname) ? $lang->global["buttonsave"] : $buttonname) . "\" $tabindex = \"3\" $accesskey = \"s\"" . $javascript . " /> " . ($preview ? "<input $type = \"submit\" $name = \"previewpost\" $value = \"" . $lang->global["buttonpreview"] . "\" $tabindex = \"4\" />" : "") . "\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t";
     $EndContent = "\r\n\t\t</tr>\r\n\t</table>";
     $ScriptContent = tinymceeditorindex() . "<!-- end editor -->";
     $FirstContent = "";

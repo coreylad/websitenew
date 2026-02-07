@@ -18,7 +18,7 @@ if (mysqli_num_rows($Query)) {
     while ($_torrent = mysqli_fetch_assoc($Query)) {
         $Torrents[] = $_torrent["id"];
     }
-    mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE torrents SET free = 'yes' WHERE id IN (0," . implode(",", $Torrents) . ")");
+    mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE torrents SET $free = 'yes' WHERE id IN (0," . implode(",", $Torrents) . ")");
     $CQueryCount++;
 }
 

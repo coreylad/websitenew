@@ -33,7 +33,7 @@ if (isset($protectedusergroups) && $protectedusergroups) {
 } else {
     $protectedusergroups = [];
 }
-$Query = sql_query("SELECT * FROM ts_subscriptions_api WHERE method = " . sqlesc($method));
+$Query = sql_query("SELECT * FROM ts_subscriptions_api WHERE $method = " . sqlesc($method));
 if (mysqli_num_rows($Query)) {
     $API = mysqli_fetch_assoc($Query);
     $log = "";
@@ -68,10 +68,10 @@ if (mysqli_num_rows($Query)) {
                 if (!IP_WHITELIST_CHECK_ACTIVE || in_array($_SERVER["REMOTE_ADDR"], $ipsWhitelist)) {
                     if ($sig == $signatureCalculated) {
                         if ($type == CREDIT_TYPE_CHARGEBACK) {
-                            $Query = sql_query("SELECT p.*, u.donoruntil, u.username, u.usergroup, u.oldusergroup FROM ts_subscriptions_payments p INNER JOIN users u ON (p.uid=u.id) WHERE p.item = " . sqlesc($item_number) . " AND p.completed = 1");
+                            $Query = sql_query("SELECT p.*, u.donoruntil, u.username, u.usergroup, u.oldusergroup FROM ts_subscriptions_payments p INNER JOIN users u ON (p.$uid = u.id) WHERE p.$item = " . sqlesc($item_number) . " AND p.$completed = 1");
                             if (mysqli_num_rows($Query)) {
                                 $SP = mysqli_fetch_assoc($Query);
-                                $Query = sql_query("SELECT * FROM ts_subscriptions WHERE sid = \"" . $SP["sid"] . "\" AND active = 1");
+                                $Query = sql_query("SELECT * FROM ts_subscriptions WHERE $sid = \"" . $SP["sid"] . "\" AND $active = 1");
                                 if (mysqli_num_rows($Query)) {
                                     $Sub = mysqli_fetch_assoc($Query);
                                     $result = true;
@@ -82,7 +82,7 @@ if (mysqli_num_rows($Query)) {
                                     foreach ($_GET as $key => $value) {
                                         $SaveLog[] = $key . ": " . $value;
                                     }
-                                    sql_query("UPDATE ts_subscriptions_payments SET completed=0, updated = \"" . time() . "\", method = \"" . $method . "\", log = " . sqlesc(implode("|", $SaveLog)) . " WHERE item = " . sqlesc($item_number));
+                                    sql_query("UPDATE ts_subscriptions_payments SET $completed = 0, $updated = \"" . time() . "\", $method = \"" . $method . "\", $log = " . sqlesc(implode("|", $SaveLog)) . " WHERE $item = " . sqlesc($item_number));
                                     $userquery = [];
                                     $userquery[] = "donated = IF(donated > " . $Sub["cost"] . ", donated-" . $Sub["cost"] . ", 0)";
                                     $userquery[] = "total_donated = IF(total_donated > " . $Sub["cost"] . ", total_donated-" . $Sub["cost"] . ", 0)";
@@ -103,15 +103,15 @@ if (mysqli_num_rows($Query)) {
                                     }
                                     $userquery[] = "donoruntil = \"0000-00-00 00:00:00\"";
                                     if (0 < count($userquery)) {
-                                        sql_query("UPDATE users SET " . implode(",", $userquery) . " WHERE id = '" . $SP["uid"] . "'");
+                                        sql_query("UPDATE users SET " . implode(",", $userquery) . " WHERE $id = '" . $SP["uid"] . "'");
                                     }
                                 }
                             }
                         } else {
-                            $Query = sql_query("SELECT p.*, u.donoruntil, u.username, u.usergroup FROM ts_subscriptions_payments p INNER JOIN users u ON (p.uid=u.id) WHERE p.item = " . sqlesc($item_number) . " AND p.completed = 0");
+                            $Query = sql_query("SELECT p.*, u.donoruntil, u.username, u.usergroup FROM ts_subscriptions_payments p INNER JOIN users u ON (p.$uid = u.id) WHERE p.$item = " . sqlesc($item_number) . " AND p.$completed = 0");
                             if (mysqli_num_rows($Query)) {
                                 $SP = mysqli_fetch_assoc($Query);
-                                $Query = sql_query("SELECT * FROM ts_subscriptions WHERE sid = \"" . $SP["sid"] . "\" AND active = 1");
+                                $Query = sql_query("SELECT * FROM ts_subscriptions WHERE $sid = \"" . $SP["sid"] . "\" AND $active = 1");
                                 if (mysqli_num_rows($Query)) {
                                     $Sub = mysqli_fetch_assoc($Query);
                                     $paymentFinished = true;
@@ -137,7 +137,7 @@ if (mysqli_num_rows($Query)) {
                 foreach ($errors as $_l => $_r) {
                     $log .= $_l . " => " . $_r . "\n";
                 }
-                sql_query("UPDATE ts_subscriptions_payments SET log = " . sqlesc($log) . ", updated = \"" . time() . "\" WHERE item = " . sqlesc($item_number));
+                sql_query("UPDATE ts_subscriptions_payments SET $log = " . sqlesc($log) . ", $updated = \"" . time() . "\" WHERE $item = " . sqlesc($item_number));
             }
             if ($result) {
                 echo "OK";
@@ -148,7 +148,7 @@ if (mysqli_num_rows($Query)) {
         case "paypal":
             $item_number = isset($_POST["item_number"]) ? $_POST["item_number"] : "";
             if ($item_number) {
-                $paymentQuery = sql_query("SELECT p.*, u.donoruntil, u.username, u.usergroup FROM ts_subscriptions_payments p INNER JOIN users u ON (p.uid=u.id) WHERE p.item = " . sqlesc($item_number) . " AND p.completed = 0");
+                $paymentQuery = sql_query("SELECT p.*, u.donoruntil, u.username, u.usergroup FROM ts_subscriptions_payments p INNER JOIN users u ON (p.$uid = u.id) WHERE p.$item = " . sqlesc($item_number) . " AND p.$completed = 0");
                 if (mysqli_num_rows($paymentQuery)) {
                     $query = [];
                     $query[] = "cmd=_notify-validate";
@@ -175,7 +175,7 @@ if (mysqli_num_rows($Query)) {
                     }
                     if ($result == "VERIFIED") {
                         $SP = mysqli_fetch_assoc($paymentQuery);
-                        $subscriptionQuery = sql_query("SELECT * FROM ts_subscriptions WHERE sid = \"" . $SP["sid"] . "\" AND active = 1");
+                        $subscriptionQuery = sql_query("SELECT * FROM ts_subscriptions WHERE $sid = \"" . $SP["sid"] . "\" AND $active = 1");
                         if (mysqli_num_rows($subscriptionQuery)) {
                             $Sub = mysqli_fetch_assoc($subscriptionQuery);
                             if (isset($_POST["tax"]) && 0 < $_POST["tax"]) {
@@ -200,7 +200,7 @@ if (mysqli_num_rows($Query)) {
                         $log = "Invalid Payment. -*-DETAILED LOG-*- Result: " . $result . " - POST[email] = " . (isset($_POST["receiver_email"]) ? $_POST["receiver_email"] : "") . " - API[email] = " . (isset($API["email"]) ? $API["email"] : "");
                     }
                     if ($log && $item_number) {
-                        sql_query("UPDATE ts_subscriptions_payments SET log = " . sqlesc($log) . ", updated = \"" . time() . "\" WHERE item = " . sqlesc($item_number));
+                        sql_query("UPDATE ts_subscriptions_payments SET $log = " . sqlesc($log) . ", $updated = \"" . time() . "\" WHERE $item = " . sqlesc($item_number));
                     }
                     if (!isset($responseHeaderSet)) {
                         ____setResponseHeader("503 Service Unavailable");
@@ -211,14 +211,14 @@ if (mysqli_num_rows($Query)) {
         case "daopay":
             $item_number = md5($CURUSER["id"] . $prodcode);
             if ($appcode == $API["secretkey"]) {
-                $handle = fopen("https://daopay.com/svc/pincheck?appcode=" . $appcode . "&prodcode=" . urlencode($prodcode) . "&pin=" . urlencode($pin), "r");
+                $handle = fopen("https://daopay.com/svc/pincheck?$appcode = " . $appcode . "&$prodcode = " . urlencode($prodcode) . "&$pin = " . urlencode($pin), "r");
                 if ($handle) {
                     $reply = fgets($handle);
                     if (substr($reply, 0, 2) == "ok") {
-                        $Query = sql_query("SELECT p.*, u.donoruntil, u.username, u.usergroup FROM ts_subscriptions_payments p INNER JOIN users u ON (p.uid=u.id) WHERE p.item = " . sqlesc($item_number) . " AND p.completed = 0");
+                        $Query = sql_query("SELECT p.*, u.donoruntil, u.username, u.usergroup FROM ts_subscriptions_payments p INNER JOIN users u ON (p.$uid = u.id) WHERE p.$item = " . sqlesc($item_number) . " AND p.$completed = 0");
                         if (mysqli_num_rows($Query)) {
                             $SP = mysqli_fetch_assoc($Query);
-                            $Query = sql_query("SELECT * FROM ts_subscriptions WHERE sid = \"" . $SP["sid"] . "\" AND active = 1");
+                            $Query = sql_query("SELECT * FROM ts_subscriptions WHERE $sid = \"" . $SP["sid"] . "\" AND $active = 1");
                             if (mysqli_num_rows($Query)) {
                                 $Sub = mysqli_fetch_assoc($Query);
                                 $paymentFinished = true;
@@ -238,9 +238,9 @@ if (mysqli_num_rows($Query)) {
                 $log = "Invalid Application Code!";
             }
             if ($log && $item_number) {
-                sql_query("UPDATE ts_subscriptions_payments SET log = " . sqlesc($log) . ", updated = \"" . time() . "\" WHERE item = " . sqlesc($item_number));
+                sql_query("UPDATE ts_subscriptions_payments SET $log = " . sqlesc($log) . ", $updated = \"" . time() . "\" WHERE $item = " . sqlesc($item_number));
             }
-            redirect("donate.php?act=thanks");
+            redirect("donate.php?$act = thanks");
             exit;
             break;
         default:
@@ -252,7 +252,7 @@ if (mysqli_num_rows($Query)) {
                 foreach ($_GET as $key => $value) {
                     $SaveLog[] = $key . ": " . $value;
                 }
-                sql_query("UPDATE ts_subscriptions_payments SET completed = 1, updated = \"" . time() . "\", method = \"" . $method . "\", log = " . sqlesc(implode("|", $SaveLog)) . " WHERE item = " . sqlesc($item_number));
+                sql_query("UPDATE ts_subscriptions_payments SET $completed = 1, $updated = \"" . time() . "\", $method = \"" . $method . "\", $log = " . sqlesc(implode("|", $SaveLog)) . " WHERE $item = " . sqlesc($item_number));
                 $userquery = [];
                 $userquery[] = "donated = '" . $Sub["cost"] . "'";
                 $userquery[] = "total_donated = total_donated + '" . $Sub["cost"] . "'";
@@ -281,19 +281,19 @@ if (mysqli_num_rows($Query)) {
                     $userquery[] = "donoruntil = ADDDATE(donoruntil, INTERVAL " . $donoruntil . " DAY)";
                 }
                 if (0 < count($userquery)) {
-                    sql_query("UPDATE users SET " . implode(",", $userquery) . " WHERE id = '" . $SP["uid"] . "'");
+                    sql_query("UPDATE users SET " . implode(",", $userquery) . " WHERE $id = '" . $SP["uid"] . "'");
                     require_once INC_PATH . "/functions_pm.php";
                     send_pm($SP["uid"], $lang->donate["thanks"], $lang->donate["subject"]);
                     sql_query("INSERT INTO funds (cash, user, added) VALUES (" . sqlesc($Sub["cost"]) . ", " . sqlesc(intval($SP["uid"])) . ", NOW())");
                     if (!$informuserids) {
-                        $Query = sql_query("SELECT u.id, g.gid FROM users u INNER JOIN usergroups g ON (u.usergroup=g.gid) WHERE g.cansettingspanel = 'yes'");
+                        $Query = sql_query("SELECT u.id, g.gid FROM users u INNER JOIN usergroups g ON (u.$usergroup = g.gid) WHERE g.$cansettingspanel = 'yes'");
                         while ($SM = mysqli_fetch_assoc($Query)) {
-                            send_pm($SM["id"], "Username: [url=" . ts_seo($SP["uid"], $SP["username"]) . "]" . $SP["username"] . "[/url]\n\nDetails:\n" . $Sub["title"] . "\r\n\t\t\t\t\t\nAmount: " . $Sub["cost"] . " " . $Sub["currency"], "New Donation from " . $SP["username"]);
+                            send_pm($SM["id"], "Username: [$url = " . ts_seo($SP["uid"], $SP["username"]) . "]" . $SP["username"] . "[/url]\n\nDetails:\n" . $Sub["title"] . "\r\n\t\t\t\t\t\nAmount: " . $Sub["cost"] . " " . $Sub["currency"], "New Donation from " . $SP["username"]);
                         }
                     } else {
                         $informuserids = explode(",", $informuserids);
                         foreach ($informuserids as $iuserid) {
-                            send_pm($iuserid, "Username: [url=" . ts_seo($SP["uid"], $SP["username"]) . "]" . $SP["username"] . "[/url]\n\nDetails:\n" . $Sub["title"] . "\nAmount: " . $Sub["cost"] . " " . $Sub["currency"], "New Donation from " . $SP["username"]);
+                            send_pm($iuserid, "Username: [$url = " . ts_seo($SP["uid"], $SP["username"]) . "]" . $SP["username"] . "[/url]\n\nDetails:\n" . $Sub["title"] . "\nAmount: " . $Sub["cost"] . " " . $Sub["currency"], "New Donation from " . $SP["username"]);
                         }
                     }
                 }

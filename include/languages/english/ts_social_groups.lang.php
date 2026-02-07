@@ -126,7 +126,7 @@ You have been kicked by {1} from the following social group: {2}.
 	'subject'=>'Subject',// Added in v5.7
 	'tooshort'=>'Subject or Message is too short!',// Added in v5.7
 	'nomembers'=>'This group has no member to send mass pmPM',// Added in v5.7
-	'masspmdone'=>'Total {1} messages has been sent! Click <a href="ts_social_groups.php?do=showgroup&amp;groupid={2}">here</a> to go back the group.',// Added in v5.7
+	'masspmdone'=>'Total {1} messages has been sent! Click <a $href = "ts_social_groups.php?do=showgroup&amp;$groupid = {2}">here</a> to go back the group.',// Added in v5.7
 	'addmsg'=>'
 
 -------------------------------------------------------------------------

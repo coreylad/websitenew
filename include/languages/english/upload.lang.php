@@ -28,7 +28,7 @@ $language['upload'] = array
 (
 	'title' => 'Upload Torrent',
 	'title2' => 'If necessary (to avoid Invalid Torrent error), you will informed to download the uploaded torrent for seeding.<br />Your Announce URL is: {1}',
-	'uploaderform' => 'If you want to become Uploader, please click <a href="uploaderform.php">here</a> to fill Uploader Form.',
+	'uploaderform' => 'If you want to become Uploader, please click <a $href = "uploaderform.php">here</a> to fill Uploader Form.',
 	'torrentfile' => 'Select Torrent File',
 	'nfofile' => 'Select NFO File (optional)',
 	'UseNFOasDescr' => 'Please check this box, if you want to use the NFO file as description of this torrent!',
@@ -106,18 +106,18 @@ Description
 
 You can use the URL below to download the torrent (you may have to login).
 
-{6}/details.php?id={7}
+{6}/details.php?$id = {7}
 
 Yours,
 The {8} Team.',
 
 	'emailsubject'		=>'{1} New torrent - {2}',
 
-	'shoutbOT'          =>'Torrent [url={1}]{2}[/url] has just been uploaded by {3}.',//updated in v7.2
+	'shoutbOT'          =>'Torrent [$url = {1}]{2}[/url] has just been uploaded by {3}.',//updated in v7.2
 
 	'done' => 'Thank you, your torrent has been uploaded.<br /><br /><b>Note:</b> INFO_HASH has been changed therefore you must re-download the torrent for seeding (to avoid <b>Invalid Torrent Error</b>), it will not be visible until you do so.<br /><br />Please re-download the torrent and start seeding it!<br /><br />
-	<i>Your download will begin in a moment. If it doesn\'t, click <a href="{1}">here</a> to try again.</i><br /><br />
-	<i>Click <a href="{2}">here</a> to view Torrent Details.</i>',
+	<i>Your download will begin in a moment. If it doesn\'t, click <a $href = "{1}">here</a> to try again.</i><br /><br />
+	<i>Click <a $href = "{2}">here</a> to view Torrent Details.</i>',
 
 	'moptions' => 'Moderator Options',
 

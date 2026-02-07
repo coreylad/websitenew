@@ -130,7 +130,7 @@ if (!$GLOBALS["DatabaseConnect"]) {
     stop($l["cerror"]);
 }
 $_SERVER["REQUEST_TIME"] = time();
-$Query = "\n\t\t\t\t\tSELECT u.id as userid, u.enabled, u.ip, u.uploaded, u.downloaded, u.birthday,\n\t\t\t\t\tg.isbanned, g.candownload, g.canfreeleech, g.waitlimit, g.slotlimit,\n\t\t\t\t\tsb.sb_port , sb.sb_ipaddress\n \t\t\t\t\tFROM users u\n\t\t\t\t\tINNER JOIN usergroups g ON (u.usergroup = g.gid)\n\t\t\t\t\tLEFT JOIN ts_seedboxes sb ON (sb.sb_userid = u.id)\n\t\t\t\t\tWHERE u.torrent_pass = " . sqlesc($passkey) . "\n\t\t\t\t\tLIMIT 1";
+$Query = "\n\t\t\t\t\tSELECT u.id as userid, u.enabled, u.ip, u.uploaded, u.downloaded, u.birthday,\n\t\t\t\t\tg.isbanned, g.candownload, g.canfreeleech, g.waitlimit, g.slotlimit,\n\t\t\t\t\tsb.sb_port , sb.sb_ipaddress\n \t\t\t\t\tFROM users u\n\t\t\t\t\tINNER JOIN usergroups g ON (u.$usergroup = g.gid)\n\t\t\t\t\tLEFT JOIN ts_seedboxes sb ON (sb.$sb_userid = u.id)\n\t\t\t\t\tWHERE u.$torrent_pass = " . sqlesc($passkey) . "\n\t\t\t\t\tLIMIT 1";
 if ($UseMemcached) {
     if (!($UserResult = $TSMemcache->check($passkey))) {
         ($Query = mysqli_query($GLOBALS["DatabaseConnect"], $Query)) || stop($l["sqlerror"] . " U-Query: 1");
@@ -203,12 +203,12 @@ if ($detectbrowsercheats == "yes" && isset($_SERVER["HTTP_COOKIE"]) && isset($_S
     stop($l["invalidagent"]);
 }
 $fields = "peer_id, ip, port, uploaded, downloaded, seeder, last_action, (UNIX_TIMESTAMP() - UNIX_TIMESTAMP(last_action)) AS announcetime, UNIX_TIMESTAMP(prev_action) AS prevts, connectable, userid";
-$gp_eq = $nc == "yes" ? " AND connectable = 'yes'" : "";
-$wantseeds = $seeder == "yes" ? " AND seeder = 'no'" : "";
+$gp_eq = $nc == "yes" ? " AND $connectable = 'yes'" : "";
+$wantseeds = $seeder == "yes" ? " AND $seeder = 'no'" : "";
 $resp = "d8:completei" . $Result["seeders"] . "e10:downloadedi" . $Result["times_completed"] . "e10:incompletei" . $Result["leechers"] . "e8:intervali" . $announce_interval . "e12:min intervali" . $announce_interval . ($privatetrackerpatch == "yes" && $compact != 1 ? "e7:privatei1" : "") . "e5:peers" . ($compact != 1 ? "l" : "");
 $peer = [];
 $peer_num = 0;
-$query_peers = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT " . $fields . " FROM peers WHERE torrent = " . sqlesc($Tid) . $wantseeds . $gp_eq . " ORDER BY last_action DESC LIMIT " . $numwant);
+$query_peers = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT " . $fields . " FROM peers WHERE $torrent = " . sqlesc($Tid) . $wantseeds . $gp_eq . " ORDER BY last_action DESC LIMIT " . $numwant);
 if ($compact != 1) {
     while ($result_peers = mysqli_fetch_assoc($query_peers)) {
         $result_peers["peer_id"] = str_pad($result_peers["peer_id"], 20);
@@ -265,7 +265,7 @@ if (!isset($self)) {
             }
         }
         if (intval($Result["slotlimit"]) && $Result["owner"] != $Result["userid"]) {
-            ($res = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id FROM peers WHERE userid = " . sqlesc($Result["userid"]) . " AND seeder = 'no'")) || stop($l["sqlerror"] . " P1");
+            ($res = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id FROM peers WHERE $userid = " . sqlesc($Result["userid"]) . " AND $seeder = 'no'")) || stop($l["sqlerror"] . " P1");
             if (($totalactivetorrents = mysqli_num_rows($res)) && $Result["slotlimit"] <= $totalactivetorrents) {
                 stop($l["merror"] . $Result["slotlimit"]);
             }
@@ -387,7 +387,7 @@ if ($event == "stopped") {
             $update_snatched[] = "downloaded = downloaded + " . $downthis;
             $update_snatched[] = "to_go = " . $left;
         }
-        mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE peers SET uploaded = " . $uploaded . ", downloaded = " . $downloaded . ", to_go = " . $left . ", last_action = NOW(), prev_action = '" . $self["last_action"] . "', seeder = '" . $seeder . "'" . ($seeder == "yes" && $self["seeder"] != $seeder ? ", finishedat = " . $_SERVER["REQUEST_TIME"] : "") . " WHERE " . $selfwhere);
+        mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE peers SET $uploaded = " . $uploaded . ", $downloaded = " . $downloaded . ", $to_go = " . $left . ", $last_action = NOW(), $prev_action = '" . $self["last_action"] . "', $seeder = '" . $seeder . "'" . ($seeder == "yes" && $self["seeder"] != $seeder ? ", $finishedat = " . $_SERVER["REQUEST_TIME"] : "") . " WHERE " . $selfwhere);
         if (mysqli_affected_rows($GLOBALS["DatabaseConnect"]) && $self["seeder"] != $seeder) {
             if ($seeder == "yes") {
                 $update_torrent[] = "seeders = seeders + 1";
@@ -406,7 +406,7 @@ if ($event == "stopped") {
             stop($l["conerror"]);
         }
         if ($snatchmod == "yes") {
-            $res = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id FROM snatched WHERE torrentid = " . sqlesc($Tid) . " AND userid = " . sqlesc($Result["userid"]));
+            $res = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id FROM snatched WHERE $torrentid = " . sqlesc($Tid) . " AND $userid = " . sqlesc($Result["userid"]));
             if (!mysqli_num_rows($res)) {
                 mysqli_query($GLOBALS["DatabaseConnect"], "INSERT INTO snatched (torrentid, userid, port, startdat, last_action, agent, ip) VALUES (" . $Tid . ", " . $Result["userid"] . ", " . $port . ", NOW(), NOW(), " . sqlesc($agent) . ", " . sqlesc($ip) . ")");
             }
@@ -434,15 +434,15 @@ if ($seeder == "yes") {
     $update_torrent[] = "`mtime` = '" . $_SERVER["REQUEST_TIME"] . "'";
 }
 if ($update_torrent && count($update_torrent)) {
-    mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE torrents SET " . implode(", ", $update_torrent) . " WHERE id = '" . $Tid . "'");
+    mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE torrents SET " . implode(", ", $update_torrent) . " WHERE $id = '" . $Tid . "'");
     unset($update_torrent);
 }
 if ($update_user && count($update_user) && isset($self)) {
-    mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET " . implode(",", $update_user) . " WHERE id = " . sqlesc($Result["userid"]));
+    mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET " . implode(",", $update_user) . " WHERE $id = " . sqlesc($Result["userid"]));
     unset($update_user);
 }
 if ($update_snatched && count($update_snatched)) {
-    mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE snatched SET " . implode(", ", $update_snatched) . " WHERE torrentid = '" . $Tid . "' AND userid = '" . $Result["userid"] . "'");
+    mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE snatched SET " . implode(", ", $update_snatched) . " WHERE $torrentid = '" . $Tid . "' AND $userid = '" . $Result["userid"] . "'");
     unset($update_snatched);
 }
 header("Expires: Sat, 1 Jan 2000 01:00:00 GMT");
@@ -450,14 +450,14 @@ header("Last-Modified: " . gmdate("D, d M Y H:i:s") . "GMT");
 header("Cache-Control: no-cache, must-revalidate");
 header("Pragma: no-cache");
 if ($compact != 1 && isset($_SERVER["HTTP_ACCEPT_ENCODING"]) && $_SERVER["HTTP_ACCEPT_ENCODING"] == "gzip" && $gzipcompress == "yes") {
-    header("Content-type: text/html; charset=" . $charset);
+    header("Content-type: text/html; $charset = " . $charset);
     header("Content-Encoding: gzip");
     $resp = gzencode($resp, 9, FORCE_GZIP);
 } else {
     if ($compact) {
-        header("Content-Type: text/plain; charset=" . $charset);
+        header("Content-Type: text/plain; $charset = " . $charset);
     } else {
-        header("Content-type: text/html; charset=" . $charset);
+        header("Content-type: text/html; $charset = " . $charset);
     }
 }
 exit($resp);
@@ -507,7 +507,7 @@ function send_action($actionmessage, $resetpasskey = false)
     }
     mysqli_query($GLOBALS["DatabaseConnect"], "INSERT INTO announce_actions (torrentid, userid, ip, passkey, actionmessage, actiontime) VALUES (" . implode(",", array_map("sqlesc", [$Tid, $Result["userid"], $ip, $passkey, $actionmessage, $_SERVER["REQUEST_TIME"]])) . ")");
     if ($resetpasskey) {
-        mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET torrent_pass = '' WHERE torrent_pass = " . sqlesc($passkey));
+        mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET $torrent_pass = '' WHERE $torrent_pass = " . sqlesc($passkey));
     }
 }
 

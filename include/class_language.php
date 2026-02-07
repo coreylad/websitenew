@@ -12,7 +12,7 @@ class trackerlanguage
     public $language = NULL;
     public function set_path($path)
     {
-        $this->path = $path;
+        $this->$path = $path;
     }
     public function set_language($language = "english")
     {
@@ -20,7 +20,7 @@ class trackerlanguage
         if ($language == "") {
             $language = "english";
         }
-        $this->language = $language;
+        $this->$language = $language;
     }
     public function loadResource($section)
     {

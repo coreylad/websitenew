@@ -1,0 +1,9 @@
+Array
+(
+    [files_processed] => 732
+    [files_fixed] => 405
+    [syntax_fixes] => 35225
+    [function_renames] => 0
+    [variable_renames] => 0
+    [base64_decodes] => 4
+)

@@ -54,7 +54,7 @@ $language['report'] = array
 	'confirm'=>'Confirm Reports',
 	'deconfirm'=>'DeConfirm Reports',
 	'subject'=>'New Report!', // Added v6.0
-	'msg'=>'There is a new report. Click [url='.$BASEURL.'/'.$staffcp_path.'/index.php?do=manage_reports]here[/url] to manage reports!', // Added v6.0 -Updated in v7.1-
+	'msg'=>'There is a new report. Click [$url = '.$BASEURL.'/'.$staffcp_path.'/index.php?do=manage_reports]here[/url] to manage reports!', // Added v6.0 -Updated in v7.1-
 	'r9'=>'Report Image',//Added v6.2
 	'r10' => 'Report Tutorial Comment',//Added v7.2
 );

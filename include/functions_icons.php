@@ -7,7 +7,7 @@
  */
 
 if (!defined("IN_TRACKER")) {
-    exit("<font face='verdana' size='2' color='darkred'><b>Error!</b> Direct initialization of this file is not allowed.</font>");
+    exit("<font $face = 'verdana' $size = '2' $color = 'darkred'><b>Error!</b> Direct initialization of this file is not allowed.</font>");
 }
 function get_user_icons($arr)
 {
@@ -25,16 +25,16 @@ function get_user_icons($arr)
     $downloadpos = "downloadpos.gif";
     $uploadpos = "uploadpos.gif";
     $style = "style=\"vertical-align: middle; margin-center: 4pt; white-space: nowrap;\" /";
-    $pics = $arr["donor"] == "yes" ? "<img src=\"" . $pic_base_url . $donorpic . "\" alt=\"" . $lang->global["imgdonated"] . "\" title=\"" . $lang->global["imgdonated"] . "\" border=\"0\" " . $style . ">" : "";
+    $pics = $arr["donor"] == "yes" ? "<img $src = \"" . $pic_base_url . $donorpic . "\" $alt = \"" . $lang->global["imgdonated"] . "\" $title = \"" . $lang->global["imgdonated"] . "\" $border = \"0\" " . $style . ">" : "";
     if ($arr["enabled"] == "yes") {
-        $pics .= ($arr["leechwarn"] == "yes" ? "<img src=\"" . $pic_base_url . $leechwarnpic . "\" title=\"" . $lang->global["imgwarned"] . "\" alt=\"" . $lang->global["imgwarned"] . "\" border=\"0\" " . $style . ">" : "") . ($arr["warned"] == "yes" ? "<img src=\"" . $pic_base_url . $warnedpic . "\" alt=\"" . $lang->global["imgwarned"] . "\" title=\"" . $lang->global["imgwarned"] . "\" border=\"0\" " . $style . ">" : "");
-        $pics .= $arr["cancomment"] == "0" ? "<img src=\"" . $pic_base_url . $commentpos . "\" title=\"" . $lang->global["imgcommentpos"] . "\" alt=\"" . $lang->global["imgcommentpos"] . "\" border=\"0\" " . $style . ">" : "";
-        $pics .= isset($arr["canmessage"]) && $arr["canmessage"] == "0" ? "<img src=\"" . $pic_base_url . $sendpmpos . "\" title=\"" . $lang->global["imgsendpmpos"] . "\" alt=\"" . $lang->global["imgsendpmpos"] . "\" border=\"0\" " . $style . ">" : "";
-        $pics .= $arr["canshout"] == "0" ? "<img src=\"" . $pic_base_url . $chatpost . "\" title=\"" . $lang->global["imgchatpost"] . "\" alt=\"" . $lang->global["imgchatpost"] . "\" border=\"0\" " . $style . ">" : "";
-        $pics .= $arr["candownload"] == "0" ? "<img src=\"" . $pic_base_url . $downloadpos . "\" title=\"" . $lang->global["imgdownloadpos"] . "\" alt=\"" . $lang->global["imgdownloadpos"] . "\" border=\"0\" " . $style . ">" : "";
-        $pics .= $arr["canupload"] == "0" ? "<img src=\"" . $pic_base_url . $uploadpos . "\" title=\"" . $lang->global["imguploadpos"] . "\" alt=\"" . $lang->global["imguploadpos"] . "\" border=\"0\" " . $style . ">" : "";
+        $pics .= ($arr["leechwarn"] == "yes" ? "<img $src = \"" . $pic_base_url . $leechwarnpic . "\" $title = \"" . $lang->global["imgwarned"] . "\" $alt = \"" . $lang->global["imgwarned"] . "\" $border = \"0\" " . $style . ">" : "") . ($arr["warned"] == "yes" ? "<img $src = \"" . $pic_base_url . $warnedpic . "\" $alt = \"" . $lang->global["imgwarned"] . "\" $title = \"" . $lang->global["imgwarned"] . "\" $border = \"0\" " . $style . ">" : "");
+        $pics .= $arr["cancomment"] == "0" ? "<img $src = \"" . $pic_base_url . $commentpos . "\" $title = \"" . $lang->global["imgcommentpos"] . "\" $alt = \"" . $lang->global["imgcommentpos"] . "\" $border = \"0\" " . $style . ">" : "";
+        $pics .= isset($arr["canmessage"]) && $arr["canmessage"] == "0" ? "<img $src = \"" . $pic_base_url . $sendpmpos . "\" $title = \"" . $lang->global["imgsendpmpos"] . "\" $alt = \"" . $lang->global["imgsendpmpos"] . "\" $border = \"0\" " . $style . ">" : "";
+        $pics .= $arr["canshout"] == "0" ? "<img $src = \"" . $pic_base_url . $chatpost . "\" $title = \"" . $lang->global["imgchatpost"] . "\" $alt = \"" . $lang->global["imgchatpost"] . "\" $border = \"0\" " . $style . ">" : "";
+        $pics .= $arr["candownload"] == "0" ? "<img $src = \"" . $pic_base_url . $downloadpos . "\" $title = \"" . $lang->global["imgdownloadpos"] . "\" $alt = \"" . $lang->global["imgdownloadpos"] . "\" $border = \"0\" " . $style . ">" : "";
+        $pics .= $arr["canupload"] == "0" ? "<img $src = \"" . $pic_base_url . $uploadpos . "\" $title = \"" . $lang->global["imguploadpos"] . "\" $alt = \"" . $lang->global["imguploadpos"] . "\" $border = \"0\" " . $style . ">" : "";
     } else {
-        $pics .= "<img src=\"" . $pic_base_url . $disabledpic . "\" alt=\"" . $lang->global["disabled"] . "\"  title=\"" . $lang->global["disabled"] . "\" border=\"0\" " . $style . ">\n";
+        $pics .= "<img $src = \"" . $pic_base_url . $disabledpic . "\" $alt = \"" . $lang->global["disabled"] . "\"  $title = \"" . $lang->global["disabled"] . "\" $border = \"0\" " . $style . ">\n";
     }
     return $pics;
 }

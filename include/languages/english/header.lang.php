@@ -40,11 +40,11 @@ $language['header'] = array
 	'thanks'				=>'thanks',
 	'warned'				=>'You are now warned for having a low ratio. You need to get a {1} ratio for your warning be removed.<br />If you don\'t get it in {2}, your account will be banned.',
 	'newmessage'		=>'You have {1} new private message(s), click here to read.', // Updated in v5.4
-	'trackeroffline'		=>'<b>WARNING</b>: The tracker is currently offline! Click <a href="{1}/'.$staffcp_path.'/index.php?do=manage_settings">here</a> to change settings.',//Updated in v7.1
+	'trackeroffline'		=>'<b>WARNING</b>: The tracker is currently offline! Click <a $href = "{1}/'.$staffcp_path.'/index.php?do=manage_settings">here</a> to change settings.',//Updated in v7.1
 	'newann'				=>'There is a new announcement since your last visit. Click here to read the Latest Annoucement.',
 	'newreport'			=>'There is {1} new report(s)!',
 	'staffmess'			=>'There is {1} new staff message(s)!',
-	'warndonor'			=>'Your access to the paid subscription "VIP" is about to expire. To renew this subscription you must visit <a href="{1}/donate.php">donate page.</a> If you do not extend your subscription, your "VIP" access will be removed! ({2} left)',
+	'warndonor'			=>'Your access to the paid subscription "VIP" is about to expire. To renew this subscription you must visit <a $href = "{1}/donate.php">donate page.</a> If you do not extend your subscription, your "VIP" access will be removed! ({2} left)',
 	'extramembers'		=>'MemberList',
 	'extrafriends'		=>'FriendList',
 	'extrarssfeed'		=>'RSS Feeds',

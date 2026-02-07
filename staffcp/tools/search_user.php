@@ -130,135 +130,135 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
     if ($ip) {
         $Queries[] = "`ip` = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $ip) . "'";
     }
-    $sql = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id, username, last_access, email, ip, uploaded, downloaded, invites, seedbonus, g.title, g.namestyle FROM users LEFT JOIN usergroups g ON (users.usergroup=g.gid)" . (count($Queries) ? " WHERE " . implode(" AND ", $Queries) : ""));
+    $sql = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id, username, last_access, email, ip, uploaded, downloaded, invites, seedbonus, g.title, g.namestyle FROM users LEFT JOIN usergroups g ON (users.$usergroup = g.gid)" . (count($Queries) ? " WHERE " . implode(" AND ", $Queries) : ""));
     if (mysqli_num_rows($sql) == 0) {
         $Message = function_76($Language[4]);
     } else {
         $Found = "";
         while ($User = mysqli_fetch_assoc($sql)) {
-            $Found .= "\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t<a href=\"index.php?do=edit_user&amp;username=" . $User["username"] . "\">" . function_83($User["username"], $User["namestyle"]) . "</a>\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . $User["title"] . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . htmlspecialchars($User["email"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . htmlspecialchars($User["ip"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . function_84($User["last_access"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . var_238($User["uploaded"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . var_238($User["downloaded"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . number_format($User["invites"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . $User["seedbonus"] . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t<a href=\"index.php?do=edit_user&amp;username=" . htmlspecialchars($User["username"]) . "\"><img src=\"images/user_edit.png\" alt=\"" . $Language[18] . "\" title=\"" . $Language[18] . "\" border=\"0\" /></a>\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t\t";
+            $Found .= "\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t<a $href = \"index.php?do=edit_user&amp;$username = " . $User["username"] . "\">" . function_83($User["username"], $User["namestyle"]) . "</a>\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . $User["title"] . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . htmlspecialchars($User["email"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . htmlspecialchars($User["ip"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . function_84($User["last_access"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . var_238($User["uploaded"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . var_238($User["downloaded"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . number_format($User["invites"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . $User["seedbonus"] . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t<a $href = \"index.php?do=edit_user&amp;$username = " . htmlspecialchars($User["username"]) . "\"><img $src = \"images/user_edit.png\" $alt = \"" . $Language[18] . "\" $title = \"" . $Language[18] . "\" $border = \"0\" /></a>\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t\t";
         }
-        $Message = "\r\n\t\t<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" class=\"mainTable\">\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"tcat\" align=\"center\" colspan=\"10\"><b>" . $Language[3] . "</b></td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt2\"><b>" . $Language[6] . "</b></td>\r\n\t\t\t\t<td class=\"alt2\"><b>" . $Language[12] . "</b></td>\r\n\t\t\t\t<td class=\"alt2\"><b>" . $Language[19] . "</b></td>\r\n\t\t\t\t<td class=\"alt2\"><b>" . $Language[20] . "</b></td>\r\n\t\t\t\t<td class=\"alt2\"><b>" . $Language[13] . "</b></td>\r\n\t\t\t\t<td class=\"alt2\"><b>" . $Language[14] . "</b></td>\r\n\t\t\t\t<td class=\"alt2\"><b>" . $Language[15] . "</b></td>\r\n\t\t\t\t<td class=\"alt2\"><b>" . $Language[16] . "</b></td>\r\n\t\t\t\t<td class=\"alt2\"><b>" . $Language[17] . "</b></td>\r\n\t\t\t\t<td class=\"alt2\"><b>" . $Language[18] . "</b></td>\r\n\t\t\t</tr>\r\n\t\t\t" . $Found . "\r\n\t\t</table>";
+        $Message = "\r\n\t\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"tcat\" $align = \"center\" $colspan = \"10\"><b>" . $Language[3] . "</b></td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt2\"><b>" . $Language[6] . "</b></td>\r\n\t\t\t\t<td class=\"alt2\"><b>" . $Language[12] . "</b></td>\r\n\t\t\t\t<td class=\"alt2\"><b>" . $Language[19] . "</b></td>\r\n\t\t\t\t<td class=\"alt2\"><b>" . $Language[20] . "</b></td>\r\n\t\t\t\t<td class=\"alt2\"><b>" . $Language[13] . "</b></td>\r\n\t\t\t\t<td class=\"alt2\"><b>" . $Language[14] . "</b></td>\r\n\t\t\t\t<td class=\"alt2\"><b>" . $Language[15] . "</b></td>\r\n\t\t\t\t<td class=\"alt2\"><b>" . $Language[16] . "</b></td>\r\n\t\t\t\t<td class=\"alt2\"><b>" . $Language[17] . "</b></td>\r\n\t\t\t\t<td class=\"alt2\"><b>" . $Language[18] . "</b></td>\r\n\t\t\t</tr>\r\n\t\t\t" . $Found . "\r\n\t\t</table>";
     }
 }
-$showusergroups = "\r\n<select name=\"usergroup\">\r\n\t<option value=\"0\"></option>";
+$showusergroups = "\r\n<select $name = \"usergroup\">\r\n\t<option $value = \"0\"></option>";
 $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT gid, title FROM usergroups ORDER by disporder ASC");
 while ($UG = mysqli_fetch_assoc($query)) {
-    $showusergroups .= "\r\n\t<option value=\"" . $UG["gid"] . "\"" . ($usergroup == $UG["gid"] ? " selected=\"selected\"" : "") . ">" . $UG["title"] . "</option>";
+    $showusergroups .= "\r\n\t<option $value = \"" . $UG["gid"] . "\"" . ($usergroup == $UG["gid"] ? " $selected = \"selected\"" : "") . ">" . $UG["title"] . "</option>";
 }
 $showusergroups .= "\r\n</select>";
-$Q = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE configname = 'MAIN'");
+$Q = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'MAIN'");
 $Result = mysqli_fetch_assoc($Q);
 $MAIN = unserialize($Result["content"]);
-echo "<script type=\"text/javascript\">\r\n\t\$(function()\r\n\t{\r\n\t\t\$('#joindateafter,#joindatebefore,#lastaccessafter,#lastaccessbefore').datepicker({dateFormat: \"yy-mm-dd\", changeMonth: true, changeYear: true, closeText: \"X\", showButtonPanel: true});\r\n\t\t\$('#bdayafter,#bdaybefore').datepicker({dateFormat: 'dd-mm-yy', changeMonth: true, changeYear: true, closeText: \"X\", showButtonPanel: true});\r\n\t});\r\n</script>\r\n<form action=\"";
+echo "<script $type = \"text/javascript\">\r\n\t\$(function()\r\n\t{\r\n\t\t\$('#joindateafter,#joindatebefore,#lastaccessafter,#lastaccessbefore').datepicker({dateFormat: \"yy-mm-dd\", changeMonth: true, changeYear: true, closeText: \"X\", showButtonPanel: true});\r\n\t\t\$('#bdayafter,#bdaybefore').datepicker({dateFormat: 'dd-mm-yy', changeMonth: true, changeYear: true, closeText: \"X\", showButtonPanel: true});\r\n\t});\r\n</script>\r\n<form $action = \"";
 echo $_SERVER["SCRIPT_NAME"];
-echo "?do=search_user\" method=\"post\" name=\"search_user\">\r\n";
+echo "?do=search_user\" $method = \"post\" $name = \"search_user\">\r\n";
 echo $Message;
-echo "<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" class=\"mainTable\">\r\n\t<tr>\r\n\t\t<td class=\"tcat\" align=\"center\" colspan=\"2\"><b>";
+echo "<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t<tr>\r\n\t\t<td class=\"tcat\" $align = \"center\" $colspan = \"2\"><b>";
 echo $Language[2];
-echo "</b></td>\r\n\t</tr>\r\n\t<tr valign=\"top\">\r\n\t\t<td class=\"alt1\" align=\"right\">";
+echo "</b></td>\r\n\t</tr>\r\n\t<tr $valign = \"top\">\r\n\t\t<td class=\"alt1\" $align = \"right\">";
 echo $Language[6];
-echo "</td>\r\n\t\t<td class=\"alt1\"><input type=\"text\" class=\"bginput\" name=\"username\" value=\"";
+echo "</td>\r\n\t\t<td class=\"alt1\"><input $type = \"text\" class=\"bginput\" $name = \"username\" $value = \"";
 echo htmlspecialchars($username);
-echo "\" size=\"35\" dir=\"ltr\" tabindex=\"1\" /></td>\r\n\t</tr>\r\n\t<tr valign=\"top\">\r\n\t\t<td class=\"alt2\" align=\"right\">";
+echo "\" $size = \"35\" $dir = \"ltr\" $tabindex = \"1\" /></td>\r\n\t</tr>\r\n\t<tr $valign = \"top\">\r\n\t\t<td class=\"alt2\" $align = \"right\">";
 echo $Language[7];
-echo "</td>\r\n\t\t<td class=\"alt2\">\r\n\t\t\t<div class=\"smallfont\" style=\"white-space:nowrap\">\r\n\t\t\t\t<input type=\"radio\" name=\"exact\" id=\"rb_1_exact_2\" value=\"1\" tabindex=\"1\" />";
+echo "</td>\r\n\t\t<td class=\"alt2\">\r\n\t\t\t<div class=\"smallfont\" $style = \"white-space:nowrap\">\r\n\t\t\t\t<input $type = \"radio\" $name = \"exact\" $id = \"rb_1_exact_2\" $value = \"1\" $tabindex = \"1\" />";
 echo $Language[8];
-echo "\t\t\t\t<input type=\"radio\" name=\"exact\" id=\"rb_0_exact_2\" value=\"0\" tabindex=\"1\" checked=\"checked\" />";
+echo "\t\t\t\t<input $type = \"radio\" $name = \"exact\" $id = \"rb_0_exact_2\" $value = \"0\" $tabindex = \"1\" $checked = \"checked\" />";
 echo $Language[9];
-echo "\t\t\t</div>\r\n\t\t</td>\r\n\t</tr>\r\n\t<tr valign=\"top\">\r\n\t\t<td class=\"alt1\" align=\"right\">";
+echo "\t\t\t</div>\r\n\t\t</td>\r\n\t</tr>\r\n\t<tr $valign = \"top\">\r\n\t\t<td class=\"alt1\" $align = \"right\">";
 echo $Language[12];
 echo "</td>\r\n\t\t<td class=\"alt1\">";
 echo $showusergroups;
-echo "</td>\r\n\t</tr>\r\n\t<tr valign=\"top\">\r\n\t\t<td class=\"alt2\" align=\"right\">";
+echo "</td>\r\n\t</tr>\r\n\t<tr $valign = \"top\">\r\n\t\t<td class=\"alt2\" $align = \"right\">";
 echo $Language[19];
-echo "</td>\r\n\t\t<td class=\"alt2\"><input type=\"text\" class=\"bginput\" name=\"email\" value=\"";
+echo "</td>\r\n\t\t<td class=\"alt2\"><input $type = \"text\" class=\"bginput\" $name = \"email\" $value = \"";
 echo htmlspecialchars($email);
-echo "\" size=\"35\" dir=\"ltr\" tabindex=\"1\" /></td>\r\n\t</tr>\r\n\t<tr valign=\"top\">\r\n\t\t<td class=\"alt1\" align=\"right\">";
+echo "\" $size = \"35\" $dir = \"ltr\" $tabindex = \"1\" /></td>\r\n\t</tr>\r\n\t<tr $valign = \"top\">\r\n\t\t<td class=\"alt1\" $align = \"right\">";
 echo $Language[20];
-echo "</td>\r\n\t\t<td class=\"alt1\"><input type=\"text\" class=\"bginput\" name=\"ip\" value=\"";
+echo "</td>\r\n\t\t<td class=\"alt1\"><input $type = \"text\" class=\"bginput\" $name = \"ip\" $value = \"";
 echo htmlspecialchars($ip);
-echo "\" size=\"35\" dir=\"ltr\" tabindex=\"1\" /></td>\r\n\t</tr>\r\n\t<tr valign=\"top\">\r\n\t\t<td class=\"alt2\" align=\"right\">";
+echo "\" $size = \"35\" $dir = \"ltr\" $tabindex = \"1\" /></td>\r\n\t</tr>\r\n\t<tr $valign = \"top\">\r\n\t\t<td class=\"alt2\" $align = \"right\">";
 echo $Language[39];
-echo "</td>\r\n\t\t<td class=\"alt2\"><input type=\"text\" class=\"bginput\" name=\"modcomment\" value=\"";
+echo "</td>\r\n\t\t<td class=\"alt2\"><input $type = \"text\" class=\"bginput\" $name = \"modcomment\" $value = \"";
 echo htmlspecialchars($modcomment);
-echo "\" size=\"35\" dir=\"ltr\" tabindex=\"1\" /></td>\r\n\t</tr>\r\n\t<tr valign=\"top\">\r\n\t\t<td class=\"alt1\" align=\"right\">";
+echo "\" $size = \"35\" $dir = \"ltr\" $tabindex = \"1\" /></td>\r\n\t</tr>\r\n\t<tr $valign = \"top\">\r\n\t\t<td class=\"alt1\" $align = \"right\">";
 echo $Language[21];
-echo "</td>\r\n\t\t<td class=\"alt1\"><input type=\"text\" class=\"bginput\" name=\"joindateafter\" id=\"joindateafter\" value=\"";
+echo "</td>\r\n\t\t<td class=\"alt1\"><input $type = \"text\" class=\"bginput\" $name = \"joindateafter\" $id = \"joindateafter\" $value = \"";
 echo htmlspecialchars($joindateafter);
-echo "\" size=\"10\" dir=\"ltr\" tabindex=\"1\" /></td>\r\n\t</tr>\r\n\t<tr valign=\"top\">\r\n\t\t<td class=\"alt2\" align=\"right\">";
+echo "\" $size = \"10\" $dir = \"ltr\" $tabindex = \"1\" /></td>\r\n\t</tr>\r\n\t<tr $valign = \"top\">\r\n\t\t<td class=\"alt2\" $align = \"right\">";
 echo $Language[22];
-echo "</td>\r\n\t\t<td class=\"alt2\"><input type=\"text\" class=\"bginput\" name=\"joindatebefore\" id=\"joindatebefore\" value=\"";
+echo "</td>\r\n\t\t<td class=\"alt2\"><input $type = \"text\" class=\"bginput\" $name = \"joindatebefore\" $id = \"joindatebefore\" $value = \"";
 echo htmlspecialchars($joindatebefore);
-echo "\" size=\"10\" dir=\"ltr\" tabindex=\"1\" /></td>\r\n\t</tr>\r\n\t<tr valign=\"top\">\r\n\t\t<td class=\"alt1\" align=\"right\">";
+echo "\" $size = \"10\" $dir = \"ltr\" $tabindex = \"1\" /></td>\r\n\t</tr>\r\n\t<tr $valign = \"top\">\r\n\t\t<td class=\"alt1\" $align = \"right\">";
 echo $Language[23];
-echo "</td>\r\n\t\t<td class=\"alt1\"><input type=\"text\" class=\"bginput\" name=\"lastaccessafter\" id=\"lastaccessafter\" value=\"";
+echo "</td>\r\n\t\t<td class=\"alt1\"><input $type = \"text\" class=\"bginput\" $name = \"lastaccessafter\" $id = \"lastaccessafter\" $value = \"";
 echo htmlspecialchars($lastaccessafter);
-echo "\" size=\"10\" dir=\"ltr\" tabindex=\"1\" /></td>\r\n\t</tr>\r\n\t<tr valign=\"top\">\r\n\t\t<td class=\"alt2\" align=\"right\">";
+echo "\" $size = \"10\" $dir = \"ltr\" $tabindex = \"1\" /></td>\r\n\t</tr>\r\n\t<tr $valign = \"top\">\r\n\t\t<td class=\"alt2\" $align = \"right\">";
 echo $Language[24];
-echo "</td>\r\n\t\t<td class=\"alt2\"><input type=\"text\" class=\"bginput\" name=\"lastaccessbefore\" id=\"lastaccessbefore\" value=\"";
+echo "</td>\r\n\t\t<td class=\"alt2\"><input $type = \"text\" class=\"bginput\" $name = \"lastaccessbefore\" $id = \"lastaccessbefore\" $value = \"";
 echo htmlspecialchars($lastaccessbefore);
-echo "\" size=\"10\" dir=\"ltr\" tabindex=\"1\" /></td>\r\n\t</tr>\r\n\t<tr valign=\"top\">\r\n\t\t<td class=\"alt1\" align=\"right\">";
+echo "\" $size = \"10\" $dir = \"ltr\" $tabindex = \"1\" /></td>\r\n\t</tr>\r\n\t<tr $valign = \"top\">\r\n\t\t<td class=\"alt1\" $align = \"right\">";
 echo $Language[25];
-echo "</td>\r\n\t\t<td class=\"alt1\"><input type=\"text\" class=\"bginput\" name=\"bdayafter\" id=\"bdayafter\" value=\"";
+echo "</td>\r\n\t\t<td class=\"alt1\"><input $type = \"text\" class=\"bginput\" $name = \"bdayafter\" $id = \"bdayafter\" $value = \"";
 echo htmlspecialchars($bdayafter);
-echo "\" size=\"10\" dir=\"ltr\" tabindex=\"1\" /></td>\r\n\t</tr>\r\n\t<tr valign=\"top\">\r\n\t\t<td class=\"alt2\" align=\"right\">";
+echo "\" $size = \"10\" $dir = \"ltr\" $tabindex = \"1\" /></td>\r\n\t</tr>\r\n\t<tr $valign = \"top\">\r\n\t\t<td class=\"alt2\" $align = \"right\">";
 echo $Language[26];
-echo "</td>\r\n\t\t<td class=\"alt2\"><input type=\"text\" class=\"bginput\" name=\"bdaybefore\" id=\"bdaybefore\" value=\"";
+echo "</td>\r\n\t\t<td class=\"alt2\"><input $type = \"text\" class=\"bginput\" $name = \"bdaybefore\" $id = \"bdaybefore\" $value = \"";
 echo htmlspecialchars($bdaybefore);
-echo "\" size=\"10\" dir=\"ltr\" tabindex=\"1\" /></td>\r\n\t</tr>\r\n\t<tr valign=\"top\">\r\n\t\t<td class=\"alt1\" align=\"right\">";
+echo "\" $size = \"10\" $dir = \"ltr\" $tabindex = \"1\" /></td>\r\n\t</tr>\r\n\t<tr $valign = \"top\">\r\n\t\t<td class=\"alt1\" $align = \"right\">";
 echo $Language[27];
-echo "</td>\r\n\t\t<td class=\"alt1\"><input type=\"text\" class=\"bginput\" name=\"postgreater\" value=\"";
+echo "</td>\r\n\t\t<td class=\"alt1\"><input $type = \"text\" class=\"bginput\" $name = \"postgreater\" $value = \"";
 echo htmlspecialchars($postgreater);
-echo "\" size=\"10\" dir=\"ltr\" tabindex=\"1\" /></td>\r\n\t</tr>\r\n\t<tr valign=\"top\">\r\n\t\t<td class=\"alt2\" align=\"right\">";
+echo "\" $size = \"10\" $dir = \"ltr\" $tabindex = \"1\" /></td>\r\n\t</tr>\r\n\t<tr $valign = \"top\">\r\n\t\t<td class=\"alt2\" $align = \"right\">";
 echo $Language[28];
-echo "</td>\r\n\t\t<td class=\"alt2\"><input type=\"text\" class=\"bginput\" name=\"postless\" value=\"";
+echo "</td>\r\n\t\t<td class=\"alt2\"><input $type = \"text\" class=\"bginput\" $name = \"postless\" $value = \"";
 echo htmlspecialchars($postless);
-echo "\" size=\"10\" dir=\"ltr\" tabindex=\"1\" /></td>\r\n\t</tr>\r\n\t<tr valign=\"top\">\r\n\t\t<td class=\"alt1\" align=\"right\">";
+echo "\" $size = \"10\" $dir = \"ltr\" $tabindex = \"1\" /></td>\r\n\t</tr>\r\n\t<tr $valign = \"top\">\r\n\t\t<td class=\"alt1\" $align = \"right\">";
 echo $Language[29];
-echo "</td>\r\n\t\t<td class=\"alt1\"><input type=\"text\" class=\"bginput\" name=\"warnsgreater\" value=\"";
+echo "</td>\r\n\t\t<td class=\"alt1\"><input $type = \"text\" class=\"bginput\" $name = \"warnsgreater\" $value = \"";
 echo htmlspecialchars($warnsgreater);
-echo "\" size=\"10\" dir=\"ltr\" tabindex=\"1\" /></td>\r\n\t</tr>\r\n\t<tr valign=\"top\">\r\n\t\t<td class=\"alt2\" align=\"right\">";
+echo "\" $size = \"10\" $dir = \"ltr\" $tabindex = \"1\" /></td>\r\n\t</tr>\r\n\t<tr $valign = \"top\">\r\n\t\t<td class=\"alt2\" $align = \"right\">";
 echo $Language[30];
-echo "</td>\r\n\t\t<td class=\"alt2\"><input type=\"text\" class=\"bginput\" name=\"warnless\" value=\"";
+echo "</td>\r\n\t\t<td class=\"alt2\"><input $type = \"text\" class=\"bginput\" $name = \"warnless\" $value = \"";
 echo htmlspecialchars($warnless);
-echo "\" size=\"10\" dir=\"ltr\" tabindex=\"1\" /></td>\r\n\t</tr>\r\n\t<tr valign=\"top\">\r\n\t\t<td class=\"alt1\" align=\"right\">";
+echo "\" $size = \"10\" $dir = \"ltr\" $tabindex = \"1\" /></td>\r\n\t</tr>\r\n\t<tr $valign = \"top\">\r\n\t\t<td class=\"alt1\" $align = \"right\">";
 echo $Language[31];
-echo "</td>\r\n\t\t<td class=\"alt1\"><input type=\"text\" class=\"bginput\" name=\"ulgreater\" value=\"";
+echo "</td>\r\n\t\t<td class=\"alt1\"><input $type = \"text\" class=\"bginput\" $name = \"ulgreater\" $value = \"";
 echo htmlspecialchars($ulgreater);
-echo "\" size=\"10\" dir=\"ltr\" tabindex=\"1\" /> (GB)</td>\r\n\t</tr>\r\n\t<tr valign=\"top\">\r\n\t\t<td class=\"alt2\" align=\"right\">";
+echo "\" $size = \"10\" $dir = \"ltr\" $tabindex = \"1\" /> (GB)</td>\r\n\t</tr>\r\n\t<tr $valign = \"top\">\r\n\t\t<td class=\"alt2\" $align = \"right\">";
 echo $Language[32];
-echo "</td>\r\n\t\t<td class=\"alt2\"><input type=\"text\" class=\"bginput\" name=\"ulless\" value=\"";
+echo "</td>\r\n\t\t<td class=\"alt2\"><input $type = \"text\" class=\"bginput\" $name = \"ulless\" $value = \"";
 echo htmlspecialchars($ulless);
-echo "\" size=\"10\" dir=\"ltr\" tabindex=\"1\" /> (GB)</td>\r\n\t</tr>\r\n\t<tr valign=\"top\">\r\n\t\t<td class=\"alt1\" align=\"right\">";
+echo "\" $size = \"10\" $dir = \"ltr\" $tabindex = \"1\" /> (GB)</td>\r\n\t</tr>\r\n\t<tr $valign = \"top\">\r\n\t\t<td class=\"alt1\" $align = \"right\">";
 echo $Language[33];
-echo "</td>\r\n\t\t<td class=\"alt1\"><input type=\"text\" class=\"bginput\" name=\"dlgreater\" value=\"";
+echo "</td>\r\n\t\t<td class=\"alt1\"><input $type = \"text\" class=\"bginput\" $name = \"dlgreater\" $value = \"";
 echo htmlspecialchars($dlgreater);
-echo "\" size=\"10\" dir=\"ltr\" tabindex=\"1\" /> (GB)</td>\r\n\t</tr>\r\n\t<tr valign=\"top\">\r\n\t\t<td class=\"alt2\" align=\"right\">";
+echo "\" $size = \"10\" $dir = \"ltr\" $tabindex = \"1\" /> (GB)</td>\r\n\t</tr>\r\n\t<tr $valign = \"top\">\r\n\t\t<td class=\"alt2\" $align = \"right\">";
 echo $Language[34];
-echo "</td>\r\n\t\t<td class=\"alt2\"><input type=\"text\" class=\"bginput\" name=\"dlless\" value=\"";
+echo "</td>\r\n\t\t<td class=\"alt2\"><input $type = \"text\" class=\"bginput\" $name = \"dlless\" $value = \"";
 echo htmlspecialchars($dlless);
-echo "\" size=\"10\" dir=\"ltr\" tabindex=\"1\" /> (GB)</td>\r\n\t</tr>\r\n\t<tr valign=\"top\">\r\n\t\t<td class=\"alt1\" align=\"right\">";
+echo "\" $size = \"10\" $dir = \"ltr\" $tabindex = \"1\" /> (GB)</td>\r\n\t</tr>\r\n\t<tr $valign = \"top\">\r\n\t\t<td class=\"alt1\" $align = \"right\">";
 echo $Language[35];
-echo "</td>\r\n\t\t<td class=\"alt1\"><input type=\"text\" class=\"bginput\" name=\"ratiogreater\" value=\"";
+echo "</td>\r\n\t\t<td class=\"alt1\"><input $type = \"text\" class=\"bginput\" $name = \"ratiogreater\" $value = \"";
 echo htmlspecialchars($ratiogreater);
-echo "\" size=\"10\" dir=\"ltr\" tabindex=\"1\" /></td>\r\n\t</tr>\r\n\t<tr valign=\"top\">\r\n\t\t<td class=\"alt2\" align=\"right\">";
+echo "\" $size = \"10\" $dir = \"ltr\" $tabindex = \"1\" /></td>\r\n\t</tr>\r\n\t<tr $valign = \"top\">\r\n\t\t<td class=\"alt2\" $align = \"right\">";
 echo $Language[36];
-echo "</td>\r\n\t\t<td class=\"alt2\"><input type=\"text\" class=\"bginput\" name=\"ratioless\" value=\"";
+echo "</td>\r\n\t\t<td class=\"alt2\"><input $type = \"text\" class=\"bginput\" $name = \"ratioless\" $value = \"";
 echo htmlspecialchars($ratioless);
-echo "\" size=\"10\" dir=\"ltr\" tabindex=\"1\" /></td>\r\n\t</tr>\r\n\t<tr valign=\"top\">\r\n\t\t<td class=\"alt1\" align=\"right\">";
+echo "\" $size = \"10\" $dir = \"ltr\" $tabindex = \"1\" /></td>\r\n\t</tr>\r\n\t<tr $valign = \"top\">\r\n\t\t<td class=\"alt1\" $align = \"right\">";
 echo $Language[37];
-echo "</td>\r\n\t\t<td class=\"alt1\"><input type=\"text\" class=\"bginput\" name=\"idgreater\" value=\"";
+echo "</td>\r\n\t\t<td class=\"alt1\"><input $type = \"text\" class=\"bginput\" $name = \"idgreater\" $value = \"";
 echo htmlspecialchars($idgreater);
-echo "\" size=\"10\" dir=\"ltr\" tabindex=\"1\" /></td>\r\n\t</tr>\r\n\t<tr valign=\"top\">\r\n\t\t<td class=\"alt2\" align=\"right\">";
+echo "\" $size = \"10\" $dir = \"ltr\" $tabindex = \"1\" /></td>\r\n\t</tr>\r\n\t<tr $valign = \"top\">\r\n\t\t<td class=\"alt2\" $align = \"right\">";
 echo $Language[38];
-echo "</td>\r\n\t\t<td class=\"alt2\"><input type=\"text\" class=\"bginput\" name=\"idless\" value=\"";
+echo "</td>\r\n\t\t<td class=\"alt2\"><input $type = \"text\" class=\"bginput\" $name = \"idless\" $value = \"";
 echo htmlspecialchars($idless);
-echo "\" size=\"10\" dir=\"ltr\" tabindex=\"1\" /></td>\r\n\t</tr>\r\n\t<tr>\r\n\t\t<td class=\"tcat2\" align=\"right\"></td>\r\n\t\t<td class=\"tcat2\">\r\n\t\t\t<input type=\"submit\" class=\"button\" tabindex=\"1\" value=\"";
+echo "\" $size = \"10\" $dir = \"ltr\" $tabindex = \"1\" /></td>\r\n\t</tr>\r\n\t<tr>\r\n\t\t<td class=\"tcat2\" $align = \"right\"></td>\r\n\t\t<td class=\"tcat2\">\r\n\t\t\t<input $type = \"submit\" class=\"button\" $tabindex = \"1\" $value = \"";
 echo $Language[10];
-echo "\" accesskey=\"s\" />\r\n\t\t\t<input type=\"reset\" class=\"button\" tabindex=\"1\" value=\"";
+echo "\" $accesskey = \"s\" />\r\n\t\t\t<input $type = \"reset\" class=\"button\" $tabindex = \"1\" $value = \"";
 echo $Language[11];
-echo "\" accesskey=\"r\" />\r\n\t\t</td>\r\n\t</tr>\r\n</table>\r\n</form>";
+echo "\" $accesskey = \"r\" />\r\n\t\t</td>\r\n\t</tr>\r\n</table>\r\n</form>";
 function function_75()
 {
     if (isset($_COOKIE["staffcplanguage"]) && is_dir("languages/" . $_COOKIE["staffcplanguage"]) && is_file("languages/" . $_COOKIE["staffcplanguage"] . "/staffcp.lang")) {
@@ -277,7 +277,7 @@ function function_78($url)
     if (!headers_sent()) {
         header("Location: " . $url);
     } else {
-        echo "\r\n\t\t<script type=\"text/javascript\">\r\n\t\t\twindow.location.href=\"" . $url . "\";\r\n\t\t</script>\r\n\t\t<noscript>\r\n\t\t\t<meta http-equiv=\"refresh\" content=\"0;url=" . $url . "\" />\r\n\t\t</noscript>";
+        echo "\r\n\t\t<script $type = \"text/javascript\">\r\n\t\t\twindow.location.$href = \"" . $url . "\";\r\n\t\t</script>\r\n\t\t<noscript>\r\n\t\t\t<meta http-$equiv = \"refresh\" $content = \"0;$url = " . $url . "\" />\r\n\t\t</noscript>";
     }
     exit;
 }
@@ -300,7 +300,7 @@ function function_76($Error)
 }
 function function_84($timestamp = "")
 {
-    var_265 = "m-d-Y h:i A";
+    $var_265 = "m-d-Y h:i A";
     if (empty($timestamp)) {
         $timestamp = time();
     } else {
@@ -308,7 +308,7 @@ function function_84($timestamp = "")
             $timestamp = strtotime($timestamp);
         }
     }
-    return date(var_265, $timestamp);
+    return date($var_265, $timestamp);
 }
 function function_83($username, $namestyle)
 {

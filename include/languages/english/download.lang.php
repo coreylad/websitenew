@@ -28,11 +28,11 @@ $language['download'] = array
 	'error1' => 'I can\'t read the file from DB!',
 	'error2' => 'There is no file with this ID!',
 	'error3' => 'I can\'t read the file!',
-	'error4' => 'Sorry, you must click on thank you button before download this torrent. Click <a href="{1}/details.php?id={2}">here</a> to go back!',
+	'error4' => 'Sorry, you must click on thank you button before download this torrent. Click <a $href = "{1}/details.php?$id = {2}">here</a> to go back!',
 
-	'downloadwarning' => '<p style="color: red; font-weight: bold; text-decoration: underline;">Download privileges removed please restart a old torrent to improve your ratio!</p>
-	<p>Your ratio is <span style="color: #ff0532; font-weight: bold;">{1}</span> - meaning that you have only uploaded <span style="color: #ff0532; font-weight: bold;">{2}</span> of the amount you downloaded.<br />
+	'downloadwarning' => '<p $style = "color: red; font-weight: bold; text-decoration: underline;">Download privileges removed please restart a old torrent to improve your ratio!</p>
+	<p>Your ratio is <span $style = "color: #ff0532; font-weight: bold;">{1}</span> - meaning that you have only uploaded <span $style = "color: #ff0532; font-weight: bold;">{2}</span> of the amount you downloaded.<br />
 	It\'s important to maintain a good ratio because it helps to make downloads faster for all members.</p>
-	<p>You must maintain a minimum ratio of <span style="color: #ff0532; font-weight: bold;">{3}</span>.</p>
+	<p>You must maintain a minimum ratio of <span $style = "color: #ff0532; font-weight: bold;">{3}</span>.</p>
 	<p>Click link below to download & re-seed your completed torrents to improve your ratio.<br />{4}</p>',//Added in v7.3
 );

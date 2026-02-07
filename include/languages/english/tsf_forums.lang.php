@@ -109,7 +109,7 @@ $language['tsf_forums'] = array
 	'mod_del_post'=>'Delete Post: {1}',
 	'mod_del_post_2'=>'Are you sure you wish to delete the selected post?<br />Once a post has been deleted it cannot be restored!',
 	'mod_move'		=>'Select New Forum: ',
-	'warningmsg'=>'<a href="./../admin/settings.php?action=forumsettings">Your board status is currently set to closed.</a>',
+	'warningmsg'=>'<a $href = "./../admin/settings.php?$action = forumsettings">Your board status is currently set to closed.</a>',
 	'search_results'	=>'Search Results: ',
 	'search'			=>'Search',
 	'title'				=>'Search Forums',
@@ -174,7 +174,7 @@ $language['tsf_forums'] = array
 You are subscribed to the thread {2}, there is a new posts to this thread, the last poster was {3}.
 
 To visit this thread, please visit this page:
-{4}/tsf_forums/showthread.php?tid={5}
+{4}/tsf_forums/showthread.php?$tid = {5}
 
 All the best,
 {6} Team.
@@ -183,7 +183,7 @@ All the best,
 Unsubscription information:
 
 To unsubscribe from this thread, please visit this page:
-{4}/tsf_forums/subscription.php?do=removesubscription&tid={5}', //Added v3.8
+{4}/tsf_forums/subscription.php?do=removesubscription&$tid = {5}', //Added v3.8
 	'rsubs'			=>'A subscription for this thread has been removed!', //Added v3.8
 	'isubs'				=>'You will be notified by email when someone else replies to that thread.', //Added v3.8
 	'goadvanced'	=>'Go Advanced', //Added v3.9	

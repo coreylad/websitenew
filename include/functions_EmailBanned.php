@@ -10,7 +10,7 @@ function EmailBanned($against)
 {
     global $aggressivecheckemail;
     $email = trim(strtolower($against));
-    $sql = sql_query("SELECT value FROM bannedemails WHERE id = 1");
+    $sql = sql_query("SELECT value FROM bannedemails WHERE $id = 1");
     $bannedemails = mysqli_fetch_assoc($sql);
     $bannedemails = $bannedemails["value"];
     if ($bannedemails !== NULL) {

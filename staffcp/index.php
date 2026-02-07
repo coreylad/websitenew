@@ -37,11 +37,11 @@ $loadYAHOO = false;
 $loadPrototype = false;
 if (isset($_GET["logout"]) && $_GET["logout"] == "true") {
     session_destroy();
-    var_35("index.php?logout=" . time());
+    var_35("index.php?$logout = " . time());
     exit;
 }
 require REALPATH . "admin_login.php";
-$Result = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE configname = \"MAIN\"");
+$Result = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = \"MAIN\"");
 $Row = mysqli_fetch_assoc($Result);
 $MAIN = @unserialize($Row["content"]);
 if ($MAIN["site_online"] != "yes" && $_SESSION["ADMIN_CANSETTINGSPANEL"] != "yes") {
@@ -54,30 +54,30 @@ if (isset($_SESSION["ADMIN_CANSETTINGSPANEL"]) && $_SESSION["ADMIN_CANSETTINGSPA
     function_15("<b>Security Alert!</b>\r\n\t<br />\r\n\tConfig folder and/or Configuration files still remains in the " . ROOTPATH . "config/ directory.\r\n\t<br />\r\n\tThis poses a security risk, so please delete that files immediately and the config folder. You cannot access the control panel until you do so.");
 }
 $StaffTools = [];
-$Result = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT cid, toolname, filename, usergroups FROM ts_staffcp_tools WHERE hidden =  \"0\" ORDER by sort ASC, toolname DESC");
+$Result = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT cid, toolname, filename, usergroups FROM ts_staffcp_tools WHERE $hidden = \"0\" ORDER by sort ASC, toolname DESC");
 while ($Tools = mysqli_fetch_assoc($Result)) {
     $AllowedUsergroups = explode(",", $Tools["usergroups"]);
     if (isset($_SESSION["ADMIN_GID"]) && $_SESSION["ADMIN_GID"] && in_array($_SESSION["ADMIN_GID"], $AllowedUsergroups)) {
-        $StaffTools[$Tools["cid"]][] = "<li><a href=\"" . ADMINCPURL . "index.php?do=" . $Tools["filename"] . "\">" . $Tools["toolname"] . "</a></li>";
+        $StaffTools[$Tools["cid"]][] = "<li><a $href = \"" . ADMINCPURL . "index.php?do=" . $Tools["filename"] . "\">" . $Tools["toolname"] . "</a></li>";
     }
 }
 $Count = 0;
 $Result = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT cid, name FROM ts_staffcp ORDER by sort ASC, name ASC");
 $Total = mysqli_num_rows($Result);
-$Menu = "\r\n<nav>\r\n\t<ul id=\"main\">";
+$Menu = "\r\n<nav>\r\n\t<ul $id = \"main\">";
 while ($C = mysqli_fetch_assoc($Result)) {
     if (isset($StaffTools[$C["cid"]])) {
         $Count++;
-        $Menu .= "\r\n\t\t<li data=\"" . $C["cid"] . "\" class=\"mainLinks\"><a href=\"#\">" . $C["name"] . "</a>\r\n\t\t\t<ul class=\"subLinks_" . $C["cid"] . "\">";
+        $Menu .= "\r\n\t\t<li $data = \"" . $C["cid"] . "\" class=\"mainLinks\"><a $href = \"#\">" . $C["name"] . "</a>\r\n\t\t\t<ul class=\"subLinks_" . $C["cid"] . "\">";
         foreach ($StaffTools[$C["cid"]] as $subLink) {
             $Menu .= $subLink;
         }
         $Menu .= "\r\n\t\t\t</ul>\r\n\t\t</li>\r\n\t\t" . ($Count < $Total ? "<li class=\"ayrac\">|</li>" : "");
     }
 }
-$Menu .= "\r\n\t</ul>\r\n\t<div style=\"clear: both;\"></div>\r\n</nav>";
+$Menu .= "\r\n\t</ul>\r\n\t<div $style = \"clear: both;\"></div>\r\n</nav>";
 if ($DO != "") {
-    $Result = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT usergroups FROM ts_staffcp_tools WHERE filename = \"" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $DO) . "\"");
+    $Result = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT usergroups FROM ts_staffcp_tools WHERE $filename = \"" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $DO) . "\"");
     if (mysqli_num_rows($Result)) {
         $Row = mysqli_fetch_assoc($Result);
         $ToolFilePath = REALPATH . "tools/" . $DO . ".php";
@@ -102,11 +102,11 @@ if ($DO != "") {
 } else {
     $toolContent = function_16();
 }
-$_staffmessages = mysqli_num_rows(mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id FROM staffmessages WHERE answeredby = 0"));
-$_ts_reports = mysqli_num_rows(mysqli_query($GLOBALS["DatabaseConnect"], "SELECT rid FROM ts_reports WHERE confirmed = 0"));
-$_unbanrequests = mysqli_num_rows(mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id FROM unbanrequests WHERE reply = \"\""));
+$_staffmessages = mysqli_num_rows(mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id FROM staffmessages WHERE $answeredby = 0"));
+$_ts_reports = mysqli_num_rows(mysqli_query($GLOBALS["DatabaseConnect"], "SELECT rid FROM ts_reports WHERE $confirmed = 0"));
+$_unbanrequests = mysqli_num_rows(mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id FROM unbanrequests WHERE $reply = \"\""));
 echo var_36();
-echo "\r\n<div id=\"header\">\r\n\t\r\n\t<div id=\"topLinks\">\t\t\r\n\t\t<div class=\"links\">\r\n\t\t\t<a href=\"" . ADMINCPURL . "\" target=\"_top\">" . trim($Language543543[0]) . "</a> | <a href=\"" . WEBSITEURL . "index.php\" target=\"_blank\">" . trim($Language543543[1]) . "</a> | <a href=\"" . ADMINCPURL . "index.php?logout=true\" target=\"_top\">" . trim($Language543543[2]) . "</a>\r\n\t\t</div>\r\n\t\t<div class=\"infoMessages\">Staff Message(s): <a href=\"" . ADMINCPURL . "index.php?do=staff_messages\">" . $_staffmessages . "</a><span>|</span> Report(s): <a href=\"" . ADMINCPURL . "index.php?do=manage_reports\">" . $_ts_reports . "</a><span>|</span> Unban Request(s): <a href=\"" . ADMINCPURL . "index.php?do=unban_ip_requests\">" . $_unbanrequests . "</a></div>\r\n\t\t<div style=\"clear: both;\"></div>\r\n\t</div>\r\n\r\n\t<div id=\"logo\">\r\n\t\t<div class=\"serverClock\">" . date(DATE_RFC822) . "</div>\r\n\t\t<img src=\"" . ADMINCPURL . "images/cp/Home_32x32.png\" alt=\"\" title=\"\" /> " . $Language543543[3] . "\r\n\t</div>\r\n\r\n\t<div id=\"menu\">" . $Menu . "</div>\r\n\r\n\t<div id=\"mainWrapper\">" . $toolContent . "</div>\r\n\r\n\t<div style=\"clear: both;\"></div>\r\n\r\n</div>\r\n\r\n<script type=\"text/javascript\">\r\n\tfunction niceWrapper()\r\n\t{\r\n\t\t\r\n\t\tvar \$window = jQuery(window), \$wWidth = \$window.width(), \$wHeight = \$window.height();\r\n\t\tvar \$niceWrapperHeight = \$wHeight-jQuery(\"#header\").height(), \$niceWrapperWidth = \$wWidth;\r\n\r\n\t\tjQuery(\"#mainWrapper\").height(\$niceWrapperHeight).width(\$niceWrapperWidth);\r\n\t}\r\n\r\n\tjQuery(document).ready(function()\r\n\t{\r\n\t\tniceWrapper();\r\n\r\n\t\tjQuery(\"#mainWrapper\").scroll(function()\r\n\t\t{\r\n\t\t\tjQuery(\"#scrolling\").remove();\r\n\t\t\tif(jQuery(\"#mainWrapper\").scrollTop() > 1)\r\n\t\t\t{\r\n\t\t\t\tjQuery('<div id=\"scrolling\" style=\"position: fixed; right: 20px; opacity: 0.3; bottom: 5px; padding: 0; cursor: pointer; z-index: 1000; display: none;\"><img src=\"./images/up.png\" alt=\"\" title=\"\" /></div>').prependTo(\"#mainWrapper\").click(function(e)\r\n\t\t\t\t{\r\n\t\t\t\t\te.preventDefault();\r\n\t\t\t\t\tjQuery(\"#mainWrapper\").animate({ scrollTop: 0 }, \"slow\",  \"easeOutBounce\");\r\n\t\t\t\t\treturn false;\r\n\t\t\t\t}).fadeIn(\"slow\").hover(function(){jQuery(this).fadeTo(\"fast\", 1)}, function(){jQuery(this).fadeTo(\"fast\", 0.3)});\r\n\t\t\t}\r\n\t\t});\r\n\t});\r\n\r\n\tjQuery(window).resize(function()\r\n\t{\r\n\t\tniceWrapper();\r\n\t});\r\n</script>";
+echo "\r\n<div $id = \"header\">\r\n\t\r\n\t<div $id = \"topLinks\">\t\t\r\n\t\t<div class=\"links\">\r\n\t\t\t<a $href = \"" . ADMINCPURL . "\" $target = \"_top\">" . trim($Language543543[0]) . "</a> | <a $href = \"" . WEBSITEURL . "index.php\" $target = \"_blank\">" . trim($Language543543[1]) . "</a> | <a $href = \"" . ADMINCPURL . "index.php?$logout = true\" $target = \"_top\">" . trim($Language543543[2]) . "</a>\r\n\t\t</div>\r\n\t\t<div class=\"infoMessages\">Staff Message(s): <a $href = \"" . ADMINCPURL . "index.php?do=staff_messages\">" . $_staffmessages . "</a><span>|</span> Report(s): <a $href = \"" . ADMINCPURL . "index.php?do=manage_reports\">" . $_ts_reports . "</a><span>|</span> Unban Request(s): <a $href = \"" . ADMINCPURL . "index.php?do=unban_ip_requests\">" . $_unbanrequests . "</a></div>\r\n\t\t<div $style = \"clear: both;\"></div>\r\n\t</div>\r\n\r\n\t<div $id = \"logo\">\r\n\t\t<div class=\"serverClock\">" . date(DATE_RFC822) . "</div>\r\n\t\t<img $src = \"" . ADMINCPURL . "images/cp/Home_32x32.png\" $alt = \"\" $title = \"\" /> " . $Language543543[3] . "\r\n\t</div>\r\n\r\n\t<div $id = \"menu\">" . $Menu . "</div>\r\n\r\n\t<div $id = \"mainWrapper\">" . $toolContent . "</div>\r\n\r\n\t<div $style = \"clear: both;\"></div>\r\n\r\n</div>\r\n\r\n<script $type = \"text/javascript\">\r\n\tfunction niceWrapper()\r\n\t{\r\n\t\t\r\n\t\tvar \$window = jQuery(window), \$wWidth = \$window.width(), \$wHeight = \$window.height();\r\n\t\tvar \$niceWrapperHeight = \$wHeight-jQuery(\"#header\").height(), \$niceWrapperWidth = \$wWidth;\r\n\r\n\t\tjQuery(\"#mainWrapper\").height(\$niceWrapperHeight).width(\$niceWrapperWidth);\r\n\t}\r\n\r\n\tjQuery(document).ready(function()\r\n\t{\r\n\t\tniceWrapper();\r\n\r\n\t\tjQuery(\"#mainWrapper\").scroll(function()\r\n\t\t{\r\n\t\t\tjQuery(\"#scrolling\").remove();\r\n\t\t\tif(jQuery(\"#mainWrapper\").scrollTop() > 1)\r\n\t\t\t{\r\n\t\t\t\tjQuery('<div $id = \"scrolling\" $style = \"position: fixed; right: 20px; opacity: 0.3; bottom: 5px; padding: 0; cursor: pointer; z-index: 1000; display: none;\"><img $src = \"./images/up.png\" $alt = \"\" $title = \"\" /></div>').prependTo(\"#mainWrapper\").click(function(e)\r\n\t\t\t\t{\r\n\t\t\t\t\te.preventDefault();\r\n\t\t\t\t\tjQuery(\"#mainWrapper\").animate({ scrollTop: 0 }, \"slow\",  \"easeOutBounce\");\r\n\t\t\t\t\treturn false;\r\n\t\t\t\t}).fadeIn(\"slow\").hover(function(){jQuery(this).fadeTo(\"fast\", 1)}, function(){jQuery(this).fadeTo(\"fast\", 0.3)});\r\n\t\t\t}\r\n\t\t});\r\n\t});\r\n\r\n\tjQuery(window).resize(function()\r\n\t{\r\n\t\tniceWrapper();\r\n\t});\r\n</script>";
 echo var_37();
 exit;
 class Class_1
@@ -120,10 +120,10 @@ class Class_1
     {
         $result = "";
         for ($i = 0; $i < strlen($NEYI); $i++) {
-            currentChar = substr($NEYI, $i, 1);
-            keyChar = substr($this->AnahtarKelime, $i % strlen($this->AnahtarKelime) - 1, 1);
-            currentChar = chr(ord(currentChar) + ord(keyChar));
-            $result .= currentChar;
+            $currentChar = substr($NEYI, $i, 1);
+            $keyChar = substr($this->AnahtarKelime, $i % strlen($this->AnahtarKelime) - 1, 1);
+            $currentChar = chr(ord($currentChar) + ord($keyChar));
+            $result .= $currentChar;
         }
         return urlencode(base64_encode($result));
     }
@@ -132,10 +132,10 @@ class Class_1
         $result = "";
         $NEYI = base64_decode(urldecode($NEYI));
         for ($i = 0; $i < strlen($NEYI); $i++) {
-            currentChar = substr($NEYI, $i, 1);
-            keyChar = substr($this->AnahtarKelime, $i % strlen($this->AnahtarKelime) - 1, 1);
-            currentChar = chr(ord(currentChar) - ord(keyChar));
-            $result .= currentChar;
+            $currentChar = substr($NEYI, $i, 1);
+            $keyChar = substr($this->AnahtarKelime, $i % strlen($this->AnahtarKelime) - 1, 1);
+            $currentChar = chr(ord($currentChar) - ord($keyChar));
+            $result .= $currentChar;
         }
         return $result;
     }
@@ -158,14 +158,14 @@ function function_21()
 {
     $port = isset($_SERVER["SERVER_PORT"]) && $_SERVER["SERVER_PORT"] ? intval($_SERVER["SERVER_PORT"]) : 0;
     $port = in_array($port, [80, 443]) ? "" : ":" . $port;
-    var_38 = ":443" == $port || isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] && $_SERVER["HTTPS"] != "off" ? "https://" : "http://";
-    var_39 = var_40("HTTP_HOST");
-    var_41 = var_40("SERVER_NAME");
-    var_39 = substr_count(var_41, ".") < substr_count(var_39, ".") ? var_39 : var_41;
-    if (!(var_42 = var_40("PATH_INFO")) && !(var_42 = var_40("REDIRECT_URL")) && !(var_42 = var_40("URL")) && !(var_42 = var_40("PHP_SELF"))) {
-        var_42 = var_40("SCRIPT_NAME");
+    $var_38 = ":443" == $port || isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] && $_SERVER["HTTPS"] != "off" ? "https://" : "http://";
+    $var_39 = var_40("HTTP_HOST");
+    $var_41 = var_40("SERVER_NAME");
+    $var_39 = substr_count($var_41, ".") < substr_count($var_39, ".") ? $var_39 : $var_41;
+    if (!($var_42 = var_40("PATH_INFO")) && !($var_42 = var_40("REDIRECT_URL")) && !($var_42 = var_40("URL")) && !($var_42 = var_40("PHP_SELF"))) {
+        $var_42 = var_40("SCRIPT_NAME");
     }
-    $url = var_38 . var_39 . "/" . str_replace("index.php", "", ltrim(var_42, "/\\"));
+    $url = $var_38 . $var_39 . "/" . str_replace("index.php", "", ltrim($var_42, "/\\"));
     return $url;
 }
 function function_22($name)
@@ -187,8 +187,8 @@ function function_23()
 }
 function function_24()
 {
-    serverName = isset($_SERVER["SERVER_NAME"]) && !empty($_SERVER["SERVER_NAME"]) ? trim($_SERVER["SERVER_NAME"]) : (isset($_SERVER["HTTP_HOST"]) && !empty($_SERVER["HTTP_HOST"]) ? trim($_SERVER["HTTP_HOST"]) : "tsse_session");
-    return preg_replace("/[^a-zA-Z0-9_]/", "", serverName) . "_staffcp";
+    $serverName = isset($_SERVER["SERVER_NAME"]) && !empty($_SERVER["SERVER_NAME"]) ? trim($_SERVER["SERVER_NAME"]) : (isset($_SERVER["HTTP_HOST"]) && !empty($_SERVER["HTTP_HOST"]) ? trim($_SERVER["HTTP_HOST"]) : "tsse_session");
+    return preg_replace("/[^a-zA-Z0-9_]/", "", $serverName) . "_staffcp";
 }
 function function_25($forceLicenseCheck = false)
 {
@@ -197,75 +197,75 @@ function function_25($forceLicenseCheck = false)
     }
     $sha1_file = "6f61d11554b08433329a5f699317efb788f6d6bd";
     $md5_file = "296260076ea5ecbe72408012753702d0";
-    var_43 = REALPATH . "check_tool.php";
-    if (!file_exists(var_43) || !is_file(var_43)) {
+    $var_43 = REALPATH . "check_tool.php";
+    if (!file_exists($var_43) || !is_file($var_43)) {
         function_15("E1: Corrupted file detected! Please re-upload all Staff Panel files in-binary mode.");
     }
-    if ($sha1_file != @sha1_file(var_43) || $md5_file != @md5_file(var_43)) {
+    if ($sha1_file != @sha1_file($var_43) || $md5_file != @md5_file($var_43)) {
         function_15("E2: Corrupted file detected! Please re-upload all Staff Panel files in-binary mode.");
     }
     require_once ROOTPATH . "version.php";
-    var_44 = !empty($_SERVER["SERVER_NAME"]) ? var_45($_SERVER["SERVER_NAME"]) : (!empty($_SERVER["HTTP_HOST"]) ? var_45($_SERVER["HTTP_HOST"]) : "");
-    var_46(var_44);
+    $var_44 = !empty($_SERVER["SERVER_NAME"]) ? var_45($_SERVER["SERVER_NAME"]) : (!empty($_SERVER["HTTP_HOST"]) ? var_45($_SERVER["HTTP_HOST"]) : "");
+    var_46($var_44);
     if ($forceLicenseCheck || var_47()) {
-        require var_43;
+        require $var_43;
         if (!defined("TSSE2020CHECKTOOLPHP")) {
             function_15("E3: Corrupted file detected! Please re-upload all Staff Panel files in-binary mode.");
         }
-        var_48 = 604800;
-        var_49 = TIMENOW + var_48 . "|" . SCRIPT_VERSION . "|" . var_44;
-        var_50 = @new Class_1("TSSE8.02020httpstemplateshares.net!");
-        var_49 = @var_50->function_17(var_49);
-        mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE ts_config SET content = \"" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], var_49) . "\" WHERE configname = \"PEER\"");
+        $var_48 = 604800;
+        $var_49 = TIMENOW + $var_48 . "|" . SCRIPT_VERSION . "|" . $var_44;
+        $var_50 = @new Class_1("TSSE8.02020httpstemplateshares.net!");
+        $var_49 = @$var_50->function_17($var_49);
+        mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE ts_config SET $content = \"" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $var_49) . "\" WHERE $configname = \"PEER\"");
     }
 }
 function function_26()
 {
-    var_49 = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT content FROM ts_config WHERE configname = \"PEER\"");
-    if (!mysqli_num_rows(var_49)) {
+    $var_49 = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT content FROM ts_config WHERE $configname = \"PEER\"");
+    if (!mysqli_num_rows($var_49)) {
         mysqli_query($GLOBALS["DatabaseConnect"], "INSERT INTO `ts_config` (`configname` ,`content`) VALUES ('PEER', '')");
-        var_49 = "";
+        $var_49 = "";
     } else {
-        var_49 = mysqli_fetch_assoc(var_49);
-        var_49 = var_49["content"];
+        $var_49 = mysqli_fetch_assoc($var_49);
+        $var_49 = $var_49["content"];
     }
-    if (!var_49) {
+    if (!$var_49) {
         return true;
     }
-    var_50 = @new Class_1("TSSE8.02020httpstemplateshares.net!");
-    var_49 = @var_50->function_18(var_49);
-    if (!var_49) {
+    $var_50 = @new Class_1("TSSE8.02020httpstemplateshares.net!");
+    $var_49 = @$var_50->function_18($var_49);
+    if (!$var_49) {
         return true;
     }
-    if (substr_count(var_49, "|") != 2) {
+    if (substr_count($var_49, "|") != 2) {
         return true;
     }
-    list(var_51, var_52, var_53) = @explode("|", var_49);
-    if (!var_51 || !var_52 || !var_53) {
+    list($var_51, $var_52, $var_53) = @explode("|", $var_49);
+    if (!$var_51 || !$var_52 || !$var_53) {
         return true;
     }
     require_once ROOTPATH . "version.php";
-    var_44 = !empty($_SERVER["SERVER_NAME"]) ? var_45($_SERVER["SERVER_NAME"]) : (!empty($_SERVER["HTTP_HOST"]) ? var_45($_SERVER["HTTP_HOST"]) : "");
-    if (var_44 != var_53 || SCRIPT_VERSION != var_52) {
+    $var_44 = !empty($_SERVER["SERVER_NAME"]) ? var_45($_SERVER["SERVER_NAME"]) : (!empty($_SERVER["HTTP_HOST"]) ? var_45($_SERVER["HTTP_HOST"]) : "");
+    if ($var_44 != $var_53 || SCRIPT_VERSION != $var_52) {
         return true;
     }
-    if (var_51 < TIMENOW) {
+    if ($var_51 < TIMENOW) {
         return true;
     }
     return false;
 }
 function function_27()
 {
-    $Result = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE configname = \"MAIN\"");
+    $Result = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = \"MAIN\"");
     $Row = mysqli_fetch_assoc($Result);
     $MAIN = @unserialize($Row["content"]);
-    var_54 = ROOTPATH . $MAIN["cache"] . "/systemcache.dat";
-    if (!file_exists(var_54) || !is_file(var_54)) {
+    $var_54 = ROOTPATH . $MAIN["cache"] . "/systemcache.dat";
+    if (!file_exists($var_54) || !is_file($var_54)) {
         function_15("E4: I can not read the systemcache file in cache folder. Please re-run the installation.");
     }
     require_once ROOTPATH . "version.php";
-    var_44 = !empty($_SERVER["SERVER_NAME"]) ? var_45($_SERVER["SERVER_NAME"]) : (!empty($_SERVER["HTTP_HOST"]) ? var_45($_SERVER["HTTP_HOST"]) : "");
-    if (file_get_contents(var_54) != sha1(md5(SCRIPT_VERSION . var_44))) {
+    $var_44 = !empty($_SERVER["SERVER_NAME"]) ? var_45($_SERVER["SERVER_NAME"]) : (!empty($_SERVER["HTTP_HOST"]) ? var_45($_SERVER["HTTP_HOST"]) : "");
+    if (file_get_contents($var_54) != sha1(md5(SCRIPT_VERSION . $var_44))) {
         function_15("E5: Corrupted hash detected. Please re-run the installation.");
     }
 }
@@ -288,62 +288,62 @@ function function_16()
 {
     global $MAIN;
     global $Language543543;
-    global var_55;
+    global $var_55;
     global $DO;
-    $Result = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE configname = \"ANNOUNCE\"");
+    $Result = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = \"ANNOUNCE\"");
     $Row = mysqli_fetch_assoc($Result);
-    var_56 = @unserialize($Row["content"]);
-    var_57 = number_format(mysqli_num_rows(mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id FROM users")));
-    var_58 = number_format(mysqli_num_rows(mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id FROM users WHERE UNIX_TIMESTAMP(added) > " . (time() - 86400))));
-    var_59 = number_format(mysqli_num_rows(mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id FROM users WHERE status = \"pending\"")));
-    var_60 = number_format(mysqli_num_rows(mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id FROM comments WHERE UNIX_TIMESTAMP(added) > " . (time() - 86400))));
-    var_61 = number_format(mysqli_num_rows(mysqli_query($GLOBALS["DatabaseConnect"], "SELECT pid FROM tsf_posts WHERE dateline > " . (time() - 86400))));
-    if (var_56["xbt_active"] == "yes") {
-        var_62 = mysqli_num_rows(mysqli_query($GLOBALS["DatabaseConnect"], "SELECT fid FROM xbt_files_users WHERE `left` = 0 AND active=1"));
-        var_63 = mysqli_num_rows(mysqli_query($GLOBALS["DatabaseConnect"], "SELECT fid FROM xbt_files_users WHERE `left` > 0 AND active = 1"));
+    $var_56 = @unserialize($Row["content"]);
+    $var_57 = number_format(mysqli_num_rows(mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id FROM users")));
+    $var_58 = number_format(mysqli_num_rows(mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id FROM users WHERE UNIX_TIMESTAMP(added) > " . (time() - 86400))));
+    $var_59 = number_format(mysqli_num_rows(mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id FROM users WHERE $status = \"pending\"")));
+    $var_60 = number_format(mysqli_num_rows(mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id FROM comments WHERE UNIX_TIMESTAMP(added) > " . (time() - 86400))));
+    $var_61 = number_format(mysqli_num_rows(mysqli_query($GLOBALS["DatabaseConnect"], "SELECT pid FROM tsf_posts WHERE dateline > " . (time() - 86400))));
+    if ($var_56["xbt_active"] == "yes") {
+        $var_62 = mysqli_num_rows(mysqli_query($GLOBALS["DatabaseConnect"], "SELECT fid FROM xbt_files_users WHERE `left` = 0 AND $active = 1"));
+        $var_63 = mysqli_num_rows(mysqli_query($GLOBALS["DatabaseConnect"], "SELECT fid FROM xbt_files_users WHERE `left` > 0 AND $active = 1"));
     } else {
-        var_62 = mysqli_num_rows(mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id FROM peers WHERE seeder = \"yes\""));
-        var_63 = mysqli_num_rows(mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id FROM peers WHERE seeder = \"no\""));
+        $var_62 = mysqli_num_rows(mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id FROM peers WHERE $seeder = \"yes\""));
+        $var_63 = mysqli_num_rows(mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id FROM peers WHERE $seeder = \"no\""));
     }
-    var_64 = number_format(var_62 + var_63);
-    var_62 = number_format(var_62);
-    var_63 = number_format(var_63);
-    var_65 = number_format(mysqli_num_rows(mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id FROM users WHERE UNIX_TIMESTAMP(last_access) > " . (time() - 86400))));
-    var_66 = "";
-    var_67 = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT s.userid, s.location, u.username, g.title, g.namestyle FROM ts_sessions s LEFT JOIN users u ON (s.userid=u.id) LEFT JOIN usergroups g ON (u.usergroup=g.gid) WHERE s.userid <> \"0\" AND s.inforum = \"0\" AND (g.cansettingspanel = \"yes\" OR g.canstaffpanel = \"yes\" OR g.issupermod = \"yes\") AND s.lastactivity > " . (time() - 900) . " ORDER BY u.username ASC");
-    if (0 < (var_68 = mysqli_num_rows(var_67))) {
-        var_69 = [];
-        var_66 = [];
-        var_70 = 0;
-        while (var_71 = mysqli_fetch_assoc(var_67)) {
-            if (!isset(var_69[var_71["userid"]]) && preg_match("@\\/" . $MAIN["staffcp_path"] . "\\/@Uis", var_71["location"])) {
-                var_70++;
-                var_69[var_71["userid"]] = 1;
-                var_66[] = str_replace("{username}", var_71["username"] . " (" . var_71["title"] . ")", var_71["namestyle"]);
+    $var_64 = number_format($var_62 + $var_63);
+    $var_62 = number_format($var_62);
+    $var_63 = number_format($var_63);
+    $var_65 = number_format(mysqli_num_rows(mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id FROM users WHERE UNIX_TIMESTAMP(last_access) > " . (time() - 86400))));
+    $var_66 = "";
+    $var_67 = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT s.userid, s.location, u.username, g.title, g.namestyle FROM ts_sessions s LEFT JOIN users u ON (s.$userid = u.id) LEFT JOIN usergroups g ON (u.$usergroup = g.gid) WHERE s.userid <> \"0\" AND s.$inforum = \"0\" AND (g.$cansettingspanel = \"yes\" OR g.$canstaffpanel = \"yes\" OR g.$issupermod = \"yes\") AND s.lastactivity > " . (time() - 900) . " ORDER BY u.username ASC");
+    if (0 < ($var_68 = mysqli_num_rows($var_67))) {
+        $var_69 = [];
+        $var_66 = [];
+        $var_70 = 0;
+        while ($var_71 = mysqli_fetch_assoc($var_67)) {
+            if (!isset($var_69[$var_71["userid"]]) && preg_match("@\\/" . $MAIN["staffcp_path"] . "\\/@Uis", $var_71["location"])) {
+                $var_70++;
+                $var_69[$var_71["userid"]] = 1;
+                $var_66[] = str_replace("{username}", $var_71["username"] . " (" . $var_71["title"] . ")", $var_71["namestyle"]);
             }
         }
-        var_66 = implode(", ", var_66);
+        $var_66 = implode(", ", $var_66);
     }
     if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST" && isset($_POST["note"]) && $_SESSION["ADMIN_CANSETTINGSPANEL"] == "yes") {
         mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE `ts_staffcp_admin_notes` SET `note`= \"" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], trim($_POST["note"])) . "\"");
-        var_72 = true;
+        $var_72 = true;
     }
-    var_73 = "";
+    $var_73 = "";
     if ($_SESSION["ADMIN_CANSETTINGSPANEL"] == "yes") {
         $Result = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT note FROM `ts_staffcp_admin_notes`");
         if (mysqli_num_rows($Result)) {
             $Row = mysqli_fetch_assoc($Result);
-            var_74 = $Row["note"];
+            $var_74 = $Row["note"];
         } else {
-            var_74 = "";
+            $var_74 = "";
         }
-        var_73 .= "\r\n\t\t" . var_75(1, "exact", "note") . "\r\n\t\t<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" class=\"mainTable\">\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"tcat\">" . $Language543543[25] . "</td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t<form method=\"post\" action=\"" . $_SERVER["SCRIPT_NAME"] . "\">\r\n\t\t\t\t\t\t<textarea name=\"note\" id=\"note\" style=\"width: 100%; height: 80px;\">" . var_74 . "</textarea>\r\n\t\t\t\t\t\t<div style=\"margin-top: 5px;\">\r\n\t\t\t\t\t\t\t<input type=\"submit\" value=\"" . $Language543543[22] . "\" /> \r\n\t\t\t\t\t\t\t<input type=\"reset\" value=\"" . $Language543543[23] . "\" /> " . (isset(var_72) ? " <img src=\"" . ADMINCPURL . "images/accept.png\" alt=\"\" title=\"\" style=\"vertical-align: middle;\" />" : "") . "\r\n\t\t\t\t\t\t</div>\r\n\t\t\t\t\t</form>\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t</table>";
+        $var_73 .= "\r\n\t\t" . var_75(1, "exact", "note") . "\r\n\t\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"tcat\">" . $Language543543[25] . "</td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t<form $method = \"post\" $action = \"" . $_SERVER["SCRIPT_NAME"] . "\">\r\n\t\t\t\t\t\t<textarea $name = \"note\" $id = \"note\" $style = \"width: 100%; height: 80px;\">" . $var_74 . "</textarea>\r\n\t\t\t\t\t\t<div $style = \"margin-top: 5px;\">\r\n\t\t\t\t\t\t\t<input $type = \"submit\" $value = \"" . $Language543543[22] . "\" /> \r\n\t\t\t\t\t\t\t<input $type = \"reset\" $value = \"" . $Language543543[23] . "\" /> " . (isset($var_72) ? " <img $src = \"" . ADMINCPURL . "images/accept.png\" $alt = \"\" $title = \"\" $style = \"vertical-align: middle;\" />" : "") . "\r\n\t\t\t\t\t\t</div>\r\n\t\t\t\t\t</form>\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t</table>";
     }
-    var_76 = "\r\n\t<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" class=\"mainTable\">\r\n\t\t<tr>\r\n\t\t\t<td class=\"tcat\" align=\"left\" colspan=\"3\"><b>" . $Language543543[4] . "</b></td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\"><img src=\"images/total_users.png\" alt=\"\" border=\"0\" /></td>\r\n\t\t\t<td class=\"alt1\">" . $Language543543[7] . "</td><td class=\"alt1\" align=\"left\">" . var_57 . "</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt2\"><img src=\"images/new_users.png\" alt=\"\" border=\"0\" /></td>\r\n\t\t\t<td class=\"alt2\">" . $Language543543[8] . "</td><td class=\"alt2\" align=\"left\">" . var_58 . "</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\"><img src=\"images/unconfirmed_users.png\" alt=\"\" border=\"0\" /></td>\r\n\t\t\t<td class=\"alt1\">" . $Language543543[9] . "</td><td class=\"alt1\" align=\"left\">" . var_59 . "</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt2\"><img src=\"images/new_comments.png\" alt=\"\" border=\"0\" /></td>\r\n\t\t\t<td class=\"alt2\">" . $Language543543[10] . "</td><td class=\"alt2\" align=\"left\">" . var_60 . "</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\"><img src=\"images/new_posts.png\" alt=\"\" border=\"0\" /></td>\r\n\t\t\t<td class=\"alt1\">" . $Language543543[11] . "</td><td class=\"alt1\" align=\"left\">" . var_61 . "</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt2\"><img src=\"images/peers.png\" alt=\"\" border=\"0\" /></td>\r\n\t\t\t<td class=\"alt2\">" . $Language543543[12] . "</td><td class=\"alt2\" align=\"left\">" . var_62 . "/" . var_63 . "/" . var_64 . "</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\"><img src=\"images/active_users.png\" alt=\"\" border=\"0\" />\r\n\t\t\t</td><td class=\"alt1\">" . $Language543543[13] . "</td><td class=\"alt1\" align=\"left\">" . var_65 . "</td>\r\n\t\t</tr>\r\n\t</table>";
-    var_77 = "\r\n\t<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" class=\"mainTable\">\r\n\t\t<tr>\r\n\t\t\t<td class=\"tcat\"><b>" . $Language543543[16] . " (" . var_70 . ")</b></td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\">" . var_66 . "</td>\r\n\t\t</tr>\r\n\t</table>";
-    var_78 = get_magic_quotes_gpc() ? var_79("Warning!!! PHP Magic Quotes GPC is turned ON and must be Disabled!") : "";
-    var_80 = $MAIN["site_online"] != "yes" ? var_79("<a href=\"" . ADMINCPURL . "?do=manage_settings\">" . $Language543543[27] . "</a>") : "";
-    return var_80 . "\r\n\t" . var_78 . "\r\n\t" . var_55 . "\r\n\t" . var_73 . "\r\n\t" . var_76 . "\r\n\t" . var_77 . "\r\n\t";
+    $var_76 = "\r\n\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t<tr>\r\n\t\t\t<td class=\"tcat\" $align = \"left\" $colspan = \"3\"><b>" . $Language543543[4] . "</b></td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\"><img $src = \"images/total_users.png\" $alt = \"\" $border = \"0\" /></td>\r\n\t\t\t<td class=\"alt1\">" . $Language543543[7] . "</td><td class=\"alt1\" $align = \"left\">" . $var_57 . "</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt2\"><img $src = \"images/new_users.png\" $alt = \"\" $border = \"0\" /></td>\r\n\t\t\t<td class=\"alt2\">" . $Language543543[8] . "</td><td class=\"alt2\" $align = \"left\">" . $var_58 . "</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\"><img $src = \"images/unconfirmed_users.png\" $alt = \"\" $border = \"0\" /></td>\r\n\t\t\t<td class=\"alt1\">" . $Language543543[9] . "</td><td class=\"alt1\" $align = \"left\">" . $var_59 . "</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt2\"><img $src = \"images/new_comments.png\" $alt = \"\" $border = \"0\" /></td>\r\n\t\t\t<td class=\"alt2\">" . $Language543543[10] . "</td><td class=\"alt2\" $align = \"left\">" . $var_60 . "</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\"><img $src = \"images/new_posts.png\" $alt = \"\" $border = \"0\" /></td>\r\n\t\t\t<td class=\"alt1\">" . $Language543543[11] . "</td><td class=\"alt1\" $align = \"left\">" . $var_61 . "</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt2\"><img $src = \"images/peers.png\" $alt = \"\" $border = \"0\" /></td>\r\n\t\t\t<td class=\"alt2\">" . $Language543543[12] . "</td><td class=\"alt2\" $align = \"left\">" . $var_62 . "/" . $var_63 . "/" . $var_64 . "</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\"><img $src = \"images/active_users.png\" $alt = \"\" $border = \"0\" />\r\n\t\t\t</td><td class=\"alt1\">" . $Language543543[13] . "</td><td class=\"alt1\" $align = \"left\">" . $var_65 . "</td>\r\n\t\t</tr>\r\n\t</table>";
+    $var_77 = "\r\n\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t<tr>\r\n\t\t\t<td class=\"tcat\"><b>" . $Language543543[16] . " (" . $var_70 . ")</b></td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\">" . $var_66 . "</td>\r\n\t\t</tr>\r\n\t</table>";
+    $var_78 = get_magic_quotes_gpc() ? var_79("Warning!!! PHP Magic Quotes GPC is turned ON and must be Disabled!") : "";
+    $var_80 = $MAIN["site_online"] != "yes" ? var_79("<a $href = \"" . ADMINCPURL . "?do=manage_settings\">" . $Language543543[27] . "</a>") : "";
+    return $var_80 . "\r\n\t" . $var_78 . "\r\n\t" . $var_55 . "\r\n\t" . $var_73 . "\r\n\t" . $var_76 . "\r\n\t" . $var_77 . "\r\n\t";
 }
 function function_31($type = 1, $mode = "textareas", $elements = "")
 {
@@ -354,19 +354,19 @@ function function_31($type = 1, $mode = "textareas", $elements = "")
     define("TINYMCE_EMOTIONS_URL", "./../tinymce_emotions.php");
     ob_start();
     include "./../tinymce.php";
-    var_81 = ob_get_contents();
+    $var_81 = ob_get_contents();
     ob_end_clean();
-    return var_81;
+    return $var_81;
 }
 function function_32()
 {
     global $Language543543;
     global $loadYAHOO;
     global $loadPrototype;
-    $Result = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE configname = \"THEME\"");
+    $Result = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = \"THEME\"");
     $Row = mysqli_fetch_assoc($Result);
-    var_28 = @unserialize($Row["content"]);
-    return "\r\n\t<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\r\n\t<html xmlns=\"https://www.w3.org/1999/xhtml\" dir=\"ltr\" lang=\"en\">\r\n\t\t<head>\r\n\t\t\t<title>" . $Language543543[3] . "</title>\r\n\t\t\t<meta http-equiv=\"Content-Type\" content=\"text/html; charset=" . var_28["charset"] . "\" />\r\n\t\t\t\r\n\t\t\t<link rel=\"stylesheet\" type=\"text/css\" href=\"" . ADMINCPURL . "style/style.css?v=2\" />\r\n\t\t\t<link rel=\"stylesheet\" type=\"text/css\" href=\"" . WEBSITEURL . "scripts/jquery-ui-1.10.4.custom/css/flick/jquery-ui-1.10.4.custom.min.css\" />\r\n\t\t\t\r\n\t\t\t<script type=\"text/javascript\" src=\"" . WEBSITEURL . "scripts/jquery-1.11.2.min.js\"></script>\r\n\t\t\t<script type=\"text/javascript\" src=\"" . WEBSITEURL . "scripts/jquery-ui-1.10.4.custom/js/jquery-ui-1.10.4.custom.min.js\" /></script>\r\n\t\t\t<script type=\"text/javascript\" src=\"" . WEBSITEURL . "scripts/jquery.easing.1.3.js\" /></script>\r\n\r\n\t\t\t" . ($loadYAHOO ? "\r\n\t\t\t<!-- Sam Skin CSS for TabView -->\r\n\t\t\t<link rel=\"stylesheet\" type=\"text/css\" href=\"" . ADMINCPURL . "yui/tabview.css\">\r\n\r\n\t\t\t<!-- JavaScript Dependencies for Tabview: -->\r\n\t\t\t<script src=\"" . ADMINCPURL . "yui/yahoo-dom-event.js\"></script>\r\n\t\t\t<script src=\"" . ADMINCPURL . "yui/element-min.js\"></script>\r\n\r\n\t\t\t<!-- OPTIONAL: Connection (required for dynamic loading of data) -->\r\n\t\t\t<script src=\"" . ADMINCPURL . "yui/connection-min.js\"></script>\r\n\r\n\t\t\t<!-- Source file for TabView -->\r\n\t\t\t<script src=\"" . ADMINCPURL . "yui/tabview-min.js\"></script>\r\n\t\t\t\r\n\t\t\t<script type=\"text/javascript\">\r\n\t\t\t\tjQuery(document).ready(function()\r\n\t\t\t\t{\r\n\t\t\t\t\tvar tabView = new YAHOO.widget.TabView(\"manage_settings\");\r\n\t\t\t\t\tvar tabView = new YAHOO.widget.TabView(\"general_settings\");\r\n\t\t\t\t});\r\n\t\t\t</script>" : "") . "\r\n\r\n\t\t\t" . ($loadPrototype ? "\r\n\t\t\t<script type=\"text/javascript\" src=\"scripts/assets/js/prototype.js\"></script>\r\n\t\t\t<script type=\"text/javascript\" src=\"scripts/assets/js/scriptaculous.js\"></script>\r\n\t\t\t<script type=\"text/javascript\" src=\"scripts/assets/js/portal.js\"></script>\r\n\r\n\t\t\t<link rel=\"stylesheet\" href=\"scripts/assets/css/style.css\"  type=\"text/css\" media=\"screen\" />\r\n\t\t\t<link rel=\"stylesheet\" href=\"scripts/assets/css/portal.css\"  type=\"text/css\" media=\"screen\" />" : "") . "\r\n\r\n\t\t\t<script type=\"text/javascript\">\r\n\t\t\t\tfunction TSJump(url)\r\n\t\t\t\t{\r\n\t\t\t\t\twindow.location=url;\r\n\t\t\t\t}\r\n\t\t\t\tfunction TSGetID(IDName)\r\n\t\t\t\t{\r\n\t\t\t\t\tif(document.getElementById)\r\n\t\t\t\t\t{\r\n\t\t\t\t\t\treturn document.getElementById(IDName);\r\n\t\t\t\t\t}\r\n\t\t\t\t\telse if(document.all)\r\n\t\t\t\t\t{\r\n\t\t\t\t\t\treturn document.all[IDName];\r\n\t\t\t\t\t}\r\n\t\t\t\t\telse if(document.layers)\r\n\t\t\t\t\t{\r\n\t\t\t\t\t\treturn document.layers[IDName];\r\n\t\t\t\t\t}\r\n\t\t\t\t\telse\r\n\t\t\t\t\t{\r\n\t\t\t\t\t\treturn null;\r\n\t\t\t\t\t}\r\n\t\t\t\t}\r\n\r\n\t\t\t\tjQuery(document).ready(function()\r\n\t\t\t\t{\r\n\t\t\t\t\tjQuery('input[type=\"text\"],input[type=\"password\"]').each(function()\r\n\t\t\t\t\t{\r\n\t\t\t\t\t\t\$(this).attr(\"autocomplete\", \"new-password\");\r\n\t\t\t\t\t});\r\n\t\t\t\t});\r\n\r\n\t\t\t\tjQuery(document).ajaxStart(function(){jQuery(\"#ajaxLoader\").fadeIn(\"fast\")}).ajaxStop(function(){jQuery(\"#ajaxLoader\").fadeOut(\"fast\")});\r\n\t\t\t</script>\r\n\t\t</head>\r\n\t\t<body" . ($loadYAHOO ? " class=\"yui-skin-sam\"" : "") . ">\r\n\t\t\t<div id=\"ajaxLoader\"><div><img src=\"./images/ajax_loading.gif\" alt=\"\" title=\"\" /> Loading...</div></div>";
+    $var_28 = @unserialize($Row["content"]);
+    return "\r\n\t<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\r\n\t<html $xmlns = \"https://www.w3.org/1999/xhtml\" $dir = \"ltr\" $lang = \"en\">\r\n\t\t<head>\r\n\t\t\t<title>" . $Language543543[3] . "</title>\r\n\t\t\t<meta http-$equiv = \"Content-Type\" $content = \"text/html; $charset = " . $var_28["charset"] . "\" />\r\n\t\t\t\r\n\t\t\t<link $rel = \"stylesheet\" $type = \"text/css\" $href = \"" . ADMINCPURL . "style/style.css?$v = 2\" />\r\n\t\t\t<link $rel = \"stylesheet\" $type = \"text/css\" $href = \"" . WEBSITEURL . "scripts/jquery-ui-1.10.4.custom/css/flick/jquery-ui-1.10.4.custom.min.css\" />\r\n\t\t\t\r\n\t\t\t<script $type = \"text/javascript\" $src = \"" . WEBSITEURL . "scripts/jquery-1.11.2.min.js\"></script>\r\n\t\t\t<script $type = \"text/javascript\" $src = \"" . WEBSITEURL . "scripts/jquery-ui-1.10.4.custom/js/jquery-ui-1.10.4.custom.min.js\" /></script>\r\n\t\t\t<script $type = \"text/javascript\" $src = \"" . WEBSITEURL . "scripts/jquery.easing.1.3.js\" /></script>\r\n\r\n\t\t\t" . ($loadYAHOO ? "\r\n\t\t\t<!-- Sam Skin CSS for TabView -->\r\n\t\t\t<link $rel = \"stylesheet\" $type = \"text/css\" $href = \"" . ADMINCPURL . "yui/tabview.css\">\r\n\r\n\t\t\t<!-- JavaScript Dependencies for Tabview: -->\r\n\t\t\t<script $src = \"" . ADMINCPURL . "yui/yahoo-dom-event.js\"></script>\r\n\t\t\t<script $src = \"" . ADMINCPURL . "yui/element-min.js\"></script>\r\n\r\n\t\t\t<!-- OPTIONAL: Connection (required for dynamic loading of data) -->\r\n\t\t\t<script $src = \"" . ADMINCPURL . "yui/connection-min.js\"></script>\r\n\r\n\t\t\t<!-- Source file for TabView -->\r\n\t\t\t<script $src = \"" . ADMINCPURL . "yui/tabview-min.js\"></script>\r\n\t\t\t\r\n\t\t\t<script $type = \"text/javascript\">\r\n\t\t\t\tjQuery(document).ready(function()\r\n\t\t\t\t{\r\n\t\t\t\t\tvar $tabView = new YAHOO.widget.TabView(\"manage_settings\");\r\n\t\t\t\t\tvar $tabView = new YAHOO.widget.TabView(\"general_settings\");\r\n\t\t\t\t});\r\n\t\t\t</script>" : "") . "\r\n\r\n\t\t\t" . ($loadPrototype ? "\r\n\t\t\t<script $type = \"text/javascript\" $src = \"scripts/assets/js/prototype.js\"></script>\r\n\t\t\t<script $type = \"text/javascript\" $src = \"scripts/assets/js/scriptaculous.js\"></script>\r\n\t\t\t<script $type = \"text/javascript\" $src = \"scripts/assets/js/portal.js\"></script>\r\n\r\n\t\t\t<link $rel = \"stylesheet\" $href = \"scripts/assets/css/style.css\"  $type = \"text/css\" $media = \"screen\" />\r\n\t\t\t<link $rel = \"stylesheet\" $href = \"scripts/assets/css/portal.css\"  $type = \"text/css\" $media = \"screen\" />" : "") . "\r\n\r\n\t\t\t<script $type = \"text/javascript\">\r\n\t\t\t\tfunction TSJump(url)\r\n\t\t\t\t{\r\n\t\t\t\t\twindow.$location = url;\r\n\t\t\t\t}\r\n\t\t\t\tfunction TSGetID(IDName)\r\n\t\t\t\t{\r\n\t\t\t\t\tif(document.getElementById)\r\n\t\t\t\t\t{\r\n\t\t\t\t\t\treturn document.getElementById(IDName);\r\n\t\t\t\t\t}\r\n\t\t\t\t\telse if(document.all)\r\n\t\t\t\t\t{\r\n\t\t\t\t\t\treturn document.all[IDName];\r\n\t\t\t\t\t}\r\n\t\t\t\t\telse if(document.layers)\r\n\t\t\t\t\t{\r\n\t\t\t\t\t\treturn document.layers[IDName];\r\n\t\t\t\t\t}\r\n\t\t\t\t\telse\r\n\t\t\t\t\t{\r\n\t\t\t\t\t\treturn null;\r\n\t\t\t\t\t}\r\n\t\t\t\t}\r\n\r\n\t\t\t\tjQuery(document).ready(function()\r\n\t\t\t\t{\r\n\t\t\t\t\tjQuery('input[$type = \"text\"],input[$type = \"password\"]').each(function()\r\n\t\t\t\t\t{\r\n\t\t\t\t\t\t\$(this).attr(\"autocomplete\", \"new-password\");\r\n\t\t\t\t\t});\r\n\t\t\t\t});\r\n\r\n\t\t\t\tjQuery(document).ajaxStart(function(){jQuery(\"#ajaxLoader\").fadeIn(\"fast\")}).ajaxStop(function(){jQuery(\"#ajaxLoader\").fadeOut(\"fast\")});\r\n\t\t\t</script>\r\n\t\t</head>\r\n\t\t<body" . ($loadYAHOO ? " class=\"yui-skin-sam\"" : "") . ">\r\n\t\t\t<div $id = \"ajaxLoader\"><div><img $src = \"./images/ajax_loading.gif\" $alt = \"\" $title = \"\" /> Loading...</div></div>";
 }
 function function_33()
 {
@@ -374,14 +374,14 @@ function function_33()
 }
 function function_34()
 {
-    return "<p align=\"center\">Powered by Templateshares Special Edition | Copyright &copy;2006-" . date("Y") . " | <a href=\"https://templateshares.net\" target=\"_blank\">www.templateshares.net</a></p>";
+    return "<p $align = \"center\">Powered by Templateshares Special Edition | Copyright &copy;2006-" . date("Y") . " | <a $href = \"https://templateshares.net\" $target = \"_blank\">www.templateshares.net</a></p>";
 }
 function function_35($url)
 {
     if (!headers_sent()) {
         header("Location: " . $url);
     } else {
-        echo "\r\n\t\t<script type=\"text/javascript\">\r\n\t\t\twindow.location.href=\"" . $url . "\";\r\n\t\t</script>\r\n\t\t<noscript>\r\n\t\t\t<meta http-equiv=\"refresh\" content=\"0;url=" . $url . "\" />\r\n\t\t</noscript>";
+        echo "\r\n\t\t<script $type = \"text/javascript\">\r\n\t\t\twindow.location.$href = \"" . $url . "\";\r\n\t\t</script>\r\n\t\t<noscript>\r\n\t\t\t<meta http-$equiv = \"refresh\" $content = \"0;$url = " . $url . "\" />\r\n\t\t</noscript>";
     }
     exit;
 }
@@ -391,37 +391,37 @@ function function_36($message = "")
 }
 function function_15($message = "")
 {
-    echo "\r\n\t<html>\r\n\t\t<head>\r\n\t\t\t<title>TS SE: Critical Error!</title>\r\n\t\t\t<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\r\n\t\t\t<style>\r\n\t\t\t\t*{padding: 0; margin: 0}\r\n\t\t\t\t.alert\r\n\t\t\t\t{\r\n\t\t\t\t\tfont-weight: bold;\r\n\t\t\t\t\tcolor: #fff;\r\n\t\t\t\t\tfont: 14px verdana, geneva, lucida, \"lucida grande\", arial, helvetica, sans-serif;\r\n\t\t\t\t\tbackground: #ffacac;\r\n\t\t\t\t\ttext-align: center;\t\t\t\t\t\r\n\t\t\t\t\tborder-bottom: 4px solid #000;\r\n\t\t\t\t\tpadding: 20px;\r\n\t\t\t\t}\r\n\t\t\t</style>\r\n\t\t</head>\r\n\t\t<body>\r\n\t\t\t<div class=\"alert\">\r\n\t\t\t\t" . $message . "\r\n\t\t\t</div>\r\n\t\t</body>\r\n\t</html>\r\n\t";
+    echo "\r\n\t<html>\r\n\t\t<head>\r\n\t\t\t<title>TS SE: Critical Error!</title>\r\n\t\t\t<meta http-$equiv = \"Content-Type\" $content = \"text/html; $charset = UTF-8\" />\r\n\t\t\t<style>\r\n\t\t\t\t*{padding: 0; margin: 0}\r\n\t\t\t\t.alert\r\n\t\t\t\t{\r\n\t\t\t\t\tfont-weight: bold;\r\n\t\t\t\t\tcolor: #fff;\r\n\t\t\t\t\tfont: 14px verdana, geneva, lucida, \"lucida grande\", arial, helvetica, sans-serif;\r\n\t\t\t\t\tbackground: #ffacac;\r\n\t\t\t\t\ttext-align: center;\t\t\t\t\t\r\n\t\t\t\t\tborder-bottom: 4px solid #000;\r\n\t\t\t\t\tpadding: 20px;\r\n\t\t\t\t}\r\n\t\t\t</style>\r\n\t\t</head>\r\n\t\t<body>\r\n\t\t\t<div class=\"alert\">\r\n\t\t\t\t" . $message . "\r\n\t\t\t</div>\r\n\t\t</body>\r\n\t</html>\r\n\t";
     exit;
 }
 function function_37($INSTALL_URL)
 {
-    var_82 = md5("client|" . $INSTALL_URL . "|bf|success");
-    var_83 = "";
-    var_84 = [];
+    $var_82 = md5("client|" . $INSTALL_URL . "|bf|success");
+    $var_83 = "";
+    $var_84 = [];
     if (is_file(ROOTPATH . "admin/include/bf.php")) {
-        var_85 = file(ROOTPATH . "admin/include/bf.php");
-        var_83 = trim(str_replace(["\$bf_server_name = '", "';"], "", trim(var_85[2])));
+        $var_85 = file(ROOTPATH . "admin/include/bf.php");
+        $var_83 = trim(str_replace(["\$bf_server_name = '", "';"], "", trim($var_85[2])));
     }
-    if (empty(var_83) || var_82 != var_83) {
-        var_86 = ROOTPATH . "include/templates";
-        if (var_87 = scandir(var_86)) {
-            foreach (var_87 as var_88) {
-                if (is_dir(var_86 . "/" . var_88) && var_88 != "." && var_88 != "..") {
-                    if (is_file(var_86 . "/" . var_88 . "/footer.php")) {
-                        if (!preg_match("#Powered by <font color=\"white\"><strong><a href=\"https://templateshares.net\" target=\"_blank\">#iUs", file_get_contents(var_86 . "/" . var_88 . "/footer.php"))) {
-                            var_84[] = "Invalid TS SE Copyright notice detected in <b>" . var_86 . "/" . var_88 . "/footer.php</b>.<br />You must purchase a Branding Free License to remove The TS SE Copyright Notice!";
+    if (empty($var_83) || $var_82 != $var_83) {
+        $var_86 = ROOTPATH . "include/templates";
+        if ($var_87 = scandir($var_86)) {
+            foreach ($var_87 as $var_88) {
+                if (is_dir($var_86 . "/" . $var_88) && $var_88 != "." && $var_88 != "..") {
+                    if (is_file($var_86 . "/" . $var_88 . "/footer.php")) {
+                        if (!preg_match("#Powered by <font $color = \"white\"><strong><a $href = \"https://templateshares.net\" $target = \"_blank\">#iUs", file_get_contents($var_86 . "/" . $var_88 . "/footer.php"))) {
+                            $var_84[] = "Invalid TS SE Copyright notice detected in <b>" . $var_86 . "/" . $var_88 . "/footer.php</b>.<br />You must purchase a Branding Free License to remove The TS SE Copyright Notice!";
                         }
                     } else {
-                        var_84[] = "File does not exists or is not writable in <b>" . var_86 . "/" . var_88 . "/footer.php</b> directory!";
+                        $var_84[] = "File does not exists or is not writable in <b>" . $var_86 . "/" . $var_88 . "/footer.php</b> directory!";
                     }
                 }
             }
         } else {
-            var_84[] = "<b>" . var_86 . "</b> directory does not exists or is not writable!";
+            $var_84[] = "<b>" . $var_86 . "</b> directory does not exists or is not writable!";
         }
-        if (count(var_84)) {
-            function_15(implode("<br />", var_84));
+        if (count($var_84)) {
+            function_15(implode("<br />", $var_84));
         }
     }
 }

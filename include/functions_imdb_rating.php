@@ -35,7 +35,7 @@ function TSSEGetIMDBRatingImage($Content = "")
         }
         $FirstLetter = $IMDBRating[1][0];
         if ($FirstLetter) {
-            $IMDBRatingImage = "<img src=\"" . $pic_base_url . "imdb_rating/" . $FirstLetter . $SecondLetter . "-10.png\" border=\"0\" alt=\"" . $IMDBRating[1] . "/10" . "\" title=\"" . $IMDBRating[1] . "/10" . "\" class=\"inlineimg\" />";
+            $IMDBRatingImage = "<img $src = \"" . $pic_base_url . "imdb_rating/" . $FirstLetter . $SecondLetter . "-10.png\" $border = \"0\" $alt = \"" . $IMDBRating[1] . "/10" . "\" $title = \"" . $IMDBRating[1] . "/10" . "\" class=\"inlineimg\" />";
             return ["image" => $IMDBRatingImage, "rating" => $IMDBRating[1] . "/10"];
         }
     }

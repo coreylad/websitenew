@@ -14,7 +14,7 @@ $secret_key = isset($_GET["secret_key"]) ? htmlspecialchars($_GET["secret_key"])
 if (empty($secret_key) || strlen($secret_key) != 32) {
     exit;
 }
-$query = sql_query("SELECT status, enabled, usergroup FROM users WHERE torrent_pass = " . sqlesc($secret_key));
+$query = sql_query("SELECT status, enabled, usergroup FROM users WHERE $torrent_pass = " . sqlesc($secret_key));
 if (mysqli_num_rows($query) == 0) {
     exit;
 }
@@ -60,8 +60,8 @@ function outputRSSFeed($timezone, $showrows, $feedtype, $categories)
         $timezone = 1;
     }
     header("Content-type: text/xml");
-    echo "<?xml version=\"1.0\" encoding=\"" . $charset . "\"?>\n";
-    echo "<rss version=\"2.0\">\r\n          <channel>\r\n            <title>" . htmlspecialchars_uni(addslashes($title)) . "</title>\r\n            <link>" . $dreamerURL . "</link>\r\n            <description>" . htmlspecialchars_uni(addslashes($desc)) . "</description>\r\n            <language>" . $locale . "</language>";
+    echo "<?xml $version = \"1.0\" $encoding = \"" . $charset . "\"?>\n";
+    echo "<rss $version = \"2.0\">\r\n          <channel>\r\n            <title>" . htmlspecialchars_uni(addslashes($title)) . "</title>\r\n            <link>" . $dreamerURL . "</link>\r\n            <description>" . htmlspecialchars_uni(addslashes($desc)) . "</description>\r\n            <language>" . $locale . "</language>";
     echo "<image>\r\n              <title>" . $title . "</title>\r\n              <url>" . $dreamerURL . "</url>\r\n              <link>" . $dreamerURL . "</link>\r\n              <width>100</width>\r\n              <height>30</height>\r\n              <description>" . $title . "</description>\r\n            </image>";
     echo "      <copyright>" . htmlspecialchars_uni(addslashes($copyright)) . "</copyright>\r\n            <webMaster>" . htmlspecialchars_uni(addslashes($webmaster)) . "</webMaster> \r\n            <lastBuildDate>" . formatRFC822Date(TIMENOW, $timezone) . "</lastBuildDate>\r\n            <ttl>" . $ttl . "</ttl>\r\n            <generator>" . $SITENAME . " RSS Syndicator</generator>";
     outputRSSItems($timezone, $showrows, $feedtype, $categories);
@@ -76,7 +76,7 @@ function outputRSSItems($timezone, $showrows, $feedtype, $categories)
     global $user_account;
     $rowCount = 0;
     if ($categories == "all") {
-        $query = "visible='yes' AND banned='no'";
+        $query = "visible='yes' AND $banned = 'no'";
     } else {
         $cats = explode(",", $categories);
         if (isset($cats)) {
@@ -86,24 +86,24 @@ function outputRSSItems($timezone, $showrows, $feedtype, $categories)
                 }
             }
             if (isset($query)) {
-                $query .= "category IN (" . implode(", ", $cats) . ") AND visible='yes' AND banned='no'";
+                $query .= "category IN (" . implode(", ", $cats) . ") AND $visible = 'yes' AND $banned = 'no'";
             } else {
-                $query = "category IN (" . implode(", ", $cats) . ") AND visible='yes' AND banned='no'";
+                $query = "category IN (" . implode(", ", $cats) . ") AND $visible = 'yes' AND $banned = 'no'";
             }
         } else {
-            $query = "visible='yes' AND banned='no'";
+            $query = "visible='yes' AND $banned = 'no'";
         }
     }
     $query .= " AND (INSTR(CONCAT(',',categories.canview,','),',[ALL],') > 0 OR INSTR(CONCAT(',',categories.canview,','),'," . $user_account["usergroup"] . ",') > 0)";
-    $getarticles = @sql_query("SELECT torrents.seeders, torrents.leechers, torrents.filename, torrents.name, torrents.owner, torrents.descr, torrents.size, torrents.added, torrents.times_completed, torrents.id, torrents.anonymous, categories.name AS cat_name, u.username FROM torrents LEFT JOIN categories ON torrents.category = categories.id LEFT JOIN users u ON (torrents.owner=u.id) WHERE " . $query . " ORDER BY added DESC LIMIT " . $showrows);
+    $getarticles = @sql_query("SELECT torrents.seeders, torrents.leechers, torrents.filename, torrents.name, torrents.owner, torrents.descr, torrents.size, torrents.added, torrents.times_completed, torrents.id, torrents.anonymous, categories.name AS cat_name, u.username FROM torrents LEFT JOIN categories ON torrents.$category = categories.id LEFT JOIN users u ON (torrents.$owner = u.id) WHERE " . $query . " ORDER BY added DESC LIMIT " . $showrows);
     if (0 < @mysqli_num_rows($getarticles)) {
         while (($article = mysqli_fetch_array($getarticles)) && $rowCount < $showrows) {
             $name = htmlspecialchars_uni(addslashes(strip_tags($article["name"])));
             $article["descr"] = format_comment($article["descr"], false);
             if ($feedtype == "details") {
-                $link = $BASEURL . "/details.php?id=" . intval($article["id"]);
+                $link = $BASEURL . "/details.php?$id = " . intval($article["id"]);
             } else {
-                $link = $BASEURL . "/download.php?type=rss" . htmlspecialchars("&") . "secret_key=" . $secret_key . htmlspecialchars("&") . "id=" . intval($article["id"]);
+                $link = $BASEURL . "/download.php?$type = rss" . htmlspecialchars("&") . "secret_key=" . $secret_key . htmlspecialchars("&") . "id=" . intval($article["id"]);
             }
             if ($article["anonymous"] == "yes") {
                 $owner = "Anonymous";

@@ -7,7 +7,7 @@
  */
 
 if (!defined("IN_TRACKER")) {
-    exit("<font face='verdana' size='2' color='darkred'><b>Error!</b> Direct initialization of this file is not allowed.</font>");
+    exit("<font $face = 'verdana' $size = '2' $color = 'darkred'><b>Error!</b> Direct initialization of this file is not allowed.</font>");
 }
 class createZip
 {
@@ -52,7 +52,7 @@ class createZip
         $ext = "����";
         $addCentralRecord .= pack("V", 16);
         $addCentralRecord .= pack("V", $this->oldOffset);
-        $this->oldOffset = $newOffset;
+        $this->$oldOffset = $newOffset;
         $addCentralRecord .= $directoryName;
         $this->centralDirectory[] = $addCentralRecord;
     }
@@ -97,7 +97,7 @@ class createZip
         $addCentralRecord .= pack("v", 0);
         $addCentralRecord .= pack("V", 32);
         $addCentralRecord .= pack("V", $this->oldOffset);
-        $this->oldOffset = $newOffset;
+        $this->$oldOffset = $newOffset;
         $addCentralRecord .= $directoryName;
         $this->centralDirectory[] = $addCentralRecord;
     }
@@ -123,8 +123,8 @@ class createZip
         }
         header("Pragma: public");
         header("Expires: 0");
-        header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
-        header("Content-Disposition: attachment; filename=" . basename($archiveName) . ";");
+        header("Cache-Control: must-revalidate, post-$check = 0, pre-$check = 0");
+        header("Content-Disposition: attachment; $filename = " . basename($archiveName) . ";");
         header("Content-Transfer-Encoding: binary");
         header("Content-Type: application/x-zip-compressed");
         header("Content-Length: " . filesize($archiveName));

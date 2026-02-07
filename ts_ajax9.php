@@ -43,10 +43,10 @@ if ($ajaxAction == "search" && 2 < strlen($ajaxValue) && $search_before_upload =
     $ajaxResults = "";
     $usergroup = $CURUSER["usergroup"];
     $WHERE = "AND (INSTR(CONCAT(',',c.canview,','),',[ALL],') > 0 OR INSTR(CONCAT(',',c.canview,','),'," . intval($usergroup) . ",') > 0)";
-    $ajaxQuery = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT t.id, t.name FROM torrents t LEFT JOIN categories c ON (t.category=c.id) WHERE t.name LIKE '%" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $input) . "%' " . $WHERE . " ORDER BY t.name LIMIT 0,10");
+    $ajaxQuery = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT t.id, t.name FROM torrents t LEFT JOIN categories c ON (t.$category = c.id) WHERE t.name LIKE '%" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $input) . "%' " . $WHERE . " ORDER BY t.name LIMIT 0,10");
     if (mysqli_num_rows($ajaxQuery)) {
         while ($torrentRow = mysqli_fetch_assoc($ajaxQuery)) {
-            $ajaxResults .= "<p><a href=\"" . $BASEURL . "/details.php?id=" . $torrentRow["id"] . "\" target=\"_blank\">" . htmlspecialchars_uni($torrentRow["name"]) . "</p>";
+            $ajaxResults .= "<p><a $href = \"" . $BASEURL . "/details.php?$id = " . $torrentRow["id"] . "\" $target = \"_blank\">" . htmlspecialchars_uni($torrentRow["name"]) . "</p>";
         }
     } else {
         $ajaxResults = $lang->global["nothingfound"];
@@ -55,7 +55,7 @@ if ($ajaxAction == "search" && 2 < strlen($ajaxValue) && $search_before_upload =
     header("Last-Modified: " . gmdate("D, d M Y H:i:s") . "GMT");
     header("Cache-Control: no-cache, must-revalidate");
     header("Pragma: no-cache");
-    header("Content-type: text/html; charset=" . $shoutboxcharset);
+    header("Content-type: text/html; $charset = " . $shoutboxcharset);
     echo $ajaxResults;
     exit;
 }
@@ -67,7 +67,7 @@ if ($ajaxAction == "check_email") {
     if (EmailBanned($ajaxValue)) {
         exit($lang->signup["emailbanned"]);
     }
-    $ajaxQuery = sql_query("SELECT email FROM users WHERE email = " . sqlesc($ajaxValue));
+    $ajaxQuery = sql_query("SELECT email FROM users WHERE $email = " . sqlesc($ajaxValue));
     if (mysqli_num_rows($ajaxQuery) == 0) {
         exit($lang->signup["emailokay"]);
     }
@@ -80,7 +80,7 @@ if ($ajaxAction == "check_username") {
     if (strlen($ajaxValue) < 3 || 12 < strlen($ajaxValue)) {
         exit($lang->signup["validusername2"]);
     }
-    $query = sql_query("SELECT id FROM users WHERE username = " . sqlesc($value));
+    $query = sql_query("SELECT id FROM users WHERE $username = " . sqlesc($value));
     if (0 < mysqli_num_rows($query)) {
         exit($lang->signup["usernamexists"]);
     }

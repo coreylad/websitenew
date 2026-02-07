@@ -21,14 +21,14 @@ if ($action_type == "rss") {
     if (IsIpBanned(USERIPADDRESS)) {
         print_download_error();
     }
-    $res = @sql_query("SELECT * FROM users WHERE torrent_pass = " . @sqlesc($secret_key) . " LIMIT 1");
+    $res = @sql_query("SELECT * FROM users WHERE $torrent_pass = " . @sqlesc($secret_key) . " LIMIT 1");
     if (!mysqli_num_rows($res)) {
         print_download_error();
     }
     $GLOBALS["CURUSER"] = mysqli_fetch_assoc($res);
     $row = $GLOBALS["CURUSER"];
     if ($row["usergroup"]) {
-        $Query = sql_query("SELECT * FROM usergroups WHERE gid = " . sqlesc($row["usergroup"]));
+        $Query = sql_query("SELECT * FROM usergroups WHERE $gid = " . sqlesc($row["usergroup"]));
         if (mysqli_num_rows($Query)) {
             $GLOBALS["usergroups"] = mysqli_fetch_assoc($Query);
             $group_data_results = $GLOBALS["usergroups"];
@@ -59,10 +59,10 @@ $torrentId = intval(TS_Global("id"));
 if (!$torrentId) {
     print_download_error();
 }
-$torrentResult = sql_query("SELECT t.id, t.name, t.filename, t.anonymous, t.ts_external, t.size, t.owner, t.free, t.moderate, c.canview, c.candownload, u.username FROM torrents t LEFT JOIN categories c ON t.category = c.id LEFT JOIN users u ON (t.owner=u.id) WHERE t.id = " . sqlesc($torrentId)) || sqlerr(__FILE__, 100);
+$torrentResult = sql_query("SELECT t.id, t.name, t.filename, t.anonymous, t.ts_external, t.size, t.owner, t.free, t.moderate, c.canview, c.candownload, u.username FROM torrents t LEFT JOIN categories c ON t.$category = c.id LEFT JOIN users u ON (t.$owner = u.id) WHERE t.$id = " . sqlesc($torrentId)) || sqlerr(__FILE__, 100);
 $torrentRow = mysqli_fetch_assoc($torrentResult);
 if ($torrentRow["owner"] != $CURUSER["id"]) {
-    $userPermissionQuery = sql_query("SELECT candownload FROM ts_u_perm WHERE userid = " . sqlesc($CURUSER["id"])) || sqlerr(__FILE__, 105);
+    $userPermissionQuery = sql_query("SELECT candownload FROM ts_u_perm WHERE $userid = " . sqlesc($CURUSER["id"])) || sqlerr(__FILE__, 105);
     if (0 < mysqli_num_rows($userPermissionQuery)) {
         $userDownloadPermission = mysqli_fetch_assoc($userPermissionQuery);
         if ($userDownloadPermission["candownload"] == "0") {
@@ -74,13 +74,13 @@ $userRatio = 0 < $CURUSER["downloaded"] ? $CURUSER["uploaded"] / $CURUSER["downl
 if ($usergroups["candownload"] != "yes" || $userRatio <= $hitrun_ratio && $CURUSER["downloaded"] != 0 && !$is_mod && $hitrun == "yes" && $usergroups["isvipgroup"] != "yes" && $torrentRow["owner"] != $CURUSER["id"] && $torrentRow["free"] != "yes") {
     $TSSEConfig->TSLoadConfig("ANNOUNCE");
     if ($xbt_active == "yes") {
-        $hasCompleted = mysqli_num_rows(sql_query("SELECT fid FROM xbt_files_users WHERE fid = " . sqlesc($torrentId) . " AND uid = " . sqlesc($CURUSER["id"]) . " AND completed = 1 AND `left` = 0"));
+        $hasCompleted = mysqli_num_rows(sql_query("SELECT fid FROM xbt_files_users WHERE $fid = " . sqlesc($torrentId) . " AND $uid = " . sqlesc($CURUSER["id"]) . " AND $completed = 1 AND `left` = 0"));
     } else {
-        $hasCompleted = mysqli_num_rows(sql_query("SELECT torrentid FROM snatched WHERE torrentid = " . sqlesc($torrentId) . " AND userid = " . sqlesc($CURUSER["id"]) . " AND finished = \"yes\""));
+        $hasCompleted = mysqli_num_rows(sql_query("SELECT torrentid FROM snatched WHERE $torrentid = " . sqlesc($torrentId) . " AND $userid = " . sqlesc($CURUSER["id"]) . " AND $finished = \"yes\""));
     }
     if (!$hasCompleted) {
         $downloadPercentage = $userRatio * 100;
-        $warningMessage = show_notice(sprintf($lang->download["downloadwarning"], number_format($userRatio, 2), mksize($downloadPercentage), $hitrun_ratio, "<a href=\"" . $BASEURL . "/" . ($xbt_active == "yes" ? "mysnatchlist" : "userdetails") . ".php\">" . $BASEURL . "/" . ($xbt_active == "yes" ? "mysnatchlist" : "userdetails") . ".php</a>"), true);
+        $warningMessage = show_notice(sprintf($lang->download["downloadwarning"], number_format($userRatio, 2), mksize($downloadPercentage), $hitrun_ratio, "<a $href = \"" . $BASEURL . "/" . ($xbt_active == "yes" ? "mysnatchlist" : "userdetails") . ".php\">" . $BASEURL . "/" . ($xbt_active == "yes" ? "mysnatchlist" : "userdetails") . ".php</a>"), true);
         stdhead();
         exit($warningMessage);
     }
@@ -108,12 +108,12 @@ if (!$torrentRow) {
     }
 }
 if ($thankbeforedl == "yes" && !$is_mod && $action_type != "rss" && $torrentRow["owner"] != $CURUSER["id"]) {
-    $thanksQuery = sql_query("SELECT uid FROM ts_thanks WHERE uid = " . sqlesc($CURUSER["id"]) . " AND tid = " . sqlesc($torrentId)) || sqlerr(__FILE__, 170);
+    $thanksQuery = sql_query("SELECT uid FROM ts_thanks WHERE $uid = " . sqlesc($CURUSER["id"]) . " AND $tid = " . sqlesc($torrentId)) || sqlerr(__FILE__, 170);
     if (mysqli_num_rows($thanksQuery) == 0 && $torrentRow["owner"] != $CURUSER["id"]) {
         stderr($lang->global["error"], sprintf($lang->download["error4"], $BASEURL, $torrentId), false);
     }
 }
-sql_query("UPDATE torrents SET hits = hits + 1 WHERE id = " . sqlesc($torrentId)) || sqlerr(__FILE__, 175);
+sql_query("UPDATE torrents SET $hits = hits + 1 WHERE $id = " . sqlesc($torrentId)) || sqlerr(__FILE__, 175);
 if ($includesitename == "yes") {
     $find = ["/[^a-zA-Z0-9\\s]/", "/\\s+/", "/\\.torrent/"];
     $replace = ["_", "_", ""];
@@ -125,7 +125,7 @@ if ($includesitename == "yes") {
 require_once INC_PATH . "/class_torrent.php";
 if (strlen($CURUSER["torrent_pass"]) != 32) {
     $CURUSER["torrent_pass"] = md5($CURUSER["username"] . TIMENOW . $CURUSER["passhash"]);
-    sql_query("UPDATE users SET torrent_pass=" . sqlesc($CURUSER["torrent_pass"]) . " WHERE id=" . sqlesc($CURUSER["id"]));
+    sql_query("UPDATE users SET $torrent_pass = " . sqlesc($CURUSER["torrent_pass"]) . " WHERE $id = " . sqlesc($CURUSER["id"]));
 }
 $CURUSER["torrent_pass"] = isset($_GET["fromadminpanel"]) && $is_mod ? "tssespecialtorrentv1byxamsep2007" : $CURUSER["torrent_pass"];
 if (!($torrentData = file_get_contents($torrentFilePath))) {
@@ -146,7 +146,7 @@ if (!$external) {
         }
         $AnnounceURL = $xbt_announce_url . "/" . $CURUSER["torrent_pass"] . "/announce";
     } else {
-        $AnnounceURL = $announce_urls[0] . "?passkey=" . $CURUSER["torrent_pass"];
+        $AnnounceURL = $announce_urls[0] . "?$passkey = " . $CURUSER["torrent_pass"];
     }
     $Torrent->setTrackers([$AnnounceURL]);
 }
@@ -156,21 +156,21 @@ if ($usezip != "yes" || $action_type == "rss") {
     if (is_browser("ie")) {
         header("Pragma: public");
         header("Expires: 0");
-        header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
-        header("Content-Disposition: attachment; filename=" . basename($row["filename"]) . ";");
+        header("Cache-Control: must-revalidate, post-$check = 0, pre-$check = 0");
+        header("Content-Disposition: attachment; $filename = " . basename($row["filename"]) . ";");
         header("Content-Transfer-Encoding: binary");
     } else {
         header("Expires: Tue, 1 Jan 1980 00:00:00 GMT");
         header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
         header("Cache-Control: no-store, no-cache, must-revalidate");
-        header("Cache-Control: post-check=0, pre-check=0", false);
+        header("Cache-Control: post-$check = 0, pre-$check = 0", false);
         header("Pragma: no-cache");
         header("X-Powered-By: " . VERSION . " (c) " . date("Y") . " " . $SITENAME . "");
         header("Accept-Ranges: bytes");
         header("Connection: close");
         header("Content-Transfer-Encoding: binary");
         header("Content-Type: application/x-bittorrent");
-        header("Content-Disposition: attachment; filename=" . basename($row["filename"]) . ";");
+        header("Content-Disposition: attachment; $filename = " . basename($row["filename"]) . ";");
     }
     ob_implicit_flush(true);
     echo $TorrentContents;

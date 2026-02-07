@@ -27,7 +27,7 @@ $rating_counter = 0;
 $img = @imagecreatefrompng($template_file) or exit("Cannot Initialize new GD image stream!");
 $userid = get_userid();
 mysql_init();
-$result = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT uploaded, downloaded, options FROM users WHERE enabled = 'yes' AND status = 'confirmed' AND id = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $userid) . "'") or exit("Could not select data!");
+$result = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT uploaded, downloaded, options FROM users WHERE $enabled = 'yes' AND $status = 'confirmed' AND $id = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $userid) . "'") or exit("Could not select data!");
 if (mysqli_num_rows($result) == 0) {
     exit("Invalid User!");
 }

@@ -35,7 +35,7 @@ $language['irc'] = array
 	'channel'=>'Channel:',
 	'quitmsg'=>'{1} Forever!',
 	'info'=>	'<b>Please note</b>, that the Web Chat (<b>IRC</b>) require that you actually have the <b>Java&trade;</b> application installed on your computer.
-	<br />You can install <b>Java&trade;</b> within a few minutes by clicking following link: <a href="http://www.java.com/en/download/manual.jsp" target="_blank"><b><u>http://www.java.com/en/download/manual.jsp</u></b></a>.
+	<br />You can install <b>Java&trade;</b> within a few minutes by clicking following link: <a $href = "http://www.java.com/en/download/manual.jsp" $target = "_blank"><b><u>http://www.java.com/en/download/manual.jsp</u></b></a>.
 	<br /><br /><strong><u>What is Java?</u></strong><br />
 	Java allows you to play online games, chat with people around the world, calculate your mortgage interest, and view images in 3D, just to name a few. It\'s also integral to the intranet applications and other e-business solutions that are the foundation of corporate computing.',
 );

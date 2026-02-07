@@ -15,11 +15,11 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
     if ($ip) {
         $postResult = function_103("http://ip-to-country.webhosting.info/node/view/36", "ip_address=" . $ip);
         if ($postResult) {
-            $regex = "#<b>" . $ip . "</b>(.*).<br><br><img src=(.*)>#U";
+            $regex = "#<b>" . $ip . "</b>(.*).<br><br><img $src = (.*)>#U";
             preg_match_all($regex, $postResult, $result, PREG_SET_ORDER);
             if (isset($result[0][1])) {
                 $Res = str_replace(["{1}", "{2}"], [htmlspecialchars($ip), $result[0][1]], $Language[7]);
-                echo "\r\n\t\t\t\t<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" class=\"mainTable\">\r\n\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t<td class=\"tcat\" align=\"center\"><b>" . $Language[3] . "</b></td>\r\n\t\t\t\t\t</tr>\r\n\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t<td class=\"alt1\">" . $Res . "</td>\r\n\t\t\t\t\t</tr>";
+                echo "\r\n\t\t\t\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t<td class=\"tcat\" $align = \"center\"><b>" . $Language[3] . "</b></td>\r\n\t\t\t\t\t</tr>\r\n\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t<td class=\"alt1\">" . $Res . "</td>\r\n\t\t\t\t\t</tr>";
             } else {
                 $Message = function_76($Language[9]);
             }
@@ -30,21 +30,21 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
         $Message = function_76($Language[4]);
     }
 }
-echo "<form action=\"";
+echo "<form $action = \"";
 echo $_SERVER["SCRIPT_NAME"];
-echo "?do=iptocountry\" name=\"iptocountryform\" method=\"post\" onsubmit=\"document.iptocountryform.submit.disabled=true\">\r\n";
+echo "?do=iptocountry\" $name = \"iptocountryform\" $method = \"post\" $onsubmit = \"document.iptocountryform.submit.$disabled = true\">\r\n";
 echo $Message;
-echo "<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" class=\"mainTable\">\r\n\t<tr>\r\n\t\t<td class=\"tcat\" align=\"center\" colspan=\"2\"><b>";
+echo "<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t<tr>\r\n\t\t<td class=\"tcat\" $align = \"center\" $colspan = \"2\"><b>";
 echo $Language[8];
-echo "</b></td>\r\n\t</tr>\r\n\t<tr valign=\"top\">\r\n\t\t<td class=\"alt1\" align=\"right\">";
+echo "</b></td>\r\n\t</tr>\r\n\t<tr $valign = \"top\">\r\n\t\t<td class=\"alt1\" $align = \"right\">";
 echo $Language[2];
-echo "</td>\r\n\t\t<td class=\"alt1\"><input type=\"text\" class=\"bginput\" name=\"ip\" value=\"";
+echo "</td>\r\n\t\t<td class=\"alt1\"><input $type = \"text\" class=\"bginput\" $name = \"ip\" $value = \"";
 echo htmlspecialchars($ip);
-echo "\" size=\"35\" dir=\"ltr\" tabindex=\"1\" /></td>\r\n\t</tr>\r\n\t<tr>\r\n\t\t<td class=\"tcat2\"></td>\r\n\t\t<td class=\"tcat2\">\t\r\n\t\t\t<input type=\"submit\" name=\"submit\" class=\"button\" tabindex=\"1\" value=\"";
+echo "\" $size = \"35\" $dir = \"ltr\" $tabindex = \"1\" /></td>\r\n\t</tr>\r\n\t<tr>\r\n\t\t<td class=\"tcat2\"></td>\r\n\t\t<td class=\"tcat2\">\t\r\n\t\t\t<input $type = \"submit\" $name = \"submit\" class=\"button\" $tabindex = \"1\" $value = \"";
 echo $Language[5];
-echo "\" accesskey=\"s\" />\r\n\t\t\t<input type=\"reset\" class=\"button\" tabindex=\"1\" value=\"";
+echo "\" $accesskey = \"s\" />\r\n\t\t\t<input $type = \"reset\" class=\"button\" $tabindex = \"1\" $value = \"";
 echo $Language[6];
-echo "\" accesskey=\"r\" />\r\n\t\t</td>\r\n\t</tr>\r\n</table>\r\n</form>";
+echo "\" $accesskey = \"r\" />\r\n\t\t</td>\r\n\t</tr>\r\n</table>\r\n</form>";
 function function_75()
 {
     if (isset($_COOKIE["staffcplanguage"]) && is_dir("languages/" . $_COOKIE["staffcplanguage"]) && is_file("languages/" . $_COOKIE["staffcplanguage"] . "/staffcp.lang")) {
@@ -63,7 +63,7 @@ function function_78($url)
     if (!headers_sent()) {
         header("Location: " . $url);
     } else {
-        echo "\r\n\t\t<script type=\"text/javascript\">\r\n\t\t\twindow.location.href=\"" . $url . "\";\r\n\t\t</script>\r\n\t\t<noscript>\r\n\t\t\t<meta http-equiv=\"refresh\" content=\"0;url=" . $url . "\" />\r\n\t\t</noscript>";
+        echo "\r\n\t\t<script $type = \"text/javascript\">\r\n\t\t\twindow.location.$href = \"" . $url . "\";\r\n\t\t</script>\r\n\t\t<noscript>\r\n\t\t\t<meta http-$equiv = \"refresh\" $content = \"0;$url = " . $url . "\" />\r\n\t\t</noscript>";
     }
     exit;
 }
@@ -73,20 +73,20 @@ function function_76($Error)
 }
 function function_103($url, $data, $optional_headers = NULL)
 {
-    var_310 = ["http" => ["method" => "POST", "content" => $data]];
+    $var_310 = ["http" => ["method" => "POST", "content" => $data]];
     if ($optional_headers !== NULL) {
-        var_310["http"]["header"] = $optional_headers;
+        $var_310["http"]["header"] = $optional_headers;
     }
-    var_311 = stream_context_create(var_310);
-    $fp = @fopen($url, "rb", false, var_311);
+    $var_311 = stream_context_create($var_310);
+    $fp = @fopen($url, "rb", false, $var_311);
     if (!$fp) {
         return "";
     }
-    var_312 = @stream_get_contents($fp);
-    if (var_312 === false) {
+    $var_312 = @stream_get_contents($fp);
+    if ($var_312 === false) {
         return "";
     }
-    return var_312;
+    return $var_312;
 }
 
 ?>

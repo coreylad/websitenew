@@ -21,7 +21,7 @@ if (!$plugin) {
 if (strtoupper($_SERVER["REQUEST_METHOD"]) != "POST" && $plugin != "specialtorrents") {
     show_msg($lang->global["nopermission"] . " - A2");
 }
-$Row = sql_query("SELECT permission FROM ts_plugins WHERE active = 1 AND name=" . sqlesc($plugin));
+$Row = sql_query("SELECT permission FROM ts_plugins WHERE $active = 1 AND $name = " . sqlesc($plugin));
 if (!mysqli_num_rows($Row)) {
     show_msg($lang->global["nopermission"] . " - A3");
 }
@@ -50,25 +50,25 @@ if ($plugin == "specialtorrents") {
     $Output = "";
     $action = isset($_GET["action"]) ? trim($_GET["action"]) : (isset($_POST["action"]) ? trim($_POST["action"]) : "");
     if ($action) {
-        $Output = "\r\n\t\t<table cellpadding=\"5\" cellspacing=\"0\" width=\"100%\" id=\"table-best-seeded\" style=\"background: #fff; border: 0;\">\r\n\t\t\t<tr>\r\n\t\t\t\t<th style=\"width: 35px;\"></th>\r\n\t\t\t\t<th style=\"text-align: left;\">" . $lang->index["name"] . "</th>\r\n\t\t\t\t<th style=\"width: 35px;text-align: center;\">" . $lang->index["seeders"] . "</th>\r\n\t\t\t\t<th style=\"width: 35px;text-align: center;\">" . $lang->index["leechers"] . "</th>\r\n\t\t\t</tr>\r\n\t\t";
+        $Output = "\r\n\t\t<table $cellpadding = \"5\" $cellspacing = \"0\" $width = \"100%\" $id = \"table-best-seeded\" $style = \"background: #fff; border: 0;\">\r\n\t\t\t<tr>\r\n\t\t\t\t<th $style = \"width: 35px;\"></th>\r\n\t\t\t\t<th $style = \"text-align: left;\">" . $lang->index["name"] . "</th>\r\n\t\t\t\t<th $style = \"width: 35px;text-align: center;\">" . $lang->index["seeders"] . "</th>\r\n\t\t\t\t<th $style = \"width: 35px;text-align: center;\">" . $lang->index["leechers"] . "</th>\r\n\t\t\t</tr>\r\n\t\t";
         switch ($action) {
             case "recent-torrents":
-                $_Result = sql_query("SELECT t.*, c.id as catid, c.name as catname, c.image, c.canview FROM torrents t LEFT JOIN categories c ON (t.category=c.id) WHERE t.moderate = 0 ORDER BY t.added DESC LIMIT " . $limit);
+                $_Result = sql_query("SELECT t.*, c.id as catid, c.name as catname, c.image, c.canview FROM torrents t LEFT JOIN categories c ON (t.$category = c.id) WHERE t.$moderate = 0 ORDER BY t.added DESC LIMIT " . $limit);
                 break;
             case "best-seeded":
-                $_Result = sql_query("SELECT t.*, c.id as catid, c.name as catname, c.image, c.canview FROM torrents t LEFT JOIN categories c ON (t.category=c.id) WHERE t.moderate = 0 ORDER BY t.seeders DESC LIMIT " . $limit);
+                $_Result = sql_query("SELECT t.*, c.id as catid, c.name as catname, c.image, c.canview FROM torrents t LEFT JOIN categories c ON (t.$category = c.id) WHERE t.$moderate = 0 ORDER BY t.seeders DESC LIMIT " . $limit);
                 break;
             case "best-rated":
-                $_Result = sql_query("SELECT SUM(r.score) AS TotalScore, COUNT(r.userid) AS TotalScorers, t.*, c.id as catid, c.name as catname, c.image, c.canview FROM ts_ratings r LEFT JOIN torrents t ON (t.id=CONVERT(SUBSTRING_INDEX(r.ratingid,'_',-1),UNSIGNED INTEGER)) LEFT JOIN categories c ON (t.category=c.id) WHERE r.ratingid LIKE \"%torrent_%\" AND t.moderate = 0 GROUP BY r.ratingid ORDER BY TotalScore DESC LIMIT " . $limit);
+                $_Result = sql_query("SELECT SUM(r.score) AS TotalScore, COUNT(r.userid) AS TotalScorers, t.*, c.id as catid, c.name as catname, c.image, c.canview FROM ts_ratings r LEFT JOIN torrents t ON (t.$id = CONVERT(SUBSTRING_INDEX(r.ratingid,'_',-1),UNSIGNED INTEGER)) LEFT JOIN categories c ON (t.$category = c.id) WHERE r.ratingid LIKE \"%torrent_%\" AND t.$moderate = 0 GROUP BY r.ratingid ORDER BY TotalScore DESC LIMIT " . $limit);
                 break;
             case "most-active":
-                $_Result = sql_query("SELECT t.*, t.seeders+t.leechers AS totalPeers, c.id as catid, c.name as catname, c.image, c.canview FROM torrents t LEFT JOIN categories c ON (t.category=c.id) WHERE t.moderate = 0 ORDER BY totalPeers DESC LIMIT " . $limit);
+                $_Result = sql_query("SELECT t.*, t.seeders+t.leechers AS totalPeers, c.id as catid, c.name as catname, c.image, c.canview FROM torrents t LEFT JOIN categories c ON (t.$category = c.id) WHERE t.$moderate = 0 ORDER BY totalPeers DESC LIMIT " . $limit);
                 break;
             case "most-downloaded":
-                $_Result = sql_query("SELECT t.*, c.id as catid, c.name as catname, c.image, c.canview FROM torrents t LEFT JOIN categories c ON (t.category=c.id) WHERE t.moderate = 0 ORDER BY t.times_completed DESC LIMIT " . $limit);
+                $_Result = sql_query("SELECT t.*, c.id as catid, c.name as catname, c.image, c.canview FROM torrents t LEFT JOIN categories c ON (t.$category = c.id) WHERE t.$moderate = 0 ORDER BY t.times_completed DESC LIMIT " . $limit);
                 break;
             case "most-talked-about":
-                $_Result = sql_query("SELECT t.*, c.id as catid, c.name as catname, c.image, c.canview FROM torrents t LEFT JOIN categories c ON (t.category=c.id) WHERE t.moderate = 0 ORDER BY t.comments DESC LIMIT " . $limit);
+                $_Result = sql_query("SELECT t.*, c.id as catid, c.name as catname, c.image, c.canview FROM torrents t LEFT JOIN categories c ON (t.$category = c.id) WHERE t.$moderate = 0 ORDER BY t.comments DESC LIMIT " . $limit);
                 break;
             default:
                 if (!isset($_Result)) {
@@ -83,14 +83,14 @@ if ($plugin == "specialtorrents") {
                     if (!($Row["offensive"] == "yes" && TS_Match($CURUSER["options"], "E0") || $Row["canview"] != "[ALL]" && !in_array($CURUSER["usergroup"], explode(",", $Row["canview"])))) {
                         if ($action == "best-rated") {
                             $Image = 0 < $Row["TotalScorers"] ? round($Row["TotalScore"] / $Row["TotalScorers"]) : 0;
-                            $IMG = "<img src=\"" . $pic_base_url . "imdb_rating/" . $Image . "-10.png\" alt=\"\" title=\"\" border=\"0\" class=\"inlineimg\" />";
+                            $IMG = "<img $src = \"" . $pic_base_url . "imdb_rating/" . $Image . "-10.png\" $alt = \"\" $title = \"\" $border = \"0\" class=\"inlineimg\" />";
                         }
                         $trBG = "#fbfbfb";
                         if ($i % 2 == 0) {
                             $trBG = "#f6f6f5";
                             $i = 0;
                         }
-                        $Output .= "\r\n\t\t\t<tr style=\"background: " . $trBG . ";\">\r\n\t\t\t\t<td style=\"border: 0; width: 35px;text-align: center;\">" . ($Row["t_image"] ? "<img src=\"" . htmlspecialchars_uni($Row["t_image"]) . "\" alt=\"\" title=\"\" style=\"width: 35px;\" />" : "") . "</td>\r\n\t\t\t\t<td style=\"border: 0; text-align: left; vertical-align: middle; line-height:2;\">\r\n\t\t\t\t\t<span style=\"float: right;\">" . GetTorrentTags($Row) . "</span>\r\n\t\t\t\t\t<a href=\"" . ts_seo($Row["id"], $Row["name"], "s") . "\"><strong>" . htmlspecialchars_uni($Row["name"]) . "</strong></a>\r\n\t\t\t\t\t" . ($action == "best-rated" ? "<br />" . $IMG : "") . "\r\n\t\t\t\t\t" . ($action == "recent-torrents" ? "<br />" . $lang->index["uploaddat"] . " " . my_datee($dateformat . " " . $timeformat, $Row["added"]) : "") . "\r\n\t\t\t\t\t" . ($action == "best-seeded" ? "<br />" . ts_nf($Row["seeders"] + $Row["leechers"]) . " " . $lang->index["peers"] : "") . "\r\n\t\t\t\t\t" . ($action == "most-active" ? "<br />" . ts_nf($Row["seeders"] + $Row["leechers"]) . " " . $lang->index["peers"] : "") . "\r\n\t\t\t\t\t" . ($action == "most-downloaded" ? "<br />" . $lang->index["totaldown"] . ": " . ts_nf($Row["total_downloaded"]) : "") . "\r\n\t\t\t\t\t" . ($action == "most-talked-about" ? "<br />" . $lang->index["total_comments"] . ": " . ts_nf($Row["comments"]) : "") . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td style=\"border: 0; width: 35px;text-align: center;\">" . ts_nf(0 + $Row["seeders"]) . "</td>\r\n\t\t\t\t<td style=\"border: 0; width: 35px;text-align: center;\">" . ts_nf(0 + $Row["leechers"]) . "</td>\r\n\t\t\t</tr>";
+                        $Output .= "\r\n\t\t\t<tr $style = \"background: " . $trBG . ";\">\r\n\t\t\t\t<td $style = \"border: 0; width: 35px;text-align: center;\">" . ($Row["t_image"] ? "<img $src = \"" . htmlspecialchars_uni($Row["t_image"]) . "\" $alt = \"\" $title = \"\" $style = \"width: 35px;\" />" : "") . "</td>\r\n\t\t\t\t<td $style = \"border: 0; text-align: left; vertical-align: middle; line-height:2;\">\r\n\t\t\t\t\t<span $style = \"float: right;\">" . GetTorrentTags($Row) . "</span>\r\n\t\t\t\t\t<a $href = \"" . ts_seo($Row["id"], $Row["name"], "s") . "\"><strong>" . htmlspecialchars_uni($Row["name"]) . "</strong></a>\r\n\t\t\t\t\t" . ($action == "best-rated" ? "<br />" . $IMG : "") . "\r\n\t\t\t\t\t" . ($action == "recent-torrents" ? "<br />" . $lang->index["uploaddat"] . " " . my_datee($dateformat . " " . $timeformat, $Row["added"]) : "") . "\r\n\t\t\t\t\t" . ($action == "best-seeded" ? "<br />" . ts_nf($Row["seeders"] + $Row["leechers"]) . " " . $lang->index["peers"] : "") . "\r\n\t\t\t\t\t" . ($action == "most-active" ? "<br />" . ts_nf($Row["seeders"] + $Row["leechers"]) . " " . $lang->index["peers"] : "") . "\r\n\t\t\t\t\t" . ($action == "most-downloaded" ? "<br />" . $lang->index["totaldown"] . ": " . ts_nf($Row["total_downloaded"]) : "") . "\r\n\t\t\t\t\t" . ($action == "most-talked-about" ? "<br />" . $lang->index["total_comments"] . ": " . ts_nf($Row["comments"]) : "") . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td $style = \"border: 0; width: 35px;text-align: center;\">" . ts_nf(0 + $Row["seeders"]) . "</td>\r\n\t\t\t\t<td $style = \"border: 0; width: 35px;text-align: center;\">" . ts_nf(0 + $Row["leechers"]) . "</td>\r\n\t\t\t</tr>";
                         $i++;
                     }
                 }
@@ -108,7 +108,7 @@ function show_msg($message = "", $error = false)
     header("Last-Modified: " . gmdate("D, d M Y H:i:s") . "GMT");
     header("Cache-Control: no-cache, must-revalidate");
     header("Pragma: no-cache");
-    header("Content-type: text/html; charset=" . $shoutboxcharset);
+    header("Content-type: text/html; $charset = " . $shoutboxcharset);
     if ($error) {
         exit("<error>" . $message . "</error>");
     }

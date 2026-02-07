@@ -20,7 +20,7 @@ if (!is_valid_id($tid)) {
     stderr($lang->global["error"], $lang->tsf_forums["invalid_tid"]);
     exit;
 }
-($threadQuery = sql_query("SELECT \r\n\t\t\tt.tid, t.closed, t.pollid, f.type, f.fid as currentforumid, ff.fid as deepforumid \r\n\t\t\tFROM " . TSF_PREFIX . "threads t \t\t\t\r\n\t\t\tLEFT JOIN " . TSF_PREFIX . "forums f ON (f.fid=t.fid)\r\n\t\t\tLEFT JOIN " . TSF_PREFIX . "forums ff ON (ff.fid=f.pid)\r\n\t\t\tWHERE t.tid = " . sqlesc($tid) . " LIMIT 1")) || sqlerr(__FILE__, 48);
+($threadQuery = sql_query("SELECT \r\n\t\t\tt.tid, t.closed, t.pollid, f.type, f.fid as currentforumid, ff.fid as deepforumid \r\n\t\t\tFROM " . TSF_PREFIX . "threads t \t\t\t\r\n\t\t\tLEFT JOIN " . TSF_PREFIX . "forums f ON (f.$fid = t.fid)\r\n\t\t\tLEFT JOIN " . TSF_PREFIX . "forums ff ON (ff.$fid = f.pid)\r\n\t\t\tWHERE t.$tid = " . sqlesc($tid) . " LIMIT 1")) || sqlerr(__FILE__, 48);
 if (mysqli_num_rows($threadQuery) == 0) {
     stderr($lang->global["error"], $lang->tsf_forums["invalid_tid"]);
     exit;
@@ -62,8 +62,8 @@ if ($pollAction == "createnewpoll" && $usergroups["cancreatepoll"] == "yes") {
         $numberOptions = sqlesc(intval($optionsCount));
         sql_query("INSERT INTO " . TSF_PREFIX . "poll (question, dateline, options, votes, numberoptions) VALUES (" . $question . ", " . $dateline . ", " . $options . ", " . $votes . ", " . $numberOptions . ")") || sqlerr(__FILE__, 111);
         $pollid = mysqli_insert_id($GLOBALS["DatabaseConnect"]);
-        sql_query("UPDATE " . TSF_PREFIX . "threads SET pollid = " . sqlesc($pollid) . " WHERE tid = " . sqlesc($tid));
-        redirect("tsf_forums/showthread.php?tid=" . $tid);
+        sql_query("UPDATE " . TSF_PREFIX . "threads SET $pollid = " . sqlesc($pollid) . " WHERE $tid = " . sqlesc($tid));
+        redirect("tsf_forums/showthread.php?$tid = " . $tid);
         exit;
     }
 }
@@ -74,13 +74,13 @@ if ($pollAction == "new" && $usergroups["cancreatepoll"] == "yes") {
     }
     $showPollOptionsHtml = "";
     for ($optionIndex = 1; $optionIndex <= $polloptions; $optionIndex++) {
-        $showPollOptionsHtml .= "\r\n\t\t" . sprintf($lang->tsf_forums["poll6"], $optionIndex) . "<br />\r\n\t\t<input type=\"text\" name=\"options[" . $optionIndex . "]\" value=\"" . (isset($options[$optionIndex]) ? htmlspecialchars_uni($options[$optionIndex]) : "") . "\" size=\"50\"><br />\r\n\t\t";
+        $showPollOptionsHtml .= "\r\n\t\t" . sprintf($lang->tsf_forums["poll6"], $optionIndex) . "<br />\r\n\t\t<input $type = \"text\" $name = \"options[" . $optionIndex . "]\" $value = \"" . (isset($options[$optionIndex]) ? htmlspecialchars_uni($options[$optionIndex]) : "") . "\" $size = \"50\"><br />\r\n\t\t";
     }
     stdhead($lang->tsf_forums["poll1"]);
     if (isset($pollError)) {
         stdmsg($lang->global["error"], $pollError, false);
     }
-    echo "\r\n\t<form method=\"post\" action=\"" . $_SERVER["SCRIPT_NAME"] . "\">\r\n\t<input type=\"hidden\" name=\"do\" value=\"createnewpoll\">\r\n\t<input type=\"hidden\" name=\"tid\" value=\"" . $tid . "\">\r\n\t<input type=\"hidden\" name=\"polloptions\" value=\"" . $polloptions . "\">\r\n\t<table border=\"0\" cellspacing=\"0\" cellpadding=\"4\" class=\"none\" width=\"100%\">\r\n\t\t<tr>\r\n\t\t\t<td class=\"thead\">" . $lang->tsf_forums["poll1"] . "</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td>\r\n\t\t\t\t<FIELDSET>\r\n\t\t\t\t\t<LEGEND>" . $lang->tsf_forums["poll4"] . "</LEGEND>\r\n\t\t\t\t\t<input type=\"text\" size=\"50\" name=\"question\" value=\"" . htmlspecialchars_uni($question) . "\">\r\n\t\t\t\t</FIELDSET>\r\n\t\t\t\t<FIELDSET>\t\t\t\r\n\t\t\t\t\t<LEGEND>" . $lang->tsf_forums["poll5"] . "</LEGEND>\r\n\t\t\t\t\t" . $showPollOptionsHtml . "\r\n\t\t\t\t</FIELDSET>\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td align=\"center\"><input type=\"submit\" value=\"" . $lang->tsf_forums["poll7"] . "\"></td>\r\n\t\t</tr>\r\n\t</table>\r\n\t</form>\r\n\t";
+    echo "\r\n\t<form $method = \"post\" $action = \"" . $_SERVER["SCRIPT_NAME"] . "\">\r\n\t<input $type = \"hidden\" $name = \"do\" $value = \"createnewpoll\">\r\n\t<input $type = \"hidden\" $name = \"tid\" $value = \"" . $tid . "\">\r\n\t<input $type = \"hidden\" $name = \"polloptions\" $value = \"" . $polloptions . "\">\r\n\t<table $border = \"0\" $cellspacing = \"0\" $cellpadding = \"4\" class=\"none\" $width = \"100%\">\r\n\t\t<tr>\r\n\t\t\t<td class=\"thead\">" . $lang->tsf_forums["poll1"] . "</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td>\r\n\t\t\t\t<FIELDSET>\r\n\t\t\t\t\t<LEGEND>" . $lang->tsf_forums["poll4"] . "</LEGEND>\r\n\t\t\t\t\t<input $type = \"text\" $size = \"50\" $name = \"question\" $value = \"" . htmlspecialchars_uni($question) . "\">\r\n\t\t\t\t</FIELDSET>\r\n\t\t\t\t<FIELDSET>\t\t\t\r\n\t\t\t\t\t<LEGEND>" . $lang->tsf_forums["poll5"] . "</LEGEND>\r\n\t\t\t\t\t" . $showPollOptionsHtml . "\r\n\t\t\t\t</FIELDSET>\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td $align = \"center\"><input $type = \"submit\" $value = \"" . $lang->tsf_forums["poll7"] . "\"></td>\r\n\t\t</tr>\r\n\t</table>\r\n\t</form>\r\n\t";
     stdfoot();
     exit;
 }

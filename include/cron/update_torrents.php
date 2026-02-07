@@ -25,7 +25,7 @@ if ($xbt_active == "yes") {
         $torrents[$row["torrent"]][$key] = $row["c"];
     }
 }
-$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id, seeders, leechers FROM torrents WHERE ts_external = 'no'");
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id, seeders, leechers FROM torrents WHERE $ts_external = 'no'");
 $CQueryCount++;
 while ($torrent = mysqli_fetch_assoc($query)) {
     $Update = [];
@@ -39,7 +39,7 @@ while ($torrent = mysqli_fetch_assoc($query)) {
     }
     if (count($Update)) {
         $Update[] = "visible = 'yes'";
-        mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE torrents SET " . implode(",", $Update) . " WHERE id = " . sqlesc($torrent["id"]));
+        mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE torrents SET " . implode(",", $Update) . " WHERE $id = " . sqlesc($torrent["id"]));
         $CQueryCount++;
     }
 }

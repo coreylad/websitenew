@@ -63,9 +63,9 @@ $language['shoutbox'] = array
 	'c4'=>'VIP Room', //Added in v6.2
 	'c5'=>'Uploader Room', //Added in v6.2
 	'c'=>'Channels', //Added in v6.2
-	'inactive'=>'We have noticed that you have been inactive for over 5 minute(s).<br>We have stopped running the Shoutbox due to your inactivity.<br>If you are back again, please click <a href=\"#shoutbox\" onclick=\"TSImBack();\"><u>here</u></a>.',//Added in v7.1
+	'inactive'=>'We have noticed that you have been inactive for over 5 minute(s).<br>We have stopped running the Shoutbox due to your inactivity.<br>If you are back again, please click <a $href = \"#shoutbox\" $onclick = \"TSImBack();\"><u>here</u></a>.',//Added in v7.1
 	'tagerror'=>'Following tags has been disabled by Administrator: {1}. Please remove those tags from your shout and try again.',//Added in v7.2
-	'shoutboxisdisabled' => 'Shoutbox has been disabled. To enable it again, click <a href="{1}/usercp.php?act=edit_details#shoutbox-options">here</a>.',//Added in v7.4
+	'shoutboxisdisabled' => 'Shoutbox has been disabled. To enable it again, click <a $href = "{1}/usercp.php?$act = edit_details#shoutbox-options">here</a>.',//Added in v7.4
 	'fb-shoutbox' => 'Fixed Shoutbox',//Added in v7.4
 	'fb-shoutbox2' => 'Check this box to use Shoutbox everywhere.',//Added in v7.4	
 	'fb-shoutbox3' => 'Type your message here and press enter',//Added in v7.4

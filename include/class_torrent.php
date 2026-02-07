@@ -7,7 +7,7 @@
  */
 
 if (!defined("IN_TRACKER")) {
-    exit("<font face='verdana' size='2' color='darkred'><b>Error!</b> Direct initialization of this file is not allowed.</font>");
+    exit("<font $face = 'verdana' $size = '2' $color = 'darkred'><b>Error!</b> Direct initialization of this file is not allowed.</font>");
 }
 class Torrent
 {
@@ -16,18 +16,18 @@ class Torrent
     public $error = NULL;
     public function loadResource(&$data)
     {
-        $this->torrent = BEncode::decode($data);
+        $this->$torrent = BEncode::decode($data);
         if ($this->torrent->get_type() == "error") {
-            $this->error = $this->torrent->get_plain();
+            $this->$error = $this->torrent->get_plain();
             return false;
         }
         if ($this->torrent->get_type() != "dictionary") {
-            $this->error = "The file was not a valid torrent file.";
+            $this->$error = "The file was not a valid torrent file.";
             return false;
         }
-        $this->info = $this->torrent->get_value("info");
+        $this->$info = $this->torrent->get_value("info");
         if (!$this->info) {
-            $this->error = "Could not find info dictionary.";
+            $this->$error = "Could not find info dictionary.";
             return false;
         }
         return true;
@@ -73,8 +73,8 @@ class Torrent
         $length = $this->info->get_value("length");
         if ($length) {
             $file = new Torrent_File();
-            $file->name = $this->info->get_value("name")->get_plain();
-            $file->length = $this->info->get_value("length")->get_plain();
+            $file->$name = $this->info->get_value("name")->get_plain();
+            $file->$length = $this->info->get_value("length")->get_plain();
             array_push($filelist, $file);
         } else {
             if ($this->info->get_value("files")) {
@@ -85,8 +85,8 @@ class Torrent
                     while (list($key, $value2) = each($path)) {
                         $file->name .= "/" . $value2->get_plain();
                     }
-                    $file->name = ltrim($file->name, "/");
-                    $file->length = $value->get_value("length")->get_plain();
+                    $file->$name = ltrim($file->name, "/");
+                    $file->$length = $value->get_value("length")->get_plain();
                     array_push($filelist, $file);
                 }
             }
@@ -312,7 +312,7 @@ class BEncode_Error
     private $error = NULL;
     public function __construct($error)
     {
-        $this->error = $error;
+        $this->$error = $error;
     }
     public function get_plain()
     {
@@ -328,13 +328,13 @@ class BEncode_Int
     private $value = NULL;
     public function __construct($value = NULL)
     {
-        $this->value = $value;
+        $this->$value = $value;
     }
     public function decode(&$raw, &$offset)
     {
         $end = strpos($raw, "e", $offset);
         $offset++;
-        $this->value = substr($raw, $offset, $end - $offset);
+        $this->$value = substr($raw, $offset, $end - $offset);
         $offset += $end - $offset;
     }
     public function get_plain()
@@ -351,7 +351,7 @@ class BEncode_Int
     }
     public function set($value)
     {
-        $this->value = $value;
+        $this->$value = $value;
     }
 }
 class BEncode_Dictionary
@@ -378,7 +378,7 @@ class BEncode_Dictionary
                 $dictionary[$name->get_plain()] = $value;
             }
         }
-        $this->value = $dictionary;
+        $this->$value = $dictionary;
     }
     public function get_value($key)
     {
@@ -441,7 +441,7 @@ class BEncode_List
                 array_push($list, $value);
             }
         }
-        $this->value = $list;
+        $this->$value = $list;
     }
     public function encode()
     {
@@ -466,7 +466,7 @@ class BEncode_String
     private $value = NULL;
     public function __construct($value = NULL)
     {
-        $this->value = $value;
+        $this->$value = $value;
     }
     public function decode(&$raw, &$offset)
     {
@@ -474,7 +474,7 @@ class BEncode_String
         $len = substr($raw, $offset, $end - $offset);
         $offset += $len + $end - $offset;
         $end++;
-        $this->value = substr($raw, $end, $len);
+        $this->$value = substr($raw, $end, $len);
     }
     public function get_plain()
     {
@@ -491,7 +491,7 @@ class BEncode_String
     }
     public function set($value)
     {
-        $this->value = $value;
+        $this->$value = $value;
     }
 }
 

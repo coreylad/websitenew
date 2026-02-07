@@ -19,7 +19,7 @@ $sid = intval($_POST["sid"]);
 $NewShout = fixAjaxText($_POST["newshout"]);
 if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST" && $CURUSER["id"] && $sid && $NewShout && $CURUSER["id"] == $uid) {
     $TSSEConfig->TSLoadConfig("SHOUTBOX");
-    $query = sql_query("SELECT uid, notice FROM ts_shoutbox WHERE sid = '" . $sid . "'");
+    $query = sql_query("SELECT uid, notice FROM ts_shoutbox WHERE $sid = '" . $sid . "'");
     if (0 < mysqli_num_rows($query)) {
         $shouts = mysqli_fetch_assoc($query);
         if ($is_mod || $S_CANEDIT == "yes" && $shouts["uid"] == $CURUSER["id"]) {
@@ -52,12 +52,12 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST" && $CURUSER["id"] && $sid &
                     }
                 }
             }
-            sql_query("UPDATE ts_shoutbox SET shout = " . sqlesc($text) . " WHERE sid = '" . $sid . "'");
+            sql_query("UPDATE ts_shoutbox SET $shout = " . sqlesc($text) . " WHERE $sid = '" . $sid . "'");
             header("Expires: Sat, 1 Jan 2000 01:00:00 GMT");
             header("Last-Modified: " . gmdate("D, d M Y H:i:s") . "GMT");
             header("Cache-Control: no-cache, must-revalidate");
             header("Pragma: no-cache");
-            header("Content-type: text/html; charset=" . $shoutboxcharset);
+            header("Content-type: text/html; $charset = " . $shoutboxcharset);
             if ($shouts["notice"] == "1") {
                 $lang->load("shoutbox");
                 $text = sprintf($lang->shoutbox["sysnotice"], $text);

@@ -12,7 +12,7 @@ $indexstats = array (
   'totaldownloaded' => '0.00 KB',
   'totaluploaded' => '0.00 KB',
   'registered' => '1',
-  'latestuser' => '<a href="http://127.0.0.1/tsse/user-profile-1/admin">admin</a>',
+  'latestuser' => '<a $href = "http://127.0.0.1/tsse/user-profile-1/admin">admin</a>',
   'totalposts' => '1',
   'totalthreads' => '1',
 );

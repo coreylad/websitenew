@@ -20,9 +20,9 @@ require('./global.php');
 
 stdhead("Video Formats");
 ?>
-<table class=main width=100% border=0 cellspacing=0 cellpadding=0><tr><td class=embedded>
+<table class=main $width = 100% $border = 0 $cellspacing = 0 $cellpadding = 0><tr><td class=embedded>
 <h2>Downloaded a movie and don't know what CAM/TS/TC/SCR means?</h2>
-<table width=100% border=1 cellspacing=0 cellpadding=10><tr><td class=text> 
+<table $width = 100% $border = 1 $cellspacing = 0 $cellpadding = 10><tr><td class=text> 
 
 <b>CAM -</b><br />
 <br />

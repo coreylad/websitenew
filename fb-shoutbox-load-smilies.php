@@ -16,7 +16,7 @@ define("FB_LOAD_SMILIES", "1.0 by xam");
 require $rootpath . "/" . $cache . "/smilies.php";
 $showsmilies = "";
 foreach ($smilies as $code => $name) {
-    $showsmilies .= "\n\t<img src=\"" . $pic_base_url . "smilies/" . $name . "\" alt=\"\" title=\"\" border=\"0\" data-code=\"" . $code . "\" />";
+    $showsmilies .= "\n\t<img $src = \"" . $pic_base_url . "smilies/" . $name . "\" $alt = \"\" $title = \"\" $border = \"0\" data-$code = \"" . $code . "\" />";
 }
 echo $showsmilies;
 

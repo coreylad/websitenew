@@ -28,7 +28,7 @@ $language['viewsnatches'] = array
 (
 	'headmessage'		=>'Snatch Details',
 	'snatchdetails'		=>'Snatch Details for {1}</b></a>', // Changed v3.6
-	'message'			=>'<p align=center class=success>The users at the top finished the download most recently</p>',
+	'message'			=>'<p $align = center class=success>The users at the top finished the download most recently</p>',
 	'username'			=>'Username',
 	'uploaded'			=>'Uploaded',
 	'downloaded'		=>'Downloaded',

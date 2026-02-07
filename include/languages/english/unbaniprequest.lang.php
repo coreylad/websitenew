@@ -34,7 +34,7 @@ $language['unbaniprequest'] = array
 	'error5'	=>	 'Reason too short!',
 	'info'		=>	 'If you have a problem with a banning or feel it was inappropriate, please fill out the following request form and wait for a response, which may take anywhere between 24 hours to a week to be considered. Misuse of this form may result in the loss of your chance of being considered for an unban now, and in the future.',
 	'field1'	=>	 'What is the banned IP Address?',
-	'field2'	=>	 'To get your IP Address, click <a href="http://www.whatismyip.com/" target="_blank"><b>here</b></a>.',
+	'field2'	=>	 'To get your IP Address, click <a $href = "http://www.whatismyip.com/" $target = "_blank"><b>here</b></a>.',
 	'field3'	=>	 'What is your e-mail address?',
 	'field4'	=>	 'Be sure to enter your correct e-mail address here otherwise we can not contact you.',
 	'field5'	=>	 'Tell us why you were banned?',

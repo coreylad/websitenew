@@ -27,7 +27,7 @@ if (!$action || $action == "searchthread") {
             stderr($lang->global["error"], $lang->tsf_forums["invalid_tid"]);
             exit;
         }
-        ($query = sql_query("SELECT\r\n\t\t\tt.tid, f.type, f.fid as currentforumid, ff.fid as deepforumid\r\n\t\t\tFROM " . TSF_PREFIX . "threads t\r\n\t\t\tLEFT JOIN " . TSF_PREFIX . "forums f ON (f.fid=t.fid)\r\n\t\t\tLEFT JOIN " . TSF_PREFIX . "forums ff ON (ff.fid=f.pid)\r\n\t\t\tWHERE t.tid = " . sqlesc($threadid) . " LIMIT 1")) || sqlerr(__FILE__, 59);
+        ($query = sql_query("SELECT\r\n\t\t\tt.tid, f.type, f.fid as currentforumid, ff.fid as deepforumid\r\n\t\t\tFROM " . TSF_PREFIX . "threads t\r\n\t\t\tLEFT JOIN " . TSF_PREFIX . "forums f ON (f.$fid = t.fid)\r\n\t\t\tLEFT JOIN " . TSF_PREFIX . "forums ff ON (ff.$fid = f.pid)\r\n\t\t\tWHERE t.$tid = " . sqlesc($threadid) . " LIMIT 1")) || sqlerr(__FILE__, 59);
         if (mysqli_num_rows($query) == 0) {
             stderr($lang->global["error"], $lang->tsf_forums["invalid_tid"]);
             exit;
@@ -46,43 +46,43 @@ if (!$action || $action == "searchthread") {
     }
     build_breadcrumb();
     if (!$Inthread) {
-        $query = sql_query("\r\n\t\t\t\t\t\t\t\tSELECT f.password, f.fid, f.pid, f.name\r\n\t\t\t\t\t\t\t\tFROM " . TSF_PREFIX . "forums f\r\n\t\t\t\t\t\t\t\tWHERE f.type = 's' ORDER by f.pid, f.disporder\r\n\t\t\t\t\t\t\t") or ($query = sql_query("\r\n\t\t\t\t\t\t\t\tSELECT f.password, f.fid, f.pid, f.name\r\n\t\t\t\t\t\t\t\tFROM " . TSF_PREFIX . "forums f\r\n\t\t\t\t\t\t\t\tWHERE f.type = 's' ORDER by f.pid, f.disporder\r\n\t\t\t\t\t\t\t")) || sqlerr(__FILE__, 90);
+        $query = sql_query("\r\n\t\t\t\t\t\t\t\tSELECT f.password, f.fid, f.pid, f.name\r\n\t\t\t\t\t\t\t\tFROM " . TSF_PREFIX . "forums f\r\n\t\t\t\t\t\t\t\tWHERE f.$type = 's' ORDER by f.pid, f.disporder\r\n\t\t\t\t\t\t\t") or ($query = sql_query("\r\n\t\t\t\t\t\t\t\tSELECT f.password, f.fid, f.pid, f.name\r\n\t\t\t\t\t\t\t\tFROM " . TSF_PREFIX . "forums f\r\n\t\t\t\t\t\t\t\tWHERE f.$type = 's' ORDER by f.pid, f.disporder\r\n\t\t\t\t\t\t\t")) || sqlerr(__FILE__, 90);
         while ($forum = mysqli_fetch_assoc($query)) {
             if (!isset($_COOKIE["forumpass_" . $forum["fid"]])) {
                 $_COOKIE["forumpass_" . $forum["fid"]] = "";
             }
             if (!($forum["password"] != "" && $_COOKIE["forumpass_" . $forum["fid"]] != md5($CURUSER["id"] . $forum["password"] . $securehash))) {
                 if (isset($permissions[$forum["fid"]]["canview"]) && $permissions[$forum["fid"]]["canview"] == "yes") {
-                    $deepsubforums[$forum["pid"]] = (isset($deepsubforums[$forum["pid"]]) ? $deepsubforums[$forum["pid"]] : "") . "\r\n\t\t\t\t<option value=\"" . $forum["fid"] . "\"" . ($sfid == $forum["fid"] ? " selected = \"selected\"" : "") . ">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" . $forum["name"] . "</option>";
+                    $deepsubforums[$forum["pid"]] = (isset($deepsubforums[$forum["pid"]]) ? $deepsubforums[$forum["pid"]] : "") . "\r\n\t\t\t\t<option $value = \"" . $forum["fid"] . "\"" . ($sfid == $forum["fid"] ? " $selected = \"selected\"" : "") . ">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" . $forum["name"] . "</option>";
                 }
             }
         }
-        ($query = sql_query("\r\n\t\t\t\t\t\t\t\tSELECT f.password, f.fid, f.pid, f.name\r\n\t\t\t\t\t\t\t\tFROM " . TSF_PREFIX . "forums f\r\n\t\t\t\t\t\t\t\tWHERE f.type = 'f' ORDER by f.pid, f.disporder\r\n\t\t\t\t\t\t\t")) || sqlerr(__FILE__, 112);
-        $str = "\r\n\t\t\t<select name=\"forums[]\" size=\"13\" multiple=\"multiple\" style=\"width: 450px;\">\r\n\t\t\t<optgroup label=\"" . $SITENAME . " Forums\">\r\n\t\t\t\t<option value=\"all\"" . ($sfid == "all" ? " selected = \"selected\"" : "") . ">" . $lang->tsf_forums["select1"] . "</option>";
+        ($query = sql_query("\r\n\t\t\t\t\t\t\t\tSELECT f.password, f.fid, f.pid, f.name\r\n\t\t\t\t\t\t\t\tFROM " . TSF_PREFIX . "forums f\r\n\t\t\t\t\t\t\t\tWHERE f.$type = 'f' ORDER by f.pid, f.disporder\r\n\t\t\t\t\t\t\t")) || sqlerr(__FILE__, 112);
+        $str = "\r\n\t\t\t<select $name = \"forums[]\" $size = \"13\" $multiple = \"multiple\" $style = \"width: 450px;\">\r\n\t\t\t<optgroup $label = \"" . $SITENAME . " Forums\">\r\n\t\t\t\t<option $value = \"all\"" . ($sfid == "all" ? " $selected = \"selected\"" : "") . ">" . $lang->tsf_forums["select1"] . "</option>";
         while ($forum = mysqli_fetch_assoc($query)) {
             if (!isset($_COOKIE["forumpass_" . $forum["fid"]])) {
                 $_COOKIE["forumpass_" . $forum["fid"]] = "";
             }
             if (!($forum["password"] != "" && $_COOKIE["forumpass_" . $forum["fid"]] != md5($CURUSER["id"] . $forum["password"] . $securehash))) {
                 if ($permissions[$forum["fid"]]["canview"] == "yes") {
-                    $subforums[$forum["pid"]] = (isset($subforums[$forum["pid"]]) ? $subforums[$forum["pid"]] : "") . "\r\n\t\t\t\t\t<option value=\"" . $forum["fid"] . "\"" . ($sfid == $forum["fid"] ? " selected = \"selected\"" : "") . ">&nbsp;&nbsp;&nbsp;&nbsp;" . $forum["name"] . "</option>" . (isset($deepsubforums[$forum["fid"]]) ? $deepsubforums[$forum["fid"]] : "");
+                    $subforums[$forum["pid"]] = (isset($subforums[$forum["pid"]]) ? $subforums[$forum["pid"]] : "") . "\r\n\t\t\t\t\t<option $value = \"" . $forum["fid"] . "\"" . ($sfid == $forum["fid"] ? " $selected = \"selected\"" : "") . ">&nbsp;&nbsp;&nbsp;&nbsp;" . $forum["name"] . "</option>" . (isset($deepsubforums[$forum["fid"]]) ? $deepsubforums[$forum["fid"]] : "");
                 }
             }
         }
-        $query = sql_query("\r\n\t\t\t\t\t\t\t\tSELECT f.password, f.fid, f.pid, f.name\r\n\t\t\t\t\t\t\t\tFROM " . TSF_PREFIX . "forums f\r\n\t\t\t\t\t\t\t\tWHERE f.type = 'c' ORDER by f.pid, f.disporder\r\n\t\t\t\t\t\t\t") or ($query = sql_query("\r\n\t\t\t\t\t\t\t\tSELECT f.password, f.fid, f.pid, f.name\r\n\t\t\t\t\t\t\t\tFROM " . TSF_PREFIX . "forums f\r\n\t\t\t\t\t\t\t\tWHERE f.type = 'c' ORDER by f.pid, f.disporder\r\n\t\t\t\t\t\t\t")) || sqlerr(__FILE__, 138);
+        $query = sql_query("\r\n\t\t\t\t\t\t\t\tSELECT f.password, f.fid, f.pid, f.name\r\n\t\t\t\t\t\t\t\tFROM " . TSF_PREFIX . "forums f\r\n\t\t\t\t\t\t\t\tWHERE f.$type = 'c' ORDER by f.pid, f.disporder\r\n\t\t\t\t\t\t\t") or ($query = sql_query("\r\n\t\t\t\t\t\t\t\tSELECT f.password, f.fid, f.pid, f.name\r\n\t\t\t\t\t\t\t\tFROM " . TSF_PREFIX . "forums f\r\n\t\t\t\t\t\t\t\tWHERE f.$type = 'c' ORDER by f.pid, f.disporder\r\n\t\t\t\t\t\t\t")) || sqlerr(__FILE__, 138);
         while ($category = mysqli_fetch_assoc($query)) {
             if (!isset($_COOKIE["forumpass_" . $category["fid"]])) {
                 $_COOKIE["forumpass_" . $category["fid"]] = "";
             }
             if (!($category["password"] != "" && $_COOKIE["forumpass_" . $category["fid"]] != md5($CURUSER["id"] . $category["password"] . $securehash))) {
                 if ($permissions[$category["fid"]]["canview"] == "yes" && isset($subforums[$category["fid"]])) {
-                    $str .= "\r\n\t\t\t\t\t<option value=\"" . $category["fid"] . "\">" . $category["name"] . "</option>" . $subforums[$category["fid"]] . "";
+                    $str .= "\r\n\t\t\t\t\t<option $value = \"" . $category["fid"] . "\">" . $category["name"] . "</option>" . $subforums[$category["fid"]] . "";
                 }
             }
         }
         $str .= "\r\n\t\t\t\t\t</optgroup>\r\n\t\t\t\t</select> ";
     }
-    echo "\r\n\t<form method=\"post\" action=\"" . $_SERVER["SCRIPT_NAME"] . "\">\r\n\t" . ($Inthread ? "\r\n\t<input type=\"hidden\" name=\"action\" value=\"searchinthread\" />\r\n\t<input type=\"hidden\" name=\"threadid\" value=\"" . $threadid . "\" />" : "\r\n\t<input type=\"hidden\" name=\"action\" value=\"do_search\" />\r\n\t") . "\r\n\t<table border=\"0\" cellspacing=\"0\" cellpadding=\"4\" align=\"center\" width=\"100%\">\r\n\r\n\t\t<tr>\r\n\t\t\t<td colspan=\"2\" class=\"thead\"><strong>" . $lang->tsf_forums["title"] . "</strong></td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\r\n\t\t\t<td>\r\n\t\t\t\t<fieldset class=\"fieldset\" style=\"padding: 5px 10px 10px 5px;\">\r\n\t\t\t\t\t<legend>" . $lang->tsf_forums["title1"] . "</legend>\r\n\t\t\t\t\t<div>\r\n\t\t\t\t\t\t" . $lang->tsf_forums["option1"] . "\r\n\t\t\t\t\t</div>\r\n\t\t\t\t\t<div>\r\n\t\t\t\t\t\t<input type=\"text\" name=\"keywords\" value=\"\" id=\"specialboxn\" />\r\n\t\t\t\t\t</div>\r\n\t\t\t\t\t" . (!$Inthread ? "\r\n\t\t\t\t\t<div style=\"padding: 5px 0px 0px 0px;\">\r\n\t\t\t\t\t\t<select name=\"postthread\">\r\n\t\t\t\t\t\t\t<option value=\"1\" selected=\"selected\">" . $lang->tsf_forums["option2"] . "</option>\r\n\t\t\t\t\t\t\t<option value=\"0\" >" . $lang->tsf_forums["option3"] . "</option>\r\n\t\t\t\t\t\t</select>\r\n\t\t\t\t\t</div>" : "") . "\r\n\t\t\t\t</fieldset>\r\n\t\t\t</td>\r\n\t\t\t" . (!$Inthread ? "\r\n\t\t\t<td rowspan=\"2\">\r\n\t\t\t\t<fieldset class=\"fieldset\" style=\"padding: 5px 10px 10px 5px;\">\r\n\t\t\t\t\t<legend>" . $lang->tsf_forums["option8"] . "</legend>\r\n\t\t\t\t\t<div>\r\n\t\t\t\t\t\t" . $str . "\r\n\t\t\t\t\t</div>\r\n\t\t\t\t</fieldset>\r\n\t\t\t</td>" : "") . "\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td>\r\n\t\t\t\t<fieldset class=\"fieldset\" style=\"padding: 5px 10px 10px 5px;\">\r\n\t\t\t\t\t<legend>" . $lang->tsf_forums["title2"] . "</legend>\r\n\t\t\t\t\t<div>\r\n\t\t\t\t\t\t" . $lang->tsf_forums["option4"] . "\r\n\t\t\t\t\t</div>\r\n\t\t\t\t\t<div>\r\n\t\t\t\t\t\t<input type=\"text\" name=\"author\" value=\"\" id=\"specialboxn\" rel=\"autoCompleteUsers\" />\r\n\t\t\t\t\t</div>\r\n\t\t\t\t\t<div style=\"padding: 5px 0px 0px 0px;\">\r\n\t\t\t\t\t\t<input name=\"matchusername\" value=\"1\" checked=\"checked\" type=\"checkbox\" class=\"inlineimg\" />" . $lang->tsf_forums["option7"] . "\r\n\t\t\t\t\t</div>\r\n\t\t\t\t</fieldset>\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t<tr><td colspan=\"2\" align=\"center\" class=\"thead\"> <input type=\"submit\" name=\"submit\" value=\"" . $lang->tsf_forums["button_1"] . "\" /> <input type=\"reset\" name=\"reset\" value=\"" . $lang->tsf_forums["button_2"] . "\" /></td></tr>\r\n\t</table>\r\n\t</form>";
+    echo "\r\n\t<form $method = \"post\" $action = \"" . $_SERVER["SCRIPT_NAME"] . "\">\r\n\t" . ($Inthread ? "\r\n\t<input $type = \"hidden\" $name = \"action\" $value = \"searchinthread\" />\r\n\t<input $type = \"hidden\" $name = \"threadid\" $value = \"" . $threadid . "\" />" : "\r\n\t<input $type = \"hidden\" $name = \"action\" $value = \"do_search\" />\r\n\t") . "\r\n\t<table $border = \"0\" $cellspacing = \"0\" $cellpadding = \"4\" $align = \"center\" $width = \"100%\">\r\n\r\n\t\t<tr>\r\n\t\t\t<td $colspan = \"2\" class=\"thead\"><strong>" . $lang->tsf_forums["title"] . "</strong></td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\r\n\t\t\t<td>\r\n\t\t\t\t<fieldset class=\"fieldset\" $style = \"padding: 5px 10px 10px 5px;\">\r\n\t\t\t\t\t<legend>" . $lang->tsf_forums["title1"] . "</legend>\r\n\t\t\t\t\t<div>\r\n\t\t\t\t\t\t" . $lang->tsf_forums["option1"] . "\r\n\t\t\t\t\t</div>\r\n\t\t\t\t\t<div>\r\n\t\t\t\t\t\t<input $type = \"text\" $name = \"keywords\" $value = \"\" $id = \"specialboxn\" />\r\n\t\t\t\t\t</div>\r\n\t\t\t\t\t" . (!$Inthread ? "\r\n\t\t\t\t\t<div $style = \"padding: 5px 0px 0px 0px;\">\r\n\t\t\t\t\t\t<select $name = \"postthread\">\r\n\t\t\t\t\t\t\t<option $value = \"1\" $selected = \"selected\">" . $lang->tsf_forums["option2"] . "</option>\r\n\t\t\t\t\t\t\t<option $value = \"0\" >" . $lang->tsf_forums["option3"] . "</option>\r\n\t\t\t\t\t\t</select>\r\n\t\t\t\t\t</div>" : "") . "\r\n\t\t\t\t</fieldset>\r\n\t\t\t</td>\r\n\t\t\t" . (!$Inthread ? "\r\n\t\t\t<td $rowspan = \"2\">\r\n\t\t\t\t<fieldset class=\"fieldset\" $style = \"padding: 5px 10px 10px 5px;\">\r\n\t\t\t\t\t<legend>" . $lang->tsf_forums["option8"] . "</legend>\r\n\t\t\t\t\t<div>\r\n\t\t\t\t\t\t" . $str . "\r\n\t\t\t\t\t</div>\r\n\t\t\t\t</fieldset>\r\n\t\t\t</td>" : "") . "\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td>\r\n\t\t\t\t<fieldset class=\"fieldset\" $style = \"padding: 5px 10px 10px 5px;\">\r\n\t\t\t\t\t<legend>" . $lang->tsf_forums["title2"] . "</legend>\r\n\t\t\t\t\t<div>\r\n\t\t\t\t\t\t" . $lang->tsf_forums["option4"] . "\r\n\t\t\t\t\t</div>\r\n\t\t\t\t\t<div>\r\n\t\t\t\t\t\t<input $type = \"text\" $name = \"author\" $value = \"\" $id = \"specialboxn\" $rel = \"autoCompleteUsers\" />\r\n\t\t\t\t\t</div>\r\n\t\t\t\t\t<div $style = \"padding: 5px 0px 0px 0px;\">\r\n\t\t\t\t\t\t<input $name = \"matchusername\" $value = \"1\" $checked = \"checked\" $type = \"checkbox\" class=\"inlineimg\" />" . $lang->tsf_forums["option7"] . "\r\n\t\t\t\t\t</div>\r\n\t\t\t\t</fieldset>\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t<tr><td $colspan = \"2\" $align = \"center\" class=\"thead\"> <input $type = \"submit\" $name = \"submit\" $value = \"" . $lang->tsf_forums["button_1"] . "\" /> <input $type = \"reset\" $name = \"reset\" $value = \"" . $lang->tsf_forums["button_2"] . "\" /></td></tr>\r\n\t</table>\r\n\t</form>";
     stdfoot();
     exit;
 }
@@ -93,8 +93,8 @@ if ($action == "finduserthreads") {
     if (empty($_GET["id"]) || !is_valid_id($_GET["id"])) {
         print_no_permission(true);
     }
-    $where_sql = "t.uid='" . intval($_GET["id"]) . "'";
-    ($query = sql_query("SELECT fp.fid,f.fid FROM " . TSF_PREFIX . "forumpermissions fp LEFT JOIN " . TSF_PREFIX . "forums f ON (fp.fid=f.pid) WHERE (fp.canview = 'no' OR fp.cansearch = 'no') AND fp.gid = " . sqlesc($CURUSER["usergroup"]))) || sqlerr(__FILE__, 238);
+    $where_sql = "t.$uid = '" . intval($_GET["id"]) . "'";
+    ($query = sql_query("SELECT fp.fid,f.fid FROM " . TSF_PREFIX . "forumpermissions fp LEFT JOIN " . TSF_PREFIX . "forums f ON (fp.$fid = f.pid) WHERE (fp.$canview = 'no' OR fp.$cansearch = 'no') AND fp.$gid = " . sqlesc($CURUSER["usergroup"]))) || sqlerr(__FILE__, 238);
     if (0 < mysqli_num_rows($query)) {
         while ($notin = mysqli_fetch_assoc($query)) {
             $uf[] = 0 + $notin["fid"];
@@ -125,7 +125,7 @@ if ($action == "finduserthreads") {
     $sid = md5(uniqid(microtime(), 1));
     $searcharray = ["sid" => $sid, "uid" => intval($CURUSER["id"]), "dateline" => TIMENOW, "ipaddress" => $CURUSER["ip"], "threads" => "", "posts" => "", "searchtype" => "titles", "resulttype" => "threads", "querycache" => $where_sql];
     sql_query("INSERT INTO " . TSF_PREFIX . "searchlog (sid,uid,dateline,ipaddress,threads,posts,searchtype,resulttype,querycache) VALUES (" . sqlesc($searcharray["sid"]) . "," . sqlesc($searcharray["uid"]) . "," . sqlesc($searcharray["dateline"]) . "," . sqlesc($searcharray["ipaddress"]) . "," . sqlesc($searcharray["threads"]) . "," . sqlesc($searcharray["posts"]) . "," . sqlesc($searcharray["searchtype"]) . "," . sqlesc($searcharray["resulttype"]) . "," . sqlesc($searcharray["querycache"]) . ")") || sqlerr(__FILE__, 290);
-    redirect("tsf_forums/tsf_search.php?action=show_search_results&searchid=" . $sid, $lang->tsf_forums["searchresults"]);
+    redirect("tsf_forums/tsf_search.php?$action = show_search_results&$searchid = " . $sid, $lang->tsf_forums["searchresults"]);
     exit;
 }
 if ($action == "searchinthread") {
@@ -137,7 +137,7 @@ if ($action == "searchinthread") {
         stderr($lang->global["error"], $lang->tsf_forums["invalid_tid"]);
         exit;
     }
-    ($query = sql_query("SELECT\r\n\t\tt.tid, f.type, f.fid as currentforumid, ff.fid as deepforumid\r\n\t\tFROM " . TSF_PREFIX . "threads t\r\n\t\tLEFT JOIN " . TSF_PREFIX . "forums f ON (f.fid=t.fid)\r\n\t\tLEFT JOIN " . TSF_PREFIX . "forums ff ON (ff.fid=f.pid)\r\n\t\tWHERE t.tid = " . sqlesc($threadid) . " LIMIT 1")) || sqlerr(__FILE__, 313);
+    ($query = sql_query("SELECT\r\n\t\tt.tid, f.type, f.fid as currentforumid, ff.fid as deepforumid\r\n\t\tFROM " . TSF_PREFIX . "threads t\r\n\t\tLEFT JOIN " . TSF_PREFIX . "forums f ON (f.$fid = t.fid)\r\n\t\tLEFT JOIN " . TSF_PREFIX . "forums ff ON (ff.$fid = f.pid)\r\n\t\tWHERE t.$tid = " . sqlesc($threadid) . " LIMIT 1")) || sqlerr(__FILE__, 313);
     if (mysqli_num_rows($query) == 0) {
         stderr($lang->global["error"], $lang->tsf_forums["invalid_tid"]);
         exit;
@@ -155,7 +155,7 @@ if ($action == "searchinthread") {
     $sid = md5(uniqid(microtime(), 1));
     $searcharray = ["sid" => $sid, "uid" => intval($CURUSER["id"]), "dateline" => TIMENOW, "ipaddress" => $CURUSER["ip"], "threads" => $search_results["threads"], "posts" => $search_results["posts"], "searchtype" => $search_results["searchtype"], "resulttype" => $resulttype, "querycache" => $search_results["querycache"]];
     sql_query("INSERT INTO " . TSF_PREFIX . "searchlog (sid,uid,dateline,ipaddress,threads,posts,searchtype,resulttype,querycache) VALUES (" . sqlesc($searcharray["sid"]) . "," . sqlesc($searcharray["uid"]) . "," . sqlesc($searcharray["dateline"]) . "," . sqlesc($searcharray["ipaddress"]) . "," . sqlesc($searcharray["threads"]) . "," . sqlesc($searcharray["posts"]) . "," . sqlesc($searcharray["searchtype"]) . "," . sqlesc($searcharray["resulttype"]) . "," . sqlesc($searcharray["querycache"]) . ")") || sqlerr(__FILE__, 357);
-    redirect("tsf_forums/tsf_search.php?action=show_search_results&searchid=" . $sid, $lang->tsf_forums["searchresults"]);
+    redirect("tsf_forums/tsf_search.php?$action = show_search_results&$searchid = " . $sid, $lang->tsf_forums["searchresults"]);
     exit;
 }
 if ($action == "finduserposts") {
@@ -165,8 +165,8 @@ if ($action == "finduserposts") {
     if (empty($_GET["id"]) || !is_valid_id($_GET["id"])) {
         print_no_permission(true);
     }
-    $where_sql = "p.uid='" . intval($_GET["id"]) . "'";
-    ($query = sql_query("SELECT fp.fid,f.fid FROM " . TSF_PREFIX . "forumpermissions fp LEFT JOIN " . TSF_PREFIX . "forums f ON (fp.fid=f.pid) WHERE (fp.canview = 'no' OR fp.cansearch = 'no') AND fp.gid = " . sqlesc($CURUSER["usergroup"]))) || sqlerr(__FILE__, 374);
+    $where_sql = "p.$uid = '" . intval($_GET["id"]) . "'";
+    ($query = sql_query("SELECT fp.fid,f.fid FROM " . TSF_PREFIX . "forumpermissions fp LEFT JOIN " . TSF_PREFIX . "forums f ON (fp.$fid = f.pid) WHERE (fp.$canview = 'no' OR fp.$cansearch = 'no') AND fp.$gid = " . sqlesc($CURUSER["usergroup"]))) || sqlerr(__FILE__, 374);
     if (0 < mysqli_num_rows($query)) {
         while ($notin = mysqli_fetch_assoc($query)) {
             $uf[] = 0 + $notin["fid"];
@@ -197,7 +197,7 @@ if ($action == "finduserposts") {
     $sid = md5(uniqid(microtime(), 1));
     $searcharray = ["sid" => $sid, "uid" => intval($CURUSER["id"]), "dateline" => TIMENOW, "ipaddress" => $CURUSER["ip"], "threads" => "", "posts" => "", "searchtype" => "titles", "resulttype" => "posts", "querycache" => $where_sql];
     sql_query("INSERT INTO " . TSF_PREFIX . "searchlog (sid,uid,dateline,ipaddress,threads,posts,searchtype,resulttype,querycache) VALUES (" . sqlesc($searcharray["sid"]) . "," . sqlesc($searcharray["uid"]) . "," . sqlesc($searcharray["dateline"]) . "," . sqlesc($searcharray["ipaddress"]) . "," . sqlesc($searcharray["threads"]) . "," . sqlesc($searcharray["posts"]) . "," . sqlesc($searcharray["searchtype"]) . "," . sqlesc($searcharray["resulttype"]) . "," . sqlesc($searcharray["querycache"]) . ")") || sqlerr(__FILE__, 426);
-    redirect("tsf_forums/tsf_search.php?action=show_search_results&searchid=" . $sid, $lang->tsf_forums["searchresults"]);
+    redirect("tsf_forums/tsf_search.php?$action = show_search_results&$searchid = " . $sid, $lang->tsf_forums["searchresults"]);
     exit;
 }
 if ($action == "getnew") {
@@ -205,7 +205,7 @@ if ($action == "getnew") {
         print_no_permission();
     }
     $where_sql = "t.lastpost >= '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $CURUSER["last_forum_visit"]) . "'";
-    ($query = sql_query("SELECT fp.fid,f.fid FROM " . TSF_PREFIX . "forumpermissions fp LEFT JOIN " . TSF_PREFIX . "forums f ON (fp.fid=f.pid) WHERE (fp.canview = 'no' OR fp.cansearch = 'no') AND fp.gid = " . sqlesc($CURUSER["usergroup"]))) || sqlerr(__FILE__, 440);
+    ($query = sql_query("SELECT fp.fid,f.fid FROM " . TSF_PREFIX . "forumpermissions fp LEFT JOIN " . TSF_PREFIX . "forums f ON (fp.$fid = f.pid) WHERE (fp.$canview = 'no' OR fp.$cansearch = 'no') AND fp.$gid = " . sqlesc($CURUSER["usergroup"]))) || sqlerr(__FILE__, 440);
     if (0 < mysqli_num_rows($query)) {
         while ($notin = mysqli_fetch_assoc($query)) {
             $uf[] = 0 + $notin["fid"];
@@ -236,7 +236,7 @@ if ($action == "getnew") {
     $sid = md5(uniqid(microtime(), 1));
     $searcharray = ["sid" => $sid, "uid" => intval($CURUSER["id"]), "dateline" => TIMENOW, "ipaddress" => $CURUSER["ip"], "threads" => "", "posts" => "", "searchtype" => "titles", "resulttype" => "threads", "querycache" => $where_sql];
     sql_query("INSERT INTO " . TSF_PREFIX . "searchlog (sid,uid,dateline,ipaddress,threads,posts,searchtype,resulttype,querycache) VALUES (" . sqlesc($searcharray["sid"]) . "," . sqlesc($searcharray["uid"]) . "," . sqlesc($searcharray["dateline"]) . "," . sqlesc($searcharray["ipaddress"]) . "," . sqlesc($searcharray["threads"]) . "," . sqlesc($searcharray["posts"]) . "," . sqlesc($searcharray["searchtype"]) . "," . sqlesc($searcharray["resulttype"]) . "," . sqlesc($searcharray["querycache"]) . ")") || sqlerr(__FILE__, 492);
-    redirect("tsf_forums/tsf_search.php?action=show_search_results&searchid=" . $sid, $lang->tsf_forums["searchresults"]);
+    redirect("tsf_forums/tsf_search.php?$action = show_search_results&$searchid = " . $sid, $lang->tsf_forums["searchresults"]);
     exit;
 }
 if ($action == "daily") {
@@ -250,7 +250,7 @@ if ($action == "daily") {
     }
     $datecut = TIMENOW - 86400 * $days;
     $where_sql = "t.lastpost >='" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $datecut) . "'";
-    ($query = sql_query("SELECT fp.fid,f.fid FROM " . TSF_PREFIX . "forumpermissions fp LEFT JOIN " . TSF_PREFIX . "forums f ON (fp.fid=f.pid) WHERE (fp.canview = 'no' OR fp.cansearch = 'no') AND fp.gid = " . sqlesc($CURUSER["usergroup"]))) || sqlerr(__FILE__, 516);
+    ($query = sql_query("SELECT fp.fid,f.fid FROM " . TSF_PREFIX . "forumpermissions fp LEFT JOIN " . TSF_PREFIX . "forums f ON (fp.$fid = f.pid) WHERE (fp.$canview = 'no' OR fp.$cansearch = 'no') AND fp.$gid = " . sqlesc($CURUSER["usergroup"]))) || sqlerr(__FILE__, 516);
     if (0 < mysqli_num_rows($query)) {
         while ($notin = mysqli_fetch_assoc($query)) {
             $uf[] = 0 + $notin["fid"];
@@ -281,7 +281,7 @@ if ($action == "daily") {
     $sid = md5(uniqid(microtime(), 1));
     $searcharray = ["sid" => $sid, "uid" => intval($CURUSER["id"]), "dateline" => TIMENOW, "ipaddress" => $CURUSER["ip"], "threads" => "", "posts" => "", "searchtype" => "titles", "resulttype" => "threads", "querycache" => $where_sql];
     sql_query("INSERT INTO " . TSF_PREFIX . "searchlog (sid,uid,dateline,ipaddress,threads,posts,searchtype,resulttype,querycache) VALUES (" . sqlesc($searcharray["sid"]) . "," . sqlesc($searcharray["uid"]) . "," . sqlesc($searcharray["dateline"]) . "," . sqlesc($searcharray["ipaddress"]) . "," . sqlesc($searcharray["threads"]) . "," . sqlesc($searcharray["posts"]) . "," . sqlesc($searcharray["searchtype"]) . "," . sqlesc($searcharray["resulttype"]) . "," . sqlesc($searcharray["querycache"]) . ")") || sqlerr(__FILE__, 568);
-    redirect("tsf_forums/tsf_search.php?action=show_search_results&searchid=" . $sid, $lang->tsf_forums["searchresults"]);
+    redirect("tsf_forums/tsf_search.php?$action = show_search_results&$searchid = " . $sid, $lang->tsf_forums["searchresults"]);
     exit;
 }
 if ($action == "do_search") {
@@ -295,7 +295,7 @@ if ($action == "do_search") {
     $sid = md5(uniqid(microtime(), 1));
     $searcharray = ["sid" => $sid, "uid" => intval($CURUSER["id"]), "dateline" => TIMENOW, "ipaddress" => $CURUSER["ip"], "threads" => $search_results["threads"], "posts" => $search_results["posts"], "searchtype" => $search_results["searchtype"], "resulttype" => $resulttype, "querycache" => $search_results["querycache"]];
     sql_query("INSERT INTO " . TSF_PREFIX . "searchlog (sid,uid,dateline,ipaddress,threads,posts,searchtype,resulttype,querycache) VALUES (" . sqlesc($searcharray["sid"]) . "," . sqlesc($searcharray["uid"]) . "," . sqlesc($searcharray["dateline"]) . "," . sqlesc($searcharray["ipaddress"]) . "," . sqlesc($searcharray["threads"]) . "," . sqlesc($searcharray["posts"]) . "," . sqlesc($searcharray["searchtype"]) . "," . sqlesc($searcharray["resulttype"]) . "," . sqlesc($searcharray["querycache"]) . ")") || sqlerr(__FILE__, 607);
-    redirect("tsf_forums/tsf_search.php?action=show_search_results&searchid=" . $sid, $lang->tsf_forums["searchresults"]);
+    redirect("tsf_forums/tsf_search.php?$action = show_search_results&$searchid = " . $sid, $lang->tsf_forums["searchresults"]);
     exit;
 }
 if ($action == "show_search_results") {
@@ -312,7 +312,7 @@ if ($action == "show_search_results") {
         stdfoot();
         exit;
     }
-    ($query = sql_query("SELECT * FROM " . TSF_PREFIX . "searchlog WHERE sid = " . sqlesc($sid))) || sqlerr(__FILE__, 629);
+    ($query = sql_query("SELECT * FROM " . TSF_PREFIX . "searchlog WHERE $sid = " . sqlesc($sid))) || sqlerr(__FILE__, 629);
     $search = mysqli_fetch_assoc($query);
     if (!$search["sid"] || $search["uid"] != $CURUSER["id"] && !$moderator) {
         add_breadcrumb($lang->tsf_forums["search_results"]);
@@ -322,7 +322,7 @@ if ($action == "show_search_results") {
         stdfoot();
         exit;
     }
-    $str = "\r\n\t\t<table border=\"0\" cellspacing=\"0\" cellpadding=\"4\" style=\"clear: both;\" width=\"100%\">\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"thead\" colspan=\"7\">\r\n\t\t\t\t\t<div>\r\n\t\t\t\t\t\t<strong>" . $lang->tsf_forums["search_results"] . "</strong>\r\n\t\t\t\t\t</div>\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"subheader\" align=\"center\" width=\"1%\"><span class=\"smalltext\"><strong>" . $lang->tsf_forums["status"] . "</strong></span></td>\r\n\t\t\t\t<td class=\"subheader\" align=\"left\" width=\"40%\"><span class=\"smalltext\"><strong>" . $lang->tsf_forums["thread"] . "</strong></span></td>\r\n\t\t\t\t<td class=\"subheader\" align=\"left\" width=\"25%\"><span class=\"smalltext\"><strong>" . $lang->tsf_forums["forum"] . "</strong></span></td>\r\n\t\t\t\t<td class=\"subheader\" align=\"center\" width=\"10%\"><span class=\"smalltext\"><strong>" . $lang->tsf_forums["author"] . "</strong></span></td>\r\n\t\t\t\t<td class=\"subheader\" align=\"center\" width=\"1%\"><span class=\"smalltext\"><strong>" . $lang->tsf_forums["replies"] . "</strong></span></td>\r\n\t\t\t\t<td class=\"subheader\" align=\"center\" width=\"1%\"><span class=\"smalltext\"><strong>" . $lang->tsf_forums["views"] . "</strong></span></td>\r\n\t\t\t\t<td class=\"subheader\" align=\"left\" width=\"15%\"><span class=\"smalltext\"><strong>" . $lang->tsf_forums["lastpost"] . "</strong></span></td>\r\n\t\t\t</tr>\r\n\t\t";
+    $str = "\r\n\t\t<table $border = \"0\" $cellspacing = \"0\" $cellpadding = \"4\" $style = \"clear: both;\" $width = \"100%\">\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"thead\" $colspan = \"7\">\r\n\t\t\t\t\t<div>\r\n\t\t\t\t\t\t<strong>" . $lang->tsf_forums["search_results"] . "</strong>\r\n\t\t\t\t\t</div>\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"subheader\" $align = \"center\" $width = \"1%\"><span class=\"smalltext\"><strong>" . $lang->tsf_forums["status"] . "</strong></span></td>\r\n\t\t\t\t<td class=\"subheader\" $align = \"left\" $width = \"40%\"><span class=\"smalltext\"><strong>" . $lang->tsf_forums["thread"] . "</strong></span></td>\r\n\t\t\t\t<td class=\"subheader\" $align = \"left\" $width = \"25%\"><span class=\"smalltext\"><strong>" . $lang->tsf_forums["forum"] . "</strong></span></td>\r\n\t\t\t\t<td class=\"subheader\" $align = \"center\" $width = \"10%\"><span class=\"smalltext\"><strong>" . $lang->tsf_forums["author"] . "</strong></span></td>\r\n\t\t\t\t<td class=\"subheader\" $align = \"center\" $width = \"1%\"><span class=\"smalltext\"><strong>" . $lang->tsf_forums["replies"] . "</strong></span></td>\r\n\t\t\t\t<td class=\"subheader\" $align = \"center\" $width = \"1%\"><span class=\"smalltext\"><strong>" . $lang->tsf_forums["views"] . "</strong></span></td>\r\n\t\t\t\t<td class=\"subheader\" $align = \"left\" $width = \"15%\"><span class=\"smalltext\"><strong>" . $lang->tsf_forums["lastpost"] . "</strong></span></td>\r\n\t\t\t</tr>\r\n\t\t";
     if ($search["resulttype"] == "threads") {
         $sortfield = "t.lastpost";
     } else {
@@ -364,7 +364,7 @@ if ($action == "show_search_results") {
             }
             $threadcount = $count["resultcount"];
         }
-        $sorturl = $_SERVER["SCRIPT_NAME"] . "?action=show_search_results&amp;searchid=" . htmlspecialchars_uni($sid);
+        $sorturl = $_SERVER["SCRIPT_NAME"] . "?$action = show_search_results&amp;$searchid = " . htmlspecialchars_uni($sid);
         sanitize_pageresults($threadcount, $pagenumber, $perpage, 200);
         $multipage = construct_page_nav($pagenumber, $perpage, $threadcount, $sorturl);
         $limitlower = ($pagenumber - 1) * $perpage;
@@ -378,7 +378,7 @@ if ($action == "show_search_results") {
         if ($limitlower < 0) {
             $limitlower = 0;
         }
-        ($query = sql_query("\r\n\t\t\tSELECT t.*, f.name as currentforum, f.pid as parent, ff.name as realforum, ff.fid as realforumid, u.username as reallastposterusername, u.id as reallastposteruid, g.namestyle as lastposternamestyle, uu.username as threadstarter, uu.id as threadstarteruid, gg.namestyle as threadstarternamestyle\r\n\t\t\tFROM " . TSF_PREFIX . "threads t\r\n\t\t\tLEFT JOIN " . TSF_PREFIX . "forums f ON (f.fid=t.fid)\r\n\t\t\tLEFT JOIN " . TSF_PREFIX . "forums ff ON (ff.fid=f.pid)\r\n\t\t\tLEFT JOIN users u ON (t.lastposteruid=u.id)\r\n\t\t\tLEFT JOIN usergroups g ON (u.usergroup=g.gid)\r\n\t\t\tLEFT JOIN users uu ON (t.uid=uu.id)\r\n\t\t\tLEFT JOIN usergroups gg ON (uu.usergroup=gg.gid)\r\n\t\t\tWHERE " . $where_conditions . "\r\n\t\t\tORDER BY " . $sortfield . " " . $order . "\r\n\t\t\tLIMIT " . $limitlower . ", " . $perpage . "\r\n\t\t")) || sqlerr(__FILE__, 760);
+        ($query = sql_query("\r\n\t\t\tSELECT t.*, f.name as currentforum, f.pid as parent, ff.name as realforum, ff.fid as realforumid, u.username as reallastposterusername, u.id as reallastposteruid, g.namestyle as lastposternamestyle, uu.username as threadstarter, uu.id as threadstarteruid, gg.namestyle as threadstarternamestyle\r\n\t\t\tFROM " . TSF_PREFIX . "threads t\r\n\t\t\tLEFT JOIN " . TSF_PREFIX . "forums f ON (f.$fid = t.fid)\r\n\t\t\tLEFT JOIN " . TSF_PREFIX . "forums ff ON (ff.$fid = f.pid)\r\n\t\t\tLEFT JOIN users u ON (t.$lastposteruid = u.id)\r\n\t\t\tLEFT JOIN usergroups g ON (u.$usergroup = g.gid)\r\n\t\t\tLEFT JOIN users uu ON (t.$uid = uu.id)\r\n\t\t\tLEFT JOIN usergroups gg ON (uu.$usergroup = gg.gid)\r\n\t\t\tWHERE " . $where_conditions . "\r\n\t\t\tORDER BY " . $sortfield . " " . $order . "\r\n\t\t\tLIMIT " . $limitlower . ", " . $perpage . "\r\n\t\t")) || sqlerr(__FILE__, 760);
         $thread_cache = [];
         while ($thread = mysqli_fetch_assoc($query)) {
             $thread_cache[$thread["tid"]] = $thread;
@@ -395,7 +395,7 @@ if ($action == "show_search_results") {
                 }
             }
         }
-        $query = sql_query("SELECT tid,dateline FROM " . TSF_PREFIX . "threadsread WHERE uid = " . sqlesc($CURUSER["id"]) . " AND tid IN(" . $thread_ids . ")") or ($query = sql_query("SELECT tid,dateline FROM " . TSF_PREFIX . "threadsread WHERE uid = " . sqlesc($CURUSER["id"]) . " AND tid IN(" . $thread_ids . ")")) || sqlerr(__FILE__, 792);
+        $query = sql_query("SELECT tid,dateline FROM " . TSF_PREFIX . "threadsread WHERE $uid = " . sqlesc($CURUSER["id"]) . " AND tid IN(" . $thread_ids . ")") or ($query = sql_query("SELECT tid,dateline FROM " . TSF_PREFIX . "threadsread WHERE $uid = " . sqlesc($CURUSER["id"]) . " AND tid IN(" . $thread_ids . ")")) || sqlerr(__FILE__, 792);
         while ($readthread = mysqli_fetch_assoc($query)) {
             $thread_cache[$readthread["tid"]]["lastread"] = $readthread["dateline"];
         }
@@ -453,12 +453,12 @@ if ($action == "show_search_results") {
                 $desc = "";
             }
             if ($lastpost_data["lastpost"] == 0 || $lastpost_data["lastposter"] == "") {
-                $lastpost = "<td class=\"" . $class . "\" style=\"white-space: nowrap;\"><span style=\"text-align: center;\">" . $lang->tsf_forums["lastpost_never"] . "</span></td>";
+                $lastpost = "<td class=\"" . $class . "\" $style = \"white-space: nowrap;\"><span $style = \"text-align: center;\">" . $lang->tsf_forums["lastpost_never"] . "</span></td>";
             } else {
                 $lastpost_date = my_datee($dateformat, $thread["lastpost"]);
                 $lastpost_time = my_datee($timeformat, $thread["lastpost"]);
                 $lastpost_profilelink = build_profile_link($lastpost_data["lastposter"], $lastpost_data["lastposteruid"]);
-                $lastpost = "\r\n\t\t\t\t<td class=\"" . $class . "\" style=\"white-space: nowrap;\">\r\n\t\t\t\t\t<span class=\"smalltext\">" . $lastpost_date . " " . $lastpost_time . "<br />\r\n\t\t\t\t\t" . $lang->tsf_forums["by"] . " " . $lastpost_profilelink . "</span> <a href=\"" . tsf_seo_clean_text($subject, "lastpost", $thread["tid"]) . "\" alt=\"\" title=\"\"><img src=\"" . $BASEURL . "/tsf_forums/images/lastpost.gif\" class=\"inlineimg\" border=\"0\" alt=\"" . $lang->tsf_forums["gotolastpost"] . "\" title=\"" . $lang->tsf_forums["gotolastpost"] . "\"></a>\r\n\t\t\t\t</td>";
+                $lastpost = "\r\n\t\t\t\t<td class=\"" . $class . "\" $style = \"white-space: nowrap;\">\r\n\t\t\t\t\t<span class=\"smalltext\">" . $lastpost_date . " " . $lastpost_time . "<br />\r\n\t\t\t\t\t" . $lang->tsf_forums["by"] . " " . $lastpost_profilelink . "</span> <a $href = \"" . tsf_seo_clean_text($subject, "lastpost", $thread["tid"]) . "\" $alt = \"\" $title = \"\"><img $src = \"" . $BASEURL . "/tsf_forums/images/lastpost.gif\" class=\"inlineimg\" $border = \"0\" $alt = \"" . $lang->tsf_forums["gotolastpost"] . "\" $title = \"" . $lang->tsf_forums["gotolastpost"] . "\"></a>\r\n\t\t\t\t</td>";
             }
             if ($thread["threadstarter"]) {
                 $author = get_user_color(htmlspecialchars_uni($thread["threadstarter"]), $thread["threadstarternamestyle"]);
@@ -477,14 +477,14 @@ if ($action == "show_search_results") {
                 $thread["pages"] = @ceil($thread["pages"]);
                 if (4 < $thread["pages"]) {
                     $pagesstop = 4;
-                    $morelink = "... <a href=\"" . tsf_seo_clean_text($subject, "lastpost", $thread["tid"]) . "\">" . $lang->global["last"] . "</a>";
+                    $morelink = "... <a $href = \"" . tsf_seo_clean_text($subject, "lastpost", $thread["tid"]) . "\">" . $lang->global["last"] . "</a>";
                 } else {
                     $pagesstop = $thread["pages"];
                 }
                 for ($i = 1; $i <= $pagesstop; $i++) {
-                    $threadpages .= " <a href=\"" . tsf_seo_clean_text($subject, "page", $thread["tid"], $i) . "\">" . $i . "</a> ";
+                    $threadpages .= " <a $href = \"" . tsf_seo_clean_text($subject, "page", $thread["tid"], $i) . "\">" . $i . "</a> ";
                 }
-                $thread["multipage"] = "<br /><span class=\"smalltext\">(<img src=\"" . $BASEURL . "/tsf_forums/images/multipage.gif\" border=\"0\" alt=\"" . $lang->tsf_forums["multithread"] . "\" title=\"" . $lang->tsf_forums["multithread"] . "\" class=\"inlineimg\" /> " . $lang->tsf_forums["pages"] . " " . $threadpages . $morelink . ")</span>";
+                $thread["multipage"] = "<br /><span class=\"smalltext\">(<img $src = \"" . $BASEURL . "/tsf_forums/images/multipage.gif\" $border = \"0\" $alt = \"" . $lang->tsf_forums["multithread"] . "\" $title = \"" . $lang->tsf_forums["multithread"] . "\" class=\"inlineimg\" /> " . $lang->tsf_forums["pages"] . " " . $threadpages . $morelink . ")</span>";
             } else {
                 $threadpages = "";
                 $morelink = "";
@@ -492,24 +492,24 @@ if ($action == "show_search_results") {
             }
             $desc = $stickyimg = $ratingimage = $threadtags = $pollimage = "";
             if ($thread["sticky"] == 1) {
-                $stickyimg = "<img src=\"" . $BASEURL . "/tsf_forums/images/sticky.png\" class=\"inlineimg\" border=\"0\" alt=\"" . $lang->tsf_forums["stickythread"] . "\" title=\"" . $lang->tsf_forums["stickythread"] . "\" />";
+                $stickyimg = "<img $src = \"" . $BASEURL . "/tsf_forums/images/sticky.png\" class=\"inlineimg\" $border = \"0\" $alt = \"" . $lang->tsf_forums["stickythread"] . "\" $title = \"" . $lang->tsf_forums["stickythread"] . "\" />";
                 $desc = $lang->tsf_forums["sticky"];
             }
             if ($thread["votenum"]) {
                 $thread["voteavg"] = number_format($thread["votetotal"] / $thread["votenum"], 2);
                 $thread["rating"] = round($thread["votetotal"] / $thread["votenum"]);
                 $ratingimgalt = sprintf($lang->tsf_forums["tratingimgalt"], $thread["votenum"], $thread["voteavg"]);
-                $ratingimage = "<img class=\"inlineimg\" src=\"" . $BASEURL . "/tsf_forums/images/rating/rating_" . $thread["rating"] . ".gif\" alt=\"" . $ratingimgalt . "\" title=\"" . $ratingimgalt . "\" border=\"0\" />";
+                $ratingimage = "<img class=\"inlineimg\" $src = \"" . $BASEURL . "/tsf_forums/images/rating/rating_" . $thread["rating"] . ".gif\" $alt = \"" . $ratingimgalt . "\" $title = \"" . $ratingimgalt . "\" $border = \"0\" />";
             }
             if ($thread["pollid"]) {
                 $pollimgalt = $lang->tsf_forums["poll17"];
-                $pollimage = "<img class=\"inlineimg\" src=\"" . $BASEURL . "/tsf_forums/images/poll.png\" alt=\"" . $pollimgalt . "\" title=\"" . $pollimgalt . "\" border=\"0\" />";
+                $pollimage = "<img class=\"inlineimg\" $src = \"" . $BASEURL . "/tsf_forums/images/poll.png\" $alt = \"" . $pollimgalt . "\" $title = \"" . $pollimgalt . "\" $border = \"0\" />";
                 $desc = "<strong>" . $lang->tsf_forums["poll17"] . ":</strong> ";
             }
             if ($stickyimg || $ratingimage || $pollimage) {
-                $threadtags = "<span style=\"float: right;\">" . $stickyimg . " " . $pollimage . ($ratingimage ? "<br />" . $ratingimage : "") . "</span>";
+                $threadtags = "<span $style = \"float: right;\">" . $stickyimg . " " . $pollimage . ($ratingimage ? "<br />" . $ratingimage : "") . "</span>";
             }
-            $str .= "\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td align=\"center\">" . $images . "</td>\r\n\t\t\t\t\t<td class=\"" . $class . "\" align=\"left\">" . $threadtags . $desc . "<a href=\"" . tsf_seo_clean_text($subject, "t", $thread["tid"]) . "\">" . ($thread["visible"] == 1 ? $subject : "<span class=\"highlight\">" . $lang->tsf_forums["moderatemsg8"] . "</span>") . "</a>" . $thread["multipage"] . "</td>\r\n\t\t\t\t\t<td class=\"" . $class . "\" align=\"left\"><a href=\"" . tsf_seo_clean_text($thread["currentforum"], "fd", $thread["fid"]) . "\">" . $thread["currentforum"] . "</a></td>\r\n\t\t\t\t\t<td class=\"" . $class . "\" align=\"center\"><a href=\"" . tsf_seo_clean_text($author, "u", $thread["threadstarteruid"]) . "\">" . $author . "</a></td>\r\n\t\t\t\t\t<td class=\"" . $class . "\" align=\"center\">" . $replies . "</td>\r\n\t\t\t\t\t<td class=\"" . $class . "\" align=\"center\">" . $views . "</td>\r\n\t\t\t\t\t" . $lastpost . "\r\n\t\t\t\t</tr>";
+            $str .= "\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td $align = \"center\">" . $images . "</td>\r\n\t\t\t\t\t<td class=\"" . $class . "\" $align = \"left\">" . $threadtags . $desc . "<a $href = \"" . tsf_seo_clean_text($subject, "t", $thread["tid"]) . "\">" . ($thread["visible"] == 1 ? $subject : "<span class=\"highlight\">" . $lang->tsf_forums["moderatemsg8"] . "</span>") . "</a>" . $thread["multipage"] . "</td>\r\n\t\t\t\t\t<td class=\"" . $class . "\" $align = \"left\"><a $href = \"" . tsf_seo_clean_text($thread["currentforum"], "fd", $thread["fid"]) . "\">" . $thread["currentforum"] . "</a></td>\r\n\t\t\t\t\t<td class=\"" . $class . "\" $align = \"center\"><a $href = \"" . tsf_seo_clean_text($author, "u", $thread["threadstarteruid"]) . "\">" . $author . "</a></td>\r\n\t\t\t\t\t<td class=\"" . $class . "\" $align = \"center\">" . $replies . "</td>\r\n\t\t\t\t\t<td class=\"" . $class . "\" $align = \"center\">" . $views . "</td>\r\n\t\t\t\t\t" . $lastpost . "\r\n\t\t\t\t</tr>";
             if (!isset($unreadpost) && !isset($page)) {
                 require_once INC_PATH . "/functions_cookies.php";
                 ts_set_array_cookie("forumread", $thread["fid"], TIMENOW);
@@ -552,7 +552,7 @@ if ($action == "show_search_results") {
             }
             $postcount = $count["resultcount"];
         }
-        $sorturl = $_SERVER["SCRIPT_NAME"] . "?action=show_search_results&amp;searchid=" . htmlspecialchars_uni($sid);
+        $sorturl = $_SERVER["SCRIPT_NAME"] . "?$action = show_search_results&amp;$searchid = " . htmlspecialchars_uni($sid);
         sanitize_pageresults($postcount, $pagenumber, $perpage, 200);
         $multipage = construct_page_nav($pagenumber, $perpage, $postcount, $sorturl);
         $limitlower = ($pagenumber - 1) * $perpage;
@@ -566,16 +566,16 @@ if ($action == "show_search_results") {
         if ($limitlower < 0) {
             $limitlower = 0;
         }
-        ($query = sql_query("\r\n\t\t\t\t\tSELECT\r\n\t\t\t\t\tp.pid, p.tid, p.fid, p.subject, p.visible, u.id as uid, u.username, p.dateline, p.message, f.name, t.subject as threadsubject,\r\n\t\t\t\t\tg.namestyle\r\n\t\t\t\t\tFROM\r\n\t\t\t\t\t" . TSF_PREFIX . "posts p\r\n\t\t\t\t\tLEFT JOIN users u ON (p.uid=u.id)\r\n\t\t\t\t\tLEFT JOIN usergroups g ON (u.usergroup=g.gid)\r\n\t\t\t\t\tLEFT JOIN " . TSF_PREFIX . "threads t ON (p.tid=t.tid)\r\n\t\t\t\t\tLEFT JOIN " . TSF_PREFIX . "forums f ON (p.fid=f.fid)\r\n\t\t\t\t\tWHERE " . $where_conditions . "\r\n\t\t\t\t\tORDER BY " . $sortfield . " " . $order . "\r\n\t\t\t\t\tLIMIT " . $limitlower . ", " . $perpage)) || sqlerr(__FILE__, 1079);
-        $str = "\r\n\t\t<table border=\"0\" cellspacing=\"0\" cellpadding=\"4\" style=\"clear: both;\" width=\"100%\">\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"thead\" colspan=\"4\">\r\n\t\t\t\t\t<div>\r\n\t\t\t\t\t\t<strong>" . $lang->tsf_forums["search_results"] . "</strong>\r\n\t\t\t\t\t</div>\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"subheader\" align=\"left\" width=\"50%\"><span class=\"smalltext\"><strong>" . $lang->tsf_forums["post"] . "</strong></span></td>\r\n\t\t\t\t<td class=\"subheader\" align=\"center\" width=\"10%\"><span class=\"smalltext\"><strong>" . $lang->tsf_forums["author"] . "</strong></span></td>\r\n\t\t\t\t<td class=\"subheader\" align=\"left\" width=\"25%\"><span class=\"smalltext\"><strong>" . $lang->tsf_forums["forum"] . "</strong></span></td>\r\n\t\t\t\t<td class=\"subheader\" align=\"center\" width=\"15%\"><span class=\"smalltext\"><strong>" . $lang->tsf_forums["posted"] . "</strong></span></td>\r\n\t\t\t</tr>\r\n\t\t";
+        ($query = sql_query("\r\n\t\t\t\t\tSELECT\r\n\t\t\t\t\tp.pid, p.tid, p.fid, p.subject, p.visible, u.id as uid, u.username, p.dateline, p.message, f.name, t.subject as threadsubject,\r\n\t\t\t\t\tg.namestyle\r\n\t\t\t\t\tFROM\r\n\t\t\t\t\t" . TSF_PREFIX . "posts p\r\n\t\t\t\t\tLEFT JOIN users u ON (p.$uid = u.id)\r\n\t\t\t\t\tLEFT JOIN usergroups g ON (u.$usergroup = g.gid)\r\n\t\t\t\t\tLEFT JOIN " . TSF_PREFIX . "threads t ON (p.$tid = t.tid)\r\n\t\t\t\t\tLEFT JOIN " . TSF_PREFIX . "forums f ON (p.$fid = f.fid)\r\n\t\t\t\t\tWHERE " . $where_conditions . "\r\n\t\t\t\t\tORDER BY " . $sortfield . " " . $order . "\r\n\t\t\t\t\tLIMIT " . $limitlower . ", " . $perpage)) || sqlerr(__FILE__, 1079);
+        $str = "\r\n\t\t<table $border = \"0\" $cellspacing = \"0\" $cellpadding = \"4\" $style = \"clear: both;\" $width = \"100%\">\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"thead\" $colspan = \"4\">\r\n\t\t\t\t\t<div>\r\n\t\t\t\t\t\t<strong>" . $lang->tsf_forums["search_results"] . "</strong>\r\n\t\t\t\t\t</div>\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"subheader\" $align = \"left\" $width = \"50%\"><span class=\"smalltext\"><strong>" . $lang->tsf_forums["post"] . "</strong></span></td>\r\n\t\t\t\t<td class=\"subheader\" $align = \"center\" $width = \"10%\"><span class=\"smalltext\"><strong>" . $lang->tsf_forums["author"] . "</strong></span></td>\r\n\t\t\t\t<td class=\"subheader\" $align = \"left\" $width = \"25%\"><span class=\"smalltext\"><strong>" . $lang->tsf_forums["forum"] . "</strong></span></td>\r\n\t\t\t\t<td class=\"subheader\" $align = \"center\" $width = \"15%\"><span class=\"smalltext\"><strong>" . $lang->tsf_forums["posted"] . "</strong></span></td>\r\n\t\t\t</tr>\r\n\t\t";
         while ($post = mysqli_fetch_assoc($query)) {
-            $Query = sql_query("SELECT pid FROM " . TSF_PREFIX . "posts WHERE tid =" . $post["tid"] . " AND pid <= " . $post["pid"]);
+            $Query = sql_query("SELECT pid FROM " . TSF_PREFIX . "posts WHERE $tid = " . $post["tid"] . " AND pid <= " . $post["pid"]);
             $Count = mysqli_num_rows($Query);
             if ($Count <= $postperpage) {
                 $P = 0;
                 while (preg_match("#\\[hide\\](.*?)\\[\\/hide\\](\r\n?|\n?)#si", $post["message"])) {
                 }
-                $str .= "\r\n\t\t\t<tr>\r\n\t\t\t<td align=\"left\">\r\n\t\t\t\t" . ($post["visible"] == 1 ? $lang->tsf_forums["thread"] . ": <a href=\"" . tsf_seo_clean_text($post["threadsubject"], "t", $post["tid"]) . "\"><b>" . htmlspecialchars_uni($post["threadsubject"]) . "</b></a><br />" . $lang->tsf_forums["post"] . " <a href=\"" . tsf_seo_clean_text($post["subject"], "t", $post["tid"], "pid=" . $post["pid"] . "&nolastpage=true&page=" . $P . "&scrollto=pid" . $post["pid"]) . "\"><b>" . htmlspecialchars_uni($post["subject"]) . "</b></a><br />" . htmlspecialchars_uni($post["message"]) : "<span class=\"highlight\"><a href=\"" . tsf_seo_clean_text($post["subject"], "t", $post["tid"], "pid=" . $post["pid"] . "&nolastpage=true&page=" . $P . "&scrollto=pid" . $post["pid"]) . "\">" . $lang->tsf_forums["moderatemsg7"] . "</a></span>") . "</td>\r\n\t\t\t<td align=\"center\" valign=\"top\"><a href=\"" . tsf_seo_clean_text($post["username"], "u", $post["uid"]) . "\">" . get_user_color($post["username"], $post["namestyle"]) . "</a></td>\r\n\t\t\t<td align=\"left\" valign=\"top\"><a href=\"" . tsf_seo_clean_text($post["name"], "fd", $post["fid"]) . "\"><b>" . $post["name"] . "</b></a></td>\r\n\t\t\t<td align=\"center\" valign=\"top\">" . my_datee($dateformat, $post["dateline"]) . " " . my_datee($timeformat, $post["dateline"]) . "</td>\r\n\t\t\t</tr>";
+                $str .= "\r\n\t\t\t<tr>\r\n\t\t\t<td $align = \"left\">\r\n\t\t\t\t" . ($post["visible"] == 1 ? $lang->tsf_forums["thread"] . ": <a $href = \"" . tsf_seo_clean_text($post["threadsubject"], "t", $post["tid"]) . "\"><b>" . htmlspecialchars_uni($post["threadsubject"]) . "</b></a><br />" . $lang->tsf_forums["post"] . " <a $href = \"" . tsf_seo_clean_text($post["subject"], "t", $post["tid"], "pid=" . $post["pid"] . "&$nolastpage = true&$page = " . $P . "&$scrollto = pid" . $post["pid"]) . "\"><b>" . htmlspecialchars_uni($post["subject"]) . "</b></a><br />" . htmlspecialchars_uni($post["message"]) : "<span class=\"highlight\"><a $href = \"" . tsf_seo_clean_text($post["subject"], "t", $post["tid"], "pid=" . $post["pid"] . "&$nolastpage = true&$page = " . $P . "&$scrollto = pid" . $post["pid"]) . "\">" . $lang->tsf_forums["moderatemsg7"] . "</a></span>") . "</td>\r\n\t\t\t<td $align = \"center\" $valign = \"top\"><a $href = \"" . tsf_seo_clean_text($post["username"], "u", $post["uid"]) . "\">" . get_user_color($post["username"], $post["namestyle"]) . "</a></td>\r\n\t\t\t<td $align = \"left\" $valign = \"top\"><a $href = \"" . tsf_seo_clean_text($post["name"], "fd", $post["fid"]) . "\"><b>" . $post["name"] . "</b></a></td>\r\n\t\t\t<td $align = \"center\" $valign = \"top\">" . my_datee($dateformat, $post["dateline"]) . " " . my_datee($timeformat, $post["dateline"]) . "</td>\r\n\t\t\t</tr>";
             } else {
                 $P = ceil($Count / $postperpage);
             }
@@ -586,8 +586,8 @@ if ($action == "show_search_results") {
     stdhead($lang->tsf_forums["search_results"]);
     build_breadcrumb();
     $str .= "</table>";
-    $ptr = "\r\n\t<!-- start: forumdisplay_newthread -->\r\n\t\t<table width=\"100%\" border=\"0\" class=\"none\" style=\"clear: both;\">\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"none\" width=\"82%\" style=\"padding: 0px 0px 5px 0px;\">\r\n\t\t\t\t\t<div style=\"float: left;\" id=\"navcontainer_f\">\r\n\t\t\t\t\t\t" . $multipage . "\r\n\t\t\t\t\t</div>\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t</table>\r\n\t<!-- end: forumdisplay_newthread -->";
-    $str .= "\r\n\t<!-- start: forumdisplay_newthread -->\r\n\t\t\t<table width=\"100%\" border=\"0\" class=\"none\" style=\"clear: both;\">\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td class=\"none\" width=\"82%\">\r\n\t\t\t\t\t\t<div style=\"float: left;\" id=\"navcontainer_f\">\r\n\t\t\t\t\t\t\t" . $multipage . "\r\n\t\t\t\t\t\t</div>\r\n\t\t\t\t\t</td>\r\n\t\t\t\t</tr>\r\n\t\t\t</table>\r\n\t\t<!-- end: forumdisplay_newthread -->\t";
+    $ptr = "\r\n\t<!-- start: forumdisplay_newthread -->\r\n\t\t<table $width = \"100%\" $border = \"0\" class=\"none\" $style = \"clear: both;\">\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"none\" $width = \"82%\" $style = \"padding: 0px 0px 5px 0px;\">\r\n\t\t\t\t\t<div $style = \"float: left;\" $id = \"navcontainer_f\">\r\n\t\t\t\t\t\t" . $multipage . "\r\n\t\t\t\t\t</div>\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t</table>\r\n\t<!-- end: forumdisplay_newthread -->";
+    $str .= "\r\n\t<!-- start: forumdisplay_newthread -->\r\n\t\t\t<table $width = \"100%\" $border = \"0\" class=\"none\" $style = \"clear: both;\">\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td class=\"none\" $width = \"82%\">\r\n\t\t\t\t\t\t<div $style = \"float: left;\" $id = \"navcontainer_f\">\r\n\t\t\t\t\t\t\t" . $multipage . "\r\n\t\t\t\t\t\t</div>\r\n\t\t\t\t\t</td>\r\n\t\t\t\t</tr>\r\n\t\t\t</table>\r\n\t\t<!-- end: forumdisplay_newthread -->\t";
     echo $ptr . $str;
     stdfoot();
     exit;
@@ -629,7 +629,7 @@ function perform_search_mysql_ft($search)
                     $word = str_replace(["+", "-", "*"], "", $word);
                     if ($word) {
                         if (strlen($word) < $minsearchword) {
-                            $lang->error_minsearchlength = sprintf($lang->tsf_forums["searcherror3"], $minsearchword);
+                            $lang->$error_minsearchlength = sprintf($lang->tsf_forums["searcherror3"], $minsearchword);
                             add_breadcrumb($lang->tsf_forums["search_results"]);
                             stdhead($lang->tsf_forums["search_results"]);
                             build_breadcrumb();
@@ -642,7 +642,7 @@ function perform_search_mysql_ft($search)
             } else {
                 $phrase = str_replace(["+", "-", "*"], "", $phrase);
                 if (strlen($phrase) < $minsearchword) {
-                    $lang->error_minsearchlength = sprintf($lang->tsf_forums["searcherror3"], $minsearchword);
+                    $lang->$error_minsearchlength = sprintf($lang->tsf_forums["searcherror3"], $minsearchword);
                     add_breadcrumb($lang->tsf_forums["search_results"]);
                     stdhead($lang->tsf_forums["search_results"]);
                     build_breadcrumb();
@@ -660,7 +660,7 @@ function perform_search_mysql_ft($search)
     if ($search["author"]) {
         $userids = [];
         if ($search["matchusername"]) {
-            $query = sql_query("SELECT id FROM users WHERE username='" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $search["author"]) . "'") or ($query = sql_query("SELECT id FROM users WHERE username='" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $search["author"]) . "'")) || sqlerr(__FILE__, 1247);
+            $query = sql_query("SELECT id FROM users WHERE $username = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $search["author"]) . "'") or ($query = sql_query("SELECT id FROM users WHERE $username = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $search["author"]) . "'")) || sqlerr(__FILE__, 1247);
             while ($user = mysqli_fetch_assoc($query)) {
             }
             if (count($userids) < 1) {
@@ -690,9 +690,9 @@ function perform_search_mysql_ft($search)
         foreach ($search["forums"] as $forum) {
             $forum = intval($forum);
             if (!isset($searchin[$forum])) {
-                ($query = sql_query("SELECT f.fid FROM " . TSF_PREFIX . "forums f LEFT JOIN " . TSF_PREFIX . "forumpermissions p ON (f.fid=p.fid AND p.gid='" . $CURUSER["usergroup"] . "') WHERE INSTR(CONCAT(',',parentlist,','),'," . $forum . ",') > 0 AND (ISNULL(p.fid) OR p.cansearch='yes')")) || sqlerr(__FILE__, 1289);
+                ($query = sql_query("SELECT f.fid FROM " . TSF_PREFIX . "forums f LEFT JOIN " . TSF_PREFIX . "forumpermissions p ON (f.$fid = p.fid AND p.$gid = '" . $CURUSER["usergroup"] . "') WHERE INSTR(CONCAT(',',parentlist,','),'," . $forum . ",') > 0 AND (ISNULL(p.fid) OR p.$cansearch = 'yes')")) || sqlerr(__FILE__, 1289);
                 if (mysqli_num_rows($query) == 1) {
-                    $forumin[] = "t.fid='" . $forum . "'";
+                    $forumin[] = "t.$fid = '" . $forum . "'";
                     $searchin[$forum] = 1;
                 } else {
                     while ($sforum = mysqli_fetch_assoc($query)) {
@@ -705,7 +705,7 @@ function perform_search_mysql_ft($search)
             }
         }
     }
-    ($query = sql_query("SELECT fp.fid,f.fid FROM " . TSF_PREFIX . "forumpermissions fp LEFT JOIN " . TSF_PREFIX . "forums f ON (fp.fid=f.pid) WHERE (fp.canview = 'no' OR fp.cansearch = 'no') AND fp.gid = " . sqlesc($CURUSER["usergroup"]))) || sqlerr(__FILE__, 1310);
+    ($query = sql_query("SELECT fp.fid,f.fid FROM " . TSF_PREFIX . "forumpermissions fp LEFT JOIN " . TSF_PREFIX . "forums f ON (fp.$fid = f.pid) WHERE (fp.$canview = 'no' OR fp.$cansearch = 'no') AND fp.$gid = " . sqlesc($CURUSER["usergroup"]))) || sqlerr(__FILE__, 1310);
     if (0 < mysqli_num_rows($query)) {
         while ($notin = mysqli_fetch_assoc($query)) {
             $uf[] = 0 + $notin["fid"];
@@ -736,7 +736,7 @@ function perform_search_mysql_ft($search)
     }
     $threadsql = "";
     if (isset($search["threadid"]) && is_valid_id($search["threadid"])) {
-        $threadsql = " AND t.tid = '" . $search["threadid"] . "'";
+        $threadsql = " AND t.$tid = '" . $search["threadid"] . "'";
     }
     $threads = [];
     $posts = [];
@@ -755,7 +755,7 @@ function perform_search_mysql_ft($search)
                 $posts[$thread["tid"]] = $thread["firstpost"];
             }
         }
-        $query = sql_query("\r\n\t\t\tSELECT p.pid, p.tid\r\n\t\t\tFROM " . TSF_PREFIX . "posts p\r\n\t\t\tLEFT JOIN " . TSF_PREFIX . "threads t ON (t.tid=p.tid)\r\n\t\t\tWHERE 1=1 " . $forumin . " " . $post_usersql . " " . $threadsql . " " . $permsql . " " . $message_lookin . "\r\n\t\t") or ($query = sql_query("\r\n\t\t\tSELECT p.pid, p.tid\r\n\t\t\tFROM " . TSF_PREFIX . "posts p\r\n\t\t\tLEFT JOIN " . TSF_PREFIX . "threads t ON (t.tid=p.tid)\r\n\t\t\tWHERE 1=1 " . $forumin . " " . $post_usersql . " " . $threadsql . " " . $permsql . " " . $message_lookin . "\r\n\t\t")) || sqlerr(__FILE__, 1391);
+        $query = sql_query("\r\n\t\t\tSELECT p.pid, p.tid\r\n\t\t\tFROM " . TSF_PREFIX . "posts p\r\n\t\t\tLEFT JOIN " . TSF_PREFIX . "threads t ON (t.$tid = p.tid)\r\n\t\t\tWHERE 1=1 " . $forumin . " " . $post_usersql . " " . $threadsql . " " . $permsql . " " . $message_lookin . "\r\n\t\t") or ($query = sql_query("\r\n\t\t\tSELECT p.pid, p.tid\r\n\t\t\tFROM " . TSF_PREFIX . "posts p\r\n\t\t\tLEFT JOIN " . TSF_PREFIX . "threads t ON (t.$tid = p.tid)\r\n\t\t\tWHERE 1=1 " . $forumin . " " . $post_usersql . " " . $threadsql . " " . $permsql . " " . $message_lookin . "\r\n\t\t")) || sqlerr(__FILE__, 1391);
         while ($post = mysqli_fetch_assoc($query)) {
             $posts[$post["pid"]] = $post["pid"];
             $threads[$post["tid"]] = $post["tid"];
@@ -803,7 +803,7 @@ function CheckSearchFlood()
 {
     global $CURUSER;
     global $lang;
-    ($Query = sql_query("SELECT dateline FROM " . TSF_PREFIX . "searchlog WHERE uid = " . $CURUSER["id"] . " ORDER BY dateline DESC LIMIT 1")) || sqlerr(__FILE__, 1463);
+    ($Query = sql_query("SELECT dateline FROM " . TSF_PREFIX . "searchlog WHERE $uid = " . $CURUSER["id"] . " ORDER BY dateline DESC LIMIT 1")) || sqlerr(__FILE__, 1463);
     if (mysqli_num_rows($Query)) {
         $Result = mysqli_fetch_assoc($Query);
         flood_check($lang->tsf_forums["search"], $Result["dateline"]);

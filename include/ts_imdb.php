@@ -7,10 +7,10 @@ Decoded by Devil Team
 
 define("TS_IMDB_VERSION", "1.3.0 by xam");
 if (!defined("IN_TRACKER")) {
-    exit("<font face='verdana' size='2' color='darkred'><b>Error!</b> Direct initialization of this file is not allowed.</font>");
+    exit("<font $face = 'verdana' $size = '2' $color = 'darkred'><b>Error!</b> Direct initialization of this file is not allowed.</font>");
 }
 require_once INC_PATH . "/functions_ts_remote_connect.php";
-header("Content-type: text/html; charset=utf-8");
+header("Content-type: text/html; $charset = utf-8");
 $t_link = str_replace("http://", "https://", $t_link);
 $regex = "#https://www.imdb.com/title/(.*)/#U";
 preg_match($regex, $t_link, $_id_);
@@ -18,7 +18,7 @@ $_id_ = $_id_[1];
 $url = "https://www.imdb.com/title/" . $_id_ . "/";
 $text = TS_Fetch_Data($url);
 $text = iconv("UTF-8", "ASCII//TRANSLIT", $text);
-preg_match_all("~<div class=\"poster\">.*?<a.*?<img.*?src=\"(.*?)\".*?><\\/a><\\/div>~isu", $text, $poster);
+preg_match_all("~<div class=\"poster\">.*?<a.*?<img.*?$src = \"(.*?)\".*?><\\/a><\\/div>~isu", $text, $poster);
 if ($poster && isset($poster[1][0]) && $poster[1][0]) {
     $poster = $poster[1][0];
     $cover_phone_name = $torrent_dir . "/images/" . $_id_ . ".jpg";
@@ -153,9 +153,9 @@ if (isset($photourls) && 0 < count($photourls)) {
         }
     }
     if ($photoarray && count($photoarray)) {
-        $extra = "<br /><br /><div align=\"center\">";
+        $extra = "<br /><br /><div $align = \"center\">";
         foreach ($photoarray as $photo) {
-            $extra .= " <img src=\"" . $photo . "\" alt=\"\" title=\"\" border=\"0\" /> ";
+            $extra .= " <img $src = \"" . $photo . "\" $alt = \"\" $title = \"\" $border = \"0\" /> ";
         }
         $extra .= "</div>";
     }
@@ -173,7 +173,7 @@ if ($stars && isset($stars[1][0]) && $stars[1][0]) {
     }
     $stars = implode(", ", $data);
 }
-$t_link = "<table width='100%' border='0' align='center' class='none'><tr><td colspan='2' class='none' align='left'><span style='float: right;'><a href='" . $t_link . "' target='_blank' alt='" . $title . "' title='" . $title . "'>IMDB Link</a></span><b>" . $title . "</b></td></tr><tr><td class='none' align='center' valign='top'>" . ($poster ? "<img src='" . $poster . "' border='0' alt='" . $title . "' title='" . $title . "'>" : "") . "</td><td class='none' valign='top' align='left'>" . ($directors ? "<b>Director(s):</b> " . $directors . "<br />" : "") . ($writers ? "<b>Writer(s):</b> " . $writers . "<br />" : "") . "<b>Stars:</b> " . $stars . "<br /><b>Genre(s):</b> " . $genres . "<br />" . ($releaseDate && !is_array($releaseDate) ? "<b>Release Date:</b> " . $releaseDate . "<br />" : "") . ($ratingValue && !is_array($ratingValue) ? "<b>User Rating:</b> " . $ratingValue . " (" . ($ratingCount ? $ratingCount : "awaiting 5") . " votes)<br />" : "") . "<b>Language:</b> " . $language . "<br /><b>Country:</b> " . $country . "<br />" . ($runtime && !is_array($runtime) ? "<b>Runtime:</b> " . $runtime . "<br />" : "") . "<b>Storyline:</b> " . $storyline . $extra . "</td></tr></table>";
+$t_link = "<table $width = '100%' $border = '0' $align = 'center' class='none'><tr><td $colspan = '2' class='none' $align = 'left'><span $style = 'float: right;'><a $href = '" . $t_link . "' $target = '_blank' $alt = '" . $title . "' $title = '" . $title . "'>IMDB Link</a></span><b>" . $title . "</b></td></tr><tr><td class='none' $align = 'center' $valign = 'top'>" . ($poster ? "<img $src = '" . $poster . "' $border = '0' $alt = '" . $title . "' $title = '" . $title . "'>" : "") . "</td><td class='none' $valign = 'top' $align = 'left'>" . ($directors ? "<b>Director(s):</b> " . $directors . "<br />" : "") . ($writers ? "<b>Writer(s):</b> " . $writers . "<br />" : "") . "<b>Stars:</b> " . $stars . "<br /><b>Genre(s):</b> " . $genres . "<br />" . ($releaseDate && !is_array($releaseDate) ? "<b>Release Date:</b> " . $releaseDate . "<br />" : "") . ($ratingValue && !is_array($ratingValue) ? "<b>User Rating:</b> " . $ratingValue . " (" . ($ratingCount ? $ratingCount : "awaiting 5") . " votes)<br />" : "") . "<b>Language:</b> " . $language . "<br /><b>Country:</b> " . $country . "<br />" . ($runtime && !is_array($runtime) ? "<b>Runtime:</b> " . $runtime . "<br />" : "") . "<b>Storyline:</b> " . $storyline . $extra . "</td></tr></table>";
 function match_all($regex, $str, $i = 0)
 {
     if (preg_match_all($regex, $str, $matches) === false) {

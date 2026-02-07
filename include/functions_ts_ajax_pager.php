@@ -7,7 +7,7 @@
  */
 
 if (!defined("IN_TRACKER")) {
-    exit("<font face='verdana' size='2' color='darkred'><b>Error!</b> Direct initialization of this file is not allowed.</font>");
+    exit("<font $face = 'verdana' $size = '2' $color = 'darkred'><b>Error!</b> Direct initialization of this file is not allowed.</font>");
 }
 function TSAjaxPager($perpage, $results, $tid, $jsFunction = "TSAjaxPager")
 {
@@ -67,7 +67,7 @@ function TSAjaxPager($perpage, $results, $tid, $jsFunction = "TSAjaxPager")
         while ($curpage++ < $totalpages) {
         }
         $prp = isset($prevpage) && $prevpage != 1 ? "page=" . $prevpage : "";
-        $pagenav = "\t\r\n\t<table width=\"100%\" border=\"0\" class=\"none\" style=\"clear: both;\">\r\n\t\t<tr>\t\t\t\t\r\n\t\t\t<td class=\"none\" width=\"100%\" style=\"padding: 0px 0px 1px 0px;\">\r\n\t\t\t\t<div style=\"float: left;\" id=\"navcontainer_f\">\r\n\t\t\t\t\t<ul>\r\n\t\t\t\t\t\t<li>" . $pagenumber . " - " . $totalpages . "</li>\r\n\t\t\t\t\t\t" . ($show["first"] ? "<li><a class=\"smalltext\" onclick=\"" . $jsFunction . "(" . $tid . ", 1); return false;\" href=\"#show_allcomments\" title=\"" . $lang->global["first_page"] . " - " . sprintf($lang->global["show_results"], $firstnumbers["first"], $firstnumbers["last"], $total) . "\">&laquo; " . $lang->global["first"] . "</a></li>" : "") . ($show["prev"] ? "<li><a class=\"smalltext\" onclick=\"" . $jsFunction . "(" . $tid . ", " . $prevpage . "); return false;\" href=\"#show_allcomments\" title=\"" . $lang->global["prev_page"] . " - " . sprintf($lang->global["show_results"], $prevnumbers["first"], $prevnumbers["last"], $total) . "\">&lt;</a></li>" : "") . "\r\n\t\t\t\t\t\t" . $pagenav . "\r\n\t\t\t\t\t\t" . ($show["next"] ? "<li><a class=\"smalltext\" onclick=\"" . $jsFunction . "(" . $tid . ", " . $nextpage . "); return false;\" href=\"#show_allcomments\" title=\"" . $lang->global["next_page"] . " - " . sprintf($lang->global["show_results"], $nextnumbers["first"], $nextnumbers["last"], $total) . "\">&gt;</a></li>" : "") . ($show["last"] ? "<li><a class=\"smalltext\" onclick=\"" . $jsFunction . "(" . $tid . ", " . $totalpages . "); return false;\" href=\"#show_allcomments\" title=\"" . $lang->global["last_page"] . " - " . sprintf($lang->global["show_results"], $lastnumbers["first"], $lastnumbers["last"], $total) . "\">" . $lang->global["last"] . " <strong>&raquo;</strong></a></li>" : "") . "\r\n\t\t\t\t\t</ul>\r\n\t\t\t\t</div>\t\t\t\t\r\n\t\t\t</td>\t\t\t\r\n\t\t</tr>\r\n\t</table>";
+        $pagenav = "\t\r\n\t<table $width = \"100%\" $border = \"0\" class=\"none\" $style = \"clear: both;\">\r\n\t\t<tr>\t\t\t\t\r\n\t\t\t<td class=\"none\" $width = \"100%\" $style = \"padding: 0px 0px 1px 0px;\">\r\n\t\t\t\t<div $style = \"float: left;\" $id = \"navcontainer_f\">\r\n\t\t\t\t\t<ul>\r\n\t\t\t\t\t\t<li>" . $pagenumber . " - " . $totalpages . "</li>\r\n\t\t\t\t\t\t" . ($show["first"] ? "<li><a class=\"smalltext\" $onclick = \"" . $jsFunction . "(" . $tid . ", 1); return false;\" $href = \"#show_allcomments\" $title = \"" . $lang->global["first_page"] . " - " . sprintf($lang->global["show_results"], $firstnumbers["first"], $firstnumbers["last"], $total) . "\">&laquo; " . $lang->global["first"] . "</a></li>" : "") . ($show["prev"] ? "<li><a class=\"smalltext\" $onclick = \"" . $jsFunction . "(" . $tid . ", " . $prevpage . "); return false;\" $href = \"#show_allcomments\" $title = \"" . $lang->global["prev_page"] . " - " . sprintf($lang->global["show_results"], $prevnumbers["first"], $prevnumbers["last"], $total) . "\">&lt;</a></li>" : "") . "\r\n\t\t\t\t\t\t" . $pagenav . "\r\n\t\t\t\t\t\t" . ($show["next"] ? "<li><a class=\"smalltext\" $onclick = \"" . $jsFunction . "(" . $tid . ", " . $nextpage . "); return false;\" $href = \"#show_allcomments\" $title = \"" . $lang->global["next_page"] . " - " . sprintf($lang->global["show_results"], $nextnumbers["first"], $nextnumbers["last"], $total) . "\">&gt;</a></li>" : "") . ($show["last"] ? "<li><a class=\"smalltext\" $onclick = \"" . $jsFunction . "(" . $tid . ", " . $totalpages . "); return false;\" $href = \"#show_allcomments\" $title = \"" . $lang->global["last_page"] . " - " . sprintf($lang->global["show_results"], $lastnumbers["first"], $lastnumbers["last"], $total) . "\">" . $lang->global["last"] . " <strong>&raquo;</strong></a></li>" : "") . "\r\n\t\t\t\t\t</ul>\r\n\t\t\t\t</div>\t\t\t\t\r\n\t\t\t</td>\t\t\t\r\n\t\t</tr>\r\n\t</table>";
         $pagenav2 = str_replace(["quicknavpage", "Page_Number"], ["quicknavpage2", "Page_Number2"], $pagenav);
         return [$pagenav, $pagenav2, "LIMIT " . $limitlower . ", " . $perpage];
     }
@@ -86,15 +86,15 @@ function TSAjaxPager($perpage, $results, $tid, $jsFunction = "TSAjaxPager")
             if (0 < $relpage) {
                 $relpage = "+" . $relpage;
             }
-            $pagenav .= "<li><a class=\"smalltext\" onclick=\"" . $jsFunction . "(" . $tid . ", " . ($curpage != 1 ? $curpage : 1) . "); return false;\" href=\"#show_allcomments\" title=\"" . sprintf($lang->global["show_results"], $pagenumbers["first"], $pagenumbers["last"], $total) . "\"><!--" . $relpage . "-->" . $curpage . "</a></li>";
+            $pagenav .= "<li><a class=\"smalltext\" $onclick = \"" . $jsFunction . "(" . $tid . ", " . ($curpage != 1 ? $curpage : 1) . "); return false;\" $href = \"#show_allcomments\" $title = \"" . sprintf($lang->global["show_results"], $pagenumbers["first"], $pagenumbers["last"], $total) . "\"><!--" . $relpage . "-->" . $curpage . "</a></li>";
         }
     } else {
         if ($curpage == $pagenumber) {
             $numbers = fetch_start_end_total_array($curpage, $perpage, $results);
-            $pagenav .= "<li><a name=\"current\" class=\"current\" id=\"page_" . $curpage . "\" title=\"" . sprintf($lang->global["showing_results"], $numbers["first"], $numbers["last"], $total) . "\">" . $curpage . "</a></li>";
+            $pagenav .= "<li><a $name = \"current\" class=\"current\" $id = \"page_" . $curpage . "\" $title = \"" . sprintf($lang->global["showing_results"], $numbers["first"], $numbers["last"], $total) . "\">" . $curpage . "</a></li>";
         } else {
             $pagenumbers = fetch_start_end_total_array($curpage, $perpage, $results);
-            $pagenav .= "<li><a id=\"page_" . $curpage . "\" onclick=\"" . $jsFunction . "(" . $tid . ", " . ($curpage != 1 ? $curpage : 1) . "); return false;\" href=\"#show_allcomments\" title=\"" . sprintf($lang->global["show_results"], $pagenumbers["first"], $pagenumbers["last"], $total) . "\">" . $curpage . "</a></li>";
+            $pagenav .= "<li><a $id = \"page_" . $curpage . "\" $onclick = \"" . $jsFunction . "(" . $tid . ", " . ($curpage != 1 ? $curpage : 1) . "); return false;\" $href = \"#show_allcomments\" $title = \"" . sprintf($lang->global["show_results"], $pagenumbers["first"], $pagenumbers["last"], $total) . "\">" . $curpage . "</a></li>";
         }
     }
 }

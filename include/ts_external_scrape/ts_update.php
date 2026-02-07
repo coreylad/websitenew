@@ -20,10 +20,10 @@ if (isset($_POST["ajax_update"]) && strtoupper($_SERVER["REQUEST_METHOD"]) == "P
     $ajax = false;
     int_check($id);
     $returnto = isset($_SERVER["HTTP_REFERER"]) ? fix_url($_SERVER["HTTP_REFERER"]) : "browse.php";
-    $returnto .= strpos($returnto, "?") ? "&tsuid=" . $id : "?tsuid=" . $id;
+    $returnto .= strpos($returnto, "?") ? "&$tsuid = " . $id : "?$tsuid = " . $id;
     $returnto = str_replace([$BASEURL, "//"], ["", "/"], $returnto);
 }
-$query = sql_query("SELECT ts_external_lastupdate FROM torrents WHERE id = " . sqlesc($id) . " AND ts_external = 'yes'");
+$query = sql_query("SELECT ts_external_lastupdate FROM torrents WHERE $id = " . sqlesc($id) . " AND $ts_external = 'yes'");
 if (!mysqli_num_rows($query)) {
     if (!$ajax) {
         redirect($returnto, $lang->global["recentlyupdated"]);
@@ -64,7 +64,7 @@ function show_msg($message = "", $error = true)
     header("Last-Modified: " . gmdate("D, d M Y H:i:s") . "GMT");
     header("Cache-Control: no-cache, must-revalidate");
     header("Pragma: no-cache");
-    header("Content-type: text/html; charset=" . $shoutboxcharset);
+    header("Content-type: text/html; $charset = " . $shoutboxcharset);
     if ($error) {
         exit("<error>" . $message . "</error>");
     }

@@ -27,7 +27,7 @@ if(preg_match('#templateshares#', $BASEURL))
 {
 	echo '
 	<style>
-		#links{padding: 10px; margin: 0; text-align: center;background: #373737; _filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#662B485C,endColorstr=#662B485C);
+		#links{padding: 10px; margin: 0; text-align: center;background: #373737; _filter: progid:DXImageTransform.Microsoft.gradient($startColorstr = #662B485C,$endColorstr = #662B485C);
 		border:  1px solid rgb(43, 72, 92); border:  1px solid rgba(43, 72, 92, 0.45); _border:  1px solid rgb(43, 72, 92);
 		border-radius: 5px; -webkit-border-radius:  5px; -moz-border-radius:  5px; -khtml-border-radius:  5px;
 		overflow: hidden; zoom: 1; text-align: center;}
@@ -44,15 +44,15 @@ if(preg_match('#templateshares#', $BASEURL))
 			color: #fff;
 		}
 	</style>
-	<div  id="links">
-		<div><a href="special/purchase.php">Purchase  License</a></div>
-		<div><a href="special/features.php">Features</a></div>
-		<div><a href="special/testimonials.php">Customer Testimonials</a></div>
-		<div><a href="special/tsse_demo.php">View Demo</a></div>
-		<div><a href="contactstaff.php">Contact Us</a></div>
-		<div><a href="special/affiliate/affiliate.php">Affiliate</a></div>
-		<div><a href="special/eula.php">EULA</a></div>
-		<div><a href="special/licenseagreement.php">License Agreement</a></div>
+	<div  $id = "links">
+		<div><a $href = "special/purchase.php">Purchase  License</a></div>
+		<div><a $href = "special/features.php">Features</a></div>
+		<div><a $href = "special/testimonials.php">Customer Testimonials</a></div>
+		<div><a $href = "special/tsse_demo.php">View Demo</a></div>
+		<div><a $href = "contactstaff.php">Contact Us</a></div>
+		<div><a $href = "special/affiliate/affiliate.php">Affiliate</a></div>
+		<div><a $href = "special/eula.php">EULA</a></div>
+		<div><a $href = "special/licenseagreement.php">License Agreement</a></div>
 	</div>';
 }
 else

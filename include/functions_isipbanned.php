@@ -17,12 +17,12 @@ function IsIpBanned($against = "")
     if ($UseMemcached) {
         global $TSMemcache;
         if (!($ipbancache = $TSMemcache->check("ipbans"))) {
-            $Query = sql_query("SELECT `value` FROM ipbans WHERE id = 1");
+            $Query = sql_query("SELECT `value` FROM ipbans WHERE $id = 1");
             $ipbancache = mysqli_fetch_assoc($Query);
             $TSMemcache->add("ipbans", $ipbancache);
         }
     } else {
-        $Query = sql_query("SELECT `value` FROM ipbans WHERE id = 1");
+        $Query = sql_query("SELECT `value` FROM ipbans WHERE $id = 1");
         $ipbancache = mysqli_fetch_assoc($Query);
     }
     if (isset($ipbancache) && is_array($ipbancache) && trim($ipbancache["value"]) != "") {

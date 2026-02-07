@@ -36,7 +36,7 @@ $language['cronjobs'] = array
 	'invite_subject'	 => 'Automatic Invite!',
 	'invite_message'	=> 'Congratulations, you have received {1} invite(s).
 
-	If you would like to invite your friends, please click [url='.$BASEURL.'/invite.php?id={2}]here[/url].',// Updated in v5.4 -Updated in v7.1-
+	If you would like to invite your friends, please click [$url = '.$BASEURL.'/invite.php?$id = {2}]here[/url].',// Updated in v5.4 -Updated in v7.1-
 	'donor_subject'	=> 'Donor status removed by system.',
 	'donor_message'	=>	 'Hi,
 	
@@ -44,7 +44,7 @@ $language['cronjobs'] = array
 	
 	We would like to thank you once again for your support. 
 	
-	If you wish to re-new your donation, you can do so by clicking [url='.$BASEURL.'/donate.php]here[/url]. 
+	If you wish to re-new your donation, you can do so by clicking [$url = '.$BASEURL.'/donate.php]here[/url]. 
 	
 	Kind Regards.',// Updated in v5.4 -Updated in v7.1-
 	'vip_subject'	=>'VIP status removed by system.',

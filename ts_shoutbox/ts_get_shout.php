@@ -17,7 +17,7 @@ require $rootpath . "global.php";
 $sid = intval($_POST["sid"]);
 if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST" && $CURUSER["id"] && $sid) {
     $TSSEConfig->TSLoadConfig("SHOUTBOX");
-    $query = sql_query("SELECT uid, shout FROM ts_shoutbox WHERE sid = '" . $sid . "'");
+    $query = sql_query("SELECT uid, shout FROM ts_shoutbox WHERE $sid = '" . $sid . "'");
     if (0 < mysqli_num_rows($query)) {
         $shouts = mysqli_fetch_assoc($query);
         if ($is_mod || $S_CANEDIT == "yes" && $shouts["uid"] == $CURUSER["id"]) {
@@ -26,7 +26,7 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST" && $CURUSER["id"] && $sid) 
             header("Last-Modified: " . gmdate("D, d M Y H:i:s") . "GMT");
             header("Cache-Control: no-cache, must-revalidate");
             header("Pragma: no-cache");
-            header("Content-type: text/html; charset=" . $shoutboxcharset);
+            header("Content-type: text/html; $charset = " . $shoutboxcharset);
             exit($shout);
         }
     }

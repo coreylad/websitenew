@@ -39,7 +39,7 @@ If you did not do this ignore this email. Please do not reply.
 
 Should you wish to confirm this request, please follow this link:
 
-{3}/recover.php?id={4}&secret={5}
+{3}/recover.php?$id = {4}&$secret = {5}
 
 (AOL Email users may need to copy and paste the link into your web browser).
 
@@ -52,7 +52,7 @@ Not working?
 If you could not validate your password by clicking on the link, please
 visit this page:
 
-{3}/recover.php?act=manual
+{3}/recover.php?$act = manual
 
 It will ask you for a user id number, and your secret key. These are shown
 below:
@@ -93,13 +93,13 @@ The {4} Team.',
 	'head'						=>'Recover Lost Username or Password',
 	'errortype1'				=>'ERROR: Incorrect email address! Please try again. You have <b>{1}</b> remaining tries.',	
 	'errortype3'				=>'ERROR: Incorrect username! Please try again. You have <b>{1}</b> remaining tries.',
-	'info'						=>'<p align="center">Use the form below to have your password reset and your account details mailed back to you.</p> <p align="center">(You will have to reply to a confirmation email.)</p><p align="center"><b>Note: {1}</b> failed attempts in a row will result in banning your ip!</p> ',
+	'info'						=>'<p $align = "center">Use the form below to have your password reset and your account details mailed back to you.</p> <p $align = "center">(You will have to reply to a confirmation email.)</p><p $align = "center"><b>Note: {1}</b> failed attempts in a row will result in banning your ip!</p> ',
 	'fieldemail'				=>'Registered Email:',
-	'info2'						=>'<p align="center"><b>Note:</b> Only users with secret answer and question are searched in the database!</p><p align="center"><b>{1}</b> failed attempts in a row will result in banning your ip!</p>',
+	'info2'						=>'<p $align = "center"><b>Note:</b> Only users with secret answer and question are searched in the database!</p><p $align = "center"><b>{1}</b> failed attempts in a row will result in banning your ip!</p>',
 	'fieldusername'				=>'Registered Username:',
 	'denyaccessforstaff'		=>'Unfortunately, Staff Member have no permission to recover his account via Recover-Hint system.
 	<br />Please recover your account via email or contact Staff Leader.',
-	'info3'						=>'<p align="center">Please enter the correct answer to your password hint.<br /></p>',
+	'info3'						=>'<p $align = "center">Please enter the correct answer to your password hint.<br /></p>',
 	'sq'						=>'Secret Question:',
 	'ha'						=>'Hint Answer:',
 	'hr0'						=>'What is your name of first school?',
@@ -107,7 +107,7 @@ The {4} Team.',
 	'hr2'						=>'What is your mothers maiden name?',
 	'invalidanswer'				=>'Invalid Answer!',
 	'generated1'				=>'New Password Generated!',
-	'generated2'				=>'Your new password is <input type="text" value="{1}"> (Proceed to <a href={2}/login.php>login</a>)',
+	'generated2'				=>'Your new password is <input $type = "text" $value = "{1}"> (Proceed to <a $href = {2}/login.php>login</a>)',
 	'msent'	=>'Your username and details about how to reset your password have been sent to you by email.',//Added v3.9.0
 );
 ?>
