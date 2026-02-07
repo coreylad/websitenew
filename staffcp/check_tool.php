@@ -6,11 +6,11 @@
  * @ Release: 10/08/2022
  */
 
-function_63();
+checkEnvironmentRequirements();
 var_225();
 var_226();
 var_227();
-// DEAD CODE: Class_4 encryption class is only instantiated in function_72() which is never called. Used for legacy TSSE license validation.
+// DEAD CODE: Class_4 encryption class is only instantiated in fetchLicenseValidation() which is never called. Used for legacy TSSE license validation.
 class Class_4
 {
     public $AnahtarKelime = NULL;
@@ -18,7 +18,7 @@ class Class_4
     {
         $this->AnahtarKelime = trim($AK);
     }
-    public function function_17($NEYI)
+    public function encrypt($NEYI)
     {
         $result = "";
         for ($i = 0; $i < strlen($NEYI); $i++) {
@@ -29,7 +29,7 @@ class Class_4
         }
         return urlencode(base64_encode($result));
     }
-    public function function_18($NEYI)
+    public function decrypt($NEYI)
     {
         $result = "";
         $NEYI = base64_decode(urldecode($NEYI));
@@ -42,21 +42,21 @@ class Class_4
         return $result;
     }
 }
-function function_63()
+function checkEnvironmentRequirements()
 {
     require_once "./../version.php";
     if (!ini_get("allow_url_fopen") && (!function_exists("curl_init") || !($ch = curl_init()))) {
-        function_64("PHP allow_url_fopen or CURL must be turned on for this script to work!");
+        displayCriticalError("PHP allow_url_fopen or CURL must be turned on for this script to work!");
     }
 }
-// DEAD CODE: function_65() is only called by function_67() to get INSTALL_IP, but INSTALL_IP is never used anywhere. Legacy IP detection via templateshares.biz.
-function function_65()
+// DEAD CODE: detectServerIP() is only called by initializeConstants() to get INSTALL_IP, but INSTALL_IP is never used anywhere. Legacy IP detection via templateshares.biz.
+function detectServerIP()
 {
     $ipCacheFile = "./../../cache/ip.srv";
-    if (isset($_SERVER["SERVER_ADDR"]) && !empty($_SERVER["SERVER_ADDR"]) && function_66($_SERVER["SERVER_ADDR"])) {
+    if (isset($_SERVER["SERVER_ADDR"]) && !empty($_SERVER["SERVER_ADDR"]) && isValidPublicIP($_SERVER["SERVER_ADDR"])) {
         $ip = $_SERVER["SERVER_ADDR"];
     } else {
-        if (isset($_SERVER["LOCAL_ADDR"]) && !empty($_SERVER["LOCAL_ADDR"]) && function_66($_SERVER["LOCAL_ADDR"])) {
+        if (isset($_SERVER["LOCAL_ADDR"]) && !empty($_SERVER["LOCAL_ADDR"]) && isValidPublicIP($_SERVER["LOCAL_ADDR"])) {
             $ip = $_SERVER["LOCAL_ADDR"];
         } else {
             if (file_exists($ipCacheFile) && TIMENOW < filemtime($ipCacheFile) + 1800) {
@@ -77,74 +77,74 @@ function function_65()
             }
         }
     }
-    if (function_66($ip)) {
+    if (isValidPublicIP($ip)) {
         return $ip;
     }
     if (file_exists($ipCacheFile)) {
         @unlink($ipCacheFile);
     }
 }
-// DEAD CODE: function_66() is only called by unused function_65(). Helper for IP validation.
-function function_66($ip)
+// DEAD CODE: isValidPublicIP() is only called by unused detectServerIP(). Helper for IP validation.
+function isValidPublicIP($ip)
 {
     return $ip != "127.0.0.1" && $ip != "::1" && filter_var($ip, FILTER_VALIDATE_IP);
 }
-function function_67()
+function initializeConstants()
 {
     define("INSTALL_URL", !empty($_SERVER["SERVER_NAME"]) ? var_229($_SERVER["SERVER_NAME"]) : (!empty($_SERVER["HTTP_HOST"]) ? var_229($_SERVER["HTTP_HOST"]) : ""));
-    define("INSTALL_IP", function_65());
+    define("INSTALL_IP", detectServerIP());
     define("CACHED_ADMIN_FILE", "./../cache/admin_session.dat");
     define("ADMIN_CACHE", @file_get_contents(CACHED_ADMIN_FILE));
     define("TSSE2020CHECKTOOLPHP", true);
 }
-// DEAD CODE: function_68() is never called. Legacy TSSE license validation that checks for license.php files and ADMIN_CACHE validity.
-function function_68()
+// DEAD CODE: validateLicenseCache() is never called. Legacy TSSE license validation that checks for license.php files and ADMIN_CACHE validity.
+function validateLicenseCache()
 {
     if (!defined("IN-TSSE-STAFF-PANEL")) {
-        function_64("Invalid Access!");
+        displayCriticalError("Invalid Access!");
     } else {
         if (file_exists($_SERVER["DOCUMENT_ROOT"] . "/license.php") || is_file($_SERVER["DOCUMENT_ROOT"] . "/license.php") || file_exists("/authenticate/" . SHORT_SCRIPT_VERSION . "/license.php") || is_file("/authenticate/" . SHORT_SCRIPT_VERSION . "/license.php")) {
-            function_64("System Error: AL");
+            displayCriticalError("System Error: AL");
         } else {
             if (!file_exists(CACHED_ADMIN_FILE)) {
-                function_64("System Error: Invalid License Key II.");
+                displayCriticalError("System Error: Invalid License Key II.");
             } else {
                 if (!ADMIN_CACHE || strlen(ADMIN_CACHE) != 32) {
-                    function_64("System Error: Invalid License Key III. Please re-run the installation script.");
+                    displayCriticalError("System Error: Invalid License Key III. Please re-run the installation script.");
                 }
             }
         }
     }
 }
-// DEAD CODE: function_69() is never called. Legacy function to clear PEER config in database.
-function function_69()
+// DEAD CODE: clearPeerConfig() is never called. Legacy function to clear PEER config in database.
+function clearPeerConfig()
 {
     mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE ts_config SET $content = \"\" WHERE `configname` = \"PEER\"");
 }
-// DEAD CODE: function_70() is never called. Legacy TSSE license key response parser - validates license key format and MD5 hash.
-function function_70()
+// DEAD CODE: parseLicenseResponse() is never called. Legacy TSSE license key response parser - validates license key format and MD5 hash.
+function parseLicenseResponse()
 {
     $licenseResponse = var_231();
     @preg_match("#{LISENCE_KEY_RESPONSE}(.*){LISENCE_KEY_RESPONSE}#is", $licenseResponse, $licenseKey);
     if (isset($licenseKey[1]) && $licenseKey[1]) {
         $trimmedKey = trim($licenseKey[1]);
         $licenseKey = strtoupper($trimmedKey);
-        if (!function_71($licenseKey)) {
-            function_64("<b>Critical Error:</b> " . $trimmedKey);
+        if (!isValidLicenseKeyFormat($licenseKey)) {
+            displayCriticalError("<b>Critical Error:</b> " . $trimmedKey);
         } else {
             if (md5(INSTALL_URL . $licenseKey . INSTALL_URL) != ADMIN_CACHE) {
-                function_64("System Error: License key mismatch. Please re-run the installation script.");
+                displayCriticalError("System Error: License key mismatch. Please re-run the installation script.");
             }
         }
     } else {
-        function_64("System Error: Invalid Response!");
+        displayCriticalError("System Error: Invalid Response!");
     }
 }
-// DEAD CODE: function_72() is never called. Legacy TSSE license validation via HTTP POST to templateshares.info (domain likely defunct).
-function function_72()
+// DEAD CODE: fetchLicenseValidation() is never called. Legacy TSSE license validation via HTTP POST to templateshares.info (domain likely defunct).
+function fetchLicenseValidation()
 {
     $GLOBALS["Sifrele"] = new Class_4("TSSE8.02020httpstemplateshares.net!");
-    $postData = "0=4&1=" . function_73(INSTALL_URL) . "&2=" . function_73(INSTALL_IP) . "&3=" . function_73(SHORT_SCRIPT_VERSION);
+    $postData = "0=4&1=" . encryptData(INSTALL_URL) . "&2=" . encryptData(INSTALL_IP) . "&3=" . encryptData(SHORT_SCRIPT_VERSION);
     $licenseUrl = "http://www.templateshares.info";
     $licenseHost = "www.templateshares.info";
     $licensePath = "/authenticate/" . SHORT_SCRIPT_VERSION . "/license.php";
@@ -180,10 +180,10 @@ function function_72()
         @fclose(fsock);
         return $curlResult;
     }
-    function_64("Connection Error: fsockopen / Curl (PHP allow_url_fopen or Curl must be turned on for this script to work).");
+    displayCriticalError("Connection Error: fsockopen / Curl (PHP allow_url_fopen or Curl must be turned on for this script to work).");
 }
-// DEAD CODE: function_71() is only called by unused function_70(). Validates license key format using regex pattern.
-function function_71($installkey = "")
+// DEAD CODE: isValidLicenseKeyFormat() is only called by unused parseLicenseResponse(). Validates license key format using regex pattern.
+function isValidLicenseKeyFormat($installkey = "")
 {
     $licenseKeyPattern = "{########-####-####-####-############}";
     $licenseKeyPattern = @str_replace("#", "[0-9,A-F]", $licenseKeyPattern);
@@ -192,21 +192,21 @@ function function_71($installkey = "")
     }
     return false;
 }
-function function_64($message = "")
+function displayCriticalError($message = "")
 {
     var_234();
     echo "\r\n\t<html>\r\n\t\t<head>\r\n\t\t\t<title>TS SE: Critical Error!</title>\r\n\t\t\t<meta http-$equiv = \"Content-Type\" $content = \"text/html; $charset = UTF-8\" />\r\n\t\t\t<style>\r\n\t\t\t\t*{padding: 0; margin: 0}\r\n\t\t\t\t.alert\r\n\t\t\t\t{\r\n\t\t\t\t\tfont-weight: bold;\r\n\t\t\t\t\tcolor: #fff;\r\n\t\t\t\t\tfont: 14px verdana, geneva, lucida, \"lucida grande\", arial, helvetica, sans-serif;\r\n\t\t\t\t\tbackground: #ffacac;\r\n\t\t\t\t\ttext-align: center;\t\t\t\t\t\r\n\t\t\t\t\tborder-bottom: 4px solid #000;\r\n\t\t\t\t\tpadding: 20px;\r\n\t\t\t\t}\r\n\t\t\t</style>\r\n\t\t</head>\r\n\t\t<body>\r\n\t\t\t<div class=\"alert\">\r\n\t\t\t\t" . $message . "\r\n\t\t\t</div>\r\n\t\t</body>\r\n\t</html>\r\n\t";
     exit;
 }
-// DEAD CODE: function_74() is never called. Helper to strip http/https/www prefixes from URLs.
-function function_74($url)
+// DEAD CODE: stripUrlPrefix() is never called. Helper to strip http/https/www prefixes from URLs.
+function stripUrlPrefix($url)
 {
     return str_replace(["http://www.", "https://www.", "http://", "https://", "www."], "", $url);
 }
-// DEAD CODE: function_73() is only called by unused function_72(). Wrapper for Class_4 encryption.
-function function_73($data)
+// DEAD CODE: encryptData() is only called by unused fetchLicenseValidation(). Wrapper for Class_4 encryption.
+function encryptData($data)
 {
-    return $GLOBALS["Sifrele"]->function_17($data);
+    return $GLOBALS["Sifrele"]->encrypt($data);
 }
 
 ?>
