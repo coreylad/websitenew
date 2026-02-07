@@ -47,7 +47,7 @@ if ($Act == "post") {
             $Message = showAlertError("Please setup Twitter API options first. (Manage Tracker Settings > SOCIAL)");
         } else {
             $Twitter = new Class_17($consumerKey, $consumerSecret, $accessToken, $accessTokenSecret);
-            $Twitter->function_98(substr(strip_tags($_message), 0, 120));
+            $Twitter->postTweet(substr(strip_tags($_message), 0, 120));
             $Message = showAlertError($Language[12]);
         }
     }
@@ -62,51 +62,51 @@ class Class_18
         $this->$key = $key;
         $this->$secret = $secret;
     }
-    public function function_206()
+    public function toQueryString()
     {
-        return "oauth_token=" . Class_19::function_207($this->key) . "&$oauth_token_secret = " . Class_19::function_207($this->secret);
+        return "oauth_token=" . Class_19::urlEncodeRFC3986($this->key) . "&$oauth_token_secret = " . Class_19::urlEncodeRFC3986($this->secret);
     }
     public function __toString()
     {
-        return $this->function_206();
+        return $this->toQueryString();
     }
 }
 abstract class Class_20
 {
-    public abstract function function_208();
-    public abstract function function_209($request, $consumer, $token);
-    public function function_210($request, $consumer, $token, $signature)
+    public abstract function getSignatureMethodName();
+    public abstract function computeSignature($request, $consumer, $token);
+    public function verifySignature($request, $consumer, $token, $signature)
     {
-        $var_509 = $this->function_209($request, $consumer, $token);
+        $var_509 = $this->computeSignature($request, $consumer, $token);
         return $var_509 == $signature;
     }
 }
 class Class_21 extends Class_20
 {
-    public function function_208()
+    public function getSignatureMethodName()
     {
         return "HMAC-SHA1";
     }
-    public function function_209($request, $consumer, $token)
+    public function computeSignature($request, $consumer, $token)
     {
-        $var_510 = $request->function_211();
+        $var_510 = $request->getBaseString();
         $request->$base_string = $base_string;
         $var_511 = [$consumer->secret, $token ? $token->secret : ""];
-        $var_511 = Class_19::function_207($var_511);
+        $var_511 = Class_19::urlEncodeRFC3986($var_511);
         $key = implode("&", $var_511);
         return base64_encode(hash_hmac("sha1", $base_string, $key, true));
     }
 }
 class Class_22 extends Class_20
 {
-    public function function_208()
+    public function getSignatureMethodName()
     {
         return "PLAINTEXT";
     }
-    public function function_209($request, $consumer, $token)
+    public function computeSignature($request, $consumer, $token)
     {
         $var_511 = [$consumer->secret, $token ? $token->secret : ""];
-        $var_511 = Class_19::function_207($var_511);
+        $var_511 = Class_19::urlEncodeRFC3986($var_511);
         $key = implode("&", $var_511);
         $request->$base_string = $key;
         return $key;
@@ -114,27 +114,27 @@ class Class_22 extends Class_20
 }
 abstract class Class_23 extends Class_20
 {
-    public function function_208()
+    public function getSignatureMethodName()
     {
         return "RSA-SHA1";
     }
-    protected abstract function function_212(&$request);
-    protected abstract function function_213(&$request);
-    public function function_209($request, $consumer, $token)
+    protected abstract function getPrivateKey(&$request);
+    protected abstract function getPublicKey(&$request);
+    public function computeSignature($request, $consumer, $token)
     {
-        $base_string = $request->function_211();
+        $base_string = $request->getBaseString();
         $request->$base_string = $base_string;
-        $var_512 = $this->function_213($request);
+        $var_512 = $this->getPublicKey($request);
         $var_513 = var_514($var_512);
         $var_515 = var_516($base_string, $signature, $var_513);
         var_517($var_513);
         return base64_encode($signature);
     }
-    public function function_210($request, $consumer, $token, $signature)
+    public function verifySignature($request, $consumer, $token, $signature)
     {
         $var_518 = base64_decode($signature);
-        $base_string = $request->function_211();
-        $var_512 = $this->function_212($request);
+        $base_string = $request->getBaseString();
+        $var_512 = $this->getPrivateKey($request);
         $var_519 = var_520($var_512);
         $var_515 = var_521($base_string, $var_518, $var_519);
         var_517($var_519);
@@ -152,41 +152,41 @@ class Class_24
     public function __construct($http_method, $http_url, $parameters = NULL)
     {
         $parameters = $parameters ? $parameters : [];
-        $parameters = array_merge(Class_19::function_214(parse_url($http_url, PHP_URL_QUERY)), $parameters);
+        $parameters = array_merge(Class_19::parseQueryString(parse_url($http_url, PHP_URL_QUERY)), $parameters);
         $this->$parameters = $parameters;
         $this->$http_method = $http_method;
         $this->$http_url = $http_url;
     }
-    public static function function_215($http_method = NULL, $http_url = NULL, $parameters = NULL)
+    public static function fromCurrentRequest($http_method = NULL, $http_url = NULL, $parameters = NULL)
     {
         $var_38 = !isset($_SERVER["HTTPS"]) || $_SERVER["HTTPS"] != "on" ? "http" : "https";
         $http_url = $http_url ? $http_url : $var_38 . "://" . $_SERVER["HTTP_HOST"] . ":" . $_SERVER["SERVER_PORT"] . $_SERVER["REQUEST_URI"];
         $http_method = $http_method ? $http_method : $_SERVER["REQUEST_METHOD"];
         if (!$parameters) {
-            $var_522 = Class_19::function_216();
-            $parameters = Class_19::function_214($_SERVER["QUERY_STRING"]);
+            $var_522 = Class_19::getAllHttpHeaders();
+            $parameters = Class_19::parseQueryString($_SERVER["QUERY_STRING"]);
             if ($http_method == "POST" && isset($var_522["Content-Type"]) && strstr($var_522["Content-Type"], "application/x-www-form-urlencoded")) {
-                $var_523 = Class_19::function_214(file_get_contents(self::$POST_INPUT));
+                $var_523 = Class_19::parseQueryString(file_get_contents(self::$POST_INPUT));
                 $parameters = array_merge($parameters, $var_523);
             }
             if (isset($var_522["Authorization"]) && substr($var_522["Authorization"], 0, 6) == "OAuth ") {
-                $var_524 = Class_19::function_217($var_522["Authorization"]);
+                $var_524 = Class_19::parseAuthorizationHeader($var_522["Authorization"]);
                 $parameters = array_merge($parameters, $var_524);
             }
         }
         return new Class_24($http_method, $http_url, $parameters);
     }
-    public static function function_218($consumer, $token, $http_method, $http_url, $parameters = NULL)
+    public static function forSignedRequest($consumer, $token, $http_method, $http_url, $parameters = NULL)
     {
         $parameters = $parameters ? $parameters : [];
-        $var_525 = ["oauth_version" => Class_24::$version, "oauth_nonce" => Class_24::function_219(), "oauth_timestamp" => Class_24::function_220(), "oauth_consumer_key" => $consumer->key];
+        $var_525 = ["oauth_version" => Class_24::$version, "oauth_nonce" => Class_24::generateNonce(), "oauth_timestamp" => Class_24::getTimestamp(), "oauth_consumer_key" => $consumer->key];
         if ($token) {
             $var_525["oauth_token"] = $token->key;
         }
         $parameters = array_merge($var_525, $parameters);
         return new Class_24($http_method, $http_url, $parameters);
     }
-    public function function_221($name, $value, $allow_duplicates = true)
+    public function setParameter($name, $value, $allow_duplicates = true)
     {
         if ($allow_duplicates && isset($this->parameters[$name])) {
             if (is_scalar($this->parameters[$name])) {
@@ -197,37 +197,37 @@ class Class_24
             $this->parameters[$name] = $value;
         }
     }
-    public function function_222($name)
+    public function getParameter($name)
     {
         return isset($this->parameters[$name]) ? $this->parameters[$name] : NULL;
     }
-    public function function_223()
+    public function getAllParameters()
     {
         return $this->parameters;
     }
-    public function function_224($name)
+    public function removeParameter($name)
     {
         unset($this->parameters[$name]);
     }
-    public function function_225()
+    public function getNormalizedParameters()
     {
         $var_310 = $this->parameters;
         if (isset($var_310["oauth_signature"])) {
             unset($var_310["oauth_signature"]);
         }
-        return Class_19::function_226($var_310);
+        return Class_19::buildQueryString($var_310);
     }
-    public function function_211()
+    public function getBaseString()
     {
-        $var_526 = [$this->function_227(), $this->function_228(), $this->function_225()];
-        $var_526 = Class_19::function_207($var_526);
+        $var_526 = [$this->getHttpMethod(), $this->getNormalizedUrl(), $this->getNormalizedParameters()];
+        $var_526 = Class_19::urlEncodeRFC3986($var_526);
         return implode("&", $var_526);
     }
-    public function function_227()
+    public function getHttpMethod()
     {
         return strtoupper($this->http_method);
     }
-    public function function_228()
+    public function getNormalizedUrl()
     {
         $var_526 = parse_url($this->http_url);
         $var_38 = isset($var_526["scheme"]) ? $var_526["scheme"] : "http";
@@ -239,24 +239,24 @@ class Class_24
         }
         return $var_38 . "://" . $var_39 . $var_480;
     }
-    public function function_229()
+    public function toUrl()
     {
-        $var_523 = $this->function_230();
-        $var_527 = $this->function_228();
+        $var_523 = $this->getQueryString();
+        $var_527 = $this->getNormalizedUrl();
         if ($var_523) {
             $var_527 .= "?" . $var_523;
         }
         return $var_527;
     }
-    public function function_230()
+    public function getQueryString()
     {
-        return Class_19::function_226($this->parameters);
+        return Class_19::buildQueryString($this->parameters);
     }
-    public function function_231($realm = NULL)
+    public function getAuthorizationHeader($realm = NULL)
     {
         $paginationFirstItem = true;
         if ($realm) {
-            $var_527 = "Authorization: OAuth $realm = \"" . Class_19::function_207($realm) . "\"";
+            $var_527 = "Authorization: OAuth $realm = \"" . Class_19::urlEncodeRFC3986($realm) . "\"";
             $paginationFirstItem = false;
         } else {
             $var_527 = "Authorization: OAuth";
@@ -268,7 +268,7 @@ class Class_24
                     throw new Class_15("Arrays not supported in headers");
                 }
                 $var_527 .= $paginationFirstItem ? " " : ",";
-                $var_527 .= Class_19::function_207($k) . "=\"" . Class_19::function_207($var_124) . "\"";
+                $var_527 .= Class_19::urlEncodeRFC3986($k) . "=\"" . Class_19::urlEncodeRFC3986($var_124) . "\"";
                 $paginationFirstItem = false;
             }
         }
@@ -276,24 +276,24 @@ class Class_24
     }
     public function __toString()
     {
-        return $this->function_229();
+        return $this->toUrl();
     }
-    public function function_232($signature_method, $consumer, $token)
+    public function signRequest($signature_method, $consumer, $token)
     {
-        $this->function_221("oauth_signature_method", $signature_method->function_208(), false);
-        $signature = $this->function_209($signature_method, $consumer, $token);
-        $this->function_221("oauth_signature", $signature, false);
+        $this->setParameter("oauth_signature_method", $signature_method->getSignatureMethodName(), false);
+        $signature = $this->computeSignature($signature_method, $consumer, $token);
+        $this->setParameter("oauth_signature", $signature, false);
     }
-    public function function_209($signature_method, $consumer, $token)
+    public function computeSignature($signature_method, $consumer, $token)
     {
-        $signature = $signature_method->function_209($this, $consumer, $token);
+        $signature = $signature_method->computeSignature($this, $consumer, $token);
         return $signature;
     }
-    private static function function_220()
+    private static function getTimestamp()
     {
         return time();
     }
-    private static function function_219()
+    private static function generateNonce()
     {
         $var_529 = microtime();
         $rand = mt_rand();
@@ -310,41 +310,41 @@ class Class_25
     {
         $this->$data_store = $data_store;
     }
-    public function function_233($signature_method)
+    public function addSignatureMethod($signature_method)
     {
-        $this->signature_methods[$signature_method->function_208()] = $signature_method;
+        $this->signature_methods[$signature_method->getSignatureMethodName()] = $signature_method;
     }
-    public function function_234(&$request)
+    public function validateRequestToken(&$request)
     {
-        $this->function_235($request);
-        $consumer = $this->function_236($request);
+        $this->validateVersion($request);
+        $consumer = $this->getConsumer($request);
         $token = NULL;
-        $this->function_210($request, $consumer, $token);
-        $var_530 = $request->function_222("oauth_callback");
-        $var_531 = $this->data_store->function_237($consumer, $var_530);
+        $this->verifySignature($request, $consumer, $token);
+        $var_530 = $request->getParameter("oauth_callback");
+        $var_531 = $this->data_store->getNewRequestToken($consumer, $var_530);
         return $var_531;
     }
-    public function function_238(&$request)
+    public function validateAccessToken(&$request)
     {
-        $this->function_235($request);
-        $consumer = $this->function_236($request);
-        $token = $this->function_239($request, $consumer, "request");
-        $this->function_210($request, $consumer, $token);
-        $var_532 = $request->function_222("oauth_verifier");
-        $var_531 = $this->data_store->function_240($token, $consumer, $var_532);
+        $this->validateVersion($request);
+        $consumer = $this->getConsumer($request);
+        $token = $this->getToken($request, $consumer, "request");
+        $this->verifySignature($request, $consumer, $token);
+        $var_532 = $request->getParameter("oauth_verifier");
+        $var_531 = $this->data_store->getNewAccessToken($token, $consumer, $var_532);
         return $var_531;
     }
-    public function function_241(&$request)
+    public function validateAndReturnCredentials(&$request)
     {
-        $this->function_235($request);
-        $consumer = $this->function_236($request);
-        $token = $this->function_239($request, $consumer, "access");
-        $this->function_210($request, $consumer, $token);
+        $this->validateVersion($request);
+        $consumer = $this->getConsumer($request);
+        $token = $this->getToken($request, $consumer, "access");
+        $this->verifySignature($request, $consumer, $token);
         return [$consumer, $token];
     }
-    private function function_235(&$request)
+    private function validateVersion(&$request)
     {
-        $version = $request->function_222("oauth_version");
+        $version = $request->getParameter("oauth_version");
         if (!$version) {
             $version = "1.0";
         }
@@ -353,9 +353,9 @@ class Class_25
         }
         return $version;
     }
-    private function function_242($request)
+    private function getSignatureMethod($request)
     {
-        $signature_method = $request instanceof Twitter_OAuthRequest ? $request->function_222("oauth_signature_method") : NULL;
+        $signature_method = $request instanceof Twitter_OAuthRequest ? $request->getParameter("oauth_signature_method") : NULL;
         if (!$signature_method) {
             throw new Class_15("No signature method parameter. This parameter is required");
         }
@@ -364,41 +364,41 @@ class Class_25
         }
         return $this->signature_methods[$signature_method];
     }
-    private function function_236($request)
+    private function getConsumer($request)
     {
-        $var_533 = $request instanceof Twitter_OAuthRequest ? $request->function_222("oauth_consumer_key") : NULL;
+        $var_533 = $request instanceof Twitter_OAuthRequest ? $request->getParameter("oauth_consumer_key") : NULL;
         if (!$var_533) {
             throw new Class_15("Invalid consumer key");
         }
-        $consumer = $this->data_store->function_243($var_533);
+        $consumer = $this->data_store->lookupConsumer($var_533);
         if (!$consumer) {
             throw new Class_15("Invalid consumer");
         }
         return $consumer;
     }
-    private function function_239($request, $consumer, $token_type = "access")
+    private function getToken($request, $consumer, $token_type = "access")
     {
-        $var_534 = $request instanceof Twitter_OAuthRequest ? $request->function_222("oauth_token") : NULL;
-        $token = $this->data_store->function_244($consumer, $token_type, $var_534);
+        $var_534 = $request instanceof Twitter_OAuthRequest ? $request->getParameter("oauth_token") : NULL;
+        $token = $this->data_store->lookupToken($consumer, $token_type, $var_534);
         if (!$token) {
             throw new Class_15("Invalid " . $token_type . " token: " . $var_534);
         }
         return $token;
     }
-    private function function_210($request, $consumer, $token)
+    private function verifySignature($request, $consumer, $token)
     {
-        $var_535 = $request instanceof Twitter_OAuthRequest ? $request->function_222("oauth_timestamp") : NULL;
-        $var_536 = $request instanceof Twitter_OAuthRequest ? $request->function_222("oauth_nonce") : NULL;
-        $this->function_245($var_535);
-        $this->function_246($consumer, $token, $var_536, $var_535);
-        $signature_method = $this->function_242($request);
-        $signature = $request->function_222("oauth_signature");
-        $var_537 = $signature_method->function_210($request, $consumer, $token, $signature);
+        $var_535 = $request instanceof Twitter_OAuthRequest ? $request->getParameter("oauth_timestamp") : NULL;
+        $var_536 = $request instanceof Twitter_OAuthRequest ? $request->getParameter("oauth_nonce") : NULL;
+        $this->validateTimestamp($var_535);
+        $this->validateNonce($consumer, $token, $var_536, $var_535);
+        $signature_method = $this->getSignatureMethod($request);
+        $signature = $request->getParameter("oauth_signature");
+        $var_537 = $signature_method->verifySignature($request, $consumer, $token, $signature);
         if (!$var_537) {
             throw new Class_15("Invalid signature");
         }
     }
-    private function function_245($timestamp)
+    private function validateTimestamp($timestamp)
     {
         if (!$timestamp) {
             throw new Class_15("Missing timestamp parameter. The parameter is required");
@@ -408,12 +408,12 @@ class Class_25
             throw new Class_15("Expired timestamp, yours " . $timestamp . ", ours " . $var_538);
         }
     }
-    private function function_246($consumer, $token, $nonce, $timestamp)
+    private function validateNonce($consumer, $token, $nonce, $timestamp)
     {
         if (!$nonce) {
             throw new Class_15("Missing nonce parameter. The parameter is required");
         }
-        $var_539 = $this->data_store->function_247($consumer, $token, $nonce, $timestamp);
+        $var_539 = $this->data_store->checkNonceUsed($consumer, $token, $nonce, $timestamp);
         if ($var_539) {
             throw new Class_15("Nonce already used: " . $nonce);
         }
@@ -421,25 +421,25 @@ class Class_25
 }
 class Class_26
 {
-    public function function_243($consumer_key)
+    public function lookupConsumer($consumer_key)
     {
     }
-    public function function_244($consumer, $token_type, $token)
+    public function lookupToken($consumer, $token_type, $token)
     {
     }
-    public function function_247($consumer, $token, $nonce, $timestamp)
+    public function checkNonceUsed($consumer, $token, $nonce, $timestamp)
     {
     }
-    public function function_237($consumer, $callback = NULL)
+    public function getNewRequestToken($consumer, $callback = NULL)
     {
     }
-    public function function_240($token, $consumer, $verifier = NULL)
+    public function getNewAccessToken($token, $consumer, $verifier = NULL)
     {
     }
 }
 class Class_19
 {
-    public static function function_207($input)
+    public static function urlEncodeRFC3986($input)
     {
         if (is_array($input)) {
             return array_map(["Twitter_OAuthUtil", "urlencode_rfc3986"], $input);
@@ -449,16 +449,16 @@ class Class_19
         }
         return "";
     }
-    public static function function_248($string)
+    public static function urlDecode($string)
     {
         return urldecode($string);
     }
-    public static function function_217($header, $only_allow_oauth_parameters = true)
+    public static function parseAuthorizationHeader($header, $only_allow_oauth_parameters = true)
     {
         $var_310 = [];
         if (preg_match_all("/(" . ($only_allow_oauth_parameters ? "oauth_" : "") . "[a-z_-]*)=(:?\"([^\"]*)\"|([^,]*))/", $header, $var_220)) {
             foreach ($var_220[1] as $i => $var_540) {
-                $var_310[$var_540] = Class_19::function_248(empty($var_220[3][$i]) ? $var_220[4][$i] : $var_220[3][$i]);
+                $var_310[$var_540] = Class_19::urlDecode(empty($var_220[3][$i]) ? $var_220[4][$i] : $var_220[3][$i]);
             }
             if (isset($var_310["realm"])) {
                 unset($var_310["realm"]);
@@ -466,7 +466,7 @@ class Class_19
         }
         return $var_310;
     }
-    public static function function_216()
+    public static function getAllHttpHeaders()
     {
         if (function_exists("apache_request_headers")) {
             $var_541 = apache_request_headers();
@@ -492,7 +492,7 @@ class Class_19
         }
         return $var_527;
     }
-    public static function function_214($input)
+    public static function parseQueryString($input)
     {
         if (!isset($input) || !$input) {
             return [];
@@ -501,8 +501,8 @@ class Class_19
         $var_543 = [];
         foreach ($var_542 as $var_544) {
             $split = explode("=", $var_544, 2);
-            $var_545 = Class_19::function_248($split[0]);
-            $value = isset($split[1]) ? Class_19::function_248($split[1]) : "";
+            $var_545 = Class_19::urlDecode($split[0]);
+            $value = isset($split[1]) ? Class_19::urlDecode($split[1]) : "";
             if (isset($var_543[$var_545])) {
                 if (is_scalar($var_543[$var_545])) {
                     $var_543[$var_545] = [$var_543[$var_545]];
@@ -514,13 +514,13 @@ class Class_19
         }
         return $var_543;
     }
-    public static function function_226($params)
+    public static function buildQueryString($params)
     {
         if (!$params) {
             return "";
         }
-        $var_546 = Class_19::function_207(array_keys($params));
-        $var_547 = Class_19::function_207(array_values($params));
+        $var_546 = Class_19::urlEncodeRFC3986(array_keys($params));
+        $var_547 = Class_19::urlEncodeRFC3986(array_values($params));
         $params = array_combine($var_546, $var_547);
         uksort($params, "strcmp");
         $var_542 = [];
@@ -559,10 +559,10 @@ class Class_17
         $this->$consumer = new Class_16($consumerKey, $consumerSecret);
         $this->$token = new Class_16($accessToken, $accessTokenSecret);
     }
-    public function function_249()
+    public function verifyCredentials()
     {
         try {
-            $res = $this->function_250("account/verify_credentials", "GET");
+            $res = $this->apiCall("account/verify_credentials", "GET");
             return !empty($res->id);
         } catch (Class_27 $var_549) {
             if ($var_549->var_550() === 401) {
@@ -571,31 +571,31 @@ class Class_17
             throw $var_549;
         }
     }
-    public function function_98($message)
+    public function postTweet($message)
     {
-        return $this->function_250("statuses/update", "POST", ["status" => $message]);
+        return $this->apiCall("statuses/update", "POST", ["status" => $message]);
     }
-    public function function_165($flags = self::ME, $count = 20, $data = NULL)
+    public function getTimeline($flags = self::ME, $count = 20, $data = NULL)
     {
         if (!isset($var_551[$flags & 3])) {
             throw new var_552();
         }
-        return $this->function_251("statuses/" . $var_551[$flags & 3], (array) $data + ["count" => $count, "include_rts" => $flags & 128 ? 1 : 0]);
+        return $this->cachedApiCall("statuses/" . $var_551[$flags & 3], (array) $data + ["count" => $count, "include_rts" => $flags & 128 ? 1 : 0]);
     }
-    public function function_252($user)
+    public function getUserInfo($user)
     {
-        return $this->function_251("users/show", ["screen_name" => $user]);
+        return $this->cachedApiCall("users/show", ["screen_name" => $user]);
     }
-    public function function_253($id)
+    public function deleteTweet($id)
     {
-        $res = $this->function_250("statuses/destroy/" . $id, "GET");
+        $res = $this->apiCall("statuses/destroy/" . $id, "GET");
         return $res->id ? $res->id : false;
     }
-    public function function_254($query)
+    public function searchTweets($query)
     {
-        return $this->function_250("search/tweets", "GET", is_array($query) ? $query : ["q" => $query])->statuses;
+        return $this->apiCall("search/tweets", "GET", is_array($query) ? $query : ["q" => $query])->statuses;
     }
-    public function function_250($resource, $method, $data = NULL)
+    public function apiCall($resource, $method, $data = NULL)
     {
         if (!strpos($resource, "://")) {
             if (!strpos($resource, ".")) {
@@ -606,9 +606,9 @@ class Class_17
         foreach (array_keys((array) $data, NULL, true) as $key) {
             unset($data[$key]);
         }
-        $request = Class_24::function_218($this->consumer, $this->token, $method, $resource, $data);
-        $request->function_232($this->signatureMethod, $this->consumer, $this->token);
-        $var_553 = [CURLOPT_HEADER => false, CURLOPT_RETURNTRANSFER => true] + ($method === "POST" ? [CURLOPT_POST => true, CURLOPT_POSTFIELDS => $request->function_230(), CURLOPT_URL => $request->function_228()] : [CURLOPT_URL => $request->function_229()]) + $this->httpOptions;
+        $request = Class_24::forSignedRequest($this->consumer, $this->token, $method, $resource, $data);
+        $request->signRequest($this->signatureMethod, $this->consumer, $this->token);
+        $var_553 = [CURLOPT_HEADER => false, CURLOPT_RETURNTRANSFER => true] + ($method === "POST" ? [CURLOPT_POST => true, CURLOPT_POSTFIELDS => $request->getQueryString(), CURLOPT_URL => $request->getNormalizedUrl()] : [CURLOPT_URL => $request->toUrl()]) + $this->httpOptions;
         $var_554 = curl_init();
         curl_setopt_array($var_554, $var_553);
         $result = curl_exec($var_554);
@@ -625,10 +625,10 @@ class Class_17
         }
         return $var_555;
     }
-    public function function_251($resource, $data = NULL, $cacheExpire = NULL)
+    public function cachedApiCall($resource, $data = NULL, $cacheExpire = NULL)
     {
         if (!self::$cacheDir) {
-            return $this->function_250($resource, "GET", $data);
+            return $this->apiCall($resource, "GET", $data);
         }
         if ($cacheExpire === NULL) {
             $cacheExpire = self::$cacheExpire;
@@ -639,7 +639,7 @@ class Class_17
             return $var_393;
         }
         try {
-            $var_555 = $this->function_250($resource, "GET", $data);
+            $var_555 = $this->apiCall($resource, "GET", $data);
             file_put_contents($var_556, json_encode($var_555));
             return $var_555;
         } catch (Class_27 $var_549) {
@@ -649,7 +649,7 @@ class Class_17
             throw $var_549;
         }
     }
-    public static function function_255($status)
+    public static function formatTweetEntities($status)
     {
         if (!is_object($status)) {
             trigger_error("Twitter::clickable() has been changed; pass as parameter status object, not just text.", 512);
@@ -676,7 +676,7 @@ class Class_17
         }
         return $var_559;
     }
-    private static function function_256($m)
+    private static function formatEntityMatch($m)
     {
         $m = htmlspecialchars($m[0]);
         if ($m[0] === "#") {
