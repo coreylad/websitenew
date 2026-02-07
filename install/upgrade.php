@@ -165,7 +165,6 @@ function function_329()
 }
 function check_license()
 {
-    global $Sifrele;
     global $__step;
     $licenseKey = "";
     $accountDetails = buildLicenseQueryString();
@@ -615,8 +614,8 @@ function finalizeInstallation()
 }
 function encryptData($data)
 {
-    global $Sifrele;
-    return $Sifrele->function_17($data);
+    global $LicenseCipher;
+    return $LicenseCipher->encode($data);
 }
 function customEncrypt($string, $key = "1231231231231235555gfdgfd322332323")
 {
