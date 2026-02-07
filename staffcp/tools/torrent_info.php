@@ -27,23 +27,23 @@ if ($tid) {
         $leechers = $Result["leechers"];
         if (is_file($fn) && is_readable($fn) && ($Data = file_get_contents($fn))) {
             $Torrent = new Class_7();
-            if ($Torrent->function_165($Data)) {
-                $trackers = $Torrent->function_181();
+            if ($Torrent->parseTorrentData($Data)) {
+                $trackers = $Torrent->getTrackerList();
                 $TrackersRow = "";
                 $i = 0;
                 foreach ($trackers as $tracker) {
                     $i++;
-                    $TrackersRow .= function_327(empty($TrackersRow) ? "Tracker:" : NULL, "Announce URL (" . number_format($i) . "):", $tracker);
+                    $TrackersRow .= formatDisplayRow(empty($TrackersRow) ? "Tracker:" : NULL, "Announce URL (" . number_format($i) . "):", $tracker);
                 }
-                $files = $Torrent->function_180();
+                $files = $Torrent->getFileList();
                 $FilesRow = "";
                 $i = 0;
                 foreach ($files as $file) {
                     $i++;
-                    $FilesRow .= function_327(empty($FilesRow) ? "Files:" : NULL, "Filename (" . number_format($i) . "):", $file->name . " (" . formatBytes($file->length) . ")");
+                    $FilesRow .= formatDisplayRow(empty($FilesRow) ? "Files:" : NULL, "Filename (" . number_format($i) . "):", $file->name . " (" . formatBytes($file->length) . ")");
                 }
-                $Private = $Torrent->function_179();
-                $STR = "\r\n\t\t\t\t" . $Message . "\r\n\t\t\t\t\r\n\t\t\t\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\t\t\t\t\t\r\n\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t<td class=\"tcat\" $align = \"center\">\r\n\t\t\t\t\t\t\t" . $Language[2] . " (" . htmlspecialchars($name) . ")\r\n\t\t\t\t\t\t</td>\r\n\t\t\t\t\t</tr>\r\n\t\t\t\t\t\r\n\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t\t\t" . function_327("Torrent", "Filename:", $filename) . "\r\n\t\t\t\t\t\t\t" . function_327(NULL, "Info Hash:", chunk_split(strtoupper(bin2hex($Torrent->function_166())), 8, " ")) . "\r\n\r\n\t\t\t\t\t\t\t" . $TrackersRow . "\r\n\r\n\t\t\t\t\t\t\t" . function_327("Meta Data", "Created On:", date("m/d/y h:i:s", $Torrent->function_174())) . "\r\n\t\t\t\t\t\t\t" . function_327(NULL, "Created By:", $Torrent->function_175()) . "\r\n\t\t\t\t\t\t\t" . function_327(NULL, "Comment:", $Torrent->function_173()) . "\r\n\t\t\t\t\t\t\t" . function_327(NULL, "Piece Length:", formatBytes($Torrent->function_177())) . "\r\n\t\t\t\t\t\t\t" . function_327(NULL, "Private:", $Private == -1 ? "Off - Unset" : ($Private == 0 ? "Off - Set" : "On - Set")) . "\r\n\r\n\t\t\t\t\t\t\t" . $FilesRow . "\r\n\r\n\t\t\t\t\t\t\t" . function_327("Peers", "Seeders:", number_format($seeders)) . "\r\n\t\t\t\t\t\t\t" . function_327(NULL, "Leechers:", number_format($leechers)) . "\r\n\t\t\t\t\t\t</td>\r\n\t\t\t\t\t</tr>\r\n\t\t\t\t</table>";
+                $Private = $Torrent->getPrivateFlag();
+                $STR = "\r\n\t\t\t\t" . $Message . "\r\n\t\t\t\t\r\n\t\t\t\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\t\t\t\t\t\r\n\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t<td class=\"tcat\" $align = \"center\">\r\n\t\t\t\t\t\t\t" . $Language[2] . " (" . htmlspecialchars($name) . ")\r\n\t\t\t\t\t\t</td>\r\n\t\t\t\t\t</tr>\r\n\t\t\t\t\t\r\n\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t\t\t" . formatDisplayRow("Torrent", "Filename:", $filename) . "\r\n\t\t\t\t\t\t\t" . formatDisplayRow(NULL, "Info Hash:", chunk_split(strtoupper(bin2hex($Torrent->getInfoHash())), 8, " ")) . "\r\n\r\n\t\t\t\t\t\t\t" . $TrackersRow . "\r\n\r\n\t\t\t\t\t\t\t" . formatDisplayRow("Meta Data", "Created On:", date("m/d/y h:i:s", $Torrent->getCreationDate())) . "\r\n\t\t\t\t\t\t\t" . formatDisplayRow(NULL, "Created By:", $Torrent->getCreatedBy()) . "\r\n\t\t\t\t\t\t\t" . formatDisplayRow(NULL, "Comment:", $Torrent->getComment()) . "\r\n\t\t\t\t\t\t\t" . formatDisplayRow(NULL, "Piece Length:", formatBytes($Torrent->getPieceLength())) . "\r\n\t\t\t\t\t\t\t" . formatDisplayRow(NULL, "Private:", $Private == -1 ? "Off - Unset" : ($Private == 0 ? "Off - Set" : "On - Set")) . "\r\n\r\n\t\t\t\t\t\t\t" . $FilesRow . "\r\n\r\n\t\t\t\t\t\t\t" . formatDisplayRow("Peers", "Seeders:", number_format($seeders)) . "\r\n\t\t\t\t\t\t\t" . formatDisplayRow(NULL, "Leechers:", number_format($leechers)) . "\r\n\t\t\t\t\t\t</td>\r\n\t\t\t\t\t</tr>\r\n\t\t\t\t</table>";
             } else {
                 $Message = showAlertError($Language[7]);
             }
@@ -64,236 +64,236 @@ class Class_7
     private $torrent = NULL;
     private $info = NULL;
     public $error = NULL;
-    public function function_165(&$data)
+    public function parseTorrentData(&$data)
     {
-        $this->$torrent = function_167::function_168($data);
+        $this->$torrent = BencodeDecoder::decodeBencode($data);
         if ($this->torrent->getBencodeEnd() == "error") {
-            $this->$error = $this->torrent->function_170();
+            $this->$error = $this->torrent->getValue();
             return false;
         }
         if ($this->torrent->getBencodeEnd() != "dictionary") {
             $this->$error = "The file was not a valid torrent file.";
             return false;
         }
-        $this->$info = $this->torrent->function_171("info");
+        $this->$info = $this->torrent->getDictionaryValue("info");
         if (!$this->info) {
             $this->$error = "Could not find info dictionary.";
             return false;
         }
         return true;
     }
-    public function function_172($Whatever)
+    public function getTorrentValue($Whatever)
     {
-        return $this->torrent->function_171($Whatever) ? $this->torrent->function_171($Whatever)->function_170() : NULL;
+        return $this->torrent->getDictionaryValue($Whatever) ? $this->torrent->getDictionaryValue($Whatever)->getValue() : NULL;
     }
-    public function function_173()
+    public function getComment()
     {
-        return $this->torrent->function_171("comment") ? $this->torrent->function_171("comment")->function_170() : NULL;
+        return $this->torrent->getDictionaryValue("comment") ? $this->torrent->getDictionaryValue("comment")->getValue() : NULL;
     }
-    public function function_174()
+    public function getCreationDate()
     {
-        return $this->torrent->function_171("creation date") ? $this->torrent->function_171("creation date")->function_170() : NULL;
+        return $this->torrent->getDictionaryValue("creation date") ? $this->torrent->getDictionaryValue("creation date")->getValue() : NULL;
     }
-    public function function_175()
+    public function getCreatedBy()
     {
-        return $this->torrent->function_171("created by") ? $this->torrent->function_171("created by")->function_170() : NULL;
+        return $this->torrent->getDictionaryValue("created by") ? $this->torrent->getDictionaryValue("created by")->getValue() : NULL;
     }
-    public function function_176()
+    public function getName()
     {
-        return $this->info->function_171("name")->function_170();
+        return $this->info->getDictionaryValue("name")->getValue();
     }
-    public function function_177()
+    public function getPieceLength()
     {
-        return $this->info->function_171("piece length")->function_170();
+        return $this->info->getDictionaryValue("piece length")->getValue();
     }
-    public function function_178()
+    public function getPieces()
     {
-        return $this->info->function_171("pieces")->function_170();
+        return $this->info->getDictionaryValue("pieces")->getValue();
     }
-    public function function_179()
+    public function getPrivateFlag()
     {
-        if ($this->info->function_171("private")) {
-            return $this->info->function_171("private")->function_170();
+        if ($this->info->getDictionaryValue("private")) {
+            return $this->info->getDictionaryValue("private")->getValue();
         }
         return -1;
     }
-    public function function_180()
+    public function getFileList()
     {
         $var_477 = [];
-        $length = $this->info->function_171("length");
+        $length = $this->info->getDictionaryValue("length");
         if ($length) {
             $file = new Class_8();
-            $file->$name = $this->info->function_171("name")->function_170();
-            $file->$length = $this->info->function_171("length")->function_170();
+            $file->$name = $this->info->getDictionaryValue("name")->getValue();
+            $file->$length = $this->info->getDictionaryValue("length")->getValue();
             array_push($var_477, $file);
         } else {
-            if ($this->info->function_171("files")) {
-                $files = $this->info->function_171("files")->function_170();
+            if ($this->info->getDictionaryValue("files")) {
+                $files = $this->info->getDictionaryValue("files")->getValue();
                 while (list($key, $value) = each($files)) {
                     $file = new Class_8();
-                    $var_480 = $value->function_171("path")->function_170();
+                    $var_480 = $value->getDictionaryValue("path")->getValue();
                     while (list($key, $var_481) = each($var_480)) {
-                        $file->name .= "/" . $var_481->function_170();
+                        $file->name .= "/" . $var_481->getValue();
                     }
                     $file->$name = ltrim($file->name, "/");
-                    $file->$length = $value->function_171("length")->function_170();
+                    $file->$length = $value->getDictionaryValue("length")->getValue();
                     array_push($var_477, $file);
                 }
             }
         }
         return $var_477;
     }
-    public function function_181()
+    public function getTrackerList()
     {
         $var_482 = [];
-        if ($this->torrent->function_171("announce-list")) {
-            $trackers = $this->torrent->function_171("announce-list")->function_170();
+        if ($this->torrent->getDictionaryValue("announce-list")) {
+            $trackers = $this->torrent->getDictionaryValue("announce-list")->getValue();
             while (list($key, $value) = each($trackers)) {
-                if (is_array($value->function_170())) {
+                if (is_array($value->getValue())) {
                     while (list($key, $var_481) = each($value)) {
                         while (list($key, $var_484) = each($var_481)) {
-                            array_push($var_482, $var_484->function_170());
+                            array_push($var_482, $var_484->getValue());
                         }
                     }
                 } else {
-                    array_push($var_482, $value->function_170());
+                    array_push($var_482, $value->getValue());
                 }
             }
         } else {
-            if ($this->torrent->function_171("announce")) {
-                array_push($var_482, $this->torrent->function_171("announce")->function_170());
+            if ($this->torrent->getDictionaryValue("announce")) {
+                array_push($var_482, $this->torrent->getDictionaryValue("announce")->getValue());
             }
         }
         return $var_482;
     }
-    public function function_182($tracker_url)
+    public function addTracker($tracker_url)
     {
-        $trackers = $this->function_181();
+        $trackers = $this->getTrackerList();
         $trackers[] = $tracker_url;
-        $this->function_183($trackers);
+        $this->setTrackerList($trackers);
     }
-    public function function_184($Whatever)
+    public function removeTorrentKey($Whatever)
     {
-        if ($this->torrent->function_171($Whatever)) {
-            $this->torrent->function_185($Whatever);
+        if ($this->torrent->getDictionaryValue($Whatever)) {
+            $this->torrent->deleteDictionaryKey($Whatever);
         }
     }
-    public function function_183($trackerlist)
+    public function setTrackerList($trackerlist)
     {
         if (1 <= count($trackerlist)) {
-            $this->torrent->function_185("announce-list");
+            $this->torrent->deleteDictionaryKey("announce-list");
             $string = new Class_9($trackerlist[0]);
-            $this->torrent->function_186("announce", $string);
+            $this->torrent->setDictionaryValue("announce", $string);
         }
         if (1 < count($trackerlist)) {
             $var_8 = new Class_10();
             while (list($key, $value) = each($trackerlist)) {
                 $var_485 = new Class_10();
                 $string = new Class_9($value);
-                $var_485->function_187($string);
-                $var_8->function_187($var_485);
+                $var_485->appendToList($string);
+                $var_8->appendToList($var_485);
             }
-            $this->torrent->function_186("announce-list", $var_8);
+            $this->torrent->setDictionaryValue("announce-list", $var_8);
         }
     }
-    public function function_188($filelist)
+    public function setFileList($filelist)
     {
-        $length = $this->info->function_171("length");
+        $length = $this->info->getDictionaryValue("length");
         if ($length) {
             $filelist[0] = str_replace("\\", "/", $filelist[0]);
             $string = new Class_9($filelist[0]);
-            $this->info->function_186("name", $string);
+            $this->info->setDictionaryValue("name", $string);
         } else {
-            if ($this->info->function_171("files")) {
-                $files = $this->info->function_171("files")->function_170();
+            if ($this->info->getDictionaryValue("files")) {
+                $files = $this->info->getDictionaryValue("files")->getValue();
                 for ($i = 0; $i < count($files); $i++) {
                     $var_486 = split("/", $filelist[$i]);
                     $var_480 = new Class_10();
                     foreach ($var_486 as $var_487) {
                         $string = new Class_9($var_487);
-                        $var_480->function_187($string);
+                        $var_480->appendToList($string);
                     }
-                    $files[$i]->function_186("path", $var_480);
+                    $files[$i]->setDictionaryValue("path", $var_480);
                 }
             }
         }
     }
-    public function function_189($value)
+    public function setComment($value)
     {
         $type = "comment";
-        $key = $this->torrent->function_171($type);
+        $key = $this->torrent->getDictionaryValue($type);
         if ($value == "") {
-            $this->torrent->function_185($type);
+            $this->torrent->deleteDictionaryKey($type);
         } else {
             if ($key) {
-                $key->function_186($value);
+                $key->setValue($value);
             } else {
                 $string = new Class_9($value);
-                $this->torrent->function_186($type, $string);
+                $this->torrent->setDictionaryValue($type, $string);
             }
         }
     }
-    public function function_190($value)
+    public function setCreatedBy($value)
     {
         $type = "created by";
-        $key = $this->torrent->function_171($type);
+        $key = $this->torrent->getDictionaryValue($type);
         if ($value == "") {
-            $this->torrent->function_185($type);
+            $this->torrent->deleteDictionaryKey($type);
         } else {
             if ($key) {
-                $key->function_186($value);
+                $key->setValue($value);
             } else {
                 $string = new Class_9($value);
-                $this->torrent->function_186($type, $string);
+                $this->torrent->setDictionaryValue($type, $string);
             }
         }
     }
-    public function function_191($value)
+    public function setSource($value)
     {
         $type = "source";
-        $key = $this->torrent->function_171($type);
+        $key = $this->torrent->getDictionaryValue($type);
         if ($value == "") {
-            $this->torrent->function_185($type);
+            $this->torrent->deleteDictionaryKey($type);
         } else {
             if ($key) {
-                $key->function_186($value);
+                $key->setValue($value);
             } else {
                 $string = new Class_9($value);
-                $this->torrent->function_186($type, $string);
+                $this->torrent->setDictionaryValue($type, $string);
             }
         }
     }
-    public function function_192($value)
+    public function setCreationDate($value)
     {
         $type = "creation date";
-        $key = $this->torrent->function_171($type);
+        $key = $this->torrent->getDictionaryValue($type);
         if ($value == "") {
-            $this->torrent->function_185($type);
+            $this->torrent->deleteDictionaryKey($type);
         } else {
             if ($key) {
-                $key->function_186($value);
+                $key->setValue($value);
             } else {
                 $var_488 = new Class_11($value);
-                $this->torrent->function_186($type, $var_488);
+                $this->torrent->setDictionaryValue($type, $var_488);
             }
         }
     }
-    public function function_193($value)
+    public function setPrivateFlag($value)
     {
         if ($value == -1) {
-            $this->info->function_185("private");
+            $this->info->deleteDictionaryKey("private");
         } else {
             $var_488 = new Class_11($value);
-            $this->info->function_186("private", $var_488);
+            $this->info->setDictionaryValue("private", $var_488);
         }
     }
-    public function function_167()
+    public function getRawBencodeData()
     {
-        return $this->torrent->function_194();
+        return $this->torrent->encodeToBencode();
     }
-    public function function_166()
+    public function getInfoHash()
     {
-        return pack("H*", sha1($this->info->function_194()));
+        return pack("H*", sha1($this->info->encodeToBencode()));
     }
 }
 class Class_8
@@ -301,9 +301,9 @@ class Class_8
     public $name = NULL;
     public $length = NULL;
 }
-class function_167
+class BencodeDecoder
 {
-    public static function &function_168(&$raw, &$offset = 0)
+    public static function &decodeBencode(&$raw, &$offset = 0)
     {
         if (strlen($raw) <= $offset) {
             return new Class_12("Decoder exceeded max length.");
@@ -312,19 +312,19 @@ class function_167
         switch ($currentChar) {
             case "i":
                 $var_488 = new Class_11();
-                $var_488->function_168($raw, $offset);
+                $var_488->decodeBencode($raw, $offset);
                 return $var_488;
                 break;
             case "d":
                 $var_489 = new Class_13();
-                if ($check = $var_489->function_168($raw, $offset)) {
+                if ($check = $var_489->decodeBencode($raw, $offset)) {
                     return $check;
                 }
                 return $var_489;
                 break;
             case "l":
                 $var_8 = new Class_10();
-                $var_8->function_168($raw, $offset);
+                $var_8->decodeBencode($raw, $offset);
                 return $var_8;
                 break;
             case "e":
@@ -334,7 +334,7 @@ class function_167
             case "0":
             case is_numeric($currentChar):
                 $var_309 = new Class_9();
-                $var_309->function_168($raw, $offset);
+                $var_309->decodeBencode($raw, $offset);
                 return $var_309;
                 break;
             default:
@@ -364,7 +364,7 @@ class Class_12
     {
         $this->$error = $error;
     }
-    public function function_170()
+    public function getValue()
     {
         return $this->error;
     }
@@ -380,14 +380,14 @@ class Class_11
     {
         $this->$value = $value;
     }
-    public function function_168(&$raw, &$offset)
+    public function decodeBencode(&$raw, &$offset)
     {
         $end = strpos($raw, "e", $offset);
         $offset++;
         $this->$value = substr($raw, $offset, $end - $offset);
         $offset += $end - $offset;
     }
-    public function function_170()
+    public function getValue()
     {
         return $this->value;
     }
@@ -395,11 +395,11 @@ class Class_11
     {
         return "int";
     }
-    public function function_194()
+    public function encodeToBencode()
     {
         return "i" . $this->value . "e";
     }
-    public function function_186($value)
+    public function setValue($value)
     {
         $this->$value = $value;
     }
@@ -407,12 +407,12 @@ class Class_11
 class Class_13
 {
     public $value = [];
-    public function function_168(&$raw, &$offset)
+    public function decodeBencode(&$raw, &$offset)
     {
         $var_492 = [];
         while (true) {
             $offset++;
-            $name = function_167::function_168($raw, $offset);
+            $name = BencodeDecoder::decodeBencode($raw, $offset);
             if ($name->getBencodeEnd() != "end") {
                 if ($name->getBencodeEnd() == "error") {
                     return $name;
@@ -421,31 +421,31 @@ class Class_13
                     return new Class_12("Key name in dictionary was not a string.");
                 }
                 $offset++;
-                $value = function_167::function_168($raw, $offset);
+                $value = BencodeDecoder::decodeBencode($raw, $offset);
                 if ($value->getBencodeEnd() == "error") {
                     return $value;
                 }
-                $var_492[$name->function_170()] = $value;
+                $var_492[$name->getValue()] = $value;
             }
         }
         $this->$value = $var_492;
     }
-    public function function_171($key)
+    public function getDictionaryValue($key)
     {
         if (isset($this->value[$key])) {
             return $this->value[$key];
         }
         return NULL;
     }
-    public function function_194()
+    public function encodeToBencode()
     {
-        $this->function_195();
+        $this->sortKeys();
         $var_493 = "d";
         while (list($key, $value) = each($this->value)) {
             $var_494 = new Class_9();
-            $var_494->function_186($key);
-            $var_493 .= $var_494->function_194();
-            $var_493 .= $value->function_194();
+            $var_494->setValue($key);
+            $var_493 .= $var_494->encodeToBencode();
+            $var_493 .= $value->encodeToBencode();
         }
         $var_493 .= "e";
         return $var_493;
@@ -454,19 +454,19 @@ class Class_13
     {
         return "dictionary";
     }
-    public function function_185($key)
+    public function deleteDictionaryKey($key)
     {
         unset($this->value[$key]);
     }
-    public function function_186($key, $value)
+    public function setDictionaryValue($key, $value)
     {
         $this->value[$key] = $value;
     }
-    private function function_195()
+    private function sortKeys()
     {
         ksort($this->value);
     }
-    public function function_196()
+    public function getKeyCount()
     {
         return count($this->value);
     }
@@ -474,16 +474,16 @@ class Class_13
 class Class_10
 {
     private $value = [];
-    public function function_187($bval)
+    public function appendToList($bval)
     {
         array_push($this->value, $bval);
     }
-    public function function_168(&$raw, &$offset)
+    public function decodeBencode(&$raw, &$offset)
     {
         $var_8 = [];
         while (true) {
             $offset++;
-            $value = function_167::function_168($raw, $offset);
+            $value = BencodeDecoder::decodeBencode($raw, $offset);
             if ($value->getBencodeEnd() != "end") {
                 if ($value->getBencodeEnd() == "error") {
                     return $value;
@@ -493,16 +493,16 @@ class Class_10
         }
         $this->$value = $var_8;
     }
-    public function function_194()
+    public function encodeToBencode()
     {
         $var_493 = "l";
         for ($i = 0; $i < count($this->value); $i++) {
-            $var_493 .= $this->value[$i]->function_194();
+            $var_493 .= $this->value[$i]->encodeToBencode();
         }
         $var_493 .= "e";
         return $var_493;
     }
-    public function function_170()
+    public function getValue()
     {
         return $this->value;
     }
@@ -518,7 +518,7 @@ class Class_9
     {
         $this->$value = $value;
     }
-    public function function_168(&$raw, &$offset)
+    public function decodeBencode(&$raw, &$offset)
     {
         $end = strpos($raw, ":", $offset);
         $len = substr($raw, $offset, $end - $offset);
@@ -526,7 +526,7 @@ class Class_9
         $end++;
         $this->$value = substr($raw, $end, $len);
     }
-    public function function_170()
+    public function getValue()
     {
         return $this->value;
     }
@@ -534,12 +534,12 @@ class Class_9
     {
         return "string";
     }
-    public function function_194()
+    public function encodeToBencode()
     {
         $len = strlen($this->value);
         return $len . ":" . $this->value;
     }
-    public function function_186($value)
+    public function setValue($value)
     {
         $this->$value = $value;
     }
@@ -570,7 +570,7 @@ function showAlertError($Error)
 {
     return "<div class=\"alert\"><div>" . $Error . "</div></div>";
 }
-function function_327($title = "", $label = "", $content = "")
+function formatDisplayRow($title = "", $label = "", $content = "")
 {
     return ($title ? "\r\n\t<h2>" . $title . "</h2>" : "") . "\r\n\t<div class=\"row\">\r\n\t\t<div class=\"label\">" . $label . "</div>\r\n\t\t<div class=\"content\">" . htmlspecialchars($content) . "</div>\r\n\t</div>";
 }
