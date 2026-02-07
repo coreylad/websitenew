@@ -190,12 +190,12 @@ class Class_5
         }
         if ($expectedResult !== false) {
             $result = "";
-            while ($var_289 = @fgets($this->smtpSocket, 1024)) {
-                $result .= $var_289;
-                if (!preg_match("#^(\\d{3}) #", $var_289, $var_220)) {
+            while ($smtpLine = @fgets($this->smtpSocket, 1024)) {
+                $result .= $smtpLine;
+                if (!preg_match("#^(\\d{3}) #", $smtpLine, $smtpMatches)) {
                 }
             }
-            $this->$smtpReturn = intval($var_220[1]);
+            $this->$smtpReturn = intval($smtpMatches[1]);
             return $this->$smtpReturn = = $expectedResult;
         }
         return true;
