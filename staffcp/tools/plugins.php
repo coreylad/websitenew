@@ -126,9 +126,9 @@ function loadTinyMCEEditor($type = 1, $mode = "textareas", $elements = "")
     define("TINYMCE_EMOTIONS_URL", "./../tinymce_emotions.php");
     ob_start();
     include "./../tinymce.php";
-    $var_81 = ob_get_contents();
+    $editorContent = ob_get_contents();
     ob_end_clean();
-    return $var_81;
+    return $editorContent;
 }
 function getStaffLanguage()
 {

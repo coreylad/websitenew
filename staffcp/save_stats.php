@@ -9,7 +9,7 @@
 function_54();
 require "./ts_db_connect.php";
 function_55();
-$_FileData = base64_decode("R0lGODlhAQABAIAAAMDAwAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==") /* GIF89a\0\0€\0\0ÀÀÀ\0\0\0!ù\0\0\0\0,\0\0\0\0\0\0\0D\0;... */ /* GIF89a\0\0€\0\0ÀÀÀ\0\0\0!ù\0\0\0\0,\0\0\0\0\0\0\0D\0;... */ /* GIF89a\0\0€\0\0ÀÀÀ\0\0\0!ù\0\0\0\0,\0\0\0\0\0\0\0D\0;... */;
+$_FileData = base64_decode("R0lGODlhAQABAIAAAMDAwAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==") /* GIF89a\0\0ï¿½\0\0ï¿½ï¿½ï¿½\0\0\0!ï¿½\0\0\0\0,\0\0\0\0\0\0\0D\0;... */ /* GIF89a\0\0ï¿½\0\0ï¿½ï¿½ï¿½\0\0\0!ï¿½\0\0\0\0,\0\0\0\0\0\0\0D\0;... */ /* GIF89a\0\0ï¿½\0\0ï¿½ï¿½ï¿½\0\0\0!ï¿½\0\0\0\0,\0\0\0\0\0\0\0D\0;... */;
 $_FileSize = strlen($_FileData);
 header("Content-type: image/gif");
 if (!(strpos($_SERVER["SERVER_SOFTWARE"], "Microsoft-IIS") !== false && strpos(php_sapi_name(), "cgi") !== false)) {
@@ -223,25 +223,25 @@ function function_56($p, $k, $t, $pp)
     $pp = $p + 333;
     return $p;
 }
-function function_57()
+function getUserRealIpAddress()
 {
-    $var_219 = $_SERVER["REMOTE_ADDR"];
+    $ipAddress = $_SERVER["REMOTE_ADDR"];
     if (isset($_SERVER["HTTP_CLIENT_IP"])) {
-        $var_219 = $_SERVER["HTTP_CLIENT_IP"];
+        $ipAddress = $_SERVER["HTTP_CLIENT_IP"];
     } else {
         if (isset($_SERVER["HTTP_X_FORWARDED_FOR"]) && preg_match_all("#\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}#s", $_SERVER["HTTP_X_FORWARDED_FOR"], $var_220)) {
             foreach ($var_220[0] as $ip) {
                 if (!preg_match("#^(10|172\\.16|192\\.168)\\.#", $ip)) {
-                    $var_219 = $ip;
+                    $ipAddress = $ip;
                 }
             }
         } else {
             if (isset($_SERVER["HTTP_FROM"])) {
-                $var_219 = $_SERVER["HTTP_FROM"];
+                $ipAddress = $_SERVER["HTTP_FROM"];
             }
         }
     }
-    return htmlspecialchars($var_219);
+    return htmlspecialchars($ipAddress);
 }
 
 ?>

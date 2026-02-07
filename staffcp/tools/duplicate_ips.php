@@ -152,15 +152,15 @@ function function_317($array, $selectedid = "", $htmlise = false)
         foreach ($array as $key => $val) {
             if (is_array($val)) {
                 $options .= "\t\t<optgroup $label = \"" . function_318($htmlise, htmlspecialchars($key), $key) . "\">\n";
-                $options .= function_317($val, $selectedid, $var_620, $htmlise);
+                $options .= function_317($val, $selectedid, $htmlise);
                 $options .= "\t\t</optgroup>\n";
             } else {
                 if (is_array($selectedid)) {
-                    $var_621 = function_318(in_array($key, $selectedid), " $selected = \"selected\"", "");
+                    $selectedAttribute = function_318(in_array($key, $selectedid), " $selected = \"selected\"", "");
                 } else {
-                    $var_621 = function_318($key == $selectedid, " $selected = \"selected\"", "");
+                    $selectedAttribute = function_318($key == $selectedid, " $selected = \"selected\"", "");
                 }
-                $options .= "\t\t<option $value = \"" . function_318($key !== "no_value", $key) . "\"" . $var_621 . ">" . function_318($htmlise, htmlspecialchars($val), $val) . "</option>\n";
+                $options .= "\t\t<option $value = \"" . function_318($key !== "no_value", $key) . "\"" . $selectedAttribute . ">" . function_318($htmlise, htmlspecialchars($val), $val) . "</option>\n";
             }
         }
     }

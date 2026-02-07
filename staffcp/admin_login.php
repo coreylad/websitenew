@@ -95,11 +95,11 @@ function function_9($text, $entities = true)
 {
     return str_replace(["<", ">", "\"", "'"], ["&lt;", "&gt;", "&quot;", "&#039;"], preg_replace("/&(?!" . ($entities ? "#[0-9]+|shy" : "(#[0-9]+|[a-z]+)") . ";)/si", "&amp;", $text));
 }
-function function_10($log)
+function logStaffAction($log)
 {
     mysqli_query($GLOBALS["DatabaseConnect"], "INSERT INTO ts_staffcp_logs (uid, date, log) VALUES (\"" . (isset($_SESSION["ADMIN_ID"]) ? intval($_SESSION["ADMIN_ID"]) : 0) . "\", \"" . time() . "\", \"" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $log) . "\")");
 }
-function function_11()
+function getStaffLanguage()
 {
     if (isset($_COOKIE["staffcplanguage"]) && is_dir("./languages/" . $_COOKIE["staffcplanguage"]) && is_file("./languages/" . $_COOKIE["staffcplanguage"] . "/staffcp.lang")) {
         return $_COOKIE["staffcplanguage"];
@@ -214,9 +214,9 @@ function function_14()
         $errorMessage = "Invalid form hash. Please try again.";
     }
     if ($errorMessage) {
-        $languageLines = file("./languages/" . function_11() . "/staffcp.lang");
+        $languageLines = file("./languages/" . getStaffLanguage() . "/staffcp.lang");
         $logMessage = str_replace(["{1}", "{2}"], [isset($username) ? $username : "", function_8()], $languageLines[15]);
-        function_10($logMessage);
+        logStaffAction($logMessage);
     }
     function_12(["error" => $errorMessage]);
 }
