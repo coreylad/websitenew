@@ -368,23 +368,23 @@ function renderRequirementRow($message, $good)
 }
 function sendInstallStats()
 {
-    $var_640 = "";
+    $licenseQueryString = "";
     $var_44 = "http" . ($_SERVER["HTTPS"] == "on" ? "s" : "") . "://" . (!empty($_SERVER["SERVER_NAME"]) ? $_SERVER["SERVER_NAME"] : (!empty($_SERVER["HTTP_HOST"]) ? $_SERVER["HTTP_HOST"] : "")) . ($_SERVER["SERVER_PORT"] ? ":" . $_SERVER["SERVER_PORT"] : "") . ($_SERVER["SCRIPT_NAME"] ? $_SERVER["SCRIPT_NAME"] : $_SERVER["PHP_SELF"]);
-    $var_641 = getInstallIpAddress();
-    $var_642 = trim(@file_get_contents(ROOT_PATH . "version.txt"));
+    $clientIp = getInstallIpAddress();
+    $versionText = trim(@file_get_contents(ROOT_PATH . "version.txt"));
     if ($_SERVER["SERVER_ADMIN"]) {
-        $var_640 .= "&SA=" . urlencode($_SERVER["SERVER_ADMIN"]);
+        $licenseQueryString .= "&SA=" . urlencode($_SERVER["SERVER_ADMIN"]);
     }
     if ($_SERVER["SERVER_SOFTWARE"]) {
-        $var_640 .= "&SS=" . urlencode($_SERVER["SERVER_SOFTWARE"]);
+        $licenseQueryString .= "&SS=" . urlencode($_SERVER["SERVER_SOFTWARE"]);
     }
     if ($_SERVER["HTTP_USER_AGENT"]) {
-        $var_640 .= "&UA=" . urlencode($_SERVER["HTTP_USER_AGENT"]);
+        $licenseQueryString .= "&UA=" . urlencode($_SERVER["HTTP_USER_AGENT"]);
     }
     if ($_SERVER["REMOTE_ADDR"]) {
-        $var_640 .= "&UI=" . urlencode($_SERVER["REMOTE_ADDR"]);
+        $licenseQueryString .= "&UI=" . urlencode($_SERVER["REMOTE_ADDR"]);
     }
-    @file_get_contents(@decodeLicenseApiString("YzR0NGs0bzRmNDQ0czJzNGE0cjVsNGk0ZjVxNGM0bDRwNWk1bzQ3NDA2djJnNGY0ZTR0NTU0ajVyNHA0bjU2NGg0ejVuNWM0NTRsNDg0czI=") . SHORT_SCRIPT_VERSION . @decodeLicenseApiString("cjJpNGU0cjQxNmk1aDRrNDY0eTVlNGw0czVzMm40YTR4NWs0ajNyM2k0") . @urlencode($var_44) . "&IP=" . $var_641 . "&SK=" . @urlencode($var_642) . $var_640);
+    @file_get_contents(@decodeLicenseApiString("YzR0NGs0bzRmNDQ0czJzNGE0cjVsNGk0ZjVxNGM0bDRwNWk1bzQ3NDA2djJnNGY0ZTR0NTU0ajVyNHA0bjU2NGg0ejVuNWM0NTRsNDg0czI=") . SHORT_SCRIPT_VERSION . @decodeLicenseApiString("cjJpNGU0cjQxNmk1aDRrNDY0eTVlNGw0czVzMm40YTR4NWs0ajNyM2k0") . @urlencode($var_44) . "&IP=" . $clientIp . "&SK=" . @urlencode($versionText) . $licenseQueryString);
 }
 function setSessionValues($values)
 {
@@ -427,47 +427,47 @@ function renderSuccessIcon()
 }
 function renderWelcomeScreen()
 {
-    $var_643 = "\r\n\tThis wizard will upgrade and configure a copy of " . SCRIPT_VERSION . " on your server.\r\n\t<p>Now that you've uploaded the " . SCRIPT_VERSION . " files, the database and settings need to be created and imported. Below is an outline of what is going to be completed during upgrade.</p>\r\n\t<ul>\r\n\t<li>" . SCRIPT_VERSION . " requirements checked,</li>\r\n\t<li>Configuration of database engine,</li>\r\n\t<li>Version selection,</li>\r\n\t<li>Updating tables,</li>\r\n\t<li>Finishing Setup.</li>\r\n\t</ul>\r\n\tBefore we go any further, please ensure that all the files have been uploaded in binary mode, and that the folder \"CACHE\" has suitable permissions to allow this script to write to it (0777 should be sufficient).<br /><br />\r\n\r\n\t" . SCRIPT_VERSION . " requires PHP 5.2 or better and an MYSQL database.<br /><br />\r\n\r\n\t<b>You will also need the following information that your webhost can provide:</b><br />\r\n\t<ul>\r\n\t<li> Any linux (unix), windows webserver running Apache will work. IIS may work but is not recommended, some users might have trouble with file permissions when running IIS.</li>\r\n\t<li><b>The Apache webserver version 1.3 or greater.</b></li>\r\n\t<li><b>MYSQL 5.1 or greater.</b></li>\r\n\t<ul><li> Your MYSQL database name.</li></ul>\r\n\t<ul><li> Your MYSQL username.</li></ul>\r\n\t<ul><li> Your MYSQL password.</li></ul>\r\n\t<ul><li> Your MYSQL host address (usually localhost).</li></ul>\r\n\t<li><b>PHP version 5.2 or greater.</b></li>\r\n\t<ul><li>Ioncube Loader</li></ul>\r\n\t<ul><li>Session Support</li></ul>\r\n\t</ul>\r\n\t<div class=warnbox>Please remember, you can not run this upgrade script more than once.</div>\r\n\t<br />\r\n\tAfter each step has successfully been completed, click Next button to move on to the next step." . renderInstallStepMessage(1);
-    echo renderInstallPage("Welcome to the upgrade wizard for " . SCRIPT_VERSION, $var_643, "Welcome Screen");
+    $welcomeContent = "\r\n\tThis wizard will upgrade and configure a copy of " . SCRIPT_VERSION . " on your server.\r\n\t<p>Now that you've uploaded the " . SCRIPT_VERSION . " files, the database and settings need to be created and imported. Below is an outline of what is going to be completed during upgrade.</p>\r\n\t<ul>\r\n\t<li>" . SCRIPT_VERSION . " requirements checked,</li>\r\n\t<li>Configuration of database engine,</li>\r\n\t<li>Version selection,</li>\r\n\t<li>Updating tables,</li>\r\n\t<li>Finishing Setup.</li>\r\n\t</ul>\r\n\tBefore we go any further, please ensure that all the files have been uploaded in binary mode, and that the folder \"CACHE\" has suitable permissions to allow this script to write to it (0777 should be sufficient).<br /><br />\r\n\r\n\t" . SCRIPT_VERSION . " requires PHP 5.2 or better and an MYSQL database.<br /><br />\r\n\r\n\t<b>You will also need the following information that your webhost can provide:</b><br />\r\n\t<ul>\r\n\t<li> Any linux (unix), windows webserver running Apache will work. IIS may work but is not recommended, some users might have trouble with file permissions when running IIS.</li>\r\n\t<li><b>The Apache webserver version 1.3 or greater.</b></li>\r\n\t<li><b>MYSQL 5.1 or greater.</b></li>\r\n\t<ul><li> Your MYSQL database name.</li></ul>\r\n\t<ul><li> Your MYSQL username.</li></ul>\r\n\t<ul><li> Your MYSQL password.</li></ul>\r\n\t<ul><li> Your MYSQL host address (usually localhost).</li></ul>\r\n\t<li><b>PHP version 5.2 or greater.</b></li>\r\n\t<ul><li>Ioncube Loader</li></ul>\r\n\t<ul><li>Session Support</li></ul>\r\n\t</ul>\r\n\t<div class=warnbox>Please remember, you can not run this upgrade script more than once.</div>\r\n\t<br />\r\n\tAfter each step has successfully been completed, click Next button to move on to the next step." . renderInstallStepMessage(1);
+    echo renderInstallPage("Welcome to the upgrade wizard for " . SCRIPT_VERSION, $welcomeContent, "Welcome Screen");
     echo renderInstallFooter();
 }
 function checkRequirementsAndPermissions()
 {
     initializeInstallSession();
-    $var_644 = ["admin/backup", "cache", "include/avatars", "torrents", "torrents/images", "tsf_forums/uploads", "ts_albums/album_images", "ts_albums/album_thumbnails"];
+    $directoriesToCheck = ["admin/backup", "cache", "include/avatars", "torrents", "torrents/images", "tsf_forums/uploads", "ts_albums/album_images", "ts_albums/album_thumbnails"];
     $fileList = ["include/config_announce.php", "shoutcast/cache.xml", "shoutcast/lps.dat"];
-    $var_645 = false;
-    $var_646 = "\r\n\tIn this step, the " . SCRIPT_VERSION . " installer will determine if your system meets the requirements for the server environment. To use " . SCRIPT_VERSION . ", you must have PHP with MySQL support and write-permissions on certain directories/files.<br /><br />";
+    $hasErrors = false;
+    $outputHtml = "\r\n\tIn this step, the " . SCRIPT_VERSION . " installer will determine if your system meets the requirements for the server environment. To use " . SCRIPT_VERSION . ", you must have PHP with MySQL support and write-permissions on certain directories/files.<br /><br />";
     $var_299 = "";
-    $var_647 = 1;
+    $allRequirementsMet = 1;
     $good = version_compare(PHP_VERSION, "5.4.0", "<") ? 0 : 1;
-    $var_647 = $var_647 && $good;
+    $allRequirementsMet = $allRequirementsMet && $good;
     $var_299 .= renderRequirementRow("PHP version >= 5.4.0: ", $good);
     $_SESSION["testing_string"] = "Just a Test!";
     $good = $_SESSION["testing_string"] === "Just a Test!" ? 1 : 0;
-    $var_647 = $var_647 && $good;
+    $allRequirementsMet = $allRequirementsMet && $good;
     $var_299 .= renderRequirementRow("PHP session support:", $good);
     $good = function_exists("mysqli_connect") ? 1 : 0;
-    $var_647 = $var_647 && $good;
+    $allRequirementsMet = $allRequirementsMet && $good;
     $var_299 .= renderRequirementRow("MySQLi support exists: ", $good);
-    if (!$var_647) {
-        $var_645 = true;
+    if (!$allRequirementsMet) {
+        $hasErrors = true;
     }
-    $var_646 .= "\r\n\t<table $width = \"100%\" $border = \"0\" $cellpadding = \"4\" $cellspacing = \"0\" $align = \"center\">\r\n\t\t<tr>\r\n\t\t\t<td class=\"thead\" $colspan = \"2\" $width = \"100%\" $align = \"left\">Requirements Check</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"subheader\" $width = \"75%\" $align = \"left\">Function / Feature / Requirement</td>\r\n\t\t\t<td class=\"subheader\" $width = \"25%\" $align = \"center\">Available</td>\r\n\t\t</tr>\r\n\t\t" . $var_299 . "\r\n\t\t</table><br />";
-    $var_646 .= "\r\n\t<table $width = \"100%\" $border = \"0\" $cellpadding = \"4\" $cellspacing = \"0\" $align = \"center\">\r\n\t\t<tr>\r\n\t\t\t<td class=\"thead\" $colspan = \"2\" $width = \"100%\" $align = \"left\">Checking Directory Chmod Permissions</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"subheader\" $width = \"75%\" $align = \"left\">Directory</td>\r\n\t\t\t<td class=\"subheader\" $width = \"25%\" $align = \"center\">Writable</td>\r\n\t\t</tr>\r\n\t";
-    sort($var_644);
-    foreach ($var_644 as $var_648) {
-        $var_649 = ROOT_PATH . $var_648;
-        $var_646 .= "\r\n\t\t<tr>\r\n\t\t\t<td $width = \"85%\" $align = \"left\">" . str_replace(ROOT_PATH, "", $var_649) . "</td>";
-        if (!is_writable($var_649) || !is_dir($var_649)) {
-            $var_646 .= "\r\n\t\t\t<td $align = \"center\" $width = \"15%\">" . renderErrorIcon() . "</td>\r\n\t\t</tr>";
-            $var_645 = true;
+    $outputHtml .= "\r\n\t<table $width = \"100%\" $border = \"0\" $cellpadding = \"4\" $cellspacing = \"0\" $align = \"center\">\r\n\t\t<tr>\r\n\t\t\t<td class=\"thead\" $colspan = \"2\" $width = \"100%\" $align = \"left\">Requirements Check</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"subheader\" $width = \"75%\" $align = \"left\">Function / Feature / Requirement</td>\r\n\t\t\t<td class=\"subheader\" $width = \"25%\" $align = \"center\">Available</td>\r\n\t\t</tr>\r\n\t\t" . $var_299 . "\r\n\t\t</table><br />";
+    $outputHtml .= "\r\n\t<table $width = \"100%\" $border = \"0\" $cellpadding = \"4\" $cellspacing = \"0\" $align = \"center\">\r\n\t\t<tr>\r\n\t\t\t<td class=\"thead\" $colspan = \"2\" $width = \"100%\" $align = \"left\">Checking Directory Chmod Permissions</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"subheader\" $width = \"75%\" $align = \"left\">Directory</td>\r\n\t\t\t<td class=\"subheader\" $width = \"25%\" $align = \"center\">Writable</td>\r\n\t\t</tr>\r\n\t";
+    sort($directoriesToCheck);
+    foreach ($directoriesToCheck as $directory) {
+        $fullPath = ROOT_PATH . $directory;
+        $outputHtml .= "\r\n\t\t<tr>\r\n\t\t\t<td $width = \"85%\" $align = \"left\">" . str_replace(ROOT_PATH, "", $fullPath) . "</td>";
+        if (!is_writable($fullPath) || !is_dir($fullPath)) {
+            $outputHtml .= "\r\n\t\t\t<td $align = \"center\" $width = \"15%\">" . renderErrorIcon() . "</td>\r\n\t\t</tr>";
+            $hasErrors = true;
         } else {
-            $var_646 .= "\r\n\t\t\t<td $align = \"center\" $width = \"15%\">" . renderSuccessIcon() . "</td>\r\n\t\t</tr>";
+            $outputHtml .= "\r\n\t\t\t<td $align = \"center\" $width = \"15%\">" . renderSuccessIcon() . "</td>\r\n\t\t</tr>";
         }
     }
-    $var_646 .= "\r\n\t</table><br />";
-    $var_646 .= "\r\n\t<table $width = \"100%\" $border = \"0\" $cellpadding = \"4\" $cellspacing = \"0\" $align = \"center\">\r\n\t\t<tr>\r\n\t\t\t<td class=\"thead\" $colspan = \"2\" $width = \"100%\" $align = \"left\">Checking File Chmod Permissions</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"subheader\" $width = \"75%\" $align = \"left\">File</td>\r\n\t\t\t<td class=\"subheader\" $width = \"25%\" $align = \"center\">Writable</td>\r\n\t\t</tr>\r\n\t";
+    $outputHtml .= "\r\n\t</table><br />";
+    $outputHtml .= "\r\n\t<table $width = \"100%\" $border = \"0\" $cellpadding = \"4\" $cellspacing = \"0\" $align = \"center\">\r\n\t\t<tr>\r\n\t\t\t<td class=\"thead\" $colspan = \"2\" $width = \"100%\" $align = \"left\">Checking File Chmod Permissions</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"subheader\" $width = \"75%\" $align = \"left\">File</td>\r\n\t\t\t<td class=\"subheader\" $width = \"25%\" $align = \"center\">Writable</td>\r\n\t\t</tr>\r\n\t";
     if ($handle = scandir(ROOT_PATH . "cache/")) {
         foreach ($handle as $file) {
             if ($file != "." && $file != ".." && $file != ".htaccess" && $file != "htaccess" && getFileExtension($file) != "html") {
@@ -478,42 +478,42 @@ function checkRequirementsAndPermissions()
     sort($fileList);
     foreach ($fileList as $file) {
         $filePath = ROOT_PATH . $file;
-        $var_646 .= "\r\n\t\t<tr>\r\n\t\t\t<td $width = \"85%\" $align = \"left\">" . str_replace(ROOT_PATH, "", $filePath) . "</td>";
+        $outputHtml .= "\r\n\t\t<tr>\r\n\t\t\t<td $width = \"85%\" $align = \"left\">" . str_replace(ROOT_PATH, "", $filePath) . "</td>";
         if (!is_writable($filePath) || !is_file($filePath)) {
-            $var_646 .= "\r\n\t\t\t<td $align = \"center\" $width = \"15%\">" . renderErrorIcon() . "</td>\r\n\t\t</tr>";
-            $var_645 = true;
+            $outputHtml .= "\r\n\t\t\t<td $align = \"center\" $width = \"15%\">" . renderErrorIcon() . "</td>\r\n\t\t</tr>";
+            $hasErrors = true;
         } else {
-            $var_646 .= "\r\n\t\t\t<td $align = \"center\" $width = \"15%\">" . renderSuccessIcon() . "</td>\r\n\t\t</tr>";
+            $outputHtml .= "\r\n\t\t\t<td $align = \"center\" $width = \"15%\">" . renderSuccessIcon() . "</td>\r\n\t\t</tr>";
         }
     }
-    $var_646 .= "\r\n\t</table>";
-    if (!$var_645) {
-        $var_646 .= renderInstallStepMessage(2, "Congratulations, no errors found!");
+    $outputHtml .= "\r\n\t</table>";
+    if (!$hasErrors) {
+        $outputHtml .= renderInstallStepMessage(2, "Congratulations, no errors found!");
     } else {
-        $var_646 .= renderInstallStepMessage(2, "The installer has detected some problems with your server environment, which will not allow " . SCRIPT_VERSION . " to operate correctly. Please correct these issues and then refresh the page to re-check your environment.", true);
+        $outputHtml .= renderInstallStepMessage(2, "The installer has detected some problems with your server environment, which will not allow " . SCRIPT_VERSION . " to operate correctly. Please correct these issues and then refresh the page to re-check your environment.", true);
     }
-    echo renderInstallPage("Welcome to the upgrade wizard for " . SCRIPT_VERSION, "\r\n\t" . $var_646 . "\r\n\t", "Requirements Check");
+    echo renderInstallPage("Welcome to the upgrade wizard for " . SCRIPT_VERSION, "\r\n\t" . $outputHtml . "\r\n\t", "Requirements Check");
     echo renderInstallFooter();
 }
 function confirmDatabaseDetails()
 {
     require ROOT_PATH . "include/config_database.php";
-    $errorMessages = [1 => "<li>Don't leave any fields blank in include/config_database.php!</li>", 2 => "<li>Could not connect to the database server at '" . MYSQL_HOST . "' with the supplied username and password.<br>Are you sure the hostname and user details are correct in include/config_database.php file?</li>", 3 => "<li>Could not select the database '" . MYSQL_DB . "'.<br>Are you sure it exists and the specified username and password have access to it?</li>", 4 => "<li>The passwords you entered do not match.</li>"];
+    $errorTemplates = [1 => "<li>Don't leave any fields blank in include/config_database.php!</li>", 2 => "<li>Could not connect to the database server at '" . MYSQL_HOST . "' with the supplied username and password.<br>Are you sure the hostname and user details are correct in include/config_database.php file?</li>", 3 => "<li>Could not select the database '" . MYSQL_DB . "'.<br>Are you sure it exists and the specified username and password have access to it?</li>", 4 => "<li>The passwords you entered do not match.</li>"];
     if (MYSQL_HOST == "" || MYSQL_USER == "" || MYSQL_PASS == "" || MYSQL_DB == "") {
-        $var_650[] = $errorMessages[1];
+        $dbErrors[] = $errorTemplates[1];
     }
     $GLOBALS["DatabaseConnect"] = @mysqli_connect(MYSQL_HOST, MYSQL_USER, MYSQL_PASS, MYSQL_DB);
     if (!$GLOBALS["DatabaseConnect"]) {
-        $var_650[] = $errorMessages[2];
+        $dbErrors[] = $errorTemplates[2];
     }
-    if (!isset($var_650)) {
+    if (!isset($dbErrors)) {
         $values = ["mysql_host" => MYSQL_HOST, "mysql_user" => MYSQL_USER, "mysql_pass" => MYSQL_PASS, "mysql_db" => MYSQL_DB];
         setSessionValues($values);
-        $var_651 = renderInstallPage("\r\n\t\t\tDatabase Confirmation", "Please check your Database details.\r\n\t\t\t<br /><br />\r\n\t\t\t<b>Database Host</b>: " . MYSQL_HOST . "<br />\r\n\t\t\t<b>Database Username</b>: " . MYSQL_USER . "<br />\r\n\t\t\t<b>Database Name</b>: " . MYSQL_DB . "<br />\r\n\t\t\t<b>Database Password</b>: <i>Hidden</i>" . renderInstallStepMessage(3, "If your Database details shown above are correct, click Next button to move on to the next step."));
-        $var_651 .= renderInstallFooter();
-        exit($var_651);
+        $pageContent = renderInstallPage("\r\n\t\t\tDatabase Confirmation", "Please check your Database details.\r\n\t\t\t<br /><br />\r\n\t\t\t<b>Database Host</b>: " . MYSQL_HOST . "<br />\r\n\t\t\t<b>Database Username</b>: " . MYSQL_USER . "<br />\r\n\t\t\t<b>Database Name</b>: " . MYSQL_DB . "<br />\r\n\t\t\t<b>Database Password</b>: <i>Hidden</i>" . renderInstallStepMessage(3, "If your Database details shown above are correct, click Next button to move on to the next step."));
+        $pageContent .= renderInstallFooter();
+        exit($pageContent);
     }
-    showCriticalError(implode("<br />", $var_650));
+    showCriticalError(implode("<br />", $dbErrors));
 }
 function createDatabaseTables()
 {
@@ -524,8 +524,8 @@ function createDatabaseTables()
         var_652("Upgrade Version configuration has been saved successfully.", $_SERVER["SCRIPT_NAME"] . "?$step = 4");
     }
     $var_446 = "<option $value = \"\"></option>";
-    foreach ($PREVIOUS_VERSIONS as $var_653) {
-        $var_446 .= "\r\n\t\t<option $value = \"" . $var_653 . "\">Upgrade From TS Special Edition v." . $var_653 . " to " . SCRIPT_VERSION . "</option>";
+    foreach ($PREVIOUS_VERSIONS as $version) {
+        $var_446 .= "\r\n\t\t<option $value = \"" . $version . "\">Upgrade From TS Special Edition v." . $version . " to " . SCRIPT_VERSION . "</option>";
     }
     $var_643 = "This wizard will upgrade and configure a copy of " . SCRIPT_VERSION . " on your server.";
     $var_643 .= "\r\n\t<script $type = \"text/javascript\">\r\n\t\tfunction confirmSelectedVersion(WhatSelected)\r\n\t\t{\r\n\t\t\tif (!WhatSelected.value)\r\n\t\t\t{\r\n\t\t\t\talert(\"Invalid version selected!\");\r\n\t\t\t\treturn false;\r\n\t\t\t}\r\n\t\t\tvar SelectedVersion = \"TS Special Edition v.\"+WhatSelected.value;\r\n\t\t\tif (confirm(\"Are you sure that you want to upgrade from\\n\\n\"+SelectedVersion+\"\\nto\\n" . SCRIPT_VERSION . "\"))\r\n\t\t\t{\r\n\t\t\t\treturn true;\r\n\t\t\t}\r\n\t\t\treturn false;\r\n\t\t}\r\n\t</script>\r\n\t<br /><br />\r\n\t<b>Please select Upgrade Type:</b>\r\n\t<form $method = \"post\" $action = \"" . $_SERVER["SCRIPT_NAME"] . "?$step = " . $__step . "\" $name = \"upgrade\" $onsubmit = \"return confirmSelectedVersion(this.upgrade_from);\">\r\n\t<input $type = \"hidden\" $name = \"step\" $value = \"" . $__step . "\" />\r\n\t<select $name = \"upgrade_from\" $id = \"upgrade_from\">\r\n\t\t" . $var_446 . "\r\n\t</select>\r\n\t<input $type = \"submit\" class=\"button\" $value = \"Upgrade Now!\" />\r\n\t</form>";
@@ -544,35 +544,35 @@ function populateDatabaseTables()
     if (!empty($db)) {
         showCriticalError(implode("<br />", $db) . "<br />There seems to be one or more errors with the database configuration information that you supplied. Click <a $href = \"" . $_SERVER["SCRIPT_NAME"] . "?$step = 2\">here</a> to to back step 2.");
     }
-    $var_654 = "0=5&1=" . encodeInstallString(INSTALL_URL) . "&2=" . encodeInstallString(INSTALL_IP) . "&3=" . encodeInstallString(SHORT_SCRIPT_VERSION) . "&4=" . encodeInstallString($_SESSION["upgrade_from"]) . buildLicenseQueryString();
-    $var_655 = sendLicenseRequest($var_654);
-    if (preg_match("#INVALID USER ACCOUNT#", $var_655)) {
+    $licenseRequest = "0=5&1=" . encodeInstallString(INSTALL_URL) . "&2=" . encodeInstallString(INSTALL_IP) . "&3=" . encodeInstallString(SHORT_SCRIPT_VERSION) . "&4=" . encodeInstallString($_SESSION["upgrade_from"]) . buildLicenseQueryString();
+    $licenseResponse = sendLicenseRequest($licenseRequest);
+    if (preg_match("#INVALID USER ACCOUNT#", $licenseResponse)) {
         showCriticalError("I am unable to confirm your Account in our database. This could be because of one of the following reasons. <ul><li>Are you sure that you have entered your Templateshares login details correctly into <b>config.php</b>?</li><li>Are you sure that you have a valid TS SE license to use this version?</li></ul>");
     } else {
-        if (preg_match("#INVALID UPGRADE VERSION OR UPGRADE FILE DOES NOT EXISTS!#", $var_655)) {
+        if (preg_match("#INVALID UPGRADE VERSION OR UPGRADE FILE DOES NOT EXISTS!#", $licenseResponse)) {
             showCriticalError("Invalid Upgrade Script Version! Click <a $href = \"" . $_SERVER["SCRIPT_NAME"] . "?$step = 3\">here</a> to start from the beginning.");
         }
     }
-    $var_655 = @preg_match("#--BEGIN--(.*)--END--#is", $var_655, $var_656);
-    $var_655 = @str_replace(["\n", "\r"], "", $var_656[1]);
-    $var_657 = @explode("[TABLE]", $var_655);
-    if (count($var_657) < 1) {
+    $licenseResponse = @preg_match("#--BEGIN--(.*)--END--#is", $licenseResponse, $matches);
+    $licenseResponse = @str_replace(["\n", "\r"], "", $matches[1]);
+    $tableDefinitions = @explode("[TABLE]", $licenseResponse);
+    if (count($tableDefinitions) < 1) {
         showCriticalError("Connection Error: upgrade");
     }
     echo renderInstallPage("Welcome to the upgrade wizard for " . SCRIPT_VERSION, false, "Populate Tables");
     echo "<table $border = \"0\" $align = \"center\" $cellpadding = \"4\" class=\"okbox\" $width = 100%>\r\n\t<tr>\r\n\t\t<td class=\"subheader\" $align = \"center\">Query Count</td>\r\n\t\t<td class=\"subheader\">Message</td>\r\n\t\t<td class=\"subheader\" $align = \"center\">Status</td>\r\n\t</tr>";
     var_658();
-    $var_659 = false;
+    $hasQueryErrors = false;
     $count = 0;
-    $var_660 = 0;
-    foreach ($var_657 as $var_661) {
-        @preg_match("#CREATE TABLE (\\S+) \\(#i", $var_661, $var_585);
+    $failedQueryCount = 0;
+    foreach ($tableDefinitions as $tableQuery) {
+        @preg_match("#CREATE TABLE (\\S+) \\(#i", $tableQuery, $var_585);
         if (isset($var_585[1]) && !empty($var_585[1])) {
             @mysqli_query($GLOBALS["DatabaseConnect"], "DROP TABLE IF EXISTS " . $var_585[1]);
         }
-        if (!mysqli_query($GLOBALS["DatabaseConnect"], $var_661)) {
-            $var_659 = true;
-            $var_660++;
+        if (!mysqli_query($GLOBALS["DatabaseConnect"], $tableQuery)) {
+            $hasQueryErrors = true;
+            $failedQueryCount++;
             $status = renderErrorIcon();
             $message = " <font $color = \"red\"><b>(" . mysqli_errno($GLOBALS["DatabaseConnect"]) . ") " . mysqli_error($GLOBALS["DatabaseConnect"]) . "</b></font> ";
         } else {
@@ -585,13 +585,13 @@ function populateDatabaseTables()
     }
     echo "</table>";
     var_658();
-    if (!$var_659) {
+    if (!$hasQueryErrors) {
         echo renderInstallStepMessage(7, "The default data has successfully been inserted into the database.");
         echo "</td></tr></table>";
         echo renderInstallFooter();
         var_658();
     } else {
-        echo renderInstallStepMessage(7, "There was total <b>" . $var_660 . "</b> queries failed during upgrade which will not allow " . SCRIPT_VERSION . " to operate correctly.<br />Please use your backup and revert back to the previous version and than re-run the upgrade script.", true, true);
+        echo renderInstallStepMessage(7, "There was total <b>" . $failedQueryCount . "</b> queries failed during upgrade which will not allow " . SCRIPT_VERSION . " to operate correctly.<br />Please use your backup and revert back to the previous version and than re-run the upgrade script.", true, true);
         echo "</td></tr></table>";
         echo renderInstallFooter();
         var_658();
@@ -608,8 +608,8 @@ function finalizeInstallation()
     if (!writeTrackerCacheFile()) {
         showCriticalError("Please chmod 0777 to the following file and refresh the page: " . CACHED_TRACKER_FILE);
     }
-    $var_662 = SCRIPT_VERSION . " has successfully been installed and configured correctly. The Template Shares Group thanks you for your support and we hope to see you around the community forums if you need help or wish to become a part of the TS community. <br><br><div class=warnbox>After a successful login, please goto staff panel and configurate your tracker otherwise TS SE won't work correctly! <br><br>Click <a $href = \"./../index.php\">here</a> to login.<br><br>DO NOT FORGET TO DELETE INSTALL FOLDER !!!";
-    echo renderInstallPage("Welcome to the upgrade wizard for " . SCRIPT_VERSION, "\r\n\t" . $var_662 . "\r\n\t", "Finish Setup");
+    $successMessage = SCRIPT_VERSION . " has successfully been installed and configured correctly. The Template Shares Group thanks you for your support and we hope to see you around the community forums if you need help or wish to become a part of the TS community. <br><br><div class=warnbox>After a successful login, please goto staff panel and configurate your tracker otherwise TS SE won't work correctly! <br><br>Click <a $href = \"./../index.php\">here</a> to login.<br><br>DO NOT FORGET TO DELETE INSTALL FOLDER !!!";
+    echo renderInstallPage("Welcome to the upgrade wizard for " . SCRIPT_VERSION, "\r\n\t" . $successMessage . "\r\n\t", "Finish Setup");
     echo renderInstallFooter();
     @sendInstallStats();
 }
@@ -622,17 +622,17 @@ function customEncrypt($string, $key = "1231231231231235555gfdgfd322332323")
 {
     $hash = "";
     $key = sha1($key);
-    $var_663 = strlen($string);
-    $var_664 = strlen($key);
+    $stringLength = strlen($string);
+    $keyLength = strlen($key);
     $j = 0;
-    for ($i = 0; $i < $var_663; $i++) {
-        $var_665 = ord(substr($string, $i, 1));
-        if ($j == $var_664) {
+    for ($i = 0; $i < $stringLength; $i++) {
+        $charByte = ord(substr($string, $i, 1));
+        if ($j == $keyLength) {
             $j = 0;
         }
-        $var_666 = ord(substr($key, $j, 1));
+        $keyByte = ord(substr($key, $j, 1));
         $j++;
-        $hash .= strrev(base_convert(dechex($var_665 + $var_666), 16, 36));
+        $hash .= strrev(base_convert(dechex($charByte + $keyByte), 16, 36));
     }
     return base64_encode($hash);
 }
@@ -641,18 +641,18 @@ function customDecrypt($string, $key = "1231231231231235555gfdgfd322332323")
     $string = base64_decode($string);
     $hash = "";
     $key = sha1($key);
-    $var_663 = strlen($string);
-    $var_664 = strlen($key);
+    $stringLength = strlen($string);
+    $keyLength = strlen($key);
     $j = 0;
     $i = 0;
-    while ($i < $var_663) {
-        $var_665 = hexdec(base_convert(strrev(substr($string, $i, 2)), 36, 16));
-        if ($j == $var_664) {
+    while ($i < $stringLength) {
+        $charByte = hexdec(base_convert(strrev(substr($string, $i, 2)), 36, 16));
+        if ($j == $keyLength) {
             $j = 0;
         }
-        $var_666 = ord(substr($key, $j, 1));
+        $keyByte = ord(substr($key, $j, 1));
         $j++;
-        $hash .= chr($var_665 - $var_666);
+        $hash .= chr($charByte - $keyByte);
         $i += 2;
     }
     return $hash;
