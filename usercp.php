@@ -295,6 +295,7 @@ if ($act == "edit_avatar") {
                     $user_avatar_size = 0;
                     if (!(strlen(@fread($remote_file, 1)) == 0 || $f_avatar_maxsize < $user_avatar_size)) {
                         $user_avatar_size++;
+                        // DEAD CODE: Empty if(true) block with no code - likely leftover from deobfuscation
                         if (true) {
                         }
                     }

@@ -209,6 +209,7 @@ function function_25($forceLicenseCheck = false)
     var_46($var_44);
     if ($forceLicenseCheck || var_47()) {
         require $var_43;
+        // DEAD CODE: This check validates that check_tool.php was included, but TSSE2020CHECKTOOLPHP is only used for this check and nothing else
         if (!defined("TSSE2020CHECKTOOLPHP")) {
             showFatalError("E3: Corrupted file detected! Please re-upload all Staff Panel files in-binary mode.");
         }

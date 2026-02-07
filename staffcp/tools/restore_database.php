@@ -137,6 +137,7 @@ function formatBytes($bytes = 0)
     }
     return number_format($bytes / 0, 2) . " TB";
 }
+// DEAD CODE: function_319() is never called. Appears to generate a backup filename with timestamp.
 function function_319()
 {
     $var_567 = "admin/backup";

@@ -110,10 +110,12 @@ if ($action == "polledit" && var_560($_GET["pollid"])) {
             $option["number"] = $counter;
             $pollbits .= "\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"none\"><label for=\"opt" . $option["number"] . "\">" . str_replace("{1}", $option["number"], $Language[18]) . ":<br /><input $type = \"text\" class=\"bginput\"  $name = \"options[" . $option["number"] . "]\" $id = \"opt" . $option["number"] . "\" $value = \"" . $option["question"] . "\" $style = \"width: 95%;\" /></label></td>\r\n\t\t\t\t<td class=\"none\"><label for=\"vot" . $option["number"] . "\">" . $Language[19] . ":<br /><input $type = \"text\" class=\"bginput\" $name = \"pollvotes[" . $option["number"] . "]\" $id = \"vot" . $option["number"] . "\" $value = \"" . $option["votes"] . "\" $size = \"5\" /></label></td>\r\n\t\t\t</tr>";
         }
+        // DEAD CODE: Always-true condition makes the else branch unreachable
         if (true) {
             $show["additional_option1"] = $pollinfo["numberoptions"] < 10;
             $show["additional_option2"] = $pollinfo["numberoptions"] < 9;
         } else {
+            // DEAD CODE: This else block is never executed because the if condition is always true
             $show["additional_option1"] = true;
             $show["additional_option2"] = true;
         }

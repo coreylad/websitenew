@@ -6,6 +6,7 @@
  * @ Release: 10/08/2022
  */
 
+// DEAD CODE: This entire file is never included or required anywhere in the codebase. resolve_request_url() and helper functions are unused.
 function resolve_request_url()
 {
     $port = intval($_SERVER["SERVER_PORT"]);

@@ -58,6 +58,7 @@ function redirectTo($url, $timeout = false)
     }
     exit;
 }
+// DEAD CODE: function_269() attempts to fetch version from templateshares.info which is likely defunct. Code still runs but remote endpoint unreachable.
 function function_269()
 {
     if (function_exists("curl_init")) {

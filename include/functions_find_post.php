@@ -9,6 +9,7 @@
 if (!defined("IN_TRACKER")) {
     exit("<font $face = 'verdana' $size = '2' $color = 'darkred'><b>Error!</b> Direct initialization of this file is not allowed.</font>");
 }
+// DEAD CODE: This entire file is never included or required anywhere in the codebase. The find_post() function is unused.
 function find_post($pid)
 {
     global $CURUSER;

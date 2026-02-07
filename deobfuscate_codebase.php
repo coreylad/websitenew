@@ -1,4 +1,5 @@
 <?php
+// DEAD CODE: Temporary utility script for deobfuscation. Not part of application runtime.
 // Blanket deobfuscation script for TSSE V8.0 codebase
 // Uses mapping from deobfuscation_progress.md to replace all obfuscated names in all PHP files
 
