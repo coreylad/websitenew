@@ -64,7 +64,7 @@ $language['invite'] = array
 
 You have been invited by {1} to register on "{2}".
 
-Your registration link: {3}/signup.php?invitehash={4}&type=invite
+Your registration link: {3}/signup.php?$invitehash = {4}&$type = invite
 
 Please note: You will need to accept the invitation within {5} days, or else the link will become inactive.
 
@@ -80,7 +80,7 @@ Best Regards,
 ',
 	'error'						=>'An error occured. Please try again later.',
 	'sent'						=>'Thank you. The Invite was sent out successfully to the following user: {1}',
-	'manuellink'				=>'Your friend registration link as shown below:<br /> {1}/signup.php?invitehash={2}&type=invite',
+	'manuellink'				=>'Your friend registration link as shown below:<br /> {1}/signup.php?$invitehash = {2}&$type = invite',
 	'selecttype'				=>'Please Select Invite Type: ',
 	'type1' => 'By Email (Automatic)',
 	'type2' => 'Manual (Copy & Paste)',

@@ -7,7 +7,7 @@
  */
 
 if (!defined("IN_TRACKER")) {
-    exit("<font face='verdana' size='2' color='darkred'><b>Error!</b> Direct initialization of this file is not allowed.</font>");
+    exit("<font $face = 'verdana' $size = '2' $color = 'darkred'><b>Error!</b> Direct initialization of this file is not allowed.</font>");
 }
 function ts_category_list($selectname = "type", $selected = 0, $extra = "", $style = "specialboxn")
 {
@@ -23,15 +23,15 @@ function ts_category_list($selectname = "type", $selected = 0, $extra = "", $sty
     if (is_array($_categoriesS) && 0 < count($_categoriesS)) {
         foreach ($_categoriesS as $scquery) {
             if ($scquery["canview"] == "[ALL]" || in_array($CURUSER["usergroup"], explode(",", $scquery["canview"]))) {
-                $subcategoriesss[$scquery["pid"]] = (isset($subcategoriesss[$scquery["pid"]]) ? $subcategoriesss[$scquery["pid"]] : "") . "\r\n\t\t\t\t\t<option value=\"" . $scquery["id"] . "\"" . ($scquery["id"] == $selected ? " selected=\"selected\"" : "") . ">&nbsp;&nbsp;|-- " . $scquery["name"] . "</option>\r\n\t\t\t\t\t";
+                $subcategoriesss[$scquery["pid"]] = (isset($subcategoriesss[$scquery["pid"]]) ? $subcategoriesss[$scquery["pid"]] : "") . "\r\n\t\t\t\t\t<option $value = \"" . $scquery["id"] . "\"" . ($scquery["id"] == $selected ? " $selected = \"selected\"" : "") . ">&nbsp;&nbsp;|-- " . $scquery["name"] . "</option>\r\n\t\t\t\t\t";
             }
         }
     }
-    $showcategories = "<select name=\"" . $selectname . "\" id=\"" . $style . "\">\r\n\t" . $extra;
+    $showcategories = "<select $name = \"" . $selectname . "\" $id = \"" . $style . "\">\r\n\t" . $extra;
     if (is_array($_categoriesC) && 0 < count($_categoriesC)) {
         foreach ($_categoriesC as $mcquery) {
             if ($mcquery["canview"] == "[ALL]" || in_array($CURUSER["usergroup"], explode(",", $mcquery["canview"]))) {
-                $showcategories .= "\r\n\t\t\t\t<option value=\"" . $mcquery["id"] . "\"" . ($mcquery["id"] == $selected ? " selected=\"selected\"" : "") . ">" . $mcquery["name"] . "</option>\r\n\t\t\t\t" . (isset($subcategoriesss[$mcquery["id"]]) ? $subcategoriesss[$mcquery["id"]] : "") . "\r\n\t\t\t\t";
+                $showcategories .= "\r\n\t\t\t\t<option $value = \"" . $mcquery["id"] . "\"" . ($mcquery["id"] == $selected ? " $selected = \"selected\"" : "") . ">" . $mcquery["name"] . "</option>\r\n\t\t\t\t" . (isset($subcategoriesss[$mcquery["id"]]) ? $subcategoriesss[$mcquery["id"]] : "") . "\r\n\t\t\t\t";
             }
         }
     }

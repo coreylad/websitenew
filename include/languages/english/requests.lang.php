@@ -32,12 +32,12 @@ $language['requests'] = array
 	'addtitle4'						=>'Add Request Comment',
 	'addtitle5'						=>'Edit Request Comment',
 	'addtitle6'						=>'Add Request',
-	'sure'							=>'You\'re about to delete this comment. Click <a href=?action=delete&cid={1}&sure=1{2}>here</a>, if you\'re sure.',	
+	'sure'							=>'You\'re about to delete this comment. Click <a $href = ?$action = delete&$cid = {1}&$sure = 1{2}>here</a>, if you\'re sure.',	
 	'goback'						=>'Back',
 	'rhead'							=>'Requests Page',
 	'reqrules'						=>'Request Rules',
-	'reqrulesinfo1'					=>'To make a request you must have a ratio of at least <b>0.5</b> and have uploaded at least <b>10 GB</b>.<br />A request will also cost you <b><a class=altlink href=mybonus.php>5 Karma Points</a></b>....<br /><br />',
-	'permissionerror'				=>'<font color="red">We see that you have <b>not</b> met the minimum requirements.</font>',
+	'reqrulesinfo1'					=>'To make a request you must have a ratio of at least <b>0.5</b> and have uploaded at least <b>10 GB</b>.<br />A request will also cost you <b><a class=altlink $href = mybonus.php>5 Karma Points</a></b>....<br /><br />',
+	'permissionerror'				=>'<font $color = "red">We see that you have <b>not</b> met the minimum requirements.</font>',
 	'searchbeforereq'				=>'Please search torrents before adding a request!',
 	'in'							=>'in',
 	'alltypes'						=>'(all types)',
@@ -67,7 +67,7 @@ $language['requests'] = array
 	'error3'						=>'You must enter a description!',
 	'error4'						=>'Image MUST be in jpg, gif or png format.',
 	'error5'						=>'No Request with this ID!',
-	'error6'						=>'Something is wrong with that url.<br /> URL <u>must</u> be: <b>{1}/details.php?id=(torrent id)</b>',
+	'error6'						=>'Something is wrong with that url.<br /> URL <u>must</u> be: <b>{1}/details.php?$id = (torrent id)</b>',
 	'rhead2'						=>'Request of Details: ',
 	'by'							=>'by:',
 	'ratio'							=>'ratio',
@@ -88,16 +88,16 @@ $language['requests'] = array
 	'rhead4'						=>'Request Filled',
 	'filledmsg'						=>'Your request, [b]{1}[/b] has been filled by [b]{2}[/b].
 	
-	You can download your request from [b][url={3}]{3}[/url][/b].
+	You can download your request from [b][$url = {3}]{3}[/url][/b].
 	Please do not forget to leave thanks where due.
 	
-	If for some reason this is not what you requested, please reset your request so someone else can fill it by following [b][url={4}/viewrequests.php?do=reset_request&rid={5}]this[/url][/b] link.
+	If for some reason this is not what you requested, please reset your request so someone else can fill it by following [b][$url = {4}/viewrequests.php?do=reset_request&$rid = {5}]this[/url][/b] link.
 	
 	Do [b]NOT[/b] follow this link unless you are sure that this does not match your request.',
 	'filledmsgsubject'				=>'Request Filled!',
 	'filledvotemsg'					=>'The Request you voted for [b]{1}[/b] has been filled by [b]{2}[/b].
 	
-	You can download your request from [b][url={3}]{3}[/url][/b].
+	You can download your request from [b][$url = {3}]{3}[/url][/b].
 	
 	Please do not forget to leave thanks where due.',
 	'filledvotesubject'				=>'Request {1} was just uploaded!',
@@ -106,7 +106,7 @@ $language['requests'] = array
 	'ul'							=>'Uploaded',
 	'dl'							=>'Downloaded',
 	'sratio'						=>'Share Ratio',
-	'sanity'						=>'You are about to delete this request. Click <a href={1}?id={2}&del_req=1&sure=1>here</a>, if you are sure.',
+	'sanity'						=>'You are about to delete this request. Click <a $href = {1}?$id = {2}&$del_req = 1&$sure = 1>here</a>, if you are sure.',
 	'rtitle'						=>'Request Title',
 	'makereq'						=>'Add a new request',
 	'viewreq'						=>'View my requests',

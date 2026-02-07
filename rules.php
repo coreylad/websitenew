@@ -38,12 +38,12 @@ while ($rules=mysqli_fetch_assoc($res))
 	{
 		$found=true;
 		$str .= '
-		<table width="100%" border="0" cellspacing="0" cellpadding="5">
+		<table $width = "100%" $border = "0" $cellspacing = "0" $cellpadding = "5">
 			<tr>
 				<td class="thead">'.$rules['title'].'</td>
 			</tr>
 			<tr>
-				<td align="left">'.nl2br($rules['text']).'</td>
+				<td $align = "left">'.nl2br($rules['text']).'</td>
 			</tr>
 		</table>
 		';

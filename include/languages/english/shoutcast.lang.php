@@ -100,14 +100,14 @@ You have been kicked from our DJ Clup.
 Have a great day.',
 	'dj_faq'		=>	'
 <p>
-<b>1.</b>	Download Winamp by going to the <a href="http://www.winamp.com/player/" class="linkYellow" style="text-decoration: underline;"><b>Winamp</b></a> site.<br><br>
-<b>2.</b>	Download the SHOUTcast Radio DSP plug-in for Winamp.  The DSP plug-in is available <a href="http://yp.shoutcast.com/downloads/shoutcast-dsp-1-9-0-windows.exe" class="linkYellow" style="text-decoration: underline;"><b>here</b></a>.<br><br>
+<b>1.</b>	Download Winamp by going to the <a $href = "http://www.winamp.com/player/" class="linkYellow" $style = "text-decoration: underline;"><b>Winamp</b></a> site.<br><br>
+<b>2.</b>	Download the SHOUTcast Radio DSP plug-in for Winamp.  The DSP plug-in is available <a $href = "http://yp.shoutcast.com/downloads/shoutcast-dsp-1-9-0-windows.exe" class="linkYellow" $style = "text-decoration: underline;"><b>here</b></a>.<br><br>
 <b>3.</b>	Once you have downloaded the SHOUTcast Radio DSP plug-in, close Winamp if its already running and double-click the installer file that you downloaded in step 2 above, and follow the onscreen instructions to install.<br><br>
 <b>4.</b>	Start Winamp and open Preferences (CTRL-P) and click on the DSP/effects subcategory under the Plug-ins tree. See below for example:<br>
-<img src="http://media.shoutcast.com/images/winamp_preferences.jpg" border="0" alt="" /><br><br>
+<img $src = "http://media.shoutcast.com/images/winamp_preferences.jpg" $border = "0" $alt = "" /><br><br>
 <b>5.</b> Once you have the SHOUTcast Radio DSP plug-in setup and properly configured, it will broadcast whatever is currently playing on Winamp on your internet radio station in real time! Please refer to the README that comes with the DSP installer for more instructions on how to use the SHOUTcast Radio DSP.<br><br>
 <p class="instWin"><b><u>Instructions - Unix, Linux &amp; MAC OSX</u></b></p>
-<p class="marginConstant"> Not a Windows or Winamp user? Don\'t worry, we\'ve got you covered! For our advanced users on Mac OS X, Linux and Unix, the UNIX/Linux version of the SHOUTcast Radio DSP permits input from a soundcard in addition to MP3 files on disk. Please refer to the example .conf file included with the archive for more information. Please note that this method of broadcasting is currently in beta and therefore unsupported. Please use at your own risk.  Download the SHOUTcast Radio DSP for Unix/Linux/MAC OSX <a href="http://yp.shoutcast.com/downloads/sc_trans_posix_040.tgz" class="linkYellow" style="text-decoration: underline;"><b>here</b></a>.</p>
+<p class="marginConstant"> Not a Windows or Winamp user? Don\'t worry, we\'ve got you covered! For our advanced users on Mac OS X, Linux and Unix, the UNIX/Linux version of the SHOUTcast Radio DSP permits input from a soundcard in addition to MP3 files on disk. Please refer to the example .conf file included with the archive for more information. Please note that this method of broadcasting is currently in beta and therefore unsupported. Please use at your own risk.  Download the SHOUTcast Radio DSP for Unix/Linux/MAC OSX <a $href = "http://yp.shoutcast.com/downloads/sc_trans_posix_040.tgz" class="linkYellow" $style = "text-decoration: underline;"><b>here</b></a>.</p>
 </p>',
 );
 ?>

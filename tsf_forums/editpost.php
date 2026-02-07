@@ -18,7 +18,7 @@ if (!is_valid_id($tid) || !is_valid_id($pid)) {
     stderr($lang->global["error"], $lang->tsf_forums["invalid_tid"]);
     exit;
 }
-($query = sql_query("SELECT p.modnotice, p.pid, p.tid, p.subject as postsubject, p.uid as posterid, p.message,\r\n\t\t\tt.subject as threadsubject, t.closed, t.firstpost, t.sticky, f.type, f.name as currentforum, f.fid as currentforumid, f.moderate, ff.name as deepforum, ff.fid as deepforumid, ff.moderate as moderaterf\r\n\t\t\tFROM " . TSF_PREFIX . "posts p\r\n\t\t\tLEFT JOIN " . TSF_PREFIX . "threads t ON (p.tid=t.tid)\r\n\t\t\tLEFT JOIN " . TSF_PREFIX . "forums f ON (f.fid=t.fid)\r\n\t\t\tLEFT JOIN " . TSF_PREFIX . "forums ff ON (ff.fid=f.pid)\r\n\t\t\tWHERE p.tid = " . sqlesc($tid) . " AND p.pid = " . sqlesc($pid) . " LIMIT 0, 1")) || sqlerr(__FILE__, 49);
+($query = sql_query("SELECT p.modnotice, p.pid, p.tid, p.subject as postsubject, p.uid as posterid, p.message,\r\n\t\t\tt.subject as threadsubject, t.closed, t.firstpost, t.sticky, f.type, f.name as currentforum, f.fid as currentforumid, f.moderate, ff.name as deepforum, ff.fid as deepforumid, ff.moderate as moderaterf\r\n\t\t\tFROM " . TSF_PREFIX . "posts p\r\n\t\t\tLEFT JOIN " . TSF_PREFIX . "threads t ON (p.$tid = t.tid)\r\n\t\t\tLEFT JOIN " . TSF_PREFIX . "forums f ON (f.$fid = t.fid)\r\n\t\t\tLEFT JOIN " . TSF_PREFIX . "forums ff ON (ff.$fid = f.pid)\r\n\t\t\tWHERE p.$tid = " . sqlesc($tid) . " AND p.$pid = " . sqlesc($pid) . " LIMIT 0, 1")) || sqlerr(__FILE__, 49);
 if (mysqli_num_rows($query) == 0) {
     stderr($lang->global["error"], $lang->tsf_forums["invalid_tid"]);
     exit;
@@ -66,12 +66,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["submit"])) {
     $modnotice = isset($_POST["modnotice"]) ? trim($_POST["modnotice"]) : "";
     $remove_modnotice = isset($_POST["remove_modnotice"]) ? $_POST["remove_modnotice"] : "";
     if ($moderator || $forummoderator) {
-        $extraquery = "UPDATE " . TSF_PREFIX . "threads SET closed = " . sqlesc($closed) . ", sticky = " . sqlesc($sticky) . " WHERE tid = " . sqlesc($tid);
+        $extraquery = "UPDATE " . TSF_PREFIX . "threads SET $closed = " . sqlesc($closed) . ", $sticky = " . sqlesc($sticky) . " WHERE $tid = " . sqlesc($tid);
     }
     if (strlen($_POST["subject"]) < $f_minmsglength || strlen($_POST["message"]) < $f_minmsglength) {
         $error = $lang->tsf_forums["too_short"];
     }
-    $query = sql_query("SELECT dateline FROM " . TSF_PREFIX . "posts WHERE uid = " . sqlesc($CURUSER["id"]) . " ORDER by dateline DESC LIMIT 1");
+    $query = sql_query("SELECT dateline FROM " . TSF_PREFIX . "posts WHERE $uid = " . sqlesc($CURUSER["id"]) . " ORDER by dateline DESC LIMIT 1");
     if (mysqli_num_rows($query)) {
         $Result = mysqli_fetch_assoc($query);
         $last_post = $Result["dateline"];
@@ -83,27 +83,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["submit"])) {
     $eq0 = $eq2 = "";
     if (empty($error)) {
         if ($usergroups["cansettingspanel"] != "yes") {
-            $eq0 = ", edituid = " . $uid . ", edittime = " . $dateline;
+            $eq0 = ", $edituid = " . $uid . ", $edittime = " . $dateline;
         }
         if ($moderator || $forummoderator) {
             if ($remove_modnotice == "yes") {
-                $eq2 = ", modnotice = '', modnotice_info = ''";
+                $eq2 = ", $modnotice = '', $modnotice_info = ''";
             } else {
                 if (!empty($modnotice) && $modnotice != $thread["modnotice"]) {
                     $modnotice_info = implode("~", [$CURUSER["username"], $CURUSER["id"], TIMENOW]);
-                    $eq2 = ", modnotice = " . sqlesc($modnotice) . ", modnotice_info = " . sqlesc($modnotice_info);
+                    $eq2 = ", $modnotice = " . sqlesc($modnotice) . ", $modnotice_info = " . sqlesc($modnotice_info);
                 }
             }
         }
-        @sql_query("UPDATE " . TSF_PREFIX . "posts SET visible = " . $visible . ", subject = " . $subject . ", message = " . $message . $eq0 . $eq2 . " WHERE tid = " . @sqlesc($tid) . " AND pid = " . @sqlesc($pid)) || sqlerr(__FILE__, 155);
+        @sql_query("UPDATE " . TSF_PREFIX . "posts SET $visible = " . $visible . ", $subject = " . $subject . ", $message = " . $message . $eq0 . $eq2 . " WHERE $tid = " . @sqlesc($tid) . " AND $pid = " . @sqlesc($pid)) || sqlerr(__FILE__, 155);
         if ($pid == $firstpost) {
-            @sql_query("UPDATE " . TSF_PREFIX . "threads SET subject = " . $subject . " WHERE tid = " . @sqlesc($tid));
+            @sql_query("UPDATE " . TSF_PREFIX . "threads SET $subject = " . $subject . " WHERE $tid = " . @sqlesc($tid));
         }
-        @sql_query("UPDATE " . TSF_PREFIX . "forums SET lastpostsubject = " . $subject . " WHERE lastposttid = '" . $tid . "' AND fid = '" . $fid . "'");
+        @sql_query("UPDATE " . TSF_PREFIX . "forums SET $lastpostsubject = " . $subject . " WHERE $lastposttid = '" . $tid . "' AND $fid = '" . $fid . "'");
         if (isset($extraquery) && ($moderator || $forummoderator)) {
             @sql_query($extraquery) || sqlerr(__FILE__, 164);
         }
-        $lastpage = isset($_GET["page"]) && is_valid_id($_GET["page"]) ? "&amp;page=" . intval($_GET["page"]) : "";
+        $lastpage = isset($_GET["page"]) && is_valid_id($_GET["page"]) ? "&amp;$page = " . intval($_GET["page"]) : "";
         if ($canpostattachments && $pid && $tid && isset($_FILES)) {
             $error = [];
             for ($i = 0; $i < 3; $i++) {
@@ -141,14 +141,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["submit"])) {
         }
         if ($thread["moderate"] == 0 && $thread["moderaterf"] == 0) {
             define("FORCE_REDIRECT_MESSAGE", true);
-            redirect(tsf_seo_clean_text($postsubject, "t", $tid, "&pid=" . $pid . "&scrollto=pid" . $pid . (isset($_GET["page"]) ? "&page=" . intval($_GET["page"]) : "")), $lang->tsf_forums["post_edited"] . (is_array($error) && 0 < count($error) ? @implode("<br />", $error) : ""), $lang->tsf_forums["edit_this_post"], true);
+            redirect(tsf_seo_clean_text($postsubject, "t", $tid, "&$pid = " . $pid . "&$scrollto = pid" . $pid . (isset($_GET["page"]) ? "&$page = " . intval($_GET["page"]) : "")), $lang->tsf_forums["post_edited"] . (is_array($error) && 0 < count($error) ? @implode("<br />", $error) : ""), $lang->tsf_forums["edit_this_post"], true);
             exit;
         }
         stdhead(str_replace("&amp;", "&", $orjthreadarray["currentforum"]));
         add_breadcrumb($orjthreadarray["deepforum"], tsf_seo_clean_text($orjthreadarray["deepforum"], "f", $orjthreadarray["deepforumid"]));
         add_breadcrumb($orjthreadarray["currentforum"], tsf_seo_clean_text($orjthreadarray["currentforum"], "fd", $fid));
         add_breadcrumb(htmlspecialchars_uni($threadsubject), tsf_seo_clean_text($threadsubject, "t", $tid));
-        add_breadcrumb(htmlspecialchars_uni($postsubject), tsf_seo_clean_text($postsubject, "t", $tid, "&pid=" . $pid . "&scrollto=pid" . $pid . (isset($_GET["page"]) ? "&page=" . intval($_GET["page"]) : "")));
+        add_breadcrumb(htmlspecialchars_uni($postsubject), tsf_seo_clean_text($postsubject, "t", $tid, "&$pid = " . $pid . "&$scrollto = pid" . $pid . (isset($_GET["page"]) ? "&$page = " . intval($_GET["page"]) : "")));
         add_breadcrumb($lang->tsf_forums["edit_this_post"]);
         build_breadcrumb();
         stdmsg($lang->global["sys_message"], $lang->tsf_forums["moderatemsg1"]);
@@ -159,7 +159,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["submit"])) {
 if (isset($_GET["do"]) && $_GET["do"] == "removefile" && ($aid = intval($_GET["aid"])) && is_valid_id($aid)) {
     delete_attachments($pid, $tid, $aid);
 }
-$a_query = sql_query("SELECT * FROM " . TSF_PREFIX . "attachments WHERE a_pid = " . sqlesc($pid) . " AND a_tid = " . sqlesc($tid));
+$a_query = sql_query("SELECT * FROM " . TSF_PREFIX . "attachments WHERE $a_pid = " . sqlesc($pid) . " AND $a_tid = " . sqlesc($tid));
 if (0 < mysqli_num_rows($a_query)) {
     while ($s_attachments = mysqli_fetch_assoc($a_query)) {
         $a_array[$s_attachments["a_pid"]][] = $s_attachments;
@@ -168,7 +168,7 @@ if (0 < mysqli_num_rows($a_query)) {
 add_breadcrumb($thread["deepforum"], tsf_seo_clean_text($thread["deepforum"], "f", $thread["deepforumid"]));
 add_breadcrumb($thread["currentforum"], tsf_seo_clean_text($thread["currentforum"], "fd", $fid));
 add_breadcrumb(htmlspecialchars_uni($threadsubject), tsf_seo_clean_text($threadsubject, "t", $tid));
-add_breadcrumb(htmlspecialchars_uni($postsubject), tsf_seo_clean_text($postsubject, "t", $tid, "&pid=" . $pid . "&scrollto=pid" . $pid . (isset($_GET["page"]) ? "&page=" . intval($_GET["page"]) : "")));
+add_breadcrumb(htmlspecialchars_uni($postsubject), tsf_seo_clean_text($postsubject, "t", $tid, "&$pid = " . $pid . "&$scrollto = pid" . $pid . (isset($_GET["page"]) ? "&$page = " . intval($_GET["page"]) : "")));
 add_breadcrumb($lang->tsf_forums["edit_this_post"]);
 stdhead(str_replace("&amp;", "&", $thread["currentforum"]));
 if (isset($warningmessage)) {
@@ -177,7 +177,7 @@ if (isset($warningmessage)) {
 build_breadcrumb();
 define("IN_EDITOR", true);
 include_once INC_PATH . "/editor.php";
-$str = "\r\n<form method=\"post\" name=\"editpost\" action=\"" . $_SERVER["SCRIPT_NAME"] . (isset($_GET["page"]) && is_valid_id($_GET["page"]) ? "?page=" . intval($_GET["page"]) : "") . "\" enctype=\"multipart/form-data\">\r\n<input type=\"hidden\" name=\"tid\" value=\"" . $tid . "\">\r\n<input type=\"hidden\" name=\"pid\" value=\"" . $pid . "\">";
+$str = "\r\n<form $method = \"post\" $name = \"editpost\" $action = \"" . $_SERVER["SCRIPT_NAME"] . (isset($_GET["page"]) && is_valid_id($_GET["page"]) ? "?$page = " . intval($_GET["page"]) : "") . "\" $enctype = \"multipart/form-data\">\r\n<input $type = \"hidden\" $name = \"tid\" $value = \"" . $tid . "\">\r\n<input $type = \"hidden\" $name = \"pid\" $value = \"" . $pid . "\">";
 if (!empty($prvp)) {
     $str .= $prvp;
 }
@@ -186,17 +186,17 @@ if (isset($error)) {
 }
 if ($moderator || $forummoderator) {
     $postoptionstitle = [1 => $lang->tsf_forums["mod_options"], 2 => $lang->tsf_forums["modnotice1"]];
-    $postoptions = [1 => "\r\n\t\t\t\t<label><input class=\"checkbox\" name=\"closethread\" value=\"yes\" type=\"checkbox\"" . (isset($_POST["closethread"]) && $_POST["closethread"] == "yes" ? " checked=\"checked\"" : ($thread["closed"] == "yes" ? " checked=\"checked\"" : "")) . ">" . $lang->tsf_forums["mod_options_c"] . "</label><br />\r\n\t\t\t\t<label><input class=\"checkbox\" name=\"stickthread\" value=\"yes\" type=\"checkbox\"" . (isset($_POST["stickthread"]) && $_POST["stickthread"] == "yes" ? " checked=\"checked\"" : ($thread["sticky"] == "1" ? " checked=\"checked\"" : "")) . ">" . $lang->tsf_forums["mod_options_s"] . "</label>\r\n\t\t\t\t</span>", 2 => "<textarea name=\"modnotice\" id=\"modnotice\" style=\"width: 99%; height: 50px;\" tabindex=\"3\">" . htmlspecialchars_uni(isset($_POST["modnotice"]) ? $_POST["modnotice"] : $thread["modnotice"]) . "</textarea><br />\r\n\t\t\t\t<label><input style=\"vertical-align: middle;\" class=\"checkbox\" name=\"remove_modnotice\" value=\"yes\" tabindex=\"6\" type=\"checkbox\"" . (isset($_POST["remove_modnotice"]) && $_POST["remove_modnotice"] == "yes" ? " checked='checked'" : "") . "> " . $lang->tsf_forums["modnotice2"] . "</label>"];
+    $postoptions = [1 => "\r\n\t\t\t\t<label><input class=\"checkbox\" $name = \"closethread\" $value = \"yes\" $type = \"checkbox\"" . (isset($_POST["closethread"]) && $_POST["closethread"] == "yes" ? " $checked = \"checked\"" : ($thread["closed"] == "yes" ? " $checked = \"checked\"" : "")) . ">" . $lang->tsf_forums["mod_options_c"] . "</label><br />\r\n\t\t\t\t<label><input class=\"checkbox\" $name = \"stickthread\" $value = \"yes\" $type = \"checkbox\"" . (isset($_POST["stickthread"]) && $_POST["stickthread"] == "yes" ? " $checked = \"checked\"" : ($thread["sticky"] == "1" ? " $checked = \"checked\"" : "")) . ">" . $lang->tsf_forums["mod_options_s"] . "</label>\r\n\t\t\t\t</span>", 2 => "<textarea $name = \"modnotice\" $id = \"modnotice\" $style = \"width: 99%; height: 50px;\" $tabindex = \"3\">" . htmlspecialchars_uni(isset($_POST["modnotice"]) ? $_POST["modnotice"] : $thread["modnotice"]) . "</textarea><br />\r\n\t\t\t\t<label><input $style = \"vertical-align: middle;\" class=\"checkbox\" $name = \"remove_modnotice\" $value = \"yes\" $tabindex = \"6\" $type = \"checkbox\"" . (isset($_POST["remove_modnotice"]) && $_POST["remove_modnotice"] == "yes" ? " $checked = 'checked'" : "") . "> " . $lang->tsf_forums["modnotice2"] . "</label>"];
 }
 if (isset($a_array[$pid])) {
-    $display_attachment = "\r\n\t\t<!-- start: attachments -->\r\n\t\t<label><input name=\"attachment[]\" size=\"50\" type=\"file\"></label><br /><label><input name=\"attachment[]\" size=\"50\" type=\"file\"></label><br /><label><input name=\"attachment[]\" size=\"50\" type=\"file\"></label>\r\n\t\t<br />\r\n\t\t<fieldset>\r\n\t\t\t<legend><strong>" . $lang->tsf_forums["a_info"] . "</strong></legend>";
+    $display_attachment = "\r\n\t\t<!-- start: attachments -->\r\n\t\t<label><input $name = \"attachment[]\" $size = \"50\" $type = \"file\"></label><br /><label><input $name = \"attachment[]\" $size = \"50\" $type = \"file\"></label><br /><label><input $name = \"attachment[]\" $size = \"50\" $type = \"file\"></label>\r\n\t\t<br />\r\n\t\t<fieldset>\r\n\t\t\t<legend><strong>" . $lang->tsf_forums["a_info"] . "</strong></legend>";
     require_once INC_PATH . "/functions_get_file_icon.php";
     foreach ($a_array[$thread["pid"]] as $_a_left => $showperpost) {
-        $display_attachment .= get_file_icon($showperpost["a_name"]) . " <a href=\"" . $BASEURL . "/tsf_forums/attachment.php?aid=" . $showperpost["a_id"] . "&tid=" . $showperpost["a_tid"] . "&pid=" . $thread["pid"] . "\" target=\"_blank\">" . htmlspecialchars_uni($showperpost["a_name"]) . "</a> (<b>" . $lang->tsf_forums["a_size"] . "</b>" . mksize($showperpost["a_size"]) . " / <b>" . $lang->tsf_forums["a_count"] . "</b>" . ts_nf($showperpost["a_count"]) . ") [<a href=\"" . $_SERVER["SCRIPT_NAME"] . "?tid=" . $tid . "&pid=" . $pid . "&aid=" . $showperpost["a_id"] . "&do=removefile\">X</a>]<br />";
+        $display_attachment .= get_file_icon($showperpost["a_name"]) . " <a $href = \"" . $BASEURL . "/tsf_forums/attachment.php?$aid = " . $showperpost["a_id"] . "&$tid = " . $showperpost["a_tid"] . "&$pid = " . $thread["pid"] . "\" $target = \"_blank\">" . htmlspecialchars_uni($showperpost["a_name"]) . "</a> (<b>" . $lang->tsf_forums["a_size"] . "</b>" . mksize($showperpost["a_size"]) . " / <b>" . $lang->tsf_forums["a_count"] . "</b>" . ts_nf($showperpost["a_count"]) . ") [<a $href = \"" . $_SERVER["SCRIPT_NAME"] . "?$tid = " . $tid . "&$pid = " . $pid . "&$aid = " . $showperpost["a_id"] . "&do=removefile\">X</a>]<br />";
     }
     $display_attachment .= "\r\n\t\t</fieldset>\r\n\t\t<!-- end: attachments -->\r\n\t";
 } else {
-    $display_attachment = "\r\n\t<label><input name=\"attachment[]\" size=\"50\" type=\"file\"></label><br /><label><input name=\"attachment[]\" size=\"50\" type=\"file\"></label><br /><label><input name=\"attachment[]\" size=\"50\" type=\"file\"></label>";
+    $display_attachment = "\r\n\t<label><input $name = \"attachment[]\" $size = \"50\" $type = \"file\"></label><br /><label><input $name = \"attachment[]\" $size = \"50\" $type = \"file\"></label><br /><label><input $name = \"attachment[]\" $size = \"50\" $type = \"file\"></label>";
 }
 if ($display_attachment != "") {
     if (isset($postoptionstitle) && isset($postoptions)) {

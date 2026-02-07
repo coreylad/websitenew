@@ -26,7 +26,7 @@ if(!defined('IN_TRACKER'))
 // clear_ann.php
 $language['clear_ann'] = array
 (
-	'cleared'				=>'<hr /><span style="float: right"><font size="1">Annoucement has been marked as read!</font></span>',
+	'cleared'				=>'<hr /><span $style = "float: right"><font $size = "1">Annoucement has been marked as read!</font></span>',
 	'noann'				=>'There is no new announcement to show!',
 );
 ?>

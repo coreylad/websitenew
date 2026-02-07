@@ -11,10 +11,10 @@ $userIpHash = md5(getUserIpAddress());
 if (isset($_GET["logouthash"]) && $_GET["logouthash"] === $userIpHash) {
     setcookie("c_secure_uid", "", 2147483647, "/");
     setcookie("c_secure_pass", "", 2147483647, "/");
-    header("Location: index.php?logout=true");
+    header("Location: index.php?$logout = true");
     exit;
 }
-exit("HASH Error! Please click <a href=\"./logout.php?logouthash=" . $userIpHash . "\">here</a> to try again.");
+exit("HASH Error! Please click <a $href = \"./logout.php?$logouthash = " . $userIpHash . "\">here</a> to try again.");
 
 function getUserIpAddress()
 {

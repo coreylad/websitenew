@@ -7,7 +7,7 @@
  */
 
 if (!defined("IN_TRACKER")) {
-    exit("<font face='verdana' size='2' color='darkred'><b>Error!</b> Direct initialization of this file is not allowed.</font>");
+    exit("<font $face = 'verdana' $size = '2' $color = 'darkred'><b>Error!</b> Direct initialization of this file is not allowed.</font>");
 }
 $TSSEConfig->TSLoadConfig("CLEANUP", 0);
 function get_warn_level($warn_level = 0)
@@ -32,7 +32,7 @@ function get_warn_level($warn_level = 0)
     if (80 < $warn_percent) {
         $image = $pic_base_url . "/warn/warn5.gif";
     }
-    return "\r\n\t\t<div align=\"center\"style=\"clear: both; padding-top: 15px; padding-bottom: 15px; white-space: nowrap;\">\r\n\t\t\t<img src=\"" . $image . "\" border=\"0\" alt=\"" . $lang->global["imgwarned"] . ": " . $warn_percent . "%\" title=\"" . $lang->global["imgwarned"] . ": " . $warn_percent . "%\" />\r\n\t\t</div>";
+    return "\r\n\t\t<div $align = \"center\"style=\"clear: both; padding-top: 15px; padding-bottom: 15px; white-space: nowrap;\">\r\n\t\t\t<img $src = \"" . $image . "\" $border = \"0\" $alt = \"" . $lang->global["imgwarned"] . ": " . $warn_percent . "%\" $title = \"" . $lang->global["imgwarned"] . ": " . $warn_percent . "%\" />\r\n\t\t</div>";
 }
 
 ?>

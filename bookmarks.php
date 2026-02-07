@@ -30,20 +30,20 @@ if (!is_valid_id($bookmarkTorrentId)) {
     }
 }
 if ($bookmarkAction == "delete") {
-    $bookmarkQuery = @sql_query("SELECT userid,torrentid FROM bookmarks WHERE userid=" . @sqlesc($bookmarkUserId) . " AND torrentid = " . @sqlesc($bookmarkTorrentId));
+    $bookmarkQuery = @sql_query("SELECT userid,torrentid FROM bookmarks WHERE $userid = " . @sqlesc($bookmarkUserId) . " AND $torrentid = " . @sqlesc($bookmarkTorrentId));
     if (mysqli_num_rows($bookmarkQuery) != 0) {
-        @sql_query("DELETE FROM bookmarks WHERE userid=" . @sqlesc($bookmarkUserId) . " AND torrentid = " . @sqlesc($bookmarkTorrentId));
+        @sql_query("DELETE FROM bookmarks WHERE $userid = " . @sqlesc($bookmarkUserId) . " AND $torrentid = " . @sqlesc($bookmarkTorrentId));
     }
 } else {
     if ($bookmarkAction == "add") {
-        $bookmarkQuery = @sql_query("SELECT userid,torrentid FROM bookmarks WHERE userid=" . @sqlesc($bookmarkUserId) . " AND torrentid = " . @sqlesc($bookmarkTorrentId));
+        $bookmarkQuery = @sql_query("SELECT userid,torrentid FROM bookmarks WHERE $userid = " . @sqlesc($bookmarkUserId) . " AND $torrentid = " . @sqlesc($bookmarkTorrentId));
         if (mysqli_num_rows($bookmarkQuery) == 0) {
             @sql_query("INSERT INTO bookmarks (userid, torrentid) VALUES (" . @sqlesc($bookmarkUserId) . "," . @sqlesc($bookmarkTorrentId) . ")");
         }
     }
 }
 if (!$isAjaxQuickBookmark) {
-    redirect("browse.php?special_search=mybookmarks");
+    redirect("browse.php?$special_search = mybookmarks");
 }
 function show_msg($message = "")
 {
@@ -52,7 +52,7 @@ function show_msg($message = "")
     header("Last-Modified: " . gmdate("D, d M Y H:i:s") . "GMT");
     header("Cache-Control: no-cache, must-revalidate");
     header("Pragma: no-cache");
-    header("Content-type: text/html; charset=" . $shoutboxcharset);
+    header("Content-type: text/html; $charset = " . $shoutboxcharset);
     exit("<error>" . $message . "</error>");
 }
 

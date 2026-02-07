@@ -43,7 +43,7 @@ if (0 < mysqli_num_rows($FPQUERY)) {
                 if (0 < mysqli_num_rows($query)) {
                     $UserNames = [];
                     while ($arr = mysqli_fetch_assoc($query)) {
-                        mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET usergroup = '" . $P["promote_to"] . "', modcomment = CONCAT('" . gmdate("Y-m-d") . " - Promoted to Usergroup " . $_usergroups[$P["promote_to"]] . " by -AutoSystem.\n', modcomment) WHERE id = '" . $arr["id"] . "'");
+                        mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET $usergroup = '" . $P["promote_to"] . "', $modcomment = CONCAT('" . gmdate("Y-m-d") . " - Promoted to Usergroup " . $_usergroups[$P["promote_to"]] . " by -AutoSystem.\n', modcomment) WHERE $id = '" . $arr["id"] . "'");
                         $CQueryCount++;
                         send_pm($arr["id"], sprintf($lang->cronjobs["you_have_been_promoted"], $_usergroups[$P["promote_to"]]), $lang->cronjobs["promote_subject"]);
                         $CQueryCount++;
@@ -71,7 +71,7 @@ if (0 < mysqli_num_rows($FPQUERY)) {
                     if (0 < mysqli_num_rows($query)) {
                         $UserNames = [];
                         while ($arr = mysqli_fetch_assoc($query)) {
-                            mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET usergroup = '" . $P["demote_to"] . "', modcomment = CONCAT('" . gmdate("Y-m-d") . " - Demoted to Usergroup " . $_usergroups[$P["demote_to"]] . " by -AutoSystem.\n', modcomment) WHERE id = '" . $arr["id"] . "'");
+                            mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET $usergroup = '" . $P["demote_to"] . "', $modcomment = CONCAT('" . gmdate("Y-m-d") . " - Demoted to Usergroup " . $_usergroups[$P["demote_to"]] . " by -AutoSystem.\n', modcomment) WHERE $id = '" . $arr["id"] . "'");
                             $CQueryCount++;
                             send_pm($arr["id"], sprintf($lang->cronjobs["you_have_been_demoted"], $_usergroups[$P["demote_to"]], $P["ratio_limit"]), $lang->cronjobs["demote_subject"]);
                             $CQueryCount++;

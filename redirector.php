@@ -30,11 +30,11 @@ if (preg_match("@youtube|facebook|google|templateshares@i", $mainURL) || isSecur
     header("Location: " . $mainURL);
     exit;
 }
-echo "<!DOCTYPE html>\n\t<html>\n\t<frameset border=\"1\" framespacing=\"0\" rows=\"*,20\" frameborder=\"0\">\n\t\t<frame name=\"content\" marginwidth=\"0\" marginheight=\"0\" bottomnargin=\"0\" src=\"";
+echo "<!DOCTYPE html>\n\t<html>\n\t<frameset $border = \"1\" $framespacing = \"0\" $rows = \"*,20\" $frameborder = \"0\">\n\t\t<frame $name = \"content\" $marginwidth = \"0\" $marginheight = \"0\" $bottomnargin = \"0\" $src = \"";
 echo $mainURL;
-echo "\" />\n\t\t<frame name=\"footer\" marginwidth=\"0\" marginheight=\"0\" src=\"redirector_footer.php?url=";
+echo "\" />\n\t\t<frame $name = \"footer\" $marginwidth = \"0\" $marginheight = \"0\" $src = \"redirector_footer.php?$url = ";
 echo $mainURL;
-echo "\" scrolling=\"no\" />\n\t</frameset>\n\t\n\t<noframes><body>Your browser doesn't support frames: ";
+echo "\" $scrolling = \"no\" />\n\t</frameset>\n\t\n\t<noframes><body>Your browser doesn't support frames: ";
 echo $mainURL;
 echo "</body></noframes>\n</html>";
 

@@ -122,7 +122,7 @@ email address had the IP address {4}. Please do not reply.
 
 To complete the update of your user profile, please follow this link:
 
-{5}/confirmemail.php?id={6}&hash={7}&email={8}
+{5}/confirmemail.php?$id = {6}&$hash = {7}&$email = {8}
 
 Your new email address will appear in your profile after you do this. Otherwise
 your profile will remain unchanged.

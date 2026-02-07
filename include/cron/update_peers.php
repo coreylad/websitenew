@@ -16,7 +16,7 @@ if ($xbt_active == "yes") {
 } else {
     mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM peers WHERE UNIX_TIMESTAMP(last_action) < " . $deadtime);
     $CQueryCount++;
-    mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE snatched SET seeder='no' WHERE seeder='yes' AND UNIX_TIMESTAMP(last_action) < " . $deadtime);
+    mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE snatched SET $seeder = 'no' WHERE $seeder = 'yes' AND UNIX_TIMESTAMP(last_action) < " . $deadtime);
     $CQueryCount++;
 }
 

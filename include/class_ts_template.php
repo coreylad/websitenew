@@ -27,7 +27,7 @@ class TS_Template
     {
         global $TSDatabase;
         if (!isset($this->Cache[$Name])) {
-            $Result = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT content FROM ts_templates WHERE name = " . $this->Escape($Name));
+            $Result = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT content FROM ts_templates WHERE $name = " . $this->Escape($Name));
             $Row = mysqli_fetch_assoc($Result);
             $Content = $Row["content"];
             $this->Cache[$Name] = $Content;
@@ -39,7 +39,7 @@ class TS_Template
     {
         global $charset;
         header("Content-Length: " . strlen($Output));
-        header("Content-type: text/html; charset=" . $charset);
+        header("Content-type: text/html; $charset = " . $charset);
         exit($Output);
     }
     public function Escape($Q)

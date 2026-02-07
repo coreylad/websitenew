@@ -51,7 +51,7 @@ $language['details'] = array
 	'uploaded'					=>'Successfully uploaded!',
 	'uploadednote'				=>'<p>You can start seeding now. <b>Note</b> that the torrent won\'t be visible until you do that!</p>',
 	'edited'					=>'Successfully edited!',
-	'goback'					=>'<p><b>Go back to <a href="{1}">whence you came</a>.</b></p>',
+	'goback'					=>'<p><b>Go back to <a href= "{1}">whence you came</a>.</b></p>',
 	'singleresult'				=>'<div class=success>Your search for " {1} " gave a single result:</div>',
 	'bookmarked'				=>'<div class=success>Bookmark added!</div>',
 	'bookmarked2'				=>'<div class=error>No need to bookmark this torrent twice now do we?</div>',
@@ -84,20 +84,20 @@ $language['details'] = array
 	'snatched3'					=>'<--- Click Here to  all View Snatches',
 	'progress'					=>'Progress',
 	'uppedby'					=>'Uploader',
-	'numfiles'					=>'Num files<br /><a href="'.$BASEURL.'/details.php?id={1}&filelist=1{2}#filelist" class="sublink">[see list]</a>',//Updated in v7.3
+	'numfiles'					=>'Num files<br /><a href= "'.$BASEURL.'/details.php?$id = {1}&$filelist = 1{2}#filelist" class="sublink">[see list]</a>',//Updated in v7.3
 	'numfiles2'					=>'in {1} file(s)',
 	'numfiles3'					=>'File Details',
 	'path'						=>'Path',
-	'filelist'					=>'File list</a><br /><a href="'.$BASEURL.'/details.php?id={1}{2}" class="sublink">[Hide list]</a>',//Updated in v7.3
+	'filelist'					=>'File list</a><br /><a href= "'.$BASEURL.'/details.php?$id = {1}{2}" class="sublink">[Hide list]</a>',//Updated in v7.3
 	'askreseed'					=>'Reseed',
-	'askreseed2'				=>'Click <a href="'.$BASEURL.'/takereseed.php?reseedid={1}"><b>here</b></a> to Ask for a reseed!',//Updated in v7.3
-	'peers'						=>'Peers<br /><a href="'.$BASEURL.'/details.php?id={1}&dllist=1{2}#seeders" class="sublink">[see list]</a>',//Updated in v7.3
+	'askreseed2'				=>'Click <a href= "'.$BASEURL.'/takereseed.php?$reseedid = {1}"><b>here</b></a> to Ask for a reseed!',//Updated in v7.3
+	'peers'						=>'Peers<br /><a href= "'.$BASEURL.'/details.php?$id = {1}&$dllist = 1{2}#seeders" class="sublink">[see list]</a>',//Updated in v7.3
 	'peers2'					=>'{1} seeder(s), {2} leecher(s) = {3} peer(s) total',
 	'peersb'					=>'Peers',
-	'peers3'					=>'{1} seeder(s), {2} leecher(s) = {3} peer(s) total<br /><font color=red>Sorry, permission denied!</font>',
-	'seeders'					=>'Seeders</a><br /><a href="'.$BASEURL.'/details.php?id={1}{2}" class="sublink">[Hide list]</a>',//Updated in v7.3
+	'peers3'					=>'{1} seeder(s), {2} leecher(s) = {3} peer(s) total<br /><font $color = red>Sorry, permission denied!</font>',
+	'seeders'					=>'Seeders</a><br /><a href= "'.$BASEURL.'/details.php?$id = {1}{2}" class="sublink">[Hide list]</a>',//Updated in v7.3
 	'seeders2'					=>'Seeder(s)',
-	'leechers'					=>'Leechers</a><br /><a href="'.$BASEURL.'/details.php?id={1}{2}" class="sublink">[Hide list]</a>',//Updated in v7.3
+	'leechers'					=>'Leechers</a><br /><a href= "'.$BASEURL.'/details.php?$id = {1}{2}" class="sublink">[Hide list]</a>',//Updated in v7.3
 	'leechers2'					=>'Leecher(s)',
 	'nothanksyet'				=>'no thanks added yet!',
 	'thanksby'					=>'The following user users said thanks to the torrent uploader:',
@@ -147,9 +147,9 @@ Have a great day.
 'speed'=>'Speed',//Added in v7.1
 's_message'=>'Send PM to Snatched Users', //Added in v7.1
 'laction' => '(Last peer action: {1})',//Added in v7.3
-'downloadwarning' => '<p style="color: red; font-weight: bold; text-decoration: underline;">PAY ATTENTION TO YOUR RATIO!</p>
-<p>Your ratio is <span style="color: #ff0532; font-weight: bold;">{1}</span> - meaning that you have only uploaded <span style="color: #ff0532; font-weight: bold;">{2}</span> of the amount you downloaded.<br />
+'downloadwarning' => '<p $style = "color: red; font-weight: bold; text-decoration: underline;">PAY ATTENTION TO YOUR RATIO!</p>
+<p>Your ratio is <span $style = "color: #ff0532; font-weight: bold;">{1}</span> - meaning that you have only uploaded <span $style = "color: #ff0532; font-weight: bold;">{2}</span> of the amount you downloaded.<br />
 It\'s important to maintain a good ratio because it helps to make downloads faster for all members.</p>
-<p>You can improve your ratio by leaving your torrent running after the download completes.<br />You must maintain a minimum ratio of <span style="color: #ff0532; font-weight: bold;">{3}</span> or your download privileges will be removed.</p>',//Added in v7.3
+<p>You can improve your ratio by leaving your torrent running after the download completes.<br />You must maintain a minimum ratio of <span $style = "color: #ff0532; font-weight: bold;">{3}</span> or your download privileges will be removed.</p>',//Added in v7.3
 );
 ?>

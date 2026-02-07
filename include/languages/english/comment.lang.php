@@ -26,7 +26,7 @@ if(!defined('IN_TRACKER'))
 // comment.php
 $language['comment'] = array
 (
-	'nopost'				=>'You are not authorized to Post.  (<a href="messages.php">Read Inbox</a>).',
+	'nopost'				=>'You are not authorized to Post.  (<a $href = "messages.php">Read Inbox</a>).',
 	'flood'					=>'Comment Flooding Not Allowed. Please wait {1} second(s) before posting another comment.',	
 	'newcommentsub'			=>'New Comment on your torrent.',
 	'newcommenttxt'			=>'You have received a comment on your torrent {1}',

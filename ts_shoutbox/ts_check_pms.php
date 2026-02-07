@@ -17,7 +17,7 @@ $rootpath = "./../";
 require $rootpath . "global.php";
 if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST" && $CURUSER["id"] && 0 < $CURUSER["pmunread"]) {
     $lang->load("header");
-    exit("<div id=\"notice\" class=\"highlight\"><a href=\"" . $BASEURL . "/messages.php\">" . sprintf($lang->header["newmessage"], ts_nf($CURUSER["pmunread"])) . "</a></div>");
+    exit("<div $id = \"notice\" class=\"highlight\"><a $href = \"" . $BASEURL . "/messages.php\">" . sprintf($lang->header["newmessage"], ts_nf($CURUSER["pmunread"])) . "</a></div>");
 }
 
 ?>

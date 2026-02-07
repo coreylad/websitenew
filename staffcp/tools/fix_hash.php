@@ -10,9 +10,9 @@
 @ini_set("memory_limit", "20000M");
 @set_time_limit(0);
 var_235();
-$Language = file("languages/" . function_75() . "/fix_hash.lang");
+$Language = file("languages/" . getStaffLanguage() . "/fix_hash.lang");
 $Message = "";
-$Q = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE configname = \"MAIN\"");
+$Q = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = \"MAIN\"");
 $Result = mysqli_fetch_assoc($Q);
 $MAIN = unserialize($Result["content"]);
 if (isset($_GET["usedid"])) {
@@ -24,7 +24,7 @@ if (isset($_GET["usedid"])) {
         $filename = $Result["filename"];
         $orj_info_hash = $Result["info_hash"];
     } else {
-        echo function_76("All available torrent hashes has been fixed..");
+        echo showAlertError("All available torrent hashes has been fixed..");
         $Done = true;
     }
 } else {
@@ -41,7 +41,7 @@ if (!isset($Done)) {
             $info_hash = $Torrent->function_166();
             if ($info_hash != $orj_info_hash) {
                 if ($info_hash) {
-                    mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE torrents SET info_hash = \"" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $info_hash) . "\" WHERE id = \"" . $id . "\"");
+                    mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE torrents SET $info_hash = \"" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $info_hash) . "\" WHERE $id = \"" . $id . "\"");
                     if (!mysqli_affected_rows($GLOBALS["DatabaseConnect"])) {
                         $INFO = $Language[6];
                     } else {
@@ -63,7 +63,7 @@ if (!isset($Done)) {
     unset($Torrent);
     unset($info_hash);
     unset($MAIN);
-    echo "\r\n\t<p align=\"center\" style=\"height:40px; background-color:#FFFFCC; layer-backgroundcolor:#FFFFCC; border:1px solid #000000; text-align: center;\">\r\n\t\t<br />\r\n\t\t<img src=\"images/progress.gif\" alt=\"\" title=\"\" border=\"0\" style=\"vertical-align: middle;\" /> " . str_replace(["{1}", "{2}"], [htmlspecialchars($filename), $id], $Language[2]) . (isset($ERROR) ? " <font color=\"red\"><i><b>ERROR: " . $ERROR . "</b></i></font>" : (isset($INFO) ? " <font color=\"green\"><i><b>INFO: " . $INFO . "</b></i></font>" : "")) . "\r\n\t</p>\r\n\r\n\t<script type=\"text/javascript\">\r\n\t\t<!--\r\n\t\t\tfunction delayer()\r\n\t\t\t{\r\n\t\t\t\twindow.location = \"index.php?do=fix_hash&usedid=" . $id . "\";\r\n\t\t\t}\r\n\t\t\tsetTimeout(\"delayer()\", 1000)\r\n\t\t//-->\r\n\t</script>";
+    echo "\r\n\t<p $align = \"center\" $style = \"height:40px; background-color:#FFFFCC; layer-backgroundcolor:#FFFFCC; border:1px solid #000000; text-align: center;\">\r\n\t\t<br />\r\n\t\t<img $src = \"images/progress.gif\" $alt = \"\" $title = \"\" $border = \"0\" $style = \"vertical-align: middle;\" /> " . str_replace(["{1}", "{2}"], [htmlspecialchars($filename), $id], $Language[2]) . (isset($ERROR) ? " <font $color = \"red\"><i><b>ERROR: " . $ERROR . "</b></i></font>" : (isset($INFO) ? " <font $color = \"green\"><i><b>INFO: " . $INFO . "</b></i></font>" : "")) . "\r\n\t</p>\r\n\r\n\t<script $type = \"text/javascript\">\r\n\t\t<!--\r\n\t\t\tfunction delayer()\r\n\t\t\t{\r\n\t\t\t\twindow.$location = \"index.php?do=fix_hash&$usedid = " . $id . "\";\r\n\t\t\t}\r\n\t\t\tsetTimeout(\"delayer()\", 1000)\r\n\t\t//-->\r\n\t</script>";
 }
 class Class_7
 {
@@ -72,18 +72,18 @@ class Class_7
     public $error = NULL;
     public function function_165(&$data)
     {
-        $this->torrent = function_167::function_168($data);
-        if ($this->torrent->function_169() == "error") {
-            $this->error = $this->torrent->function_170();
+        $this->$torrent = function_167::function_168($data);
+        if ($this->torrent->getBencodeEnd() == "error") {
+            $this->$error = $this->torrent->function_170();
             return false;
         }
-        if ($this->torrent->function_169() != "dictionary") {
-            $this->error = "The file was not a valid torrent file.";
+        if ($this->torrent->getBencodeEnd() != "dictionary") {
+            $this->$error = "The file was not a valid torrent file.";
             return false;
         }
-        $this->info = $this->torrent->function_171("info");
+        $this->$info = $this->torrent->function_171("info");
         if (!$this->info) {
-            $this->error = "Could not find info dictionary.";
+            $this->$error = "Could not find info dictionary.";
             return false;
         }
         return true;
@@ -125,58 +125,58 @@ class Class_7
     }
     public function function_180()
     {
-        var_477 = [];
-        var_478 = $this->info->function_171("length");
-        if (var_478) {
+        $var_477 = [];
+        $var_478 = $this->info->function_171("length");
+        if ($var_478) {
             $file = new Class_8();
-            $file->name = $this->info->function_171("name")->function_170();
-            $file->length = $this->info->function_171("length")->function_170();
-            array_push(var_477, $file);
+            $file->$name = $this->info->function_171("name")->function_170();
+            $file->$length = $this->info->function_171("length")->function_170();
+            array_push($var_477, $file);
         } else {
             if ($this->info->function_171("files")) {
-                var_479 = $this->info->function_171("files")->function_170();
-                while (list($key, $value) = each(var_479)) {
+                $var_479 = $this->info->function_171("files")->function_170();
+                while (list($key, $value) = each($var_479)) {
                     $file = new Class_8();
-                    var_480 = $value->function_171("path")->function_170();
-                    while (list($key, var_481) = each(var_480)) {
-                        $file->name .= "/" . var_481->function_170();
+                    $var_480 = $value->function_171("path")->function_170();
+                    while (list($key, $var_481) = each($var_480)) {
+                        $file->name .= "/" . $var_481->function_170();
                     }
-                    $file->name = ltrim($file->name, "/");
-                    $file->length = $value->function_171("length")->function_170();
-                    array_push(var_477, $file);
+                    $file->$name = ltrim($file->name, "/");
+                    $file->$length = $value->function_171("length")->function_170();
+                    array_push($var_477, $file);
                 }
             }
         }
-        return var_477;
+        return $var_477;
     }
     public function function_181()
     {
-        var_482 = [];
+        $var_482 = [];
         if ($this->torrent->function_171("announce-list")) {
-            var_483 = $this->torrent->function_171("announce-list")->function_170();
-            while (list($key, $value) = each(var_483)) {
+            $var_483 = $this->torrent->function_171("announce-list")->function_170();
+            while (list($key, $value) = each($var_483)) {
                 if (is_array($value->function_170())) {
-                    while (list($key, var_481) = each($value)) {
-                        while (list($key, var_484) = each(var_481)) {
-                            array_push(var_482, var_484->function_170());
+                    while (list($key, $var_481) = each($value)) {
+                        while (list($key, $var_484) = each($var_481)) {
+                            array_push($var_482, $var_484->function_170());
                         }
                     }
                 } else {
-                    array_push(var_482, $value->function_170());
+                    array_push($var_482, $value->function_170());
                 }
             }
         } else {
             if ($this->torrent->function_171("announce")) {
-                array_push(var_482, $this->torrent->function_171("announce")->function_170());
+                array_push($var_482, $this->torrent->function_171("announce")->function_170());
             }
         }
-        return var_482;
+        return $var_482;
     }
     public function function_182($tracker_url)
     {
-        var_483 = $this->function_181();
-        var_483[] = $tracker_url;
-        $this->function_183(var_483);
+        $var_483 = $this->function_181();
+        $var_483[] = $tracker_url;
+        $this->function_183($var_483);
     }
     public function function_184($Whatever)
     {
@@ -192,14 +192,14 @@ class Class_7
             $this->torrent->function_186("announce", $string);
         }
         if (1 < count($trackerlist)) {
-            var_8 = new Class_10();
+            $var_8 = new Class_10();
             while (list($key, $value) = each($trackerlist)) {
-                var_485 = new Class_10();
+                $var_485 = new Class_10();
                 $string = new Class_9($value);
-                var_485->function_187($string);
-                var_8->function_187(var_485);
+                $var_485->function_187($string);
+                $var_8->function_187($var_485);
             }
-            $this->torrent->function_186("announce-list", var_8);
+            $this->torrent->function_186("announce-list", $var_8);
         }
     }
     public function function_188($filelist)
@@ -211,15 +211,15 @@ class Class_7
             $this->info->function_186("name", $string);
         } else {
             if ($this->info->function_171("files")) {
-                var_479 = $this->info->function_171("files")->function_170();
-                for ($i = 0; $i < count(var_479); $i++) {
-                    var_486 = split("/", $filelist[$i]);
-                    var_480 = new Class_10();
-                    foreach (var_486 as var_487) {
-                        $string = new Class_9(var_487);
-                        var_480->function_187($string);
+                $var_479 = $this->info->function_171("files")->function_170();
+                for ($i = 0; $i < count($var_479); $i++) {
+                    $var_486 = split("/", $filelist[$i]);
+                    $var_480 = new Class_10();
+                    foreach ($var_486 as $var_487) {
+                        $string = new Class_9($var_487);
+                        $var_480->function_187($string);
                     }
-                    var_479[$i]->function_186("path", var_480);
+                    $var_479[$i]->function_186("path", $var_480);
                 }
             }
         }
@@ -279,8 +279,8 @@ class Class_7
             if ($key) {
                 $key->function_186($value);
             } else {
-                var_488 = new Class_11($value);
-                $this->torrent->function_186($type, var_488);
+                $var_488 = new Class_11($value);
+                $this->torrent->function_186($type, $var_488);
             }
         }
     }
@@ -289,8 +289,8 @@ class Class_7
         if ($value == -1) {
             $this->info->function_185("private");
         } else {
-            var_488 = new Class_11($value);
-            $this->info->function_186("private", var_488);
+            $var_488 = new Class_11($value);
+            $this->info->function_186("private", $var_488);
         }
     }
     public function function_167()
@@ -314,51 +314,51 @@ class function_167
         if (strlen($raw) <= $offset) {
             return new Class_12("Decoder exceeded max length.");
         }
-        currentChar = $raw[$offset];
-        switch (currentChar) {
+        $currentChar = $raw[$offset];
+        switch ($currentChar) {
             case "i":
-                var_488 = new Class_11();
-                var_488->function_168($raw, $offset);
-                return var_488;
+                $var_488 = new Class_11();
+                $var_488->function_168($raw, $offset);
+                return $var_488;
                 break;
             case "d":
-                var_489 = new Class_13();
-                if ($check = var_489->function_168($raw, $offset)) {
+                $var_489 = new Class_13();
+                if ($check = $var_489->function_168($raw, $offset)) {
                     return $check;
                 }
-                return var_489;
+                return $var_489;
                 break;
             case "l":
-                var_8 = new Class_10();
-                var_8->function_168($raw, $offset);
-                return var_8;
+                $var_8 = new Class_10();
+                $var_8->function_168($raw, $offset);
+                return $var_8;
                 break;
             case "e":
-                var_490 = new Class_14();
-                return var_490;
+                $var_490 = new Class_14();
+                return $var_490;
                 break;
             case "0":
-            case is_numeric(currentChar):
-                var_309 = new Class_9();
-                var_309->function_168($raw, $offset);
-                return var_309;
+            case is_numeric($currentChar):
+                $var_309 = new Class_9();
+                $var_309->function_168($raw, $offset);
+                return $var_309;
                 break;
             default:
-                var_491 = strpos($raw, ":", $offset) - $offset;
-                if (var_491 < 0 || 20 < var_491) {
+                $var_491 = strpos($raw, ":", $offset) - $offset;
+                if ($var_491 < 0 || 20 < $var_491) {
                     return NULL;
                 }
-                $len = (int) substr($raw, $offset, var_491);
-                $offset += var_491 + 1;
-                var_309 = substr($raw, $offset, $len);
+                $len = (int) substr($raw, $offset, $var_491);
+                $offset += $var_491 + 1;
+                $var_309 = substr($raw, $offset, $len);
                 $offset += $len;
-                return (string) var_309;
+                return (string) $var_309;
         }
     }
 }
 class Class_14
 {
-    public function function_169()
+    public function getBencodeEnd()
     {
         return "end";
     }
@@ -368,13 +368,13 @@ class Class_12
     private $error = NULL;
     public function __construct($error)
     {
-        $this->error = $error;
+        $this->$error = $error;
     }
     public function function_170()
     {
         return $this->error;
     }
-    public function function_169()
+    public function getBencodeEnd()
     {
         return "error";
     }
@@ -384,20 +384,20 @@ class Class_11
     private $value = NULL;
     public function __construct($value = NULL)
     {
-        $this->value = $value;
+        $this->$value = $value;
     }
     public function function_168(&$raw, &$offset)
     {
         $end = strpos($raw, "e", $offset);
         $offset++;
-        $this->value = substr($raw, $offset, $end - $offset);
+        $this->$value = substr($raw, $offset, $end - $offset);
         $offset += $end - $offset;
     }
     public function function_170()
     {
         return $this->value;
     }
-    public function function_169()
+    public function getBencodeEnd()
     {
         return "int";
     }
@@ -407,7 +407,7 @@ class Class_11
     }
     public function function_186($value)
     {
-        $this->value = $value;
+        $this->$value = $value;
     }
 }
 class Class_13
@@ -415,26 +415,26 @@ class Class_13
     public $value = [];
     public function function_168(&$raw, &$offset)
     {
-        var_492 = [];
+        $var_492 = [];
         while (true) {
             $offset++;
             $name = function_167::function_168($raw, $offset);
-            if ($name->function_169() != "end") {
-                if ($name->function_169() == "error") {
+            if ($name->getBencodeEnd() != "end") {
+                if ($name->getBencodeEnd() == "error") {
                     return $name;
                 }
-                if ($name->function_169() != "string") {
+                if ($name->getBencodeEnd() != "string") {
                     return new Class_12("Key name in dictionary was not a string.");
                 }
                 $offset++;
                 $value = function_167::function_168($raw, $offset);
-                if ($value->function_169() == "error") {
+                if ($value->getBencodeEnd() == "error") {
                     return $value;
                 }
-                var_492[$name->function_170()] = $value;
+                $var_492[$name->function_170()] = $value;
             }
         }
-        $this->value = var_492;
+        $this->$value = $var_492;
     }
     public function function_171($key)
     {
@@ -446,17 +446,17 @@ class Class_13
     public function function_194()
     {
         $this->function_195();
-        var_493 = "d";
+        $var_493 = "d";
         while (list($key, $value) = each($this->value)) {
-            var_494 = new Class_9();
-            var_494->function_186($key);
-            var_493 .= var_494->function_194();
-            var_493 .= $value->function_194();
+            $var_494 = new Class_9();
+            $var_494->function_186($key);
+            $var_493 .= $var_494->function_194();
+            $var_493 .= $value->function_194();
         }
-        var_493 .= "e";
-        return var_493;
+        $var_493 .= "e";
+        return $var_493;
     }
-    public function function_169()
+    public function getBencodeEnd()
     {
         return "dictionary";
     }
@@ -486,33 +486,33 @@ class Class_10
     }
     public function function_168(&$raw, &$offset)
     {
-        var_8 = [];
+        $var_8 = [];
         while (true) {
             $offset++;
             $value = function_167::function_168($raw, $offset);
-            if ($value->function_169() != "end") {
-                if ($value->function_169() == "error") {
+            if ($value->getBencodeEnd() != "end") {
+                if ($value->getBencodeEnd() == "error") {
                     return $value;
                 }
-                array_push(var_8, $value);
+                array_push($var_8, $value);
             }
         }
-        $this->value = var_8;
+        $this->$value = $var_8;
     }
     public function function_194()
     {
-        var_493 = "l";
+        $var_493 = "l";
         for ($i = 0; $i < count($this->value); $i++) {
-            var_493 .= $this->value[$i]->function_194();
+            $var_493 .= $this->value[$i]->function_194();
         }
-        var_493 .= "e";
-        return var_493;
+        $var_493 .= "e";
+        return $var_493;
     }
     public function function_170()
     {
         return $this->value;
     }
-    public function function_169()
+    public function getBencodeEnd()
     {
         return "list";
     }
@@ -522,7 +522,7 @@ class Class_9
     private $value = NULL;
     public function __construct($value = NULL)
     {
-        $this->value = $value;
+        $this->$value = $value;
     }
     public function function_168(&$raw, &$offset)
     {
@@ -530,13 +530,13 @@ class Class_9
         $len = substr($raw, $offset, $end - $offset);
         $offset += $len + $end - $offset;
         $end++;
-        $this->value = substr($raw, $end, $len);
+        $this->$value = substr($raw, $end, $len);
     }
     public function function_170()
     {
         return $this->value;
     }
-    public function function_169()
+    public function getBencodeEnd()
     {
         return "string";
     }
@@ -547,36 +547,36 @@ class Class_9
     }
     public function function_186($value)
     {
-        $this->value = $value;
+        $this->$value = $value;
     }
 }
-function function_75()
+function getStaffLanguage()
 {
     if (isset($_COOKIE["staffcplanguage"]) && is_dir("languages/" . $_COOKIE["staffcplanguage"]) && is_file("languages/" . $_COOKIE["staffcplanguage"] . "/staffcp.lang")) {
         return $_COOKIE["staffcplanguage"];
     }
     return "english";
 }
-function function_77()
+function checkStaffAuthentication()
 {
     if (!defined("IN-TSSE-STAFF-PANEL")) {
         var_236("../index.php");
     }
 }
-function function_78($url)
+function redirectTo($url)
 {
     if (!headers_sent()) {
         header("Location: " . $url);
     } else {
-        echo "\r\n\t\t<script type=\"text/javascript\">\r\n\t\t\twindow.location.href=\"" . $url . "\";\r\n\t\t</script>\r\n\t\t<noscript>\r\n\t\t\t<meta http-equiv=\"refresh\" content=\"0;url=" . $url . "\" />\r\n\t\t</noscript>";
+        echo "\r\n\t\t<script $type = \"text/javascript\">\r\n\t\t\twindow.location.$href = \"" . $url . "\";\r\n\t\t</script>\r\n\t\t<noscript>\r\n\t\t\t<meta http-$equiv = \"refresh\" $content = \"0;$url = " . $url . "\" />\r\n\t\t</noscript>";
     }
     exit;
 }
-function function_76($Error)
+function showAlertError($Error)
 {
     return "<div class=\"alert\"><div>" . $Error . "</div></div>";
 }
-function function_79($log)
+function logStaffAction($log)
 {
     mysqli_query($GLOBALS["DatabaseConnect"], "INSERT INTO ts_staffcp_logs (uid, date, log) VALUES (\"" . $_SESSION["ADMIN_ID"] . "\", \"" . time() . "\", \"" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $log) . "\")");
 }

@@ -19,11 +19,11 @@ if (0 < mysqli_num_rows($Query)) {
     $UserNames = [];
     while ($Res = mysqli_fetch_row($Query)) {
         if ($Res[1] < $dt) {
-            $SQ = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT usergroup, username FROM users WHERE id = " . sqlesc($Res[0]));
+            $SQ = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT usergroup, username FROM users WHERE $id = " . sqlesc($Res[0]));
             $CQueryCount++;
             $UR = mysqli_fetch_row($SQ);
             if (in_array($UR[0], $UploaderGroups)) {
-                mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET usergroup = '" . $UI["DemoteTo"] . "', modcomment = CONCAT('" . gmdate("Y-m-d") . " - Demoted to Usergroup " . $UI["DemoteTo"] . " by - AutoSystem (Uploader Inactivity).\n', modcomment) WHERE id = '" . $Res[0] . "'");
+                mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET $usergroup = '" . $UI["DemoteTo"] . "', $modcomment = CONCAT('" . gmdate("Y-m-d") . " - Demoted to Usergroup " . $UI["DemoteTo"] . " by - AutoSystem (Uploader Inactivity).\n', modcomment) WHERE $id = '" . $Res[0] . "'");
                 $CQueryCount++;
                 send_pm($Res[0], sprintf($lang->cronjobs["ui_msg"], $UI["timelimit"]), $lang->cronjobs["ui_subject"]);
                 $CQueryCount++;

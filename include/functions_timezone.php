@@ -7,7 +7,7 @@
  */
 
 if (!defined("IN_TRACKER")) {
-    exit("<font face='verdana' size='2' color='darkred'><b>Error!</b> Direct initialization of this file is not allowed.</font>");
+    exit("<font $face = 'verdana' $size = '2' $color = 'darkred'><b>Error!</b> Direct initialization of this file is not allowed.</font>");
 }
 $lang->load("timezone");
 function fetch_timezone($offset = "all")
@@ -20,19 +20,19 @@ function show_timezone($tzoffset = 0, $autodst = 0, $dst = 0)
     global $lang;
     $timezoneoptions = "";
     foreach (fetch_timezone() as $optionvalue => $timezonephrase) {
-        $timezoneoptions .= "<option value=\"" . $optionvalue . "\"" . ($tzoffset == $optionvalue ? " selected=\"selected\"" : "") . ">" . $lang->timezone[(string) $timezonephrase] . "</option>";
+        $timezoneoptions .= "<option $value = \"" . $optionvalue . "\"" . ($tzoffset == $optionvalue ? " $selected = \"selected\"" : "") . ">" . $lang->timezone[(string) $timezonephrase] . "</option>";
     }
     $selectdst = [];
     if ($autodst) {
-        $selectdst[2] = " selected=\"selected\"";
+        $selectdst[2] = " $selected = \"selected\"";
     } else {
         if ($dst) {
-            $selectdst[1] = " selected=\"selected\"";
+            $selectdst[1] = " $selected = \"selected\"";
         } else {
-            $selectdst[0] = " selected=\"selected\"";
+            $selectdst[0] = " $selected = \"selected\"";
         }
     }
-    return "\r\n\t<fieldset class=\"fieldset\">\r\n\t\t<legend><label for=\"sel_tzoffset\">" . $lang->timezone["time_zone"] . "</label></legend>\r\n\t\t<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"100%\">\r\n\t\t<tr>\r\n\t\t\t<td class=\"none\">" . $lang->timezone["time_auto_corrected_to_location"] . "</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"none\">\r\n\t\t\t\t<span style=\"float:right\">\r\n\t\t\t\t<select name=\"tzoffset\" id=\"sel_tzoffset\">\r\n\t\t\t\t\t" . $timezoneoptions . "\r\n\t\t\t\t</select>\r\n\t\t\t\t</span>\r\n\t\t\t\t<label for=\"sel_tzoffset\"><b>" . $lang->timezone["time_zone"] . ":</b></label>\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"none\">" . $lang->timezone["allow_daylight_savings_time"] . "</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"none\">\r\n\t\t\t\t<span style=\"float:right\">\r\n\t\t\t\t<select name=\"dst\" id=\"sel_dst\">\r\n\t\t\t\t\t<option value=\"2\"" . (isset($selectdst[2]) ? $selectdst[2] : "") . ">" . $lang->timezone["dstauto"] . "</option>\r\n\t\t\t\t\t<option value=\"1\"" . (isset($selectdst[1]) ? $selectdst[1] : "") . ">" . $lang->timezone["dston"] . "</option>\r\n\t\t\t\t\t<option value=\"0\"" . (isset($selectdst[0]) ? $selectdst[0] : "") . ">" . $lang->timezone["dstoff"] . "</option>\r\n\t\t\t\t</select>\r\n\t\t\t\t</span>\r\n\t\t\t\t<label for=\"sel_dst\"><b>" . $lang->timezone["dst_correction_option"] . ":</b></label>\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t</table>\r\n\t</fieldset>\r\n\t";
+    return "\r\n\t<fieldset class=\"fieldset\">\r\n\t\t<legend><label for=\"sel_tzoffset\">" . $lang->timezone["time_zone"] . "</label></legend>\r\n\t\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" $width = \"100%\">\r\n\t\t<tr>\r\n\t\t\t<td class=\"none\">" . $lang->timezone["time_auto_corrected_to_location"] . "</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"none\">\r\n\t\t\t\t<span $style = \"float:right\">\r\n\t\t\t\t<select $name = \"tzoffset\" $id = \"sel_tzoffset\">\r\n\t\t\t\t\t" . $timezoneoptions . "\r\n\t\t\t\t</select>\r\n\t\t\t\t</span>\r\n\t\t\t\t<label for=\"sel_tzoffset\"><b>" . $lang->timezone["time_zone"] . ":</b></label>\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"none\">" . $lang->timezone["allow_daylight_savings_time"] . "</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"none\">\r\n\t\t\t\t<span $style = \"float:right\">\r\n\t\t\t\t<select $name = \"dst\" $id = \"sel_dst\">\r\n\t\t\t\t\t<option $value = \"2\"" . (isset($selectdst[2]) ? $selectdst[2] : "") . ">" . $lang->timezone["dstauto"] . "</option>\r\n\t\t\t\t\t<option $value = \"1\"" . (isset($selectdst[1]) ? $selectdst[1] : "") . ">" . $lang->timezone["dston"] . "</option>\r\n\t\t\t\t\t<option $value = \"0\"" . (isset($selectdst[0]) ? $selectdst[0] : "") . ">" . $lang->timezone["dstoff"] . "</option>\r\n\t\t\t\t</select>\r\n\t\t\t\t</span>\r\n\t\t\t\t<label for=\"sel_dst\"><b>" . $lang->timezone["dst_correction_option"] . ":</b></label>\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t</table>\r\n\t</fieldset>\r\n\t";
 }
 
 ?>

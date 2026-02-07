@@ -40,6 +40,6 @@ $language['badusers'] = array
 	'action'			=>	 'Action',
 	'edit'				=>	 'Edit',
 	'delete'			=>	 'Delete',
-	'alreadyexists'	=>	 'Sorry, this user is already in our database.. Click <a href="'.$_SERVER['SCRIPT_NAME'].'">here</a> to see Bad User List.',
+	'alreadyexists'	=>	 'Sorry, this user is already in our database.. Click <a $href = "'.$_SERVER['SCRIPT_NAME'].'">here</a> to see Bad User List.',
 );
 ?>

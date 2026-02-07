@@ -32,7 +32,7 @@ if (isset($memcached_enabled) && $memcached_enabled == "yes" && isset($memcached
     $TSMemcache = new TSMemcache($memcached_host, $memcached_port, true);
     $UseMemcached = true;
 }
-$Query = "SELECT seeders, times_completed, leechers FROM torrents WHERE info_hash = " . sqlesc($info_hash) . " OR info_hash = " . sqlesc(preg_replace("/ *\$/s", "", $info_hash));
+$Query = "SELECT seeders, times_completed, leechers FROM torrents WHERE $info_hash = " . sqlesc($info_hash) . " OR $info_hash = " . sqlesc(preg_replace("/ *\$/s", "", $info_hash));
 if ($UseMemcached) {
     $hash = "scrape_" . md5($info_hash);
     if (!($row = $TSMemcache->check($hash))) {
@@ -55,7 +55,7 @@ header("Expires: Sat, 1 Jan 2000 01:00:00 GMT");
 header("Last-Modified: " . gmdate("D, d M Y H:i:s") . "GMT");
 header("Cache-Control: no-cache, must-revalidate");
 header("Pragma: no-cache");
-header("Content-type: text/html; charset=iso-8859-1");
+header("Content-type: text/html; $charset = iso-8859-1");
 if (isset($_SERVER["HTTP_ACCEPT_ENCODING"]) && $_SERVER["HTTP_ACCEPT_ENCODING"] == "gzip") {
     header("Content-Encoding: gzip");
     exit(gzencode($resp, 2, FORCE_GZIP));

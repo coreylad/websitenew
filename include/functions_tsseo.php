@@ -7,7 +7,7 @@
  */
 
 if (!defined("IN_TRACKER")) {
-    exit("<font face='verdana' size='2' color='darkred'><b>Error!</b> Direct initialization of this file is not allowed.</font>");
+    exit("<font $face = 'verdana' $size = '2' $color = 'darkred'><b>Error!</b> Direct initialization of this file is not allowed.</font>");
 }
 function Slug($string)
 {
@@ -45,19 +45,19 @@ function ts_seo($id, $text, $type = "u")
         }
     } else {
         if ($type == "c") {
-            return $BASEURL . "/browse.php?category=" . $id;
+            return $BASEURL . "/browse.php?category= " . $id;
         }
         if ($type == "d") {
-            return $BASEURL . "/download.php?id=" . $id;
+            return $BASEURL . "/download.php?$id = " . $id;
         }
         if ($type == "ssl") {
-            return $BASEURL . "/download.php?id=" . $id . "&type=ssl";
+            return $BASEURL . "/download.php?$id = " . $id . "&$type = ssl";
         }
         if ($type == "s") {
-            return $BASEURL . "/details.php?id=" . $id;
+            return $BASEURL . "/details.php?$id = " . $id;
         }
         if ($type == "u") {
-            return $BASEURL . "/userdetails.php?id=" . $id;
+            return $BASEURL . "/userdetails.php?$id = " . $id;
         }
     }
 }
@@ -80,10 +80,10 @@ function tsf_seo_clean_text($text = "", $type = "", $id = 0, $extra = "")
                 return $BASEURL . "/thread-" . $id . "/" . $text . $extra;
                 break;
             case "lastpost":
-                return $BASEURL . "/thread-" . $id . "/" . $text . "&action=lastpost";
+                return $BASEURL . "/thread-" . $id . "/" . $text . "&$action = lastpost";
                 break;
             case "page":
-                return $BASEURL . "/thread-" . $id . "/" . $text . "&page=" . intval($extra);
+                return $BASEURL . "/thread-" . $id . "/" . $text . "&$page = " . intval($extra);
                 break;
             case "u":
                 return $BASEURL . "/user-profile-" . $id . "/" . $text;
@@ -92,22 +92,22 @@ function tsf_seo_clean_text($text = "", $type = "", $id = 0, $extra = "")
     } else {
         switch ($type) {
             case "f":
-                return $BASEURL . "/tsf_forums/index.php?fid=" . $id . $extra;
+                return $BASEURL . "/tsf_forums/index.php?$fid = " . $id . $extra;
                 break;
             case "fd":
-                return $BASEURL . "/tsf_forums/forumdisplay.php?fid=" . $id . $extra;
+                return $BASEURL . "/tsf_forums/forumdisplay.php?$fid = " . $id . $extra;
                 break;
             case "t":
-                return $BASEURL . "/tsf_forums/showthread.php?tid=" . $id . $extra;
+                return $BASEURL . "/tsf_forums/showthread.php?$tid = " . $id . $extra;
                 break;
             case "lastpost":
-                return $BASEURL . "/tsf_forums/showthread.php?tid=" . $id . "&action=lastpost";
+                return $BASEURL . "/tsf_forums/showthread.php?$tid = " . $id . "&$action = lastpost";
                 break;
             case "page":
-                return $BASEURL . "/tsf_forums/showthread.php?tid=" . $id . "&page=" . intval($extra);
+                return $BASEURL . "/tsf_forums/showthread.php?$tid = " . $id . "&$page = " . intval($extra);
                 break;
             case "u":
-                return $BASEURL . "/userdetails.php?id=" . $id . $extra;
+                return $BASEURL . "/userdetails.php?$id = " . $id . $extra;
                 break;
         }
     }

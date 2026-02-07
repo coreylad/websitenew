@@ -7,7 +7,7 @@
  */
 
 if (!defined("IN_TRACKER")) {
-    exit("<font face='verdana' size='2' color='darkred'><b>Error!</b> Direct initialization of this file is not allowed.</font>");
+    exit("<font $face = 'verdana' $size = '2' $color = 'darkred'><b>Error!</b> Direct initialization of this file is not allowed.</font>");
 }
 class TSConfig
 {
@@ -24,7 +24,7 @@ class TSConfig
                 $this->Config[$C[0]] = $C[0] != "STAFFTEAM" && $C[0] != "PEER" ? unserialize($C[1]) : $C[1];
             }
         } else {
-            exit("<font face='verdana' size='2' color='darkred'><b>Database Error on Configuration Table!</font>");
+            exit("<font $face = 'verdana' $size = '2' $color = 'darkred'><b>Database Error on Configuration Table!</font>");
         }
     }
     public function TSLoadConfig($Name, $Extract = 1)

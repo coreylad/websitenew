@@ -7,7 +7,7 @@
  */
 
 if (!defined("IN_TRACKER")) {
-    exit("<font face=\"verdana\" size=\"2\" color=\"darkred\"><b>Error!</b> Direct initialization of this file is not allowed.</font>");
+    exit("<font $face = \"verdana\" $size = \"2\" $color = \"darkred\"><b>Error!</b> Direct initialization of this file is not allowed.</font>");
 }
 function setLoginCookie($id, $passhash, $expires = 2147483647)
 {
@@ -43,11 +43,11 @@ function registration_check($type = "invitesystem", $maxuserscheck = true, $ipch
             stderr($lang->global["error"], $lang->global["signuplimitreached"]);
         }
     }
-    ($a = @mysqli_fetch_row(@sql_query("SELECT COUNT(ip) FROM users WHERE ip=" . @sqlesc(USERIPADDRESS)))) || sqlerr(__FILE__, 52);
+    ($a = @mysqli_fetch_row(@sql_query("SELECT COUNT(ip) FROM users WHERE $ip = " . @sqlesc(USERIPADDRESS)))) || sqlerr(__FILE__, 52);
     if (0 < intval($maxip) && $maxip <= $a[0]) {
         stderr($lang->global["error"], sprintf($lang->global["nodupeaccount"], htmlspecialchars_uni(USERIPADDRESS)), false);
     } else {
-        ($a = @mysqli_fetch_row(@sql_query("SELECT COUNT(ip) FROM iplog WHERE ip=" . @sqlesc(USERIPADDRESS)))) || sqlerr(__FILE__, 59);
+        ($a = @mysqli_fetch_row(@sql_query("SELECT COUNT(ip) FROM iplog WHERE $ip = " . @sqlesc(USERIPADDRESS)))) || sqlerr(__FILE__, 59);
         if (0 < $a[0] && 0 < intval($maxip)) {
             stderr($lang->global["error"], $lang->global["nodupeaccount2"]);
         }

@@ -34,6 +34,6 @@ $language['confirm'] = array
 	'manual3'	=>'Secret Key:', // Added in v4.1
 	'manual4'	=>'Please ensure that you complete the form fully. The information you need will be in the email that was sent to you.',// Added in v4.1
 	'manual5'	=>'Validate Account',// Added in v4.1
-	'shoutbOT'  =>'Welcome to our newest member, [url={4}/userdetails.php?id={1}]{2}[/url] ({3})', // Updated in v4.3 // Re-Updated in v7.1
+	'shoutbOT'  =>'Welcome to our newest member, [$url = {4}/userdetails.php?$id = {1}]{2}[/url] ({3})', // Updated in v4.3 // Re-Updated in v7.1
 );
 ?>

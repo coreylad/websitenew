@@ -27,7 +27,7 @@ if(!defined('IN_TRACKER'))
 $language['delete'] = array 
 (
 	'invalidreason'					=>'Invalid reason {1}!',
-	'reasonstr1'					=>'Dead: 0 seeders, 0 leechers = 0 peers total',
+	'reasonstr1'					=>'Dead: 0 seeders, 0 leechers 0 peers total',
 	'reasonstr2'					=>'Dupe',
 	'reasonstr3'					=>'Nuked',
 	'reasonstr4'					=>'{1} rules broken: ',

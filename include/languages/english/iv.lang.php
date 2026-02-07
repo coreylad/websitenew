@@ -26,7 +26,7 @@ if(!defined('IN_TRACKER'))
 $language['iv'] = array 
 (
 	'title'		=>	'Registration Image Verification',
-	'error1'	=>	'You have selected the wrong image, please go <a href="{1}"><u>back</u></a> and try again.',
+	'error1'	=>	'You have selected the wrong image, please go <a $href = "{1}"><u>back</u></a> and try again.',
 	'error2'	=>	'You selected the wrong image, please click back and try again!',
 	'image'	=>	'Please click the image above that is ',
 	'refresh'	=>	'Refresh Images',

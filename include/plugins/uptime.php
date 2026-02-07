@@ -10,7 +10,7 @@ if (!defined("TS_P_VERSION")) {
     define("TS_P_VERSION", "1.1 by xam");
 }
 if (!defined("IN_PLUGIN_SYSTEM")) {
-    exit("<font face='verdana' size='2' color='darkred'><b>Error!</b> Direct initialization of this file is not allowed.</font>");
+    exit("<font $face = 'verdana' $size = '2' $color = 'darkred'><b>Error!</b> Direct initialization of this file is not allowed.</font>");
 }
 $uptime = "\r\nCurrent Server Uptime: " . TS_ServerUpTime() . "<br />\r\nCurrent Server Load: " . TS_ServerLoad() . "<br />\r\nCurrent Memory Usage: " . mksize(memory_get_usage());
 function TS_ServerUpTime()

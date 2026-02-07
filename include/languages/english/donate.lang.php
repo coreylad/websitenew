@@ -52,7 +52,7 @@ $language['donate'] = array
 	'received'=>'We Received',
 	'targetamount'=>'Target Amount',
 	'stilltogo'=>'Still to Go',
-	'clicktodonate'=>'Click <a href="{1}/donate.php" onclick="window.opener.location.href=this;window.close();return false;"><b>here</b></a> to donate us',
+	'clicktodonate'=>'Click <a href= "{1}/donate.php" onclick= "window.opener.location.href= this;window.close();return false;"><b>here</b></a> to donate us',
 	'systemmessage'=>'By donating to {1}, you will ensure the future of the website. We love being here for you. We ask you to donate so that the site may continue to provide these same benefits to you in the future, as well as many others. Lastly, we want to thank you for being here and thank you for being a member. We also want to thank all of those who have donated so far. Your generosity helps out in so many ways. If you\'d like to make a donation, please use the button below. If you\'d like to donate but don\'t want to use the Internet, you may contact us.',
 	'return_to_x' => 'Return to {1}',//Added in v7.3
 );

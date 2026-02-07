@@ -6,6 +6,6 @@
  * @ Release: 10/08/2022
  */
 
-echo function_exists("fsockopen") ? "&result=1&" : "&result=0&";
+echo function_exists("fsockopen") ? "&$result = 1&" : "&$result = 0&";
 
 ?>

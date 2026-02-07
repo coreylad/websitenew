@@ -19,10 +19,10 @@ require('./global.php');
 $lang->load('ff');
 
 stdhead($lang->ff['head']);  
-print("<table class=\"main\" width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\"><tr><td class=\"embedded\">\n<table border=1 width=100% cellspacing=0 cellpadding=5><tr><td class=colhead align=center><font size=3>".strtoupper($SITENAME)." ".$lang->ff['head']."</font>\n</td></tr>");  
-print("<tr><td align=center>");  
+print("<table class=\"main\" $width = \"100%\" $border = \"0\" $cellspacing = \"0\" $cellpadding = \"0\"><tr><td class=\"embedded\">\n<table $border = 1 $width = 100% $cellspacing = 0 $cellpadding = 5><tr><td class=colhead $align = center><font $size = 3>".strtoupper($SITENAME)." ".$lang->ff['head']."</font>\n</td></tr>");  
+print("<tr><td $align = center>");  
 ?>  
-<script language="JavaScript1.2">    
+<script $language = "JavaScript1.2">    
 function addEngine(name,ext,cat)  
 {  
   if ((typeof window.sidebar == "object") && (typeof  
@@ -43,8 +43,8 @@ function addEngine(name,ext,cat)
   
 <?php echo $lang->ff['info']; ?>  
 <ul>  
-  <li><a class="altlink" href="javascript:addEngine('<?php echo $SITENAME; ?>', 'gif', 'Torrent Search')"><?php echo sprintf($lang->ff['info2'], $SITENAME);?></a></li>  
-  <li><a class="altlink" href="javascript:addEngine('<?php echo $SITENAME; ?>_forums', 'gif', 'Forums Search')"><?php echo sprintf($lang->ff['info3'], $SITENAME);?></a></li>  
+  <li><a class="altlink" $href = "javascript:addEngine('<?php echo $SITENAME; ?>', 'gif', 'Torrent Search')"><?php echo sprintf($lang->ff['info2'], $SITENAME);?></a></li>  
+  <li><a class="altlink" $href = "javascript:addEngine('<?php echo $SITENAME; ?>_forums', 'gif', 'Forums Search')"><?php echo sprintf($lang->ff['info3'], $SITENAME);?></a></li>  
 </ul>  
 <?php
 print($lang->ff['info4']);

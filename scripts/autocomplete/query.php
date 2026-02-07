@@ -18,7 +18,7 @@ $input = trim(urldecode($_GET["input"]));
 $input = strval($input);
 $GLOBALS["DatabaseConnect"] = mysqli_connect(MYSQL_HOST, MYSQL_USER, MYSQL_PASS, MYSQL_DB);
 if ($GLOBALS["DatabaseConnect"]) {
-    $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM ts_config WHERE configname = 'THEME'");
+    $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM ts_config WHERE $configname = 'THEME'");
     $Result = mysqli_fetch_assoc($Query);
     $THEME = unserialize($Result["content"]);
     $charset = $THEME["charset"];
@@ -43,10 +43,10 @@ if ($GLOBALS["DatabaseConnect"]) {
     }
     if (isset($_COOKIE["acqu"]) && ($usergroup = base64_decode($_COOKIE["acqu"])) && 0 < intval($usergroup)) {
         $WHERE = "AND (INSTR(CONCAT(',',c.canview,','),',[ALL],') > 0 OR INSTR(CONCAT(',',c.canview,','),'," . intval($usergroup) . ",') > 0)";
-        $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT t.id, t.name FROM torrents t LEFT JOIN categories c ON (t.category=c.id) WHERE t.name LIKE '%" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $input) . "%' " . $WHERE . " ORDER BY t.name LIMIT 20");
+        $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT t.id, t.name FROM torrents t LEFT JOIN categories c ON (t.$category = c.id) WHERE t.name LIKE '%" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $input) . "%' " . $WHERE . " ORDER BY t.name LIMIT 20");
         if (mysqli_num_rows($query)) {
             while ($torrent = mysqli_fetch_row($query)) {
-                $Results .= "<rs id=\"" . $torrent[0] . "\" info=\"\">" . htmlspecialchars($torrent[1]) . "</rs>";
+                $Results .= "<rs $id = \"" . $torrent[0] . "\" $info = \"\">" . htmlspecialchars($torrent[1]) . "</rs>";
             }
         }
     }
@@ -55,8 +55,8 @@ if ($GLOBALS["DatabaseConnect"]) {
     header("Cache-Control: no-cache, must-revalidate");
     header("Pragma: no-cache");
     sleep(1);
-    header("Content-Type: text/xml; charset=" . $charset);
-    echo "<?xml version=\"1.0\" encoding=\"" . $charset . "\" ?><results>" . $Results . "</results>";
+    header("Content-Type: text/xml; $charset = " . $charset);
+    echo "<?xml $version = \"1.0\" $encoding = \"" . $charset . "\" ?><results>" . $Results . "</results>";
 } else {
     exit;
 }

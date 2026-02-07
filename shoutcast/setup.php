@@ -32,7 +32,7 @@ if ($socketConnection) {
     if ($cacheTolerance <= $timeDifference) {
         if (!isset($shoutcastSuccess)) {
             $xmlFeed = "";
-            fputs($socketConnection, "GET /admin.cgi?pass=" . $serverPassword . "&mode=viewxml HTTP/1.0\r\nUser-Agent: SHOUTcast Song Status (Mozilla Compatible)\r\n\r\n");
+            fputs($socketConnection, "GET /admin.cgi?$pass = " . $serverPassword . "&$mode = viewxml HTTP/1.0\r\nUser-Agent: SHOUTcast Song Status (Mozilla Compatible)\r\n\r\n");
             while (!feof($socketConnection)) {
                 $xmlFeed .= fgets($socketConnection, 8192);
             }

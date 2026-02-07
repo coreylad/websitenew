@@ -28,7 +28,7 @@ if (!$is_mod && $uid != $CURUSER["id"]) {
 }
 $TSSEConfig->TSLoadConfig("ANNOUNCE");
 if ($xbt_active != "yes") {
-    redirect("index.php?xbte=false");
+    redirect("index.php?$xbte = false");
     exit;
 }
 $lang->load("mysnatchlist");
@@ -37,24 +37,24 @@ if (!isset($_GET["uid"]) && $is_mod) {
     $WHERE = "";
     $WHERE2 = "";
     if (isset($_GET["tid"]) && is_valid_id($_GET["tid"])) {
-        $WHERE = " WHERE t.id = " . sqlesc(intval($_GET["tid"]));
-        $WHERE2 = " AND fid = " . sqlesc(intval($_GET["tid"]));
+        $WHERE = " WHERE t.$id = " . sqlesc(intval($_GET["tid"]));
+        $WHERE2 = " AND $fid = " . sqlesc(intval($_GET["tid"]));
         $Links[] = "tid=" . intval($_GET["tid"]);
     }
 } else {
-    $WHERE = " WHERE x.uid = " . sqlesc($uid);
-    $WHERE2 = " AND uid = " . sqlesc($uid);
+    $WHERE = " WHERE x.$uid = " . sqlesc($uid);
+    $WHERE2 = " AND $uid = " . sqlesc($uid);
     $Links[] = "uid=" . $uid;
     if ($is_mod && isset($_GET["tid"]) && is_valid_id($_GET["tid"])) {
-        $WHERE .= " AND t.id = " . sqlesc(intval($_GET["tid"]));
-        $WHERE2 = " AND fid = " . sqlesc(intval($_GET["tid"]));
+        $WHERE .= " AND t.$id = " . sqlesc(intval($_GET["tid"]));
+        $WHERE2 = " AND $fid = " . sqlesc(intval($_GET["tid"]));
         $Links[] = "tid=" . intval($_GET["tid"]);
     }
 }
-($Query = sql_query("SELECT x.uid, t.id as torrentid FROM `xbt_files_users` x INNER JOIN `torrents` t ON (x.fid=t.id)" . $WHERE)) || sqlerr(__FILE__, 86);
+($Query = sql_query("SELECT x.uid, t.id as torrentid FROM `xbt_files_users` x INNER JOIN `torrents` t ON (x.$fid = t.id)" . $WHERE)) || sqlerr(__FILE__, 86);
 $Count = mysqli_num_rows($Query);
 list($pagertop, $pagerbottom, $limit) = pager($ts_perpage, $Count, "mysnatchlist.php?" . (0 < count($Links) ? implode("&amp", $Links) . "&amp;" : ""));
-($Query = sql_query("SELECT x.*, t.id as torrentid, t.name, t.size, u.username, u.ip, g.namestyle FROM `xbt_files_users` x INNER JOIN `torrents` t ON (x.fid=t.id) LEFT JOIN `users` u ON (x.uid=u.id) LEFT JOIN `usergroups` g ON (u.usergroup=g.gid)" . $WHERE . " ORDER by `mtime` DESC " . $limit)) || sqlerr(__FILE__, 90);
+($Query = sql_query("SELECT x.*, t.id as torrentid, t.name, t.size, u.username, u.ip, g.namestyle FROM `xbt_files_users` x INNER JOIN `torrents` t ON (x.$fid = t.id) LEFT JOIN `users` u ON (x.$uid = u.id) LEFT JOIN `usergroups` g ON (u.$usergroup = g.gid)" . $WHERE . " ORDER by `mtime` DESC " . $limit)) || sqlerr(__FILE__, 90);
 if (!mysqli_num_rows($Query)) {
     stderr($lang->global["error"], $lang->mysnatchlist["error"]);
 }
@@ -66,9 +66,9 @@ while ($Torrent = mysqli_fetch_assoc($Query)) {
     if ($LastAnnounced < $Torrent["mtime"]) {
         $LastAnnounced = $Torrent["mtime"];
     }
-    $TorrentList .= "\r\n\t<tr>\r\n\t\t" . ($is_mod ? "\r\n\t\t<td><a href=\"" . ts_seo($Torrent["uid"], $Torrent["username"]) . "\">" . $Username . "</a><br />" . $Torrent["ip"] . "</td>" : "") . "\r\n\t\t<td><a href=\"" . ts_seo($Torrent["torrentid"], $Torrent["name"], "s") . "\">" . cutename($Torrent["name"], 50) . "</a></td>\r\n\t\t<td align=\"center\">" . mksize($Torrent["size"]) . "</td>\r\n\t\t<td align=\"center\">" . mksize($Torrent["downloaded"]) . "</td>\r\n\t\t<td align=\"center\">" . mksize($Torrent["uploaded"]) . "</td>\r\n\t\t<td align=\"center\">" . get_user_ratio($Torrent["uploaded"], $Torrent["downloaded"]) . "</td>\r\n\t\t<td align=\"center\">" . ts_nf($Torrent["announced"]) . " " . $lang->global["times"] . "</td>\r\n\t\t<td align=\"center\">" . my_datee($dateformat, $Torrent["mtime"]) . " " . my_datee($timeformat, $Torrent["mtime"]) . "</td>\r\n\t\t<td align=\"center\">" . ($Torrent["active"] ? $lang->global["greenyes"] : $lang->global["redno"]) . "</td>\r\n\t</tr>\r\n\t";
+    $TorrentList .= "\r\n\t<tr>\r\n\t\t" . ($is_mod ? "\r\n\t\t<td><a $href = \"" . ts_seo($Torrent["uid"], $Torrent["username"]) . "\">" . $Username . "</a><br />" . $Torrent["ip"] . "</td>" : "") . "\r\n\t\t<td><a $href = \"" . ts_seo($Torrent["torrentid"], $Torrent["name"], "s") . "\">" . cutename($Torrent["name"], 50) . "</a></td>\r\n\t\t<td $align = \"center\">" . mksize($Torrent["size"]) . "</td>\r\n\t\t<td $align = \"center\">" . mksize($Torrent["downloaded"]) . "</td>\r\n\t\t<td $align = \"center\">" . mksize($Torrent["uploaded"]) . "</td>\r\n\t\t<td $align = \"center\">" . get_user_ratio($Torrent["uploaded"], $Torrent["downloaded"]) . "</td>\r\n\t\t<td $align = \"center\">" . ts_nf($Torrent["announced"]) . " " . $lang->global["times"] . "</td>\r\n\t\t<td $align = \"center\">" . my_datee($dateformat, $Torrent["mtime"]) . " " . my_datee($timeformat, $Torrent["mtime"]) . "</td>\r\n\t\t<td $align = \"center\">" . ($Torrent["active"] ? $lang->global["greenyes"] : $lang->global["redno"]) . "</td>\r\n\t</tr>\r\n\t";
 }
-$ShowList = "\r\n<table width=\"100%\" align=\"center\" border=\"0\" cellpadding=\"5\" cellspacing=\"0\">\r\n\t<tr>\r\n\t\t<td class=\"thead\" colspan=\"" . ($is_mod ? "9" : "8") . "\">\r\n\t\t\t" . ($is_mod ? $lang->mysnatchlist["head2"] : $lang->mysnatchlist["head"] . " (" . $Username . ")") . "\r\n\t\t</td>\r\n\t</tr>\r\n\t<tr>\r\n\t\t" . ($is_mod ? "\r\n\t\t<td class=\"subheader\">\r\n\t\t\t" . $lang->mysnatchlist["username"] . "\r\n\t\t</td>" : "") . "\r\n\t\t<td class=\"subheader\">\r\n\t\t\t" . $lang->mysnatchlist["torrent"] . "\r\n\t\t</td>\r\n\t\t<td class=\"subheader\" align=\"center\">\r\n\t\t\t" . $lang->mysnatchlist["size"] . "\r\n\t\t</td>\r\n\t\t<td class=\"subheader\" align=\"center\">\r\n\t\t\t" . $lang->mysnatchlist["downloaded"] . "\r\n\t\t</td>\r\n\t\t<td class=\"subheader\" align=\"center\">\r\n\t\t\t" . $lang->mysnatchlist["uploaded"] . "\r\n\t\t</td>\r\n\t\t<td class=\"subheader\" align=\"center\">\r\n\t\t\t" . $lang->mysnatchlist["ratio"] . "\r\n\t\t</td>\r\n\t\t<td class=\"subheader\" align=\"center\">\r\n\t\t\t" . $lang->mysnatchlist["announced"] . "\r\n\t\t</td>\t\t\r\n\t\t<td class=\"subheader\" align=\"center\">\r\n\t\t\t" . $lang->mysnatchlist["lastaction"] . "\r\n\t\t</td>\r\n\t\t<td class=\"subheader\" align=\"center\">\r\n\t\t\t" . $lang->mysnatchlist["active"] . "\r\n\t\t</td>\r\n\t</tr>\r\n\t" . $TorrentList . "\r\n</table>";
+$ShowList = "\r\n<table $width = \"100%\" $align = \"center\" $border = \"0\" $cellpadding = \"5\" $cellspacing = \"0\">\r\n\t<tr>\r\n\t\t<td class=\"thead\" $colspan = \"" . ($is_mod ? "9" : "8") . "\">\r\n\t\t\t" . ($is_mod ? $lang->mysnatchlist["head2"] : $lang->mysnatchlist["head"] . " (" . $Username . ")") . "\r\n\t\t</td>\r\n\t</tr>\r\n\t<tr>\r\n\t\t" . ($is_mod ? "\r\n\t\t<td class=\"subheader\">\r\n\t\t\t" . $lang->mysnatchlist["username"] . "\r\n\t\t</td>" : "") . "\r\n\t\t<td class=\"subheader\">\r\n\t\t\t" . $lang->mysnatchlist["torrent"] . "\r\n\t\t</td>\r\n\t\t<td class=\"subheader\" $align = \"center\">\r\n\t\t\t" . $lang->mysnatchlist["size"] . "\r\n\t\t</td>\r\n\t\t<td class=\"subheader\" $align = \"center\">\r\n\t\t\t" . $lang->mysnatchlist["downloaded"] . "\r\n\t\t</td>\r\n\t\t<td class=\"subheader\" $align = \"center\">\r\n\t\t\t" . $lang->mysnatchlist["uploaded"] . "\r\n\t\t</td>\r\n\t\t<td class=\"subheader\" $align = \"center\">\r\n\t\t\t" . $lang->mysnatchlist["ratio"] . "\r\n\t\t</td>\r\n\t\t<td class=\"subheader\" $align = \"center\">\r\n\t\t\t" . $lang->mysnatchlist["announced"] . "\r\n\t\t</td>\t\t\r\n\t\t<td class=\"subheader\" $align = \"center\">\r\n\t\t\t" . $lang->mysnatchlist["lastaction"] . "\r\n\t\t</td>\r\n\t\t<td class=\"subheader\" $align = \"center\">\r\n\t\t\t" . $lang->mysnatchlist["active"] . "\r\n\t\t</td>\r\n\t</tr>\r\n\t" . $TorrentList . "\r\n</table>";
 $NextAnnounce = $LastAnnounced + $announce_interval;
 if ($NextAnnounce < TIMENOW) {
     $NextAnnounce = "---";

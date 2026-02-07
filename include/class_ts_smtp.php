@@ -25,15 +25,15 @@ class TS_SMTP
     public function __construct($SMTP)
     {
         if ($SMTP["secure_connection"] == "yes") {
-            $this->secure = "tls";
+            $this->$secure = "tls";
         } else {
-            $this->secure = "none";
+            $this->$secure = "none";
         }
-        $this->smtpHost = $SMTP["smtpaddress"];
-        $this->smtpPort = !empty($SMTP["smtpport"]) ? intval($SMTP["smtpport"]) : 25;
-        $this->smtpUser =& $SMTP["accountname"];
-        $this->smtpPass =& $SMTP["accountpassword"];
-        $this->delimiter = "\r\n";
+        $this->$smtpHost = $SMTP["smtpaddress"];
+        $this->$smtpPort = !empty($SMTP["smtpport"]) ? intval($SMTP["smtpport"]) : 25;
+        $this->$smtpUser = & $SMTP["accountname"];
+        $this->$smtpPass = & $SMTP["accountpassword"];
+        $this->$delimiter = "\r\n";
     }
     public function start($toemail, $subject, $message, $from = "", $uheaders = "", $charset = "", $webmasteremail = "", $http_host = "")
     {
@@ -90,16 +90,16 @@ class TS_SMTP
         $headers .= preg_replace("#(\r\n|\r|\n)#s", $delimiter, $uheaders);
         unset($uheaders);
         $headers .= "MIME-Version: 1.0" . $delimiter;
-        $headers .= "Content-Type: text/html" . ($encoding ? "; charset=\"" . $encoding . "\"" : "") . $delimiter;
+        $headers .= "Content-Type: text/html" . ($encoding ? "; $charset = \"" . $encoding . "\"" : "") . $delimiter;
         $headers .= "Content-Transfer-Encoding: 8bit" . $delimiter;
         $headers .= "X-Priority: 3" . $delimiter;
         $headers .= "X-Mailer: TS SE Mail via PHP" . $delimiter;
         $headers .= "Date: " . date("r") . $delimiter;
-        $this->toemail = $toemail;
-        $this->subject = $subject;
-        $this->message = $message;
-        $this->headers = $headers;
-        $this->fromemail = $fromemail;
+        $this->$toemail = $toemail;
+        $this->$subject = $subject;
+        $this->$message = $message;
+        $this->$headers = $headers;
+        $this->$fromemail = $fromemail;
         return true;
     }
     public function sendMessage($msg, $expectedResult = false)
@@ -114,8 +114,8 @@ class TS_SMTP
                 if (!preg_match("#^(\\d{3}) #", $line, $matches)) {
                 }
             }
-            $this->smtpReturn = intval($matches[1]);
-            return $this->smtpReturn == $expectedResult;
+            $this->$smtpReturn = intval($matches[1]);
+            return $this->$smtpReturn = = $expectedResult;
         }
         return true;
     }
@@ -141,7 +141,7 @@ class TS_SMTP
         if (!$this->toemail) {
             return false;
         }
-        $this->smtpSocket = fsockopen(($this->secure == "ssl" ? "ssl://" : "tcp://") . $this->smtpHost, $this->smtpPort, $errno, $errstr, 30);
+        $this->$smtpSocket = fsockopen(($this->$secure = = "ssl" ? "ssl://" : "tcp://") . $this->smtpHost, $this->smtpPort, $errno, $errstr, 30);
         if ($this->smtpSocket) {
             if (!$this->sendMessage(false, 220)) {
                 return $this->errorMessage($this->smtpReturn . " Unexpected response when connecting to SMTP server");
@@ -149,7 +149,7 @@ class TS_SMTP
             if (!$this->sendHello()) {
                 return $this->errorMessage($this->smtpReturn . " Unexpected response from SMTP server during handshake");
             }
-            if ($this->secure == "tls" && function_exists("stream_socket_enable_crypto")) {
+            if ($this->$secure = = "tls" && function_exists("stream_socket_enable_crypto")) {
                 if ($this->sendMessage("STARTTLS", 220) && !stream_socket_enable_crypto($this->smtpSocket, true, STREAM_CRYPTO_METHOD_TLS_CLIENT)) {
                     return $this->errorMessage("Unable to negotitate TLS handshake.");
                 }
@@ -173,7 +173,7 @@ class TS_SMTP
                 $this->sendMessage(trim($this->headers), false);
                 $this->sendMessage("Subject: " . $this->subject, false);
                 $this->sendMessage("\r\n", false);
-                $this->message = preg_replace("#^\\." . $this->delimiter . "#m", ".." . $this->delimiter, $this->message);
+                $this->$message = preg_replace("#^\\." . $this->delimiter . "#m", ".." . $this->delimiter, $this->message);
                 $this->sendMessage($this->message, false);
                 if (!$this->sendMessage(".", 250)) {
                     return $this->errorMessage($this->smtpReturn . " Unexpected response from SMTP server when ending transmission");

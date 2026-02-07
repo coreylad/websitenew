@@ -30,7 +30,7 @@ $language['referrals'] = array
 	'head'		=> '{1} is now giving you all benifits for Referring your friends to join you.<br />For any user you refer to {1} you will receive {2} GB added to your upload stats ONCE the user gets to Power User Level',
 	'subhead'=>'Below is a list of all the users you have referred and their current stats on the server.<br />You will receive your {1} GB Upload when your referred users reach Power User Level.',
 	'noref'	=>'You have not referred anyone yet!',
-	'info1'		=>'You can send people to the following address to sign up: <font color="green">{1}</font>',
+	'info1'		=>'You can send people to the following address to sign up: <font $color = "green">{1}</font>',
 	'info2'		=>'Send them an email using the boxes below: ',
 	'fname'	=>'Friend Name: ',
 	'femail'	=>'Friend Email: ',

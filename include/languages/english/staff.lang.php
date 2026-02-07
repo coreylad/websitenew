@@ -27,7 +27,7 @@ if(!defined('IN_TRACKER'))
 $language['staff'] = array 
 (
 	'staff'					=>'Staff Team',//Updated in v7.1
-	'info'					=>'All software support questions and those already answered in the <a href=faq.php><b>FAQ</b></a> will be ignored. If you would like to contact us, click <a href="contactstaff.php">here</a>.',
+	'info'					=>'All software support questions and those already answered in the <a $href = faq.php><b>FAQ</b></a> will be ignored. If you would like to contact us, click <a $href = "contactstaff.php">here</a>.',
 	'firstline'				=>'Firstline Support',
 	'firstlineinfo'			=>'General support questions should preferably be directed to these users. Note that they are volunteers, giving away their time and effort to help you. Treat them accordingly. <b>(Languages listed are those besides English.)',
 	'username'				=>'Username',

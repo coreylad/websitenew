@@ -26,8 +26,8 @@ if(!defined('IN_TRACKER'))
 //  Staff Announcements.. Such as Report, Unban-Ip Request, Staff Messages etc..
 $language['staff_announcements'] = array 
 (
-	'msg1' => 'There are {1} Staff Message(s). Click <a href="{2}/'.$staffcp_path.'/index.php?do=staff_messages">here</a> to read.',
-	'msg2' => 'There are {1} Report(s). Click <a href="{2}/'.$staffcp_path.'/index.php?do=manage_reports">here</a> to Manage Reports.',
-	'msg3' => 'There are {1} Unban-Ip Request(s). Click <a href="{2}/'.$staffcp_path.'/index.php?do=unban_ip_requests">here</a> to read and unban IP.',
+	'msg1' => 'There are {1} Staff Message(s). Click <a $href = "{2}/'.$staffcp_path.'/index.php?do=staff_messages">here</a> to read.',
+	'msg2' => 'There are {1} Report(s). Click <a $href = "{2}/'.$staffcp_path.'/index.php?do=manage_reports">here</a> to Manage Reports.',
+	'msg3' => 'There are {1} Unban-Ip Request(s). Click <a $href = "{2}/'.$staffcp_path.'/index.php?do=unban_ip_requests">here</a> to read and unban IP.',
 );
 ?>

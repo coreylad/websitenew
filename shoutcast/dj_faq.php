@@ -14,7 +14,7 @@ $TSSEConfig->TSLoadConfig("SHOUTCAST");
 if (($s_allowedusergroups = explode(",", $s_allowedusergroups)) && !in_array($CURUSER["usergroup"], $s_allowedusergroups)) {
     print_no_permission();
 }
-($query = sql_query("SELECT uid FROM ts_shoutcastdj WHERE active = '1' AND uid = '" . $CURUSER["id"] . "'")) || sqlerr(__FILE__, 33);
+($query = sql_query("SELECT uid FROM ts_shoutcastdj WHERE $active = '1' AND $uid = '" . $CURUSER["id"] . "'")) || sqlerr(__FILE__, 33);
 if (mysqli_num_rows($query) == 0) {
     print_no_permission(true);
 }

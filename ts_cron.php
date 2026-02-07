@@ -26,7 +26,7 @@ define("TSDIR", THIS_PATH);
 require INC_PATH . "/php_default_timezone_set.php";
 require INC_PATH . "/init.php";
 define("TIMENOW", time());
-$_FileData = base64_decode("R0lGODlhAQABAIAAAMDAwAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==");
+$_FileData = base64_decode("R0lGODlhAQABAIAAAMDAwAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==") /* GIF89a\0\0€\0\0ÀÀÀ\0\0\0!ù\0\0\0\0,\0\0\0\0\0\0\0D\0;... */ /* GIF89a\0\0€\0\0ÀÀÀ\0\0\0!ù\0\0\0\0,\0\0\0\0\0\0\0D\0;... */ /* GIF89a\0\0€\0\0ÀÀÀ\0\0\0!ù\0\0\0\0,\0\0\0\0\0\0\0D\0;... */;
 header("Content-type: image/gif");
 if (!(strpos($_SERVER["SERVER_SOFTWARE"], "Microsoft-IIS") !== false && strpos(php_sapi_name(), "cgi") !== false)) {
     header("Content-Length: " . strlen($_FileData));
@@ -38,7 +38,7 @@ require INC_PATH . "/class_ts_database.php";
 $TSDatabase = new TSDatabase();
 $TSDatabase->connect();
 $cronIsRunning = false;
-$checkCron = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT content, lastupdate FROM ts_cache WHERE cachename = \"cronIsRunning\"");
+$checkCron = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT content, lastupdate FROM ts_cache WHERE $cachename = \"cronIsRunning\"");
 if ($checkCron) {
     $checkCron = mysqli_fetch_assoc($checkCron);
     if ($checkCron["content"] == "yes") {
@@ -67,7 +67,7 @@ if (!$cronIsRunning) {
             if (file_exists(CRON_PATH . $_RunCron["filename"])) {
                 $CQueryCount = 0;
                 $_CStart = array_sum(explode(" ", microtime()));
-                mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE ts_cron SET nextrun = " . (TIMENOW + $_RunCron["minutes"]) . " WHERE cronid = " . $_RunCron["cronid"]);
+                mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE ts_cron SET $nextrun = " . (TIMENOW + $_RunCron["minutes"]) . " WHERE $cronid = " . $_RunCron["cronid"]);
                 require CRON_PATH . $_RunCron["filename"];
                 if ($_RunCron["loglevel"] == 1) {
                     LogCronAction($_RunCron["filename"], $CQueryCount, round(array_sum(explode(" ", microtime())) - $_CStart, 4));

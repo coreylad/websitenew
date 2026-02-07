@@ -32,6 +32,6 @@ just click the links below to install.<br />',
 	'info2'				=>'Add the {1} Torrent search plugin to Firefox!',
 	'info3'				=>'Add the {1} Forums search plugin to Firefox!',
 	'info4'				=>'<br />Netscape 6 or Mozilla firefox is needed!<br /><br />  
-Want to remove it? <a href="https://addons.mozilla.org/firefox/1563/">Click here</a>'
+Want to remove it? <a $href = "https://addons.mozilla.org/firefox/1563/">Click here</a>'
 );
 ?>

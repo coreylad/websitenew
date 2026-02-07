@@ -18,7 +18,7 @@ if (($is_mod || $CURUSER["id"] == $id) && isset($CURUSER) && 0 < $CURUSER["id"])
     if ($xbt_active == "yes") {
         sql_query("UPDATE xbt_files_users SET `active` = 0 WHERE `mtime` < " . $deadtime . " AND `active` = 1");
     } else {
-        sql_query("DELETE FROM peers WHERE UNIX_TIMESTAMP(last_action) < " . $deadtime . " AND userid=" . sqlesc($id));
+        sql_query("DELETE FROM peers WHERE UNIX_TIMESTAMP(last_action) < " . $deadtime . " AND $userid = " . sqlesc($id));
     }
     if (mysqli_affected_rows($GLOBALS["DatabaseConnect"])) {
         stderr($lang->takeflush["done"], $lang->takeflush["done2"]);

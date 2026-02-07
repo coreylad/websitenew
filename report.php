@@ -30,34 +30,34 @@ if (!in_array($type, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], true)) {
 }
 switch ($type) {
     case "1":
-        $url = "userdetails.php?id=" . $reporting;
+        $url = "userdetails.php?$id = " . $reporting;
         break;
     case "2":
-        $url = "details.php?id=" . $reporting;
+        $url = "details.php?$id = " . $reporting;
         break;
     case "3":
-        $url = "details.php?id=" . $extra . "&tab=comments&page=" . $page . "&viewcomm=" . $reporting . "&scrollto=cid" . $reporting;
+        $url = "details.php?$id = " . $extra . "&$tab = comments&$page = " . $page . "&$viewcomm = " . $reporting . "&$scrollto = cid" . $reporting;
         break;
     case "4":
-        $url = "tsf_forums/showthread.php?tid=" . $extra . "&page=" . $page . "&nolastpage=true&pid=" . $reporting . "&scrollto=pid" . $reporting;
+        $url = "tsf_forums/showthread.php?$tid = " . $extra . "&$page = " . $page . "&$nolastpage = true&$pid = " . $reporting . "&$scrollto = pid" . $reporting;
         break;
     case "5":
-        $url = "userdetails.php?id=" . $extra . "&page=" . $page . "&scrollto=ShowVisitorMessage" . $reporting;
+        $url = "userdetails.php?$id = " . $extra . "&$page = " . $page . "&$scrollto = ShowVisitorMessage" . $reporting;
         break;
     case "6":
-        $url = "ts_blog.php?do=show_blog&bid=" . $extra . "&page=" . $page . "&cid=" . $reporting . "&scrollto=show_comments" . $reporting;
+        $url = "ts_blog.php?do=show_blog&$bid = " . $extra . "&$page = " . $page . "&$cid = " . $reporting . "&$scrollto = show_comments" . $reporting;
         break;
     case "7":
-        $url = "viewrequests.php?do=view_request&rid=" . $reporting;
+        $url = "viewrequests.php?do=view_request&$rid = " . $reporting;
         break;
     case "8":
-        $url = "ts_subtitles.php?sid=" . $reporting . "&page=" . $page . "&scrollto=sid" . $reporting;
+        $url = "ts_subtitles.php?$sid = " . $reporting . "&$page = " . $page . "&$scrollto = sid" . $reporting;
         break;
     case "9":
-        $url = "ts_albums.php?do=show_image&albumid=" . $extra . "&imageid=" . $reporting;
+        $url = "ts_albums.php?do=show_image&$albumid = " . $extra . "&$imageid = " . $reporting;
         break;
     case "10":
-        $url = "ts_tutorials.php?do=show_tutorial&tid=" . $extra . "&page=" . $page . "&cid=" . $reporting . "&scrollto=show_comments" . $reporting;
+        $url = "ts_tutorials.php?do=show_tutorial&$tid = " . $extra . "&$page = " . $page . "&$cid = " . $reporting . "&$scrollto = show_comments" . $reporting;
         break;
     default:
         if (!$url) {
@@ -77,13 +77,13 @@ switch ($type) {
             }
         }
         $defaulttemplate = ts_template();
-        echo "\r\n<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\r\n<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\">\r\n<head>\r\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=" . $charset . "\" />\r\n<link rel=\"stylesheet\" type=\"text/css\" href=\"" . $BASEURL . "/style.php?theme=" . $defaulttemplate . "&style=style.css\" />\r\n<title>" . $lang->report["r" . $type] . "</title>\r\n<script type=\"text/javascript\" src=\"" . $BASEURL . "/scripts/disablerightclick.js\"></script>\r\n</head>\r\n<body>\r\n";
+        echo "\r\n<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\r\n<html $xmlns = \"http://www.w3.org/1999/xhtml\" xml:$lang = \"en\" $lang = \"en\">\r\n<head>\r\n<meta http-$equiv = \"Content-Type\" $content = \"text/html; $charset = " . $charset . "\" />\r\n<link $rel = \"stylesheet\" $type = \"text/css\" $href = \"" . $BASEURL . "/style.php?$theme = " . $defaulttemplate . "&$style = style.css\" />\r\n<title>" . $lang->report["r" . $type] . "</title>\r\n<script $type = \"text/javascript\" $src = \"" . $BASEURL . "/scripts/disablerightclick.js\"></script>\r\n</head>\r\n<body>\r\n";
         if ($Done) {
-            echo "\r\n\t<script type=\"text/javascript\">\r\n\t\tsetTimeout(\"self.close()\", 5000);\r\n\t</script>\r\n\t" . $Done . "\r\n\t</body>\r\n\t</html>";
+            echo "\r\n\t<script $type = \"text/javascript\">\r\n\t\tsetTimeout(\"self.close()\", 5000);\r\n\t</script>\r\n\t" . $Done . "\r\n\t</body>\r\n\t</html>";
             exit;
         }
         show_report_errors();
-        echo "\r\n<a id=\"report_form\" name=\"report_form\"></a>\r\n<form method=\"post\" action=\"" . $_SERVER["SCRIPT_NAME"] . "?reporting=" . $reporting . "&type=" . $type . "&page=" . $page . "&extra=" . $extra . "\">\r\n<table width=\"100%\" cellpadding=\"5\" cellspacing=\"0\" border=\"0\">\r\n\t<tr>\r\n\t\t<td class=\"thead\" align=\"left\">\r\n\t\t\t" . $lang->report["r" . $type] . "\r\n\t\t</td>\r\n\t</tr>\r\n\t<tr>\r\n\t\t<td>\r\n\t\t\t<b>" . $lang->report["reason"] . ":</b><br />\r\n\t\t\t<textarea rows=\"6\" cols=\"60\" name=\"reason\">" . (isset($reason) ? htmlspecialchars_uni($reason) : "") . "</textarea>\r\n\t\t</td>\r\n\t</tr>\r\n\t<tr>\r\n\t\t<td class=\"subheader\" align=\"center\">\r\n\t\t\t<input type=\"submit\" value=\"" . $lang->report["submit"] . "\" /> <input type=\"reset\" value=\"" . $lang->report["reset"] . "\" />\r\n\t\t</td>\r\n\t</tr>\r\n</table>\r\n</form>\r\n</body>\r\n</html>\r\n";
+        echo "\r\n<a $id = \"report_form\" $name = \"report_form\"></a>\r\n<form $method = \"post\" $action = \"" . $_SERVER["SCRIPT_NAME"] . "?$reporting = " . $reporting . "&$type = " . $type . "&$page = " . $page . "&$extra = " . $extra . "\">\r\n<table $width = \"100%\" $cellpadding = \"5\" $cellspacing = \"0\" $border = \"0\">\r\n\t<tr>\r\n\t\t<td class=\"thead\" $align = \"left\">\r\n\t\t\t" . $lang->report["r" . $type] . "\r\n\t\t</td>\r\n\t</tr>\r\n\t<tr>\r\n\t\t<td>\r\n\t\t\t<b>" . $lang->report["reason"] . ":</b><br />\r\n\t\t\t<textarea $rows = \"6\" $cols = \"60\" $name = \"reason\">" . (isset($reason) ? htmlspecialchars_uni($reason) : "") . "</textarea>\r\n\t\t</td>\r\n\t</tr>\r\n\t<tr>\r\n\t\t<td class=\"subheader\" $align = \"center\">\r\n\t\t\t<input $type = \"submit\" $value = \"" . $lang->report["submit"] . "\" /> <input $type = \"reset\" $value = \"" . $lang->report["reset"] . "\" />\r\n\t\t</td>\r\n\t</tr>\r\n</table>\r\n</form>\r\n</body>\r\n</html>\r\n";
 }
 function show_report_errors()
 {
@@ -91,7 +91,7 @@ function show_report_errors()
     global $lang;
     if (0 < count($errors)) {
         $errors = implode("<br />", $errors);
-        echo "\r\n\t\t\t<table class=\"main\" border=\"1\" cellspacing=\"0\" cellpadding=\"5\" width=\"100%\">\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"thead\">\r\n\t\t\t\t\t" . $lang->global["error"] . "\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td>\r\n\t\t\t\t\t<font color=\"red\">\r\n\t\t\t\t\t\t<strong>\r\n\t\t\t\t\t\t\t" . $errors . "\r\n\t\t\t\t\t\t</strong>\r\n\t\t\t\t\t</font>\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t\t</table>\r\n\t\t\t<br />\r\n\t\t";
+        echo "\r\n\t\t\t<table class=\"main\" $border = \"1\" $cellspacing = \"0\" $cellpadding = \"5\" $width = \"100%\">\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"thead\">\r\n\t\t\t\t\t" . $lang->global["error"] . "\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td>\r\n\t\t\t\t\t<font $color = \"red\">\r\n\t\t\t\t\t\t<strong>\r\n\t\t\t\t\t\t\t" . $errors . "\r\n\t\t\t\t\t\t</strong>\r\n\t\t\t\t\t</font>\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t\t</table>\r\n\t\t\t<br />\r\n\t\t";
     }
 }
 

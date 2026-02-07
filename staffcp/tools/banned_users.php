@@ -7,16 +7,16 @@
  */
 
 var_235();
-$Language = file("languages/" . function_75() . "/banned_users.lang");
+$Language = file("languages/" . getStaffLanguage() . "/banned_users.lang");
 $Message = "";
 $usergroup = "";
-$Q = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE configname = 'MAIN'");
+$Q = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'MAIN'");
 $Result = mysqli_fetch_assoc($Q);
 $MAIN = unserialize($Result["content"]);
-$Q = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE configname = 'THEME'");
+$Q = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'THEME'");
 $Result = mysqli_fetch_assoc($Q);
 $THEME = unserialize($Result["content"]);
-$Q = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE configname = 'SMTP'");
+$Q = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'SMTP'");
 $Result = mysqli_fetch_assoc($Q);
 $SMTP = unserialize($Result["content"]);
 if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST" && isset($_POST["ids"]) && $_POST["ids"][0] != "") {
@@ -24,28 +24,28 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST" && isset($_POST["ids"]) && 
     if ($usergroup) {
         $SysMsg = str_replace("{1}", $_SESSION["ADMIN_USERNAME"], $Language[15]);
         $modcomment = gmdate("Y-m-d") . " - " . trim($SysMsg) . "\n";
-        mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET enabled = 'yes', usergroup = '" . $usergroup . "', modcomment = CONCAT('" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $modcomment) . "', modcomment) WHERE id IN (" . implode(",", $_POST["ids"]) . ")");
+        mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET $enabled = 'yes', $usergroup = '" . $usergroup . "', $modcomment = CONCAT('" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $modcomment) . "', modcomment) WHERE id IN (" . implode(",", $_POST["ids"]) . ")");
         if (mysqli_affected_rows($GLOBALS["DatabaseConnect"])) {
             $SysMsg = str_replace(["{1}", "{2}"], [$_SESSION["ADMIN_USERNAME"], implode(",", $_POST["ids"])], $Language[16]);
-            function_79($SysMsg);
+            logStaffAction($SysMsg);
             if (isset($_POST["email"]) && $_POST["email"] == "yes") {
-                echo "\r\n\t\t\t\t<div id=\"sending\" name=\"sending\">\r\n\t\t\t\t\t<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" class=\"mainTable\">\r\n\t\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t\t<td class=\"tcat\">" . $Language[14] . "</td>\r\n\t\t\t\t\t\t</tr>\r\n\t\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t\t<td class=\"alt1\">";
+                echo "\r\n\t\t\t\t<div $id = \"sending\" $name = \"sending\">\r\n\t\t\t\t\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t\t<td class=\"tcat\">" . $Language[14] . "</td>\r\n\t\t\t\t\t\t</tr>\r\n\t\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t\t<td class=\"alt1\">";
                 $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id, username, email FROM users WHERE id IN (" . implode(",", $_POST["ids"]) . ")");
                 while ($User = mysqli_fetch_assoc($query)) {
                     if (isset($_POST["unbanip"]) && $_POST["unbanip"] == "yes") {
                         function_113($User["id"]);
                     }
                     $emessage = str_replace(["{1}", "{2}", "{3}"], [$User["username"], $_SESSION["ADMIN_USERNAME"], $MAIN["BASEURL"]], $Language[24]);
-                    echo "\r\n\t\t\t\t\t<table cellpadding=\"4\" cellspacing=\"0\" border=\"0\" width=\"650\">\r\n\t\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t\t<td width=\"25%\">\r\n\t\t\t\t\t\t\t\t" . $Language[21] . "\r\n\t\t\t\t\t\t\t</td>\r\n\t\t\t\t\t\t\t<td width=\"60%\">\r\n\t\t\t\t\t\t\t\t<b>" . htmlspecialchars($User["email"]) . "</b>\r\n\t\t\t\t\t\t\t</td>\r\n\t\t\t\t\t\t\t<td width=\"15%\">";
+                    echo "\r\n\t\t\t\t\t<table $cellpadding = \"4\" $cellspacing = \"0\" $border = \"0\" $width = \"650\">\r\n\t\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t\t<td $width = \"25%\">\r\n\t\t\t\t\t\t\t\t" . $Language[21] . "\r\n\t\t\t\t\t\t\t</td>\r\n\t\t\t\t\t\t\t<td $width = \"60%\">\r\n\t\t\t\t\t\t\t\t<b>" . htmlspecialchars($User["email"]) . "</b>\r\n\t\t\t\t\t\t\t</td>\r\n\t\t\t\t\t\t\t<td $width = \"15%\">";
                     if (var_283($User["email"], $Language[14], nl2br($emessage))) {
-                        echo "\r\n\t\t\t\t\t\t\t\t\t\t\t<font color=\"green\">" . $Language[22] . "</font>";
+                        echo "\r\n\t\t\t\t\t\t\t\t\t\t\t<font $color = \"green\">" . $Language[22] . "</font>";
                     } else {
-                        echo "\r\n\t\t\t\t\t\t\t\t\t\t\t<font color=\"red\">" . $Language[23] . "</font>";
+                        echo "\r\n\t\t\t\t\t\t\t\t\t\t\t<font $color = \"red\">" . $Language[23] . "</font>";
                     }
                     echo "\r\n\t\t\t\t\t\t\t\t\t\t\t</td>\r\n\t\t\t\t\t\t\t\t\t\t</tr>\r\n\t\t\t\t\t\t\t\t\t</table>";
                 }
                 echo "\r\n\t\t\t\t\t\t\t\t</td>\r\n\t\t\t\t\t\t\t</tr>\r\n\t\t\t\t\t\t</table>\r\n\t\t\t\t\t</div>";
-                echo function_76($Language[25]);
+                echo showAlertError($Language[25]);
             } else {
                 if (isset($_POST["unbanip"]) && $_POST["unbanip"] == "yes") {
                     $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id FROM users WHERE id IN (" . implode(",", $_POST["ids"]) . ")");
@@ -53,28 +53,28 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST" && isset($_POST["ids"]) && 
                         function_113($User["id"]);
                     }
                 }
-                $Message = function_76($Language[25]);
+                $Message = showAlertError($Language[25]);
             }
         }
     } else {
-        $Message = function_76($Language[17]);
+        $Message = showAlertError($Language[17]);
     }
 }
-$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT u.id, g.cansettingspanel, g.canstaffpanel, g.issupermod FROM users u LEFT JOIN usergroups g ON (u.usergroup=g.gid) WHERE u.id = '" . $_SESSION["ADMIN_ID"] . "' LIMIT 1");
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT u.id, g.cansettingspanel, g.canstaffpanel, g.issupermod FROM users u LEFT JOIN usergroups g ON (u.$usergroup = g.gid) WHERE u.$id = '" . $_SESSION["ADMIN_ID"] . "' LIMIT 1");
 $LoggedAdminDetails = mysqli_fetch_assoc($query);
-$showusergroups = "\r\n<select name=\"usergroup\" tabindex=\"1\" class=\"bginput\">";
-$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT gid, title, cansettingspanel, canstaffpanel, issupermod FROM usergroups WHERE isbanned = 'no' ORDER by disporder ASC");
+$showusergroups = "\r\n<select $name = \"usergroup\" $tabindex = \"1\" class=\"bginput\">";
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT gid, title, cansettingspanel, canstaffpanel, issupermod FROM usergroups WHERE $isbanned = 'no' ORDER by disporder ASC");
 while ($UG = mysqli_fetch_assoc($query)) {
     if (!($UG["cansettingspanel"] == "yes" && $LoggedAdminDetails["cansettingspanel"] != "yes" || $UG["canstaffpanel"] == "yes" && $LoggedAdminDetails["canstaffpanel"] != "yes" || $UG["issupermod"] == "yes" && $LoggedAdminDetails["issupermod"] != "yes")) {
-        $showusergroups .= "\r\n\t\t<option value=\"" . $UG["gid"] . "\"" . ($usergroup == $UG["gid"] ? " selected=\"selected\"" : "") . ">" . $UG["title"] . "</option>";
+        $showusergroups .= "\r\n\t\t<option $value = \"" . $UG["gid"] . "\"" . ($usergroup == $UG["gid"] ? " $selected = \"selected\"" : "") . ">" . $UG["title"] . "</option>";
     }
 }
 $showusergroups .= "\r\n</select>";
-$results = mysqli_num_rows(mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM users where enabled = 'no'"));
-list($pagertop, $limit) = function_82(25, $results, $_SERVER["SCRIPT_NAME"] . "?do=banned_users&amp;");
-$sql = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id, username, last_access, notifs, email, ip, uploaded, downloaded, invites, seedbonus, g.title, g.namestyle FROM users LEFT JOIN usergroups g ON (users.usergroup=g.gid) WHERE enabled = 'no' ORDER BY last_access DESC " . $limit);
+$results = mysqli_num_rows(mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM users where $enabled = 'no'"));
+list($pagertop, $limit) = buildPaginationLinks(25, $results, $_SERVER["SCRIPT_NAME"] . "?do=banned_users&amp;");
+$sql = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id, username, last_access, notifs, email, ip, uploaded, downloaded, invites, seedbonus, g.title, g.namestyle FROM users LEFT JOIN usergroups g ON (users.$usergroup = g.gid) WHERE $enabled = 'no' ORDER BY last_access DESC " . $limit);
 if (mysqli_num_rows($sql) == 0) {
-    echo "\r\n\t\r\n\t" . function_76($Language[1]);
+    echo "\r\n\t\r\n\t" . showAlertError($Language[1]);
 } else {
     $Found = "";
     while ($User = mysqli_fetch_assoc($sql)) {
@@ -83,9 +83,9 @@ if (mysqli_num_rows($sql) == 0) {
         } else {
             $Reason = "--";
         }
-        $Found .= "\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t<a href=\"index.php?do=edit_user&amp;username=" . $User["username"] . "\">" . function_83($User["username"], $User["namestyle"]) . "</a>\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t" . $User["title"] . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t" . htmlspecialchars($User["email"]) . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t" . htmlspecialchars($User["ip"]) . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t" . function_84($User["last_access"]) . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t" . var_238($User["uploaded"]) . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t" . var_238($User["downloaded"]) . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t" . number_format($User["invites"]) . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t" . $User["seedbonus"] . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t" . $Reason . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t<input type=\"checkbox\" name=\"ids[]\" value=\"" . $User["id"] . "\" checkme=\"group\" />\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t";
+        $Found .= "\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t<a $href = \"index.php?do=edit_user&amp;$username = " . $User["username"] . "\">" . applyUsernameStyle($User["username"], $User["namestyle"]) . "</a>\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t" . $User["title"] . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t" . htmlspecialchars($User["email"]) . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t" . htmlspecialchars($User["ip"]) . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t" . formatTimestamp($User["last_access"]) . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t" . var_238($User["uploaded"]) . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t" . var_238($User["downloaded"]) . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t" . number_format($User["invites"]) . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t" . $User["seedbonus"] . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t" . $Reason . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t<input $type = \"checkbox\" $name = \"ids[]\" $value = \"" . $User["id"] . "\" $checkme = \"group\" />\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t";
     }
-    echo "\r\n\t<script type=\"text/javascript\">\r\n\t\tfunction select_deselectAll(formname,elm,group)\r\n\t\t{\r\n\t\t\tvar frm=document.forms[formname];\r\n\t\t\tfor(i=0;i<frm.length;i++)\r\n\t\t\t{\r\n\t\t\t\tif(elm.attributes[\"checkall\"] != null && elm.attributes[\"checkall\"].value == group)\r\n\t\t\t\t{\r\n\t\t\t\t\tif(frm.elements[i].attributes[\"checkme\"] != null && frm.elements[i].attributes[\"checkme\"].value == group)\r\n\t\t\t\t\t{\r\n\t\t\t\t\t\tfrm.elements[i].checked=elm.checked;\r\n\t\t\t\t\t}\r\n\t\t\t\t}\r\n\t\t\t\telse if(frm.elements[i].attributes[\"checkme\"] != null && frm.elements[i].attributes[\"checkme\"].value == group)\r\n\t\t\t\t{\r\n\t\t\t\t\tif(frm.elements[i].checked == false)\r\n\t\t\t\t\t{\r\n\t\t\t\t\t\tfrm.elements[1].checked = false;\r\n\t\t\t\t\t}\r\n\t\t\t\t}\r\n\t\t\t}\r\n\t\t}\r\n\t</script>\r\n\t<form action=\"" . $_SERVER["SCRIPT_NAME"] . "?do=banned_users" . (isset($_GET["page"]) ? "&page=" . intval($_GET["page"]) : "") . "\" method=\"post\" name=\"banned_users\">\r\n\t\r\n\t" . $Message . "\r\n\t" . $pagertop . "\r\n\t<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" class=\"mainTable\">\r\n\t\t<tr>\r\n\t\t\t<td class=\"tcat\" align=\"center\" colspan=\"11\"><b>" . str_replace("{1}", number_format($results), $Language[3]) . "</b></td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt2\"><b>" . $Language[4] . "</b></td>\r\n\t\t\t<td class=\"alt2\"><b>" . $Language[5] . "</b></td>\r\n\t\t\t<td class=\"alt2\"><b>" . $Language[12] . "</b></td>\r\n\t\t\t<td class=\"alt2\"><b>" . $Language[13] . "</b></td>\r\n\t\t\t<td class=\"alt2\"><b>" . $Language[6] . "</b></td>\r\n\t\t\t<td class=\"alt2\"><b>" . $Language[7] . "</b></td>\r\n\t\t\t<td class=\"alt2\"><b>" . $Language[8] . "</b></td>\r\n\t\t\t<td class=\"alt2\"><b>" . $Language[9] . "</b></td>\r\n\t\t\t<td class=\"alt2\"><b>" . $Language[10] . "</b></td>\r\n\t\t\t<td class=\"alt2\"><b>" . $Language[19] . "</b></td>\r\n\t\t\t<td class=\"alt2\"><input type=\"checkbox\" checkall=\"group\" onclick=\"javascript: return select_deselectAll ('banned_users', this, 'group');\"></td>\r\n\t\t</tr>\r\n\t\t" . $Found . "\r\n\t\t<tr>\r\n\t\t\t<td colspan=\"11\" align=\"right\" class=\"tcat2\">\r\n\t\t\t\t" . $Language[26] . " <input type=\"checkbox\" name=\"unbanip\" value=\"yes\" checked=\"checked\" /> " . $Language[20] . " <input type=\"checkbox\" name=\"email\" value=\"yes\" checked=\"checked\" /> " . $Language[18] . " " . $showusergroups . " <input type=\"submit\" value=\"" . $Language[14] . "\" />\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t</table>\r\n\t" . $pagertop;
+    echo "\r\n\t<script $type = \"text/javascript\">\r\n\t\tfunction select_deselectAll(formname,elm,group)\r\n\t\t{\r\n\t\t\tvar $frm = document.forms[formname];\r\n\t\t\tfor($i = 0;i<frm.length;i++)\r\n\t\t\t{\r\n\t\t\t\tif(elm.attributes[\"checkall\"] != null && elm.attributes[\"checkall\"].$value = = group)\r\n\t\t\t\t{\r\n\t\t\t\t\tif(frm.elements[i].attributes[\"checkme\"] != null && frm.elements[i].attributes[\"checkme\"].$value = = group)\r\n\t\t\t\t\t{\r\n\t\t\t\t\t\tfrm.elements[i].$checked = elm.checked;\r\n\t\t\t\t\t}\r\n\t\t\t\t}\r\n\t\t\t\telse if(frm.elements[i].attributes[\"checkme\"] != null && frm.elements[i].attributes[\"checkme\"].$value = = group)\r\n\t\t\t\t{\r\n\t\t\t\t\tif(frm.elements[i].$checked = = false)\r\n\t\t\t\t\t{\r\n\t\t\t\t\t\tfrm.elements[1].$checked = false;\r\n\t\t\t\t\t}\r\n\t\t\t\t}\r\n\t\t\t}\r\n\t\t}\r\n\t</script>\r\n\t<form $action = \"" . $_SERVER["SCRIPT_NAME"] . "?do=banned_users" . (isset($_GET["page"]) ? "&$page = " . intval($_GET["page"]) : "") . "\" $method = \"post\" $name = \"banned_users\">\r\n\t\r\n\t" . $Message . "\r\n\t" . $pagertop . "\r\n\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t<tr>\r\n\t\t\t<td class=\"tcat\" $align = \"center\" $colspan = \"11\"><b>" . str_replace("{1}", number_format($results), $Language[3]) . "</b></td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt2\"><b>" . $Language[4] . "</b></td>\r\n\t\t\t<td class=\"alt2\"><b>" . $Language[5] . "</b></td>\r\n\t\t\t<td class=\"alt2\"><b>" . $Language[12] . "</b></td>\r\n\t\t\t<td class=\"alt2\"><b>" . $Language[13] . "</b></td>\r\n\t\t\t<td class=\"alt2\"><b>" . $Language[6] . "</b></td>\r\n\t\t\t<td class=\"alt2\"><b>" . $Language[7] . "</b></td>\r\n\t\t\t<td class=\"alt2\"><b>" . $Language[8] . "</b></td>\r\n\t\t\t<td class=\"alt2\"><b>" . $Language[9] . "</b></td>\r\n\t\t\t<td class=\"alt2\"><b>" . $Language[10] . "</b></td>\r\n\t\t\t<td class=\"alt2\"><b>" . $Language[19] . "</b></td>\r\n\t\t\t<td class=\"alt2\"><input $type = \"checkbox\" $checkall = \"group\" $onclick = \"javascript: return select_deselectAll ('banned_users', this, 'group');\"></td>\r\n\t\t</tr>\r\n\t\t" . $Found . "\r\n\t\t<tr>\r\n\t\t\t<td $colspan = \"11\" $align = \"right\" class=\"tcat2\">\r\n\t\t\t\t" . $Language[26] . " <input $type = \"checkbox\" $name = \"unbanip\" $value = \"yes\" $checked = \"checked\" /> " . $Language[20] . " <input $type = \"checkbox\" $name = \"email\" $value = \"yes\" $checked = \"checked\" /> " . $Language[18] . " " . $showusergroups . " <input $type = \"submit\" $value = \"" . $Language[14] . "\" />\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t</table>\r\n\t" . $pagertop;
 }
 class Class_5
 {
@@ -106,15 +106,15 @@ class Class_5
     public function __construct($SMTP)
     {
         if ($SMTP["secure_connection"] == "yes") {
-            $this->secure = "tls";
+            $this->$secure = "tls";
         } else {
-            $this->secure = "none";
+            $this->$secure = "none";
         }
-        $this->smtpHost = $SMTP["smtpaddress"];
-        $this->smtpPort = !empty($SMTP["smtpport"]) ? intval($SMTP["smtpport"]) : 25;
-        $this->smtpUser =& $SMTP["accountname"];
-        $this->smtpPass =& $SMTP["accountpassword"];
-        $this->delimiter = "\r\n";
+        $this->$smtpHost = $SMTP["smtpaddress"];
+        $this->$smtpPort = !empty($SMTP["smtpport"]) ? intval($SMTP["smtpport"]) : 25;
+        $this->$smtpUser = & $SMTP["accountname"];
+        $this->$smtpPass = & $SMTP["accountpassword"];
+        $this->$delimiter = "\r\n";
     }
     public function function_91($toemail, $subject, $message, $from = "", $uheaders = "", $charset = "", $webmasteremail = "", $http_host = "")
     {
@@ -129,36 +129,36 @@ class Class_5
         if ((strtolower($charset) == "iso-8859-1" || $charset == "") && preg_match("/&[a-z0-9#]+;/i", $message)) {
             $message = utf8_encode($message);
             $subject = utf8_encode($subject);
-            var_285 = "UTF-8";
-            var_286 = true;
+            $var_285 = "UTF-8";
+            $var_286 = true;
         } else {
-            var_285 = $charset;
-            var_286 = false;
+            $var_285 = $charset;
+            $var_286 = false;
         }
-        $message = $this->function_93($message, var_286);
-        $subject = $this->function_94($this->function_93($subject, var_286), var_285, false, false);
+        $message = $this->function_93($message, $var_286);
+        $subject = $this->function_94($this->function_93($subject, $var_286), $var_285, false, false);
         $from = $this->function_92($from);
         if (empty($from)) {
-            var_287 = "PHP/" . phpversion() . " via the PHP TS SE SMTP Class";
-            if (var_286) {
-                var_287 = utf8_encode(var_287);
+            $var_287 = "PHP/" . phpversion() . " via the PHP TS SE SMTP Class";
+            if ($var_286) {
+                $var_287 = utf8_encode($var_287);
             }
-            var_287 = $this->function_94($this->function_93(var_287, var_286), var_285);
+            $var_287 = $this->function_94($this->function_93($var_287, $var_286), $var_285);
             if (!isset($headers)) {
                 $headers = "";
             }
-            $headers .= "From: " . var_287 . " <" . $webmasteremail . ">" . $delimiter;
+            $headers .= "From: " . $var_287 . " <" . $webmasteremail . ">" . $delimiter;
             $headers .= "Auto-Submitted: auto-generated" . $delimiter;
         } else {
-            var_287 = $from;
-            if (var_286) {
-                var_287 = utf8_encode(var_287);
+            $var_287 = $from;
+            if ($var_286) {
+                $var_287 = utf8_encode($var_287);
             }
-            var_287 = $this->function_94($this->function_93(var_287, var_286), var_285);
+            $var_287 = $this->function_94($this->function_93($var_287, $var_286), $var_285);
             if (!isset($headers)) {
                 $headers = "";
             }
-            $headers .= "From: " . var_287 . " <" . $from . ">" . $delimiter;
+            $headers .= "From: " . $var_287 . " <" . $from . ">" . $delimiter;
             $headers .= "Sender: " . $webmasteremail . $delimiter;
         }
         $fromemail = $webmasteremail;
@@ -166,21 +166,21 @@ class Class_5
         if (!$http_host) {
             $http_host = substr(md5($message), 12, 18) . ".ts_unknown.unknown";
         }
-        var_288 = "<" . gmdate("YmdHis") . "." . substr(md5($message . microtime()), 0, 12) . "@" . $http_host . ">";
-        $headers .= "Message-ID: " . var_288 . $delimiter;
+        $var_288 = "<" . gmdate("YmdHis") . "." . substr(md5($message . microtime()), 0, 12) . "@" . $http_host . ">";
+        $headers .= "Message-ID: " . $var_288 . $delimiter;
         $headers .= preg_replace("#(\r\n|\r|\n)#s", $delimiter, $uheaders);
         unset($uheaders);
         $headers .= "MIME-Version: 1.0" . $delimiter;
-        $headers .= "Content-Type: text/html" . (var_285 ? "; charset=\"" . var_285 . "\"" : "") . $delimiter;
+        $headers .= "Content-Type: text/html" . ($var_285 ? "; $charset = \"" . $var_285 . "\"" : "") . $delimiter;
         $headers .= "Content-Transfer-Encoding: 8bit" . $delimiter;
         $headers .= "X-Priority: 3" . $delimiter;
         $headers .= "X-Mailer: TS SE Mail via PHP" . $delimiter;
         $headers .= "Date: " . date("r") . $delimiter;
-        $this->toemail = $toemail;
-        $this->subject = $subject;
-        $this->message = $message;
-        $this->headers = $headers;
-        $this->fromemail = $fromemail;
+        $this->$toemail = $toemail;
+        $this->$subject = $subject;
+        $this->$message = $message;
+        $this->$headers = $headers;
+        $this->$fromemail = $fromemail;
         return true;
     }
     public function function_95($msg, $expectedResult = false)
@@ -190,13 +190,13 @@ class Class_5
         }
         if ($expectedResult !== false) {
             $result = "";
-            while (var_289 = @fgets($this->smtpSocket, 1024)) {
-                $result .= var_289;
-                if (!preg_match("#^(\\d{3}) #", var_289, var_220)) {
+            while ($var_289 = @fgets($this->smtpSocket, 1024)) {
+                $result .= $var_289;
+                if (!preg_match("#^(\\d{3}) #", $var_289, $var_220)) {
                 }
             }
-            $this->smtpReturn = intval(var_220[1]);
-            return $this->smtpReturn == $expectedResult;
+            $this->$smtpReturn = intval($var_220[1]);
+            return $this->$smtpReturn = = $expectedResult;
         }
         return true;
     }
@@ -222,7 +222,7 @@ class Class_5
         if (!$this->toemail) {
             return false;
         }
-        $this->smtpSocket = fsockopen(($this->secure == "ssl" ? "ssl://" : "tcp://") . $this->smtpHost, $this->smtpPort, fsockError, fsockErrorStr, 30);
+        $this->$smtpSocket = fsockopen(($this->$secure = = "ssl" ? "ssl://" : "tcp://") . $this->smtpHost, $this->smtpPort, fsockError, fsockErrorStr, 30);
         if ($this->smtpSocket) {
             if (!$this->function_95(false, 220)) {
                 return $this->function_96($this->smtpReturn . " Unexpected response when connecting to SMTP server");
@@ -230,7 +230,7 @@ class Class_5
             if (!$this->function_97()) {
                 return $this->function_96($this->smtpReturn . " Unexpected response from SMTP server during handshake");
             }
-            if ($this->secure == "tls" && function_exists("stream_socket_enable_crypto")) {
+            if ($this->$secure = = "tls" && function_exists("stream_socket_enable_crypto")) {
                 if ($this->function_95("STARTTLS", 220) && !stream_socket_enable_crypto($this->smtpSocket, true, STREAM_CRYPTO_METHOD_TLS_CLIENT)) {
                     return $this->function_96("Unable to negotitate TLS handshake.");
                 }
@@ -242,8 +242,8 @@ class Class_5
             if (!$this->function_95("MAIL FROM:<" . $this->fromemail . ">", 250)) {
                 return $this->function_96($this->smtpReturn . " Unexpected response from SMTP server during FROM address transmission");
             }
-            var_290 = explode(",", $this->toemail);
-            foreach (var_290 as $address) {
+            $var_290 = explode(",", $this->toemail);
+            foreach ($var_290 as $address) {
                 if (!$this->function_95("RCPT TO:<" . trim($address) . ">", 250)) {
                     return $this->function_96($this->smtpReturn . " Unexpected response from SMTP server during TO address transmission");
                 }
@@ -254,7 +254,7 @@ class Class_5
                 $this->function_95(trim($this->headers), false);
                 $this->function_95("Subject: " . $this->subject, false);
                 $this->function_95("\r\n", false);
-                $this->message = preg_replace("#^\\." . $this->delimiter . "#m", ".." . $this->delimiter, $this->message);
+                $this->$message = preg_replace("#^\\." . $this->delimiter . "#m", ".." . $this->delimiter, $this->message);
                 $this->function_95($this->message, false);
                 if (!$this->function_95(".", 250)) {
                     return $this->function_96($this->smtpReturn . " Unexpected response from SMTP server when ending transmission");
@@ -293,25 +293,25 @@ class Class_5
             return $text;
         }
         if ($force_encode) {
-            var_292 = true;
+            $var_292 = true;
         } else {
-            var_292 = false;
+            $var_292 = false;
             $i = 0;
             while ($i < strlen($text)) {
                 if (127 < ord($text[$i])) {
-                    var_292 = true;
+                    $var_292 = true;
                 } else {
                     $i++;
                 }
             }
         }
-        if (var_292) {
-            var_293 = preg_replace_callback("#([^a-zA-Z0-9!*+\\-/ ])#", function ($matches) {
+        if ($var_292) {
+            $var_293 = preg_replace_callback("#([^a-zA-Z0-9!*+\\-/ ])#", function ($matches) {
                 return "'=" . strtoupper(dechex(ord(str_replace("\\\\\"", "\\\"", $matches[1]))));
             }, $text);
-            var_293 = str_replace(" ", "_", var_293);
-            var_293 = "=?" . $charset . "?q?" . var_293 . "?=";
-            return var_293;
+            $var_293 = str_replace(" ", "_", $var_293);
+            $var_293 = "=?" . $charset . "?q?" . $var_293 . "?=";
+            return $var_293;
         }
         if ($quoted_string) {
             $text = str_replace(["\"", "(", ")"], ["\\\"", "\\(", "\\)"], $text);
@@ -320,25 +320,25 @@ class Class_5
         return preg_replace("#(\\r\\n|\\n|\\r)+#", " ", $text);
     }
 }
-function function_75()
+function getStaffLanguage()
 {
     if (isset($_COOKIE["staffcplanguage"]) && is_dir("languages/" . $_COOKIE["staffcplanguage"]) && is_file("languages/" . $_COOKIE["staffcplanguage"] . "/staffcp.lang")) {
         return $_COOKIE["staffcplanguage"];
     }
     return "english";
 }
-function function_77()
+function checkStaffAuthentication()
 {
     if (!defined("IN-TSSE-STAFF-PANEL")) {
         var_236("../index.php");
     }
 }
-function function_78($url)
+function redirectTo($url)
 {
     if (!headers_sent()) {
         header("Location: " . $url);
     } else {
-        echo "\r\n\t\t<script type=\"text/javascript\">\r\n\t\t\twindow.location.href=\"" . $url . "\";\r\n\t\t</script>\r\n\t\t<noscript>\r\n\t\t\t<meta http-equiv=\"refresh\" content=\"0;url=" . $url . "\" />\r\n\t\t</noscript>";
+        echo "\r\n\t\t<script $type = \"text/javascript\">\r\n\t\t\twindow.location.$href = \"" . $url . "\";\r\n\t\t</script>\r\n\t\t<noscript>\r\n\t\t\t<meta http-$equiv = \"refresh\" $content = \"0;$url = " . $url . "\" />\r\n\t\t</noscript>";
     }
     exit;
 }
@@ -347,30 +347,30 @@ function function_100($to, $subject, $body)
     global $MAIN;
     global $SMTP;
     global $THEME;
-    var_295 = $MAIN["SITENAME"];
+    $var_295 = $MAIN["SITENAME"];
     $fromemail = $MAIN["SITEEMAIL"];
-    var_296 = false;
+    $var_296 = false;
     if (strtoupper(substr(PHP_OS, 0, 3) == "WIN")) {
-        var_297 = "\r\n";
-        var_296 = true;
+        $var_297 = "\r\n";
+        $var_296 = true;
     } else {
         if (strtoupper(substr(PHP_OS, 0, 3) == "MAC")) {
-            var_297 = "\r";
+            $var_297 = "\r";
         } else {
-            var_297 = "\n";
+            $var_297 = "\n";
         }
     }
-    var_298 = md5(uniqid(rand(), true) . time());
-    var_41 = $_SERVER["SERVER_NAME"];
-    $headers = "From: " . var_295 . " <" . $fromemail . ">" . var_297;
-    $headers .= "Reply-To: " . var_295 . " <" . $fromemail . ">" . var_297;
-    $headers .= "Return-Path: " . var_295 . " <" . $fromemail . ">" . var_297;
-    $headers .= "Message-ID: <" . var_298 . " thesystem@" . var_41 . ">" . var_297;
-    $headers .= "X-Mailer: PHP v" . phpversion() . var_297;
-    $headers .= "MIME-Version: 1.0" . var_297;
-    $headers .= "Content-Transfer-Encoding: 8bit" . var_297;
-    $headers .= "Content-type: text/html; charset=" . $THEME["charset"] . var_297;
-    $headers .= "X-Sender: PHP" . var_297;
+    $var_298 = md5(uniqid(rand(), true) . time());
+    $var_41 = $_SERVER["SERVER_NAME"];
+    $headers = "From: " . $var_295 . " <" . $fromemail . ">" . $var_297;
+    $headers .= "Reply-To: " . $var_295 . " <" . $fromemail . ">" . $var_297;
+    $headers .= "Return-Path: " . $var_295 . " <" . $fromemail . ">" . $var_297;
+    $headers .= "Message-ID: <" . $var_298 . " thesystem@" . $var_41 . ">" . $var_297;
+    $headers .= "X-Mailer: PHP v" . phpversion() . $var_297;
+    $headers .= "MIME-Version: 1.0" . $var_297;
+    $headers .= "Content-Transfer-Encoding: 8bit" . $var_297;
+    $headers .= "Content-type: text/html; $charset = " . $THEME["charset"] . $var_297;
+    $headers .= "X-Sender: PHP" . $var_297;
     if ($SMTP["smtptype"] == "default") {
         return mail($to, $subject, $body, $headers);
     }
@@ -378,26 +378,26 @@ function function_100($to, $subject, $body)
         if (isset($SMTP["smtp"]) && $SMTP["smtp"] == "yes") {
             ini_set("SMTP", $SMTP["smtp_host"]);
             ini_set("smtp_port", $SMTP["smtp_port"]);
-            if (var_296) {
+            if ($var_296) {
                 ini_set("sendmail_from", $SMTP["smtp_from"]);
             }
         }
-        var_299 = mail($to, $subject, $body, $headers);
+        $var_299 = mail($to, $subject, $body, $headers);
         if (isset($SMTP["smtp"]) && $SMTP["smtp"] == "yes") {
             ini_restore("SMTP");
             ini_restore("smtp_port");
-            if (var_296) {
+            if ($var_296) {
                 ini_restore("sendmail_from");
             }
         }
-        return var_299;
+        return $var_299;
     }
-    var_300 = new Class_5($SMTP);
-    var_300->function_91($to, trim($subject), trim($body), $fromemail, "", $THEME["charset"], $fromemail, $MAIN["BASEURL"]);
-    var_301 = var_300->function_98();
-    return var_301;
+    $var_300 = new Class_5($SMTP);
+    $var_300->function_91($to, trim($subject), trim($body), $fromemail, "", $THEME["charset"], $fromemail, $MAIN["BASEURL"]);
+    $var_301 = $var_300->function_98();
+    return $var_301;
 }
-function function_88($bytes = 0)
+function formatBytes($bytes = 0)
 {
     if ($bytes < 1024000) {
         return number_format($bytes / 1024, 2) . " KB";
@@ -410,11 +410,11 @@ function function_88($bytes = 0)
     }
     return number_format($bytes / 0, 2) . " TB";
 }
-function function_76($Error)
+function showAlertError($Error)
 {
     return "<div class=\"alert\"><div>" . $Error . "</div></div>";
 }
-function function_86($numresults, &$page, &$perpage, $maxperpage = 20, $defaultperpage = 20)
+function validatePerPage($numresults, &$page, &$perpage, $maxperpage = 20, $defaultperpage = 20)
 {
     $perpage = intval($perpage);
     if ($perpage < 1) {
@@ -424,113 +424,113 @@ function function_86($numresults, &$page, &$perpage, $maxperpage = 20, $defaultp
             $perpage = $maxperpage;
         }
     }
-    var_240 = ceil($numresults / $perpage);
-    if (var_240 == 0) {
-        var_240 = 1;
+    $var_240 = ceil($numresults / $perpage);
+    if ($var_240 == 0) {
+        $var_240 = 1;
     }
     if ($page < 1) {
         $page = 1;
     } else {
-        if (var_240 < $page) {
-            $page = var_240;
+        if ($var_240 < $page) {
+            $page = $var_240;
         }
     }
 }
-function function_87($pagenumber, $perpage, $total)
+function calculatePagination($pagenumber, $perpage, $total)
 {
-    var_241 = $perpage * ($pagenumber - 1);
-    var_89 = var_241 + $perpage;
-    if ($total < var_89) {
-        var_89 = $total;
+    $var_241 = $perpage * ($pagenumber - 1);
+    $var_89 = $var_241 + $perpage;
+    if ($total < $var_89) {
+        $var_89 = $total;
     }
-    var_241++;
-    return ["first" => number_format(var_241), "last" => number_format(var_89)];
+    $var_241++;
+    return ["first" => number_format($var_241), "last" => number_format($var_89)];
 }
-function function_82($perpage, $results, $address)
+function buildPaginationLinks($perpage, $results, $address)
 {
     if ($results < $perpage) {
         return ["", ""];
     }
     if ($results) {
-        var_242 = @ceil($results / $perpage);
+        $var_242 = @ceil($results / $perpage);
     } else {
-        var_242 = 0;
+        $var_242 = 0;
     }
     $pagenumber = isset($_GET["page"]) ? intval($_GET["page"]) : (isset($_POST["page"]) ? intval($_POST["page"]) : "");
-    function_86($results, $pagenumber, $perpage, 200);
-    var_243 = ($pagenumber - 1) * $perpage;
-    var_244 = $pagenumber * $perpage;
-    if ($results < var_244) {
-        var_244 = $results;
-        if ($results < var_243) {
-            var_243 = $results - $perpage - 1;
+    validatePerPage($results, $pagenumber, $perpage, 200);
+    $var_243 = ($pagenumber - 1) * $perpage;
+    $var_244 = $pagenumber * $perpage;
+    if ($results < $var_244) {
+        $var_244 = $results;
+        if ($results < $var_243) {
+            $var_243 = $results - $perpage - 1;
         }
     }
-    if (var_243 < 0) {
-        var_243 = 0;
+    if ($var_243 < 0) {
+        $var_243 = 0;
     }
-    var_245 = var_246 = var_247 = var_248 = var_249 = "";
-    var_250 = 0;
+    $var_245 = $var_246 = $var_247 = $var_248 = $var_249 = "";
+    $var_250 = 0;
     if ($results <= $perpage) {
-        var_251["pagenav"] = false;
-        return ["", "LIMIT " . var_243 . ", " . $perpage];
+        $var_251["pagenav"] = false;
+        return ["", "LIMIT " . $var_243 . ", " . $perpage];
     }
-    var_251["pagenav"] = true;
+    $var_251["pagenav"] = true;
     $total = number_format($results);
-    var_251["last"] = false;
-    var_251["first"] = var_251["last"];
-    var_251["next"] = var_251["first"];
-    var_251["prev"] = var_251["next"];
+    $var_251["last"] = false;
+    $var_251["first"] = $var_251["last"];
+    $var_251["next"] = $var_251["first"];
+    $var_251["prev"] = $var_251["next"];
     if (1 < $pagenumber) {
-        var_252 = $pagenumber - 1;
-        var_253 = function_87(var_252, $perpage, $results);
-        var_251["prev"] = true;
+        $var_252 = $pagenumber - 1;
+        $var_253 = calculatePagination($var_252, $perpage, $results);
+        $var_251["prev"] = true;
     }
-    if ($pagenumber < var_242) {
-        var_254 = $pagenumber + 1;
-        var_255 = function_87(var_254, $perpage, $results);
-        var_251["next"] = true;
+    if ($pagenumber < $var_242) {
+        $var_254 = $pagenumber + 1;
+        $var_255 = calculatePagination($var_254, $perpage, $results);
+        $var_251["next"] = true;
     }
-    var_256 = "3";
-    if (!isset(var_257) || !is_array(var_257)) {
-        var_258 = "10 50 100 500 1000";
-        var_257[] = preg_split("#\\s+#s", var_258, -1, PREG_SPLIT_NO_EMPTY);
-        while (var_250++ < var_242) {
+    $var_256 = "3";
+    if (!isset($var_257) || !is_array($var_257)) {
+        $var_258 = "10 50 100 500 1000";
+        $var_257[] = preg_split("#\\s+#s", $var_258, -1, PREG_SPLIT_NO_EMPTY);
+        while ($var_250++ < $var_242) {
         }
-        var_259 = isset(var_252) && var_252 != 1 ? "page=" . var_252 : "";
-        var_245 = "\r\n\t<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" class=\"mainTableNoBorder\">\r\n\t\t<tr>\r\n\t\t\t<td style=\"padding: 0px 0px 1px 0px;\">\r\n\t\t\t\t<div style=\"float: left;\" id=\"navcontainer_f\">\r\n\t\t\t\t\t<ul>\r\n\t\t\t\t\t\t<li>" . $pagenumber . " - " . var_242 . "</li>\r\n\t\t\t\t\t\t" . (var_251["first"] ? "<li><a class=\"smalltext\" href=\"" . $address . "\" title=\"First Page - Show Results " . var_260["first"] . " to " . var_260["last"] . " of " . $total . "\">&laquo; First</a></li>" : "") . (var_251["prev"] ? "<li><a class=\"smalltext\" href=\"" . $address . var_259 . "\" title=\"Previous Page - Show Results " . var_253["first"] . " to " . var_253["last"] . " of " . $total . "\">&lt;</a></li>" : "") . "\r\n\t\t\t\t\t\t" . var_245 . "\r\n\t\t\t\t\t\t" . (var_251["next"] ? "<li><a class=\"smalltext\" href=\"" . $address . "page=" . var_254 . "\" title=\"Next Page - Show Results " . var_255["first"] . " to " . var_255["last"] . " of " . $total . "\">&gt;</a></li>" : "") . (var_251["last"] ? "<li><a class=\"smalltext\" href=\"" . $address . "page=" . var_242 . "\" title=\"Last Page - Show Results " . var_261["first"] . " to " . var_261["last"] . " of " . $total . "\">Last <strong>&raquo;</strong></a></li>" : "") . "\r\n\t\t\t\t\t</ul>\r\n\t\t\t\t</div>\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t</table>";
-        return [var_245, "LIMIT " . var_243 . ", " . $perpage];
+        $var_259 = isset($var_252) && $var_252 != 1 ? "page=" . $var_252 : "";
+        $var_245 = "\r\n\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTableNoBorder\">\r\n\t\t<tr>\r\n\t\t\t<td $style = \"padding: 0px 0px 1px 0px;\">\r\n\t\t\t\t<div $style = \"float: left;\" $id = \"navcontainer_f\">\r\n\t\t\t\t\t<ul>\r\n\t\t\t\t\t\t<li>" . $pagenumber . " - " . $var_242 . "</li>\r\n\t\t\t\t\t\t" . ($var_251["first"] ? "<li><a class=\"smalltext\" $href = \"" . $address . "\" $title = \"First Page - Show Results " . $var_260["first"] . " to " . $var_260["last"] . " of " . $total . "\">&laquo; First</a></li>" : "") . ($var_251["prev"] ? "<li><a class=\"smalltext\" $href = \"" . $address . $var_259 . "\" $title = \"Previous Page - Show Results " . $var_253["first"] . " to " . $var_253["last"] . " of " . $total . "\">&lt;</a></li>" : "") . "\r\n\t\t\t\t\t\t" . $var_245 . "\r\n\t\t\t\t\t\t" . ($var_251["next"] ? "<li><a class=\"smalltext\" $href = \"" . $address . "page=" . $var_254 . "\" $title = \"Next Page - Show Results " . $var_255["first"] . " to " . $var_255["last"] . " of " . $total . "\">&gt;</a></li>" : "") . ($var_251["last"] ? "<li><a class=\"smalltext\" $href = \"" . $address . "page=" . $var_242 . "\" $title = \"Last Page - Show Results " . $var_261["first"] . " to " . $var_261["last"] . " of " . $total . "\">Last <strong>&raquo;</strong></a></li>" : "") . "\r\n\t\t\t\t\t</ul>\r\n\t\t\t\t</div>\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t</table>";
+        return [$var_245, "LIMIT " . $var_243 . ", " . $perpage];
     }
-    if (var_256 <= abs(var_250 - $pagenumber) && var_256 != 0) {
-        if (var_250 == 1) {
-            var_260 = function_87(1, $perpage, $results);
-            var_251["first"] = true;
+    if ($var_256 <= abs($var_250 - $pagenumber) && $var_256 != 0) {
+        if ($var_250 == 1) {
+            $var_260 = calculatePagination(1, $perpage, $results);
+            $var_251["first"] = true;
         }
-        if (var_250 == var_242) {
-            var_261 = function_87(var_242, $perpage, $results);
-            var_251["last"] = true;
+        if ($var_250 == $var_242) {
+            $var_261 = calculatePagination($var_242, $perpage, $results);
+            $var_251["last"] = true;
         }
-        if (in_array(abs(var_250 - $pagenumber), var_257) && var_250 != 1 && var_250 != var_242) {
-            var_262 = function_87(var_250, $perpage, $results);
-            var_263 = var_250 - $pagenumber;
-            if (0 < var_263) {
-                var_263 = "+" . var_263;
+        if (in_array(abs($var_250 - $pagenumber), $var_257) && $var_250 != 1 && $var_250 != $var_242) {
+            $var_262 = calculatePagination($var_250, $perpage, $results);
+            $var_263 = $var_250 - $pagenumber;
+            if (0 < $var_263) {
+                $var_263 = "+" . $var_263;
             }
-            var_245 .= "<li><a class=\"smalltext\" href=\"" . $address . (var_250 != 1 ? "page=" . var_250 : "") . "\" title=\"Show results " . var_262["first"] . " to " . var_262["last"] . " of " . $total . "\"><!--" . var_263 . "-->" . var_250 . "</a></li>";
+            $var_245 .= "<li><a class=\"smalltext\" $href = \"" . $address . ($var_250 != 1 ? "page=" . $var_250 : "") . "\" $title = \"Show results " . $var_262["first"] . " to " . $var_262["last"] . " of " . $total . "\"><!--" . $var_263 . "-->" . $var_250 . "</a></li>";
         }
     } else {
-        if (var_250 == $pagenumber) {
-            var_264 = function_87(var_250, $perpage, $results);
-            var_245 .= "<li><a name=\"current\" class=\"current\" title=\"Showing results " . var_264["first"] . " to " . var_264["last"] . " of " . $total . "\">" . var_250 . "</a></li>";
+        if ($var_250 == $pagenumber) {
+            $var_264 = calculatePagination($var_250, $perpage, $results);
+            $var_245 .= "<li><a $name = \"current\" class=\"current\" $title = \"Showing results " . $var_264["first"] . " to " . $var_264["last"] . " of " . $total . "\">" . $var_250 . "</a></li>";
         } else {
-            var_262 = function_87(var_250, $perpage, $results);
-            var_245 .= "<li><a href=\"" . $address . (var_250 != 1 ? "page=" . var_250 : "") . "\" title=\"Show results " . var_262["first"] . " to " . var_262["last"] . " of " . $total . "\">" . var_250 . "</a></li>";
+            $var_262 = calculatePagination($var_250, $perpage, $results);
+            $var_245 .= "<li><a $href = \"" . $address . ($var_250 != 1 ? "page=" . $var_250 : "") . "\" $title = \"Show results " . $var_262["first"] . " to " . $var_262["last"] . " of " . $total . "\">" . $var_250 . "</a></li>";
         }
     }
 }
-function function_84($timestamp = "")
+function formatTimestamp($timestamp = "")
 {
-    var_265 = "m-d-Y h:i A";
+    $var_265 = "m-d-Y h:i A";
     if (empty($timestamp)) {
         $timestamp = time();
     } else {
@@ -538,53 +538,53 @@ function function_84($timestamp = "")
             $timestamp = strtotime($timestamp);
         }
     }
-    return date(var_265, $timestamp);
+    return date($var_265, $timestamp);
 }
-function function_83($username, $namestyle)
+function applyUsernameStyle($username, $namestyle)
 {
     return str_replace("{username}", $username, $namestyle);
 }
-function function_79($log)
+function logStaffAction($log)
 {
     mysqli_query($GLOBALS["DatabaseConnect"], "INSERT INTO ts_staffcp_logs (uid, date, log) VALUES ('" . $_SESSION["ADMIN_ID"] . "', '" . time() . "', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $log) . "')");
 }
 function function_113($userid)
 {
-    var_335 = [];
-    var_67 = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT ip FROM iplog WHERE userid = '" . $userid . "'");
-    if (mysqli_num_rows(var_67)) {
-        while (var_336 = mysqli_fetch_assoc(var_67)) {
-            if (var_336["ip"]) {
-                var_335[] = trim(var_336["ip"]);
+    $var_335 = [];
+    $var_67 = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT ip FROM iplog WHERE $userid = '" . $userid . "'");
+    if (mysqli_num_rows($var_67)) {
+        while ($var_336 = mysqli_fetch_assoc($var_67)) {
+            if ($var_336["ip"]) {
+                $var_335[] = trim($var_336["ip"]);
             }
         }
     }
     if ($userid) {
-        var_67 = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT ip FROM users WHERE id = '" . $userid . "'");
-        if (mysqli_num_rows(var_67)) {
-            $Result = mysqli_fetch_assoc(var_67);
-            var_337 = trim($Result["ip"]);
-            if (!in_array(var_337, var_335)) {
-                var_335[] = var_337;
+        $var_67 = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT ip FROM users WHERE $id = '" . $userid . "'");
+        if (mysqli_num_rows($var_67)) {
+            $Result = mysqli_fetch_assoc($var_67);
+            $var_337 = trim($Result["ip"]);
+            if (!in_array($var_337, $var_335)) {
+                $var_335[] = $var_337;
             }
-            var_338 = ip2long(var_337);
-            mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM xbt_deny_from_hosts WHERE begin = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], var_338) . "' OR end = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], var_338) . "'");
+            $var_338 = ip2long($var_337);
+            mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM xbt_deny_from_hosts WHERE $begin = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $var_338) . "' OR $end = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $var_338) . "'");
         }
     }
-    var_339 = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT value FROM ipbans WHERE id = 1");
-    if (mysqli_num_rows(var_339)) {
-        $Result = mysqli_fetch_assoc(var_339);
+    $var_339 = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT value FROM ipbans WHERE $id = 1");
+    if (mysqli_num_rows($var_339)) {
+        $Result = mysqli_fetch_assoc($var_339);
         $value = trim($Result["value"]);
         $value = explode(" ", $value);
-        if (count(var_335)) {
-            foreach (var_335 as var_340) {
-                if (in_array(var_340, $value)) {
-                    $key = array_search(var_340, $value);
+        if (count($var_335)) {
+            foreach ($var_335 as $var_340) {
+                if (in_array($var_340, $value)) {
+                    $key = array_search($var_340, $value);
                     unset($value[$key]);
                 }
             }
         }
-        mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE ipbans SET value = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], trim(implode(" ", $value))) . "', date = NOW(), modifier = '" . $_SESSION["ADMIN_ID"] . "' WHERE id = 1");
+        mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE ipbans SET $value = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], trim(implode(" ", $value))) . "', $date = NOW(), $modifier = '" . $_SESSION["ADMIN_ID"] . "' WHERE $id = 1");
     }
 }
 

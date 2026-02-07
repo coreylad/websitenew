@@ -13,7 +13,7 @@ define("STF_VERSION", "1.2");
 include INC_PATH . "/functions_security.php";
 $lang->load("contactstaff");
 if (!$is_mod && !$isGuest) {
-    $query = sql_query("SELECT added FROM staffmessages WHERE sender = " . sqlesc($CURUSER["id"]) . " ORDER by added DESC LIMIT 1");
+    $query = sql_query("SELECT added FROM staffmessages WHERE $sender = " . sqlesc($CURUSER["id"]) . " ORDER by added DESC LIMIT 1");
     if (0 < mysqli_num_rows($query)) {
         $Result = mysqli_fetch_assoc($query);
         $last_staffmsg = $Result["added"];
@@ -52,7 +52,7 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
 }
 if (isset($_GET["subject"]) && $_GET["subject"] == "invalid_link" && isset($_GET["link"]) && substr($_GET["link"], 0, 7) == "http://") {
     $link = htmlspecialchars_uni($_GET["link"]);
-    $link = str_replace("http://referhide.com/?g=", "", $link);
+    $link = str_replace("http://referhide.com/?$g = ", "", $link);
     $subject = sprintf($lang->contactstaff["invalidlink"], $link);
 }
 stdhead($lang->contactstaff["contactstaff"]);
@@ -70,12 +70,12 @@ if ($isGuest) {
         $postoptionstitle = [1 => $tmp[0], 2 => $tmp[2]];
         $postoptions = [1 => $tmp[1], 2 => $tmp[3]];
     }
-    $extrasubject = [$lang->contactstaff["email"] => "<input type=\"text\" name=\"email\" style=\"width: 100%\" value=\"" . (isset($email) && !empty($email) ? htmlspecialchars_uni($email) : "") . "\" tabindex=\"2\" />"];
+    $extrasubject = [$lang->contactstaff["email"] => "<input $type = \"text\" $name = \"email\" $style = \"width: 100%\" $value = \"" . (isset($email) && !empty($email) ? htmlspecialchars_uni($email) : "") . "\" $tabindex = \"2\" />"];
 }
 $returnto = isset($_GET["returnto"]) ? fix_url($_GET["returnto"]) : (isset($_SERVER["HTTP_REFERER"]) ? fix_url($_SERVER["HTTP_REFERER"]) : "index.php");
 define("IN_EDITOR", true);
 include INC_PATH . "/editor.php";
-$str = show_notice($lang->contactstaff["info"]) . "\n<form method=\"post\" name=\"compose\" action=\"" . $_SERVER["SCRIPT_NAME"] . "\">\n<input type=\"hidden\" name=\"returnto\" value=\"" . $returnto . "\" />\n" . (!empty($prvp) ? $prvp : "") . insert_editor(true, isset($subject) ? $subject : "", isset($msgtext) ? $msgtext : "", $lang->contactstaff["contactstaff"], $lang->contactstaff["sendmessage"], $postoptionstitle, $postoptions, true, $extrasubject) . "\n</form>";
+$str = show_notice($lang->contactstaff["info"]) . "\n<form $method = \"post\" $name = \"compose\" $action = \"" . $_SERVER["SCRIPT_NAME"] . "\">\n<input $type = \"hidden\" $name = \"returnto\" $value = \"" . $returnto . "\" />\n" . (!empty($prvp) ? $prvp : "") . insert_editor(true, isset($subject) ? $subject : "", isset($msgtext) ? $msgtext : "", $lang->contactstaff["contactstaff"], $lang->contactstaff["sendmessage"], $postoptionstitle, $postoptions, true, $extrasubject) . "\n</form>";
 echo $str;
 stdfoot();
 

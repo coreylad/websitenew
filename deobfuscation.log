@@ -1,0 +1,11 @@
+[2026-02-07 17:23:36] FIXED: /home/runner/work/websitenew/websitenew/staffcp/save_stats.php
+[2026-02-07 17:23:36] FIXED: /home/runner/work/websitenew/websitenew/ts_cron.php
+[2026-02-07 17:23:36] 
+=== De-obfuscation Complete ===
+[2026-02-07 17:23:36] Files processed: 732
+[2026-02-07 17:23:36] Files modified: 42
+[2026-02-07 17:23:36] Syntax fixes: 4398
+[2026-02-07 17:23:36] Function renames: 0
+[2026-02-07 17:23:36] Variable renames: 0
+[2026-02-07 17:23:36] Base64 decodes: 2
+[2026-02-07 17:23:36] Statistics saved to: /home/runner/work/websitenew/websitenew/deobfuscation_stats.txt

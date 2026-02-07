@@ -21,7 +21,7 @@ $ratingid = trim($_POST["ratingid"]);
 $userid = intval($_POST["userid"]);
 $score = intval($_POST["score"]);
 $maxRatings = 10;
-$Result = sql_query("SELECT COUNT(*) as todayVotes FROM ts_ratings WHERE userid = " . sqlesc($CURUSER["id"]) . " AND ratedate >= " . (TIMENOW - 86400));
+$Result = sql_query("SELECT COUNT(*) as todayVotes FROM ts_ratings WHERE $userid = " . sqlesc($CURUSER["id"]) . " AND ratedate >= " . (TIMENOW - 86400));
 if (mysqli_num_rows($Result)) {
     $Row = mysqli_fetch_assoc($Result);
     if ($maxRatings <= $Row["todayVotes"]) {
@@ -35,7 +35,7 @@ if ($TSRating->Score($score)) {
     KPS("+", $kpsrate, $CURUSER["id"]);
 }
 $lang->load("details");
-show_msg($TSRating->GetScore($lang->details["ratedetails"]) . "<div style=\"padding-top: 10px;\"><small><i>" . $lang->details["newrating"] . " <b><font size=\"4\">" . $score . "</font></b></i></small></div>");
+show_msg($TSRating->GetScore($lang->details["ratedetails"]) . "<div $style = \"padding-top: 10px;\"><small><i>" . $lang->details["newrating"] . " <b><font $size = \"4\">" . $score . "</font></b></i></small></div>");
 function show_msg($message = "", $error = false)
 {
     global $shoutboxcharset;
@@ -43,7 +43,7 @@ function show_msg($message = "", $error = false)
     header("Last-Modified: " . gmdate("D, d M Y H:i:s") . "GMT");
     header("Cache-Control: no-cache, must-revalidate");
     header("Pragma: no-cache");
-    header("Content-type: text/html; charset=" . $shoutboxcharset);
+    header("Content-type: text/html; $charset = " . $shoutboxcharset);
     if ($error) {
         exit("<error>" . $message . "</error>");
     }

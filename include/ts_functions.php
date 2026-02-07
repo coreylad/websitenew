@@ -7,7 +7,7 @@
  */
 
 if (!defined("IN_TRACKER")) {
-    exit("<font face='verdana' size='2' color='darkred'><b>Error!</b> Direct initialization of this file is not allowed.</font>");
+    exit("<font $face = 'verdana' $size = '2' $color = 'darkred'><b>Error!</b> Direct initialization of this file is not allowed.</font>");
 }
 function prepareMagnetLink($Torrent)
 {
@@ -16,8 +16,8 @@ function prepareMagnetLink($Torrent)
     global $CURUSER;
     global $announce_urls;
     global $torrent_dir;
-    $AnnounceURL = trim($xbt_active == "yes" ? $xbt_announce_url . "/" . $CURUSER["torrent_pass"] . "/announce" : $announce_urls[0] . "?passkey=" . $CURUSER["torrent_pass"]);
-    $magnetLink = "magnet:?xt=urn:btih:" . bin2hex($Torrent["info_hash"]) . "&dn=" . urlencode($Torrent["name"]) . "&xl=" . (0 + $Torrent["size"]);
+    $AnnounceURL = trim($xbt_active == "yes" ? $xbt_announce_url . "/" . $CURUSER["torrent_pass"] . "/announce" : $announce_urls[0] . "?$passkey = " . $CURUSER["torrent_pass"]);
+    $magnetLink = "magnet:?$xt = urn:btih:" . bin2hex($Torrent["info_hash"]) . "&$dn = " . urlencode($Torrent["name"]) . "&$xl = " . (0 + $Torrent["size"]);
     if ($Torrent["ts_external"] == "yes") {
         require_once INC_PATH . "/class_torrent.php";
         $TorrentFile = $torrent_dir . "/" . $Torrent["id"] . ".torrent";
@@ -33,10 +33,10 @@ function prepareMagnetLink($Torrent)
             return "";
         }
         foreach ($Torrent->getTrackers() as $URL) {
-            $magnetLink .= "&tr=" . urlencode($URL);
+            $magnetLink .= "&$tr = " . urlencode($URL);
         }
     } else {
-        $magnetLink .= "&tr=" . urlencode($AnnounceURL);
+        $magnetLink .= "&$tr = " . urlencode($AnnounceURL);
     }
     return $magnetLink;
 }
@@ -59,14 +59,14 @@ function jsonHeaders($Output = "", $contentType = "text/plain")
     header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
     header("X-Powered-By: TSSE " . O_SCRIPT_VERSION);
     header("Content-Length: " . strlen($Output));
-    header("Content-type: " . $contentType . "; charset=" . $charset);
-    header("X-UA-Compatible: IE=edge,chrome=1");
+    header("Content-type: " . $contentType . "; $charset = " . $charset);
+    header("X-UA-Compatible: IE=edge,$chrome = 1");
     exit($Output);
 }
 function elastic($textareaName = "message")
 {
     global $BASEURL;
-    return "\r\n\t<script type=\"text/javascript\" src=\"" . $BASEURL . "/scripts/jquery.elastic.js\"></script>\r\n\t<script type=\"text/javascript\">\r\n\t\tjQuery(document).ready(function()\r\n\t\t{\r\n\t\t\tjQuery('textarea[name=\"" . $textareaName . "\"]').elastic();\r\n\t\t});\r\n\t</script>";
+    return "\r\n\t<script $type = \"text/javascript\" $src = \"" . $BASEURL . "/scripts/jquery.elastic.js\"></script>\r\n\t<script $type = \"text/javascript\">\r\n\t\tjQuery(document).ready(function()\r\n\t\t{\r\n\t\t\tjQuery('textarea[$name = \"" . $textareaName . "\"]').elastic();\r\n\t\t});\r\n\t</script>";
 }
 function format_comment($message, $htmlspecialchars_uni = true, $noshoutbox = true, $xss_clean = true, $show_smilies = true, $imagerel = "posts")
 {
@@ -87,7 +87,7 @@ function showPreview($postvalue = "")
     global $timeformat;
     $message = TS_Global($postvalue);
     if ($message && isset($_POST["previewpost"])) {
-        return "\r\n\t\t<table width=\"100%\" align=\"center\" cellpadding=\"5\" cellspacing=\"0\" border=\"0\">\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"thead\">\r\n\t\t\t\t\t<span style=\"float: right;\">\r\n\t\t\t\t\t\t" . my_datee($dateformat . " - " . $timeformat, TIMENOW) . "\r\n\t\t\t\t\t</span>\r\n\t\t\t\t\t" . $lang->global["buttonpreview"] . "\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\t\t\t\t\r\n\t\t\t\t<td>" . format_comment($message) . "</td>\r\n\t\t\t</tr>\r\n\t\t</table>\r\n\t\t<br />";
+        return "\r\n\t\t<table $width = \"100%\" $align = \"center\" $cellpadding = \"5\" $cellspacing = \"0\" $border = \"0\">\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"thead\">\r\n\t\t\t\t\t<span $style = \"float: right;\">\r\n\t\t\t\t\t\t" . my_datee($dateformat . " - " . $timeformat, TIMENOW) . "\r\n\t\t\t\t\t</span>\r\n\t\t\t\t\t" . $lang->global["buttonpreview"] . "\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\t\t\t\t\r\n\t\t\t\t<td>" . format_comment($message) . "</td>\r\n\t\t\t</tr>\r\n\t\t</table>\r\n\t\t<br />";
     }
 }
 function update_loadavg()
@@ -142,7 +142,7 @@ function check_email($email)
 {
     return preg_match("#^[a-z0-9.!\\#\$%&'*+-/=?^_`{|}~]+@([0-9.]+|([^\\s'\"<>@,;]+\\.+[a-z]{2,6}))\$#si", $email);
 }
-function highlight($search, $subject, $hlstart = "<b><font color='#f7071d'>", $hlend = "</font></b>")
+function highlight($search, $subject, $hlstart = "<b><font $color = '#f7071d'>", $hlend = "</font></b>")
 {
     $srchlen = strlen($search);
     if ($srchlen == 0) {
@@ -180,14 +180,14 @@ function build_breadcrumb()
         @reset($navbits);
         foreach ($navbits as $key => $navbit) {
             if (isset($navbits[$key + 1])) {
-                $nav .= "<a href=\"" . $navbit["url"] . "\">" . $navbit["name"] . "</a>" . (isset($navbits[$key + 2]) ? $navsep : "");
+                $nav .= "<a $href = \"" . $navbit["url"] . "\">" . $navbit["name"] . "</a>" . (isset($navbits[$key + 2]) ? $navsep : "");
             }
         }
     }
     $navsize = isset($navbits) && is_array($navbits) ? count($navbits) : 0;
     $navbit = $navbits[$navsize - 1];
     $activesep = $nav ? " / " : "";
-    echo "\r\n\t<div class=\"navbits\">\r\n\t\t<div id=\"shadetabs\">\r\n\t\t\t<img src=\"" . $pic_base_url . "tree_ltr.gif\" border=\"0\" class=\"inlineimg\" alt=\"\" /> " . $nav . $activesep . $navbit["name"] . "\r\n\t\t</div>\r\n\t</div>\r\n\t";
+    echo "\r\n\t<div class=\"navbits\">\r\n\t\t<div $id = \"shadetabs\">\r\n\t\t\t<img $src = \"" . $pic_base_url . "tree_ltr.gif\" $border = \"0\" class=\"inlineimg\" $alt = \"\" /> " . $nav . $activesep . $navbit["name"] . "\r\n\t\t</div>\r\n\t</div>\r\n\t";
 }
 function add_breadcrumb($name, $url = "")
 {
@@ -204,7 +204,7 @@ function show_notice($notice = "", $iserror = false, $title = "", $BR = "<br />"
     $imagepath = $BASEURL . "/include/templates/" . $defaulttemplate . "/images/";
     $lastword = $iserror ? "e" : "n";
     $uniqeid = md5(TIMENOW);
-    return "\r\n\t<script type=\"text/javascript\">\r\n\t\tfunction ts_show_tag(id, status)\r\n\t\t{\r\n\t\t\tif (TSGetID(id)){if (status == true || status == false){TSGetID(id).style.display = (status == true)?\"none\":\"\";}\r\n\t\t\telse{TSGetID(id).style.display = (TSGetID(id).style.display == \"\")?\"none\":\"\";}}\r\n\t\t}\r\n\t</script>\r\n\t<div class=\"notification-border-" . $lastword . "\" id=\"notification_" . $uniqeid . "\" align=\"center\">\r\n\t\t<table class=\"notification-th-" . $lastword . "\" border=\"0\" cellpadding=\"2\" cellspacing=\"0\">\r\n\t\t\t<tbody>\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td align=\"left\" width=\"100%\" class=\"none\">\r\n\t\t\t\t\t&nbsp;<span class=\"notification-title-" . $lastword . "\">" . ($title ? $title : $lang->global["sys_message"]) . "</span>\r\n\t\t\t\t\t</td>\r\n\t\t\t\t\t<td class=\"none\"><img src=\"" . $imagepath . "notification_close.gif\" alt=\"\" onclick=\"ts_show_tag('notification_" . $uniqeid . "', true);\" class=\"hand\" border=\"0\" height=\"13\" width=\"13\" /></td>\r\n\t\t\t\t</tr>\r\n\t\t\t</tbody>\r\n\t\t</table>\r\n\t\t<div class=\"notification-body\">\r\n\t\t\t" . $notice . "\r\n\t\t</div>\r\n\t</div>\r\n\t" . $BR;
+    return "\r\n\t<script $type = \"text/javascript\">\r\n\t\tfunction ts_show_tag(id, status)\r\n\t\t{\r\n\t\t\tif (TSGetID(id)){if ($status = = true || $status = = false){TSGetID(id).style.$display = ($status = = true)?\"none\":\"\";}\r\n\t\t\telse{TSGetID(id).style.$display = (TSGetID(id).style.$display = = \"\")?\"none\":\"\";}}\r\n\t\t}\r\n\t</script>\r\n\t<div class=\"notification-border-" . $lastword . "\" $id = \"notification_" . $uniqeid . "\" $align = \"center\">\r\n\t\t<table class=\"notification-th-" . $lastword . "\" $border = \"0\" $cellpadding = \"2\" $cellspacing = \"0\">\r\n\t\t\t<tbody>\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td $align = \"left\" $width = \"100%\" class=\"none\">\r\n\t\t\t\t\t&nbsp;<span class=\"notification-title-" . $lastword . "\">" . ($title ? $title : $lang->global["sys_message"]) . "</span>\r\n\t\t\t\t\t</td>\r\n\t\t\t\t\t<td class=\"none\"><img $src = \"" . $imagepath . "notification_close.gif\" $alt = \"\" $onclick = \"ts_show_tag('notification_" . $uniqeid . "', true);\" class=\"hand\" $border = \"0\" $height = \"13\" $width = \"13\" /></td>\r\n\t\t\t\t</tr>\r\n\t\t\t</tbody>\r\n\t\t</table>\r\n\t\t<div class=\"notification-body\">\r\n\t\t\t" . $notice . "\r\n\t\t</div>\r\n\t</div>\r\n\t" . $BR;
 }
 function sql_query($_run_query)
 {
@@ -224,7 +224,7 @@ function sql_query($_run_query)
         } else {
             $GLOBALS["totalqueries"] = 1;
         }
-        $GLOBALS["queries"] .= "<input type=\"hidden\" name=\"queries[]\" value=\"" . base64_encode(substr($query_end, 0, 8) . "," . base64_encode(trim($_run_query))) . "\" />";
+        $GLOBALS["queries"] .= "<input $type = \"hidden\" $name = \"queries[]\" $value = \"" . base64_encode(substr($query_end, 0, 8) . "," . base64_encode(trim($_run_query))) . "\" />";
     }
     return $__return;
 }
@@ -251,7 +251,7 @@ function KPS($Type = "+", $Points = "1.0", $ID = "")
     }
     if ($bonus == "enable" || $bonus == "disablesave") {
         $ID = str_replace("'", "", $ID);
-        sql_query("UPDATE users SET seedbonus = seedbonus " . $Type . " '" . $Points . "' WHERE id = '" . $ID . "'");
+        sql_query("UPDATE users SET $seedbonus = seedbonus " . $Type . " '" . $Points . "' WHERE $id = '" . $ID . "'");
     }
 }
 function sent_mail($to = "", $subject = "", $body = "", $type = "confirmation", $showmsg = true, $multiple = false, $multiplemail = "")
@@ -294,7 +294,7 @@ function sent_mail($to = "", $subject = "", $body = "", $type = "confirmation", 
     $headers .= "X-Mailer: PHP v" . phpversion() . $eol;
     $headers .= "MIME-Version: 1.0" . $eol;
     $headers .= "Content-Transfer-Encoding: 8bit" . $eol;
-    $headers .= "Content-type: text/html; charset=" . $charset . $eol;
+    $headers .= "Content-type: text/html; $charset = " . $charset . $eol;
     $headers .= "X-Sender: PHP" . $eol;
     if ($multiple) {
         $headers .= "Bcc: " . $multiplemail . "." . $eol;
@@ -371,7 +371,7 @@ function TSBoot($IPADDRESS = "")
     if (!($id = intval($_COOKIE["c_secure_uid"]))) {
         return NULL;
     }
-    ($res = sql_query("SELECT HIGH_PRIORITY * FROM users WHERE id = " . sqlesc($id))) || sqlerr(__FILE__, 498);
+    ($res = sql_query("SELECT HIGH_PRIORITY * FROM users WHERE $id = " . sqlesc($id))) || sqlerr(__FILE__, 498);
     if (!mysqli_num_rows($res)) {
         return NULL;
     }
@@ -405,18 +405,18 @@ function TSBoot($IPADDRESS = "")
     $row["securitytoken_raw"] = sha1($row["id"] . sha1($row["secret"]) . sha1($securehash));
     $row["securitytoken"] = TIMENOW . "-" . sha1(TIMENOW . $row["securitytoken_raw"]);
     if (0 < count($updateuser)) {
-        sql_query("UPDATE LOW_PRIORITY users SET " . implode(",", $updateuser) . " WHERE id = '" . $id . "'") || sqlerr(__FILE__, 533);
+        sql_query("UPDATE LOW_PRIORITY users SET " . implode(",", $updateuser) . " WHERE $id = '" . $id . "'") || sqlerr(__FILE__, 533);
     }
     $GLOBALS["CURUSER"] = $row;
     if ($UseMemcached) {
         global $TSMemcache;
         if (!($row2 = $TSMemcache->check("usergroup_" . $row["usergroup"]))) {
-            ($Query = sql_query("SELECT HIGH_PRIORITY * FROM usergroups WHERE gid = '" . $row["usergroup"] . "'")) || sqlerr(__FILE__, 545);
+            ($Query = sql_query("SELECT HIGH_PRIORITY * FROM usergroups WHERE $gid = '" . $row["usergroup"] . "'")) || sqlerr(__FILE__, 545);
             $row2 = mysqli_fetch_assoc($Query);
             $TSMemcache->add("usergroup_" . $row["usergroup"], $row2);
         }
     } else {
-        ($Query = sql_query("SELECT HIGH_PRIORITY * FROM usergroups WHERE gid = '" . $row["usergroup"] . "'")) || sqlerr(__FILE__, 552);
+        ($Query = sql_query("SELECT HIGH_PRIORITY * FROM usergroups WHERE $gid = '" . $row["usergroup"] . "'")) || sqlerr(__FILE__, 552);
         $row2 = mysqli_fetch_assoc($Query);
     }
     $GLOBALS["usergroups"] = $row2;
@@ -529,10 +529,10 @@ function ts_collapse($id, $type = 1, $element = "tbody")
     global $tscollapse;
     $defaulttemplate = ts_template();
     if ($type === 1) {
-        return "<a style=\"float: right;\" href=\"javascript: void(0);\" onclick=\"return toggle_collapse('" . $id . "')\"><img id=\"collapseimg_" . $id . "\" src=\"" . $BASEURL . "/include/templates/" . $defaulttemplate . "/images/collapse_tcat" . (isset($tscollapse["collapseimg_" . $id . ""]) ? $tscollapse["collapseimg_" . $id . ""] : "") . ".png\" alt=\"\" border=\"0\" /></a>";
+        return "<a $style = \"float: right;\" $href = \"javascript: void(0);\" $onclick = \"return toggle_collapse('" . $id . "')\"><img $id = \"collapseimg_" . $id . "\" $src = \"" . $BASEURL . "/include/templates/" . $defaulttemplate . "/images/collapse_tcat" . (isset($tscollapse["collapseimg_" . $id . ""]) ? $tscollapse["collapseimg_" . $id . ""] : "") . ".png\" $alt = \"\" $border = \"0\" /></a>";
     }
     if ($type === 2) {
-        return "<" . $element . " id=\"collapseobj_" . $id . "\" style=\"" . (isset($tscollapse["collapseobj_" . $id]) ? $tscollapse["collapseobj_" . $id] : "none") . "\">";
+        return "<" . $element . " $id = \"collapseobj_" . $id . "\" $style = \"" . (isset($tscollapse["collapseobj_" . $id]) ? $tscollapse["collapseobj_" . $id] : "none") . "\">";
     }
 }
 function is_mod($user = [])
@@ -597,7 +597,7 @@ function pager($perpage, $results, $address = "")
         while ($curpage++ < $totalpages) {
         }
         $prp = isset($prevpage) && $prevpage != 1 ? "page=" . $prevpage . "scrollto=tspager" : "scrollto=tspager";
-        $pagenav = "\r\n\t<a id=\"tspager\" name=\"tspager\"></a>\r\n\t<table width=\"100%\" border=\"0\" class=\"none\" style=\"clear: both;\">\r\n\t\t<tr>\r\n\t\t\t<td class=\"none\" width=\"100%\" style=\"padding: 0px 0px 1px 0px;\">\r\n\t\t\t\t<div style=\"float: left;\" id=\"navcontainer_f\">\r\n\t\t\t\t\t<ul>\r\n\t\t\t\t\t\t<li>" . $pagenumber . " - " . $totalpages . "</li>\r\n\t\t\t\t\t\t" . ($show["first"] ? "<li><a class=\"smalltext\" href=\"" . $address . "scrollto=tspager\" title=\"" . $lang->global["first_page"] . " - " . sprintf($lang->global["show_results"], $firstnumbers["first"], $firstnumbers["last"], $total) . "\">&laquo; " . $lang->global["first"] . "</a></li>" : "") . ($show["prev"] ? "<li><a class=\"smalltext\" href=\"" . $address . $prp . "\" title=\"" . $lang->global["prev_page"] . " - " . sprintf($lang->global["show_results"], $prevnumbers["first"], $prevnumbers["last"], $total) . "\">&lt;</a></li>" : "") . "\r\n\t\t\t\t\t\t" . $pagenav . "\r\n\t\t\t\t\t\t" . ($show["next"] ? "<li><a class=\"smalltext\" href=\"" . $address . "page=" . $nextpage . "&scrollto=tspager\" title=\"" . $lang->global["next_page"] . " - " . sprintf($lang->global["show_results"], $nextnumbers["first"], $nextnumbers["last"], $total) . "\">&gt;</a></li>" : "") . ($show["last"] ? "<li><a class=\"smalltext\" href=\"" . $address . "page=" . $totalpages . "&scrollto=tspager\" title=\"" . $lang->global["last_page"] . " - " . sprintf($lang->global["show_results"], $lastnumbers["first"], $lastnumbers["last"], $total) . "\">" . $lang->global["last"] . " <strong>&raquo;</strong></a></li>" : "") . "\r\n\t\t\t\t\t\t<li><a href=\"javascript:void(0);\" id=\"quicknavpage\">" . $lang->global["buttongo"] . "</a></li>\r\n\t\t\t\t\t</ul>\r\n\t\t\t\t</div>\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t</table>\r\n\t<script type=\"text/javascript\">\r\n\t\tmenu_register(\"quicknavpage\", true);\r\n\t</script>\r\n\t<div id=\"quicknavpage_menu\" class=\"menu_popup\" style=\"display:none;\">\r\n\t<form action=\"" . $address . "\" method=\"get\" onsubmit=\"return TSGoToPage('" . $address . "', '')\">\r\n\t\t<table border=\"0\" cellpadding=\"2\" cellspacing=\"1\">\r\n\t\t\t<tbody>\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td class=\"thead\" nowrap=\"nowrap\">" . $lang->global["gotopage"] . "</td>\r\n\t\t\t\t</tr>\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td class=\"subheader\" title=\"\">\r\n\t\t\t\t\t\t<input id=\"Page_Number\" style=\"font-size: 11px;\" size=\"4\" type=\"text\">\r\n\t\t\t\t\t\t<input value=\"" . $lang->global["buttongo"] . "\" type=\"button\" onclick=\"TSGoToPage('" . $address . "', '')\">\r\n\t\t\t\t\t</td>\r\n\t\t\t\t</tr>\r\n\t\t\t</tbody>\r\n\t\t</table>\r\n\t</form>\r\n\t</div>\r\n\t<script type=\"text/javascript\">\r\n\t\tmenu.activate(true);\r\n\t</script>\r\n\t";
+        $pagenav = "\r\n\t<a $id = \"tspager\" $name = \"tspager\"></a>\r\n\t<table $width = \"100%\" $border = \"0\" class=\"none\" $style = \"clear: both;\">\r\n\t\t<tr>\r\n\t\t\t<td class=\"none\" $width = \"100%\" $style = \"padding: 0px 0px 1px 0px;\">\r\n\t\t\t\t<div $style = \"float: left;\" $id = \"navcontainer_f\">\r\n\t\t\t\t\t<ul>\r\n\t\t\t\t\t\t<li>" . $pagenumber . " - " . $totalpages . "</li>\r\n\t\t\t\t\t\t" . ($show["first"] ? "<li><a class=\"smalltext\" $href = \"" . $address . "scrollto=tspager\" $title = \"" . $lang->global["first_page"] . " - " . sprintf($lang->global["show_results"], $firstnumbers["first"], $firstnumbers["last"], $total) . "\">&laquo; " . $lang->global["first"] . "</a></li>" : "") . ($show["prev"] ? "<li><a class=\"smalltext\" $href = \"" . $address . $prp . "\" $title = \"" . $lang->global["prev_page"] . " - " . sprintf($lang->global["show_results"], $prevnumbers["first"], $prevnumbers["last"], $total) . "\">&lt;</a></li>" : "") . "\r\n\t\t\t\t\t\t" . $pagenav . "\r\n\t\t\t\t\t\t" . ($show["next"] ? "<li><a class=\"smalltext\" $href = \"" . $address . "page=" . $nextpage . "&$scrollto = tspager\" $title = \"" . $lang->global["next_page"] . " - " . sprintf($lang->global["show_results"], $nextnumbers["first"], $nextnumbers["last"], $total) . "\">&gt;</a></li>" : "") . ($show["last"] ? "<li><a class=\"smalltext\" $href = \"" . $address . "page=" . $totalpages . "&$scrollto = tspager\" $title = \"" . $lang->global["last_page"] . " - " . sprintf($lang->global["show_results"], $lastnumbers["first"], $lastnumbers["last"], $total) . "\">" . $lang->global["last"] . " <strong>&raquo;</strong></a></li>" : "") . "\r\n\t\t\t\t\t\t<li><a $href = \"javascript:void(0);\" $id = \"quicknavpage\">" . $lang->global["buttongo"] . "</a></li>\r\n\t\t\t\t\t</ul>\r\n\t\t\t\t</div>\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t</table>\r\n\t<script $type = \"text/javascript\">\r\n\t\tmenu_register(\"quicknavpage\", true);\r\n\t</script>\r\n\t<div $id = \"quicknavpage_menu\" class=\"menu_popup\" $style = \"display:none;\">\r\n\t<form $action = \"" . $address . "\" $method = \"get\" $onsubmit = \"return TSGoToPage('" . $address . "', '')\">\r\n\t\t<table $border = \"0\" $cellpadding = \"2\" $cellspacing = \"1\">\r\n\t\t\t<tbody>\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td class=\"thead\" $nowrap = \"nowrap\">" . $lang->global["gotopage"] . "</td>\r\n\t\t\t\t</tr>\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td class=\"subheader\" $title = \"\">\r\n\t\t\t\t\t\t<input $id = \"Page_Number\" $style = \"font-size: 11px;\" $size = \"4\" $type = \"text\">\r\n\t\t\t\t\t\t<input $value = \"" . $lang->global["buttongo"] . "\" $type = \"button\" $onclick = \"TSGoToPage('" . $address . "', '')\">\r\n\t\t\t\t\t</td>\r\n\t\t\t\t</tr>\r\n\t\t\t</tbody>\r\n\t\t</table>\r\n\t</form>\r\n\t</div>\r\n\t<script $type = \"text/javascript\">\r\n\t\tmenu.activate(true);\r\n\t</script>\r\n\t";
         $pagenav2 = str_replace(["quicknavpage", "Page_Number"], ["quicknavpage2", "Page_Number2"], $pagenav);
         return [$pagenav, $pagenav2, "LIMIT " . $limitlower . ", " . $perpage];
     }
@@ -616,15 +616,15 @@ function pager($perpage, $results, $address = "")
             if (0 < $relpage) {
                 $relpage = "+" . $relpage;
             }
-            $pagenav .= "<li><a class=\"smalltext\" href=\"" . $address . ($curpage != 1 ? "page=" . $curpage . "&scrollto=tspager" : "scrollto=tspager") . "\" title=\"" . sprintf($lang->global["show_results"], $pagenumbers["first"], $pagenumbers["last"], $total) . "\"><!--" . $relpage . "-->" . $curpage . "</a></li>";
+            $pagenav .= "<li><a class=\"smalltext\" $href = \"" . $address . ($curpage != 1 ? "page=" . $curpage . "&$scrollto = tspager" : "scrollto=tspager") . "\" $title = \"" . sprintf($lang->global["show_results"], $pagenumbers["first"], $pagenumbers["last"], $total) . "\"><!--" . $relpage . "-->" . $curpage . "</a></li>";
         }
     } else {
         if ($curpage == $pagenumber) {
             $numbers = fetch_start_end_total_array($curpage, $perpage, $results);
-            $pagenav .= "<li><a name=\"current\" class=\"current\" title=\"" . sprintf($lang->global["showing_results"], $numbers["first"], $numbers["last"], $total) . "\">" . $curpage . "</a></li>";
+            $pagenav .= "<li><a $name = \"current\" class=\"current\" $title = \"" . sprintf($lang->global["showing_results"], $numbers["first"], $numbers["last"], $total) . "\">" . $curpage . "</a></li>";
         } else {
             $pagenumbers = fetch_start_end_total_array($curpage, $perpage, $results);
-            $pagenav .= "<li><a href=\"" . $address . ($curpage != 1 ? "page=" . $curpage . "&scrollto=tspager" : "scrollto=tspager") . "\" title=\"" . sprintf($lang->global["show_results"], $pagenumbers["first"], $pagenumbers["last"], $total) . "\">" . $curpage . "</a></li>";
+            $pagenav .= "<li><a $href = \"" . $address . ($curpage != 1 ? "page=" . $curpage . "&$scrollto = tspager" : "scrollto=tspager") . "\" $title = \"" . sprintf($lang->global["show_results"], $pagenumbers["first"], $pagenumbers["last"], $total) . "\">" . $curpage . "</a></li>";
         }
     }
 }
@@ -663,7 +663,7 @@ function fetch_start_end_total_array($pagenumber, $perpage, $total)
 function get_user_color($username, $namestyle, $white = false)
 {
     if ($white) {
-        $new_username = "<font color=\"#ffffff\">" . $username . "</font>";
+        $new_username = "<font $color = \"#ffffff\">" . $username . "</font>";
     } else {
         $new_username = str_replace("{username}", $username, $namestyle);
     }
@@ -674,7 +674,7 @@ function int_check($value)
     global $CURUSER;
     global $BASEURL;
     global $lang;
-    $msg = sprintf($lang->global["invalididlogmsg"], htmlspecialchars_uni($_SERVER["REQUEST_URI"]), "<a href=\"" . $BASEURL . "/userdetails.php?id=" . $CURUSER["id"] . "\">" . $CURUSER["username"] . "</a>", USERIPADDRESS, get_date_time());
+    $msg = sprintf($lang->global["invalididlogmsg"], htmlspecialchars_uni($_SERVER["REQUEST_URI"]), "<a $href = \"" . $BASEURL . "/userdetails.php?$id = " . $CURUSER["id"] . "\">" . $CURUSER["username"] . "</a>", USERIPADDRESS, get_date_time());
     if (is_array($value)) {
         foreach ($value as $val) {
             if (!is_valid_id($val)) {
@@ -709,7 +709,7 @@ function flood_check($type = "", $last = "", $shoutbox = false)
         if ($shoutbox == 0) {
             stderr($lang->global["error"], sprintf($lang->global["flooderror"], $usergroups["floodlimit"], $type, $remaining_time), false);
         } else {
-            return "<font color=\"#9f040b\" size=\"2\">" . sprintf($lang->global["flooderror"], $usergroups["floodlimit"], $type, $remaining_time) . "</font>";
+            return "<font $color = \"#9f040b\" $size = \"2\">" . sprintf($lang->global["flooderror"], $usergroups["floodlimit"], $type, $remaining_time) . "</font>";
         }
     } else {
         return NULL;
@@ -724,17 +724,17 @@ function print_no_permission($log = false, $stdhead = true, $extra = "", $stdfoo
     if ($log) {
         $page = htmlspecialchars_uni($_SERVER["SCRIPT_NAME"]);
         $query = htmlspecialchars_uni($_SERVER["QUERY_STRING"]);
-        $message = sprintf($lang->global["permissionlogmessage"], $page, $query, "<a href=\"" . $BASEURL . "/userdetails.php?id=" . $CURUSER["id"] . "\">" . $CURUSER["username"] . "</a>", $CURUSER["ip"]);
+        $message = sprintf($lang->global["permissionlogmessage"], $page, $query, "<a $href = \"" . $BASEURL . "/userdetails.php?$id = " . $CURUSER["id"] . "\">" . $CURUSER["username"] . "</a>", $CURUSER["ip"]);
         write_log($message);
     }
     if ($stdhead) {
         stdhead($lang->global["nopermission"]);
-        echo sprintf($lang->global["print_no_permission"], $SITENAME, $extra != "" ? "<font color=\"#9f040b\">" . $extra . "</font>" : $lang->global["print_no_permission_i"]);
+        echo sprintf($lang->global["print_no_permission"], $SITENAME, $extra != "" ? "<font $color = \"#9f040b\">" . $extra . "</font>" : $lang->global["print_no_permission_i"]);
         if ($stdfood) {
             stdfoot();
         }
     } else {
-        echo sprintf($lang->global["print_no_permission"], $SITENAME, $extra != "" ? "<font color=\"#9f040b\">" . $extra . "</font>" : $lang->global["print_no_permission_i"]);
+        echo sprintf($lang->global["print_no_permission"], $SITENAME, $extra != "" ? "<font $color = \"#9f040b\">" . $extra . "</font>" : $lang->global["print_no_permission_i"]);
         if ($stdfood) {
             stdfoot();
         }
@@ -801,7 +801,7 @@ function gmtime()
 }
 function sqlerr($file = "", $line = "")
 {
-    redirect("ts_error.php?errorid=5");
+    redirect("ts_error.php?$errorid = 5");
     exit;
 }
 

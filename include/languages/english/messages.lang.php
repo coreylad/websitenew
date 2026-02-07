@@ -98,7 +98,7 @@ Please note that you will not receive any further notifications of new messages 
 
 You can disable new message notifications on your account options page:
 
-{4}/usercp.php?act=edit_details
+{4}/usercp.php?$act = edit_details
 
 Thank you,
 {2} Staff
@@ -123,7 +123,7 @@ Thank you,
 	'newtitle11'=>'Invalid Private Message specified. If you followed a valid link, please notify the administrator.', //Added v3.9
 	'newtitle12'=>'<strong>Private Message:</strong> {1}', //Added v3.9
 	'newtitle13'=>'Are you sure you want to delete this pm?', //Added v3.9
-	'newtitle14'=>'You must first create a custom folder if you wish to be able to move messages from your inbox. You may start by clicking <a href="{1}">Here</a>.', //Added v3.9
+	'newtitle14'=>'You must first create a custom folder if you wish to be able to move messages from your inbox. You may start by clicking <a $href = "{1}">Here</a>.', //Added v3.9
 	'newtitle15' =>'Please select a destination folder for the items that you wish to move.',//Added v3.9
 	'newtitle16' =>'Move Items', //Added v3.9
 	'newtitle17' =>'Cancel', //Added v3.9

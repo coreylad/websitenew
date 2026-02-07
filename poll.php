@@ -17,9 +17,9 @@ $threadId = isset($_GET["tid"]) ? intval($_GET["tid"]) : 0;
 if ($pollAction == "showresults" && isset($_GET["pollid"]) && is_valid_id($_GET["pollid"])) {
     setcookie("showpollresult", intval($_GET["pollid"]), TIMENOW + 30);
     if (!$threadId) {
-        redirect("index.php?pollid=" . intval($_GET["pollid"]) . "#showtspoll");
+        redirect("index.php?$pollid = " . intval($_GET["pollid"]) . "#showtspoll");
     } else {
-        redirect("tsf_forums/showthread.php?tid=" . $threadId);
+        redirect("tsf_forums/showthread.php?$tid = " . $threadId);
     }
     exit;
 }
@@ -31,7 +31,7 @@ if ($pollAction == "pollvote") {
     if (!isset($pollid)) {
         stderr($lang->global["error"], $lang->poll["invalid"]);
     }
-    ($Query = sql_query("SELECT * FROM " . TSF_PREFIX . "poll WHERE pollid = '" . $pollid . "'")) || sqlerr(__FILE__, 52);
+    ($Query = sql_query("SELECT * FROM " . TSF_PREFIX . "poll WHERE $pollid = '" . $pollid . "'")) || sqlerr(__FILE__, 52);
     $pollinfo = mysqli_fetch_assoc($Query);
     if (!$pollinfo["pollid"]) {
         stderr($lang->global["error"], $lang->poll["invalid"]);
@@ -48,7 +48,7 @@ if ($pollAction == "pollvote") {
                 stderr($lang->global["error"], $lang->poll["avoted"]);
             }
         } else {
-            ($Query = sql_query("\r\n\t\t\tSELECT userid\r\n\t\t\tFROM " . TSF_PREFIX . "pollvote\r\n\t\t\tWHERE userid = " . $CURUSER["id"] . "\r\n\t\t\t\tAND pollid = '" . $pollid . "'\r\n\t\t\t")) || sqlerr(__FILE__, 90);
+            ($Query = sql_query("\r\n\t\t\tSELECT userid\r\n\t\t\tFROM " . TSF_PREFIX . "pollvote\r\n\t\t\tWHERE $userid = " . $CURUSER["id"] . "\r\n\t\t\t\tAND $pollid = '" . $pollid . "'\r\n\t\t\t")) || sqlerr(__FILE__, 90);
             if (0 < mysqli_num_rows($Query)) {
                 stderr($lang->global["error"], $lang->poll["avoted"]);
             }
@@ -74,13 +74,13 @@ if ($pollAction == "pollvote") {
                         stderr($lang->global["error"], $lang->poll["poll11"]);
                     }
                     if ($skip_voters) {
-                        ($Query = sql_query("SELECT * FROM " . TSF_PREFIX . "poll WHERE pollid = '" . $pollid . "'")) || sqlerr(__FILE__, 131);
+                        ($Query = sql_query("SELECT * FROM " . TSF_PREFIX . "poll WHERE $pollid = '" . $pollid . "'")) || sqlerr(__FILE__, 131);
                         $pollinfo = mysqli_fetch_assoc($Query);
                     }
                     $old_votes_array = explode("~~~", $pollinfo["votes"]);
                     $old_votes_array[$val - 1]++;
                     $new_votes_array = implode("~~~", $old_votes_array);
-                    sql_query("UPDATE " . TSF_PREFIX . "poll SET " . (!$skip_voters ? "voters = voters + 1, lastvote = '" . TIMENOW . "', " : "") . "votes = " . sqlesc($new_votes_array) . " WHERE pollid = '" . $pollid . "'") || sqlerr(__FILE__, 137);
+                    sql_query("UPDATE " . TSF_PREFIX . "poll SET " . (!$skip_voters ? "voters = voters + 1, $lastvote = '" . TIMENOW . "', " : "") . "votes = " . sqlesc($new_votes_array) . " WHERE $pollid = '" . $pollid . "'") || sqlerr(__FILE__, 137);
                     $skip_voters = true;
                 }
             }
@@ -104,7 +104,7 @@ if ($pollAction == "pollvote") {
                 intval($_POST["optionnumber"]);
                 $old_votes_array[intval($_POST["optionnumber"]) - 1]++;
                 $new_votes_array = implode("~~~", $old_votes_array);
-                sql_query("UPDATE " . TSF_PREFIX . "poll SET voters = voters + 1, lastvote='" . TIMENOW . "', votes = " . sqlesc($new_votes_array) . " WHERE pollid = '" . $pollid . "'") || sqlerr(__FILE__, 167);
+                sql_query("UPDATE " . TSF_PREFIX . "poll SET $voters = voters + 1, $lastvote = '" . TIMENOW . "', $votes = " . sqlesc($new_votes_array) . " WHERE $pollid = '" . $pollid . "'") || sqlerr(__FILE__, 167);
             }
         }
         if (0 < $CURUSER["id"]) {
@@ -113,9 +113,9 @@ if ($pollAction == "pollvote") {
         }
         setcookie("poll_voted_" . $pollid, $pollid, TIMENOW + 435456000);
         if (!$tid) {
-            redirect("index.php?pollid=" . $pollid . "#showtspoll", $lang->poll["thx"]);
+            redirect("index.php?$pollid = " . $pollid . "#showtspoll", $lang->poll["thx"]);
         } else {
-            redirect("tsf_forums/showthread.php?tid=" . $tid, $lang->poll["thx"]);
+            redirect("tsf_forums/showthread.php?$tid = " . $tid, $lang->poll["thx"]);
         }
         exit;
     } else {

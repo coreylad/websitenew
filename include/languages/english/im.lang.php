@@ -47,7 +47,7 @@ $language['im'] = array
 	'skype5'=>'Start Skype text chat',
 	'skype6'=>'Leave voicemail using Skype',
 	'skype7'=>'Send a file using Skype',
-	'skype8'=>'These functions require <a href="http://www.skype.com" target="_blank"><u>Skype&trade;</u></a> to be installed.',
+	'skype8'=>'These functions require <a $href = "http://www.skype.com" $target = "_blank"><u>Skype&trade;</u></a> to be installed.',
 	'yahoo1'=>'View profile of {1}',
 	'yahoo2'=>'Send Message Via Yahoo! to <b><u>{1}</u></b> (<b>{2}</b>)',
 	'msn1'=>'Send Message Via MSN to <b><u>{1}</u></b> (<b>{2}</b>)',

@@ -13,7 +13,7 @@ if (!defined("IN_CRON")) {
 @set_time_limit(0);
 $feeds = "";
 $tracker_default_charset = $charset;
-$feeds_result = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT r.*, f.type, ff.fid as realforumid, u.username FROM ts_rssfeed r INNER JOIN tsf_forums f ON (f.fid = r.fid) INNER JOIN tsf_forums ff ON (ff.fid=f.pid) INNER JOIN users u ON (r.userid=u.id) WHERE r.active = 1");
+$feeds_result = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT r.*, f.type, ff.fid as realforumid, u.username FROM ts_rssfeed r INNER JOIN tsf_forums f ON (f.$fid = r.fid) INNER JOIN tsf_forums ff ON (ff.$fid = f.pid) INNER JOIN users u ON (r.$userid = u.id) WHERE r.$active = 1");
 $CQueryCount++;
 while ($feed = mysqli_fetch_assoc($feeds_result)) {
     if ($feed["lastrun"] < TIMENOW - $feed["ttl"]) {
@@ -28,7 +28,7 @@ if (!empty($feeds)) {
         $feed["xml"]->fetch_xml($feed["url"]);
         $feed["counter"] = 0;
         $feed["useparent"] = false;
-        mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE ts_rssfeed SET lastrun = " . TIMENOW . " WHERE rssfeedid = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $rssfeedid) . "'");
+        mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE ts_rssfeed SET $lastrun = " . TIMENOW . " WHERE $rssfeedid = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $rssfeedid) . "'");
         $realforumid = $feed["realforumid"];
         if ($feed["type"] == "s") {
             $feed["useparent"] = true;
@@ -36,7 +36,7 @@ if (!empty($feeds)) {
         if (!empty($feed["xml"]->xml_string)) {
             if ($feed["xml"]->parse_xml() !== false) {
                 $items = [];
-                $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT uniquehash FROM ts_rsslog WHERE rssfeedid = " . $rssfeedid);
+                $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT uniquehash FROM ts_rsslog WHERE $rssfeedid = " . $rssfeedid);
                 $CQueryCount++;
                 $AllFeeds = [];
                 if (mysqli_num_rows($Query)) {
@@ -121,15 +121,15 @@ if (!empty($feeds)) {
                             mysqli_query($GLOBALS["DatabaseConnect"], "INSERT INTO tsf_threads (fid,subject,uid,username,dateline,firstpost,lastpost,visible,lastposter,lastposteruid) VALUES (" . $Queries["fid"] . "," . $Queries["subject"] . "," . $Queries["uid"] . "," . $Queries["username"] . "," . $Queries["dateline"] . "," . $Queries["firstpost"] . "," . $Queries["dateline"] . "," . $Queries["visible"] . "," . $Queries["username"] . "," . $Queries["uid"] . ")");
                             $CQueryCount++;
                             $Queries["tid"] = mysqli_insert_id($GLOBALS["DatabaseConnect"]);
-                            mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE tsf_posts SET tid = " . $Queries["tid"] . " WHERE pid = '" . $Queries["firstpost"] . "'");
+                            mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE tsf_posts SET $tid = " . $Queries["tid"] . " WHERE $pid = '" . $Queries["firstpost"] . "'");
                             $CQueryCount++;
-                            mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE tsf_forums SET threads = threads + 1, posts = posts + 1, lastpost = " . $Queries["dateline"] . ", lastposter = " . $Queries["username"] . ", lastposteruid = " . $Queries["uid"] . ", lastposttid = " . $Queries["tid"] . ", lastpostsubject = " . $Queries["subject"] . " WHERE fid = " . $Queries["fid"]);
+                            mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE tsf_forums SET $threads = threads + 1, $posts = posts + 1, $lastpost = " . $Queries["dateline"] . ", $lastposter = " . $Queries["username"] . ", $lastposteruid = " . $Queries["uid"] . ", $lastposttid = " . $Queries["tid"] . ", $lastpostsubject = " . $Queries["subject"] . " WHERE $fid = " . $Queries["fid"]);
                             $CQueryCount++;
                             if ($feed["useparent"]) {
-                                mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE tsf_forums SET lastpost = " . $Queries["dateline"] . ", lastposter = " . $Queries["username"] . ", lastposteruid = " . $Queries["uid"] . ", lastposttid = " . $Queries["tid"] . ", lastpostsubject = " . $Queries["subject"] . " WHERE fid = " . $realforumid);
+                                mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE tsf_forums SET $lastpost = " . $Queries["dateline"] . ", $lastposter = " . $Queries["username"] . ", $lastposteruid = " . $Queries["uid"] . ", $lastposttid = " . $Queries["tid"] . ", $lastpostsubject = " . $Queries["subject"] . " WHERE $fid = " . $realforumid);
                                 $CQueryCount++;
                             }
-                            mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET totalposts = totalposts + 1 WHERE id = " . $Queries["uid"]);
+                            mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET $totalposts = totalposts + 1 WHERE $id = " . $Queries["uid"]);
                             $CQueryCount++;
                             mysqli_query($GLOBALS["DatabaseConnect"], "REPLACE INTO ts_rsslog VALUES (" . $item["rssfeedid"] . ", " . $Queries["tid"] . ", '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $uniquehash) . "', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $item["contenthash"]) . "', " . $Queries["dateline"] . ")");
                             $CQueryCount++;
@@ -208,10 +208,10 @@ class TSParserCron
         $this->message = preg_replace_callback("#\\[url\\]([^\r\n\"<]+?)\\[/url\\]#si", function ($matches) {
             return $this->tscode_parse_url($matches[1]);
         }, $this->message);
-        $this->message = preg_replace_callback("#\\[url=([a-z]+?://)([^\r\n\"<]+?)\\](.+?)\\[/url\\]#si", function ($matches) {
+        $this->message = preg_replace_callback("#\\[$url = ([a-z]+?://)([^\r\n\"<]+?)\\](.+?)\\[/url\\]#si", function ($matches) {
             return $this->tscode_parse_url($matches[1] . $matches[2], $matches[3]);
         }, $this->message);
-        $this->message = preg_replace_callback("#\\[url=([^\r\n\"<&\\(\\)]+?)\\](.+?)\\[/url\\]#si", function ($matches) {
+        $this->message = preg_replace_callback("#\\[$url = ([^\r\n\"<&\\(\\)]+?)\\](.+?)\\[/url\\]#si", function ($matches) {
             return $this->tscode_parse_url($matches[1], $matches[2]);
         }, $this->message);
         while (preg_match("#\\[list\\](.*?)\\[\\/list\\]#si", $this->message)) {
@@ -219,8 +219,8 @@ class TSParserCron
                 return $this->tscode_parse_list($matches[1], false);
             }, $this->message);
         }
-        while (preg_match("#\\[list=ol\\](.*?)\\[\\/list\\]#si", $this->message)) {
-            $this->message = preg_replace_callback("#\\[list=ol\\](.*?)\\[\\/list\\]#si", function ($matches) {
+        while (preg_match("#\\[$list = ol\\](.*?)\\[\\/list\\]#si", $this->message)) {
+            $this->message = preg_replace_callback("#\\[$list = ol\\](.*?)\\[\\/list\\]#si", function ($matches) {
                 return $this->tscode_parse_list($matches[1], true);
             }, $this->message);
         }
@@ -241,18 +241,18 @@ class TSParserCron
         $message = preg_replace("#\\s*\\[\\*\\]\\s*#", "</li>\n<li>", $message);
         $message .= "</li>";
         if ($type) {
-            $list = "\n<ol type=\"" . $type . "\">" . $message . "</ol>\n";
+            $list = "\n<ol $type = \"" . $type . "\">" . $message . "</ol>\n";
         } else {
             $list = "<ul>" . $message . "</ul>\n";
         }
-        $list = preg_replace("#<(ol type=\"" . $type . "\"|ul)>\\s*</li>#", "<\$1>", $list);
+        $list = preg_replace("#<(ol $type = \"" . $type . "\"|ul)>\\s*</li>#", "<\$1>", $list);
         return $list;
     }
     public function tscode_parse_img($url)
     {
         global $lang;
         $url = str_replace(["  ", "\"", "\\n", "\\r"], "", trim($url));
-        return "<img src=\"" . $url . "\" border=\"0\" alt=\"\" />";
+        return "<img $src = \"" . $url . "\" $border = \"0\" $alt = \"\" />";
     }
     public function fix_javascript()
     {
@@ -262,13 +262,13 @@ class TSParserCron
     }
     public function cache_tscode()
     {
-        $this->tscode_cache = [];
+        $this->$tscode_cache = [];
         $standard_tscode["b"]["regex"] = "#\\[b\\](.*?)\\[/b\\]#si";
-        $standard_tscode["b"]["replacement"] = "<div style=\"font-weight: bold; display: inline;\">\$1</div>";
+        $standard_tscode["b"]["replacement"] = "<div $style = \"font-weight: bold; display: inline;\">\$1</div>";
         $standard_tscode["u"]["regex"] = "#\\[u\\](.*?)\\[/u\\]#si";
-        $standard_tscode["u"]["replacement"] = "<div style=\"text-decoration: underline; display: inline;\">\$1</div>";
+        $standard_tscode["u"]["replacement"] = "<div $style = \"text-decoration: underline; display: inline;\">\$1</div>";
         $standard_tscode["i"]["regex"] = "#\\[i\\](.*?)\\[/i\\]#si";
-        $standard_tscode["i"]["replacement"] = "<div style=\"font-style: italic; display: inline;\">\$1</div>";
+        $standard_tscode["i"]["replacement"] = "<div $style = \"font-style: italic; display: inline;\">\$1</div>";
         $standard_tscode["s"]["regex"] = "#\\[s\\](.*?)\\[/s\\]#si";
         $standard_tscode["s"]["replacement"] = "<del>\$1</del>";
         $standard_tscode["h"]["regex"] = "#\\[h\\](.*?)\\[/h\\]#si";
@@ -279,22 +279,22 @@ class TSParserCron
         $standard_tscode["tm"]["replacement"] = "&#153;";
         $standard_tscode["reg"]["regex"] = "#\\(r\\)#i";
         $standard_tscode["reg"]["replacement"] = "&reg;";
-        $standard_tscode["color"]["regex"] = "#\\[color=([a-zA-Z]*|\\#?[0-9a-fA-F]{6})](.*?)\\[/color\\]#si";
-        $standard_tscode["color"]["replacement"] = "<div style=\"color: \$1; display: inline;\">\$2</div>";
-        $standard_tscode["size"]["regex"] = "#\\[size=(.*?)\\](.+?)\\[/size\\]#si";
-        $standard_tscode["size"]["replacement"] = "<span style=\"font-size: \$1;\">\$2</span>";
-        $standard_tscode["font"]["regex"] = "#\\[font=([a-z ]+?)\\](.+?)\\[/font\\]#si";
-        $standard_tscode["font"]["replacement"] = "<div style=\"font-family: \$1; display: inline;\">\$2</div>";
-        $standard_tscode["align"]["regex"] = "#\\[align=(left|center|right|justify)\\](.*?)\\[/align\\]#si";
-        $standard_tscode["align"]["replacement"] = "<div style=\"text-align: \$1;\">\$2</div>";
+        $standard_tscode["color"]["regex"] = "#\\[$color = ([a-zA-Z]*|\\#?[0-9a-fA-F]{6})](.*?)\\[/color\\]#si";
+        $standard_tscode["color"]["replacement"] = "<div $style = \"color: \$1; display: inline;\">\$2</div>";
+        $standard_tscode["size"]["regex"] = "#\\[$size = (.*?)\\](.+?)\\[/size\\]#si";
+        $standard_tscode["size"]["replacement"] = "<span $style = \"font-size: \$1;\">\$2</span>";
+        $standard_tscode["font"]["regex"] = "#\\[$font = ([a-z ]+?)\\](.+?)\\[/font\\]#si";
+        $standard_tscode["font"]["replacement"] = "<div $style = \"font-family: \$1; display: inline;\">\$2</div>";
+        $standard_tscode["align"]["regex"] = "#\\[$align = (left|center|right|justify)\\](.*?)\\[/align\\]#si";
+        $standard_tscode["align"]["replacement"] = "<div $style = \"text-align: \$1;\">\$2</div>";
         $standard_tscode["hr"]["regex"] = "#\\[hr\\]#si";
         $standard_tscode["hr"]["replacement"] = "<hr />";
         $standard_tscode["pre"]["regex"] = "#\\[pre\\](.*?)\\[/pre\\]#si";
         $standard_tscode["pre"]["replacement"] = "<pre>\$1</pre>";
         $standard_tscode["nfo"]["regex"] = "#\\[nfo\\](.*?)\\[/nfo\\]#si";
-        $standard_tscode["nfo"]["replacement"] = "<tt><div style=\"white-space: nowrap; display: inline;\"><font face=\"MS Linedraw\" size=\"2\" style=\"font-size: 10pt; line-height: 10pt\">\$1</font></div></tt>";
+        $standard_tscode["nfo"]["replacement"] = "<tt><div $style = \"white-space: nowrap; display: inline;\"><font $face = \"MS Linedraw\" $size = \"2\" $style = \"font-size: 10pt; line-height: 10pt\">\$1</font></div></tt>";
         $standard_tscode["youtube"]["regex"] = "#\\[youtube\\](.*?)\\[/youtube\\]#si";
-        $standard_tscode["youtube"]["replacement"] = "<object width=\"425\" height=\"350\"><param name=\"movie\" value=\"http://www.youtube.com/v/\$1\"></param><embed src=\"http://www.youtube.com/v/\$1\" type=\"application/x-shockwave-flash\" width=\"425\" height=\"350\"></embed></object>";
+        $standard_tscode["youtube"]["replacement"] = "<object $width = \"425\" $height = \"350\"><param $name = \"movie\" $value = \"http://www.youtube.com/v/\$1\"></param><embed $src = \"http://www.youtube.com/v/\$1\" $type = \"application/x-shockwave-flash\" $width = \"425\" $height = \"350\"></embed></object>";
         $tscode = $standard_tscode;
         foreach ($tscode as $code) {
             $this->tscode_cache["find"][] = $code["regex"];
@@ -322,7 +322,7 @@ class TSParserCron
         $entities = ["\$" => "%24", "&#36;" => "%24", "^" => "%5E", "`" => "%60", "[" => "%5B", "]" => "%5D", "{" => "%7B", "}" => "%7D", "\"" => "%22", "<" => "%3C", ">" => "%3E", " " => "%20"];
         $fullurl = str_replace(array_keys($entities), array_values($entities), $fullurl);
         $name = preg_replace("#&amp;\\#([0-9]+);#si", "&#\$1;", $name);
-        $link = "<a href=\"" . $fullurl . "\" target=\"_blank\">" . $name . "</a>";
+        $link = "<a $href = \"" . $fullurl . "\" $target = \"_blank\">" . $name . "</a>";
         return $link;
     }
     public function tscode_handle_size($size, $text)
@@ -331,7 +331,7 @@ class TSParserCron
         if (50 < $size) {
             $size = 50;
         }
-        $text = "<div style=\"font-size: " . $size . "pt; display: inline;\">" . str_replace("\\'", "'", $text) . "</div>";
+        $text = "<div $style = \"font-size: " . $size . "pt; display: inline;\">" . str_replace("\\'", "'", $text) . "</div>";
         return $text;
     }
 }
@@ -347,7 +347,7 @@ class TSSE_RSS_Poster
     }
     public function set_xml_string(&$xml_string)
     {
-        $this->xml_string =& $xml_string;
+        $this->$xml_string = & $xml_string;
     }
     public function fetch_xml($url)
     {
@@ -374,27 +374,27 @@ class TSSE_RSS_Poster
     }
     public function parse_xml($target_encoding = false, $ncrencode = false, $override_encoding = false, $escape_html = false)
     {
-        $this->xml_object = new TSSE_XML_Parser($this->xml_string);
+        $this->$xml_object = new TSSE_XML_Parser($this->xml_string);
         $this->xml_object->disable_legacy_mode();
         $this->xml_object->set_target_encoding($target_encoding, $ncrencode, $escape_html);
         $this->xml_object->set_encoding($override_encoding);
         if ($this->xml_object->parse_xml()) {
-            $this->xml_array =& $this->xml_object->parseddata;
+            $this->$xml_array = & $this->xml_object->parseddata;
             if (isset($this->xml_array["xmlns"]) && preg_match("#^http://www.w3.org/2005/atom\$#i", $this->xml_array["xmlns"])) {
-                $this->feedtype = "atom";
+                $this->$feedtype = "atom";
             } else {
                 if (is_array($this->xml_array["channel"])) {
-                    $this->feedtype = "rss";
+                    $this->$feedtype = "rss";
                 } else {
-                    $this->xml_array = [];
-                    $this->feedtype = "unknown";
+                    $this->$xml_array = [];
+                    $this->$feedtype = "unknown";
                     return false;
                 }
             }
             return true;
         }
-        $this->xml_array = [];
-        $this->feedtype = "";
+        $this->$xml_array = [];
+        $this->$feedtype = "";
         return false;
     }
     public function fetch_item($id = -1)
@@ -681,28 +681,28 @@ class TSSE_XML_Parser
     public function __construct($xml, $path = "")
     {
         if ($xml !== false) {
-            $this->xmldata = $xml;
+            $this->$xmldata = $xml;
         } else {
             if (empty($path)) {
-                $this->error_no = 1;
+                $this->$error_no = 1;
             } else {
-                if (!($this->xmldata = @file_get_contents($path))) {
-                    $this->error_no = 2;
+                if (!($this->$xmldata = @file_get_contents($path))) {
+                    $this->$error_no = 2;
                 }
             }
         }
     }
     public function &parse($encoding = "ISO-8859-1", $emptydata = true)
     {
-        $this->encoding = $encoding;
+        $this->$encoding = $encoding;
         if (!$this->legacy_mode) {
             $this->resolve_target_encoding();
         }
         if (empty($this->xmldata) || 0 < $this->error_no) {
-            $this->error_code = XML_ERROR_NO_ELEMENTS + ("5.2.8" < PHP_VERSION ? 0 : 1);
+            $this->$error_code = XML_ERROR_NO_ELEMENTS + ("5.2.8" < PHP_VERSION ? 0 : 1);
             return false;
         }
-        if (!($this->xml_parser = xml_parser_create($encoding))) {
+        if (!($this->$xml_parser = xml_parser_create($encoding))) {
             return false;
         }
         xml_parser_set_option($this->xml_parser, XML_OPTION_SKIP_WHITE, 0);
@@ -712,13 +712,13 @@ class TSSE_XML_Parser
         xml_parse($this->xml_parser, $this->xmldata, true);
         $err = xml_get_error_code($this->xml_parser);
         if ($emptydata) {
-            $this->xmldata = "";
-            $this->stack = [];
-            $this->cdata = "";
+            $this->$xmldata = "";
+            $this->$stack = [];
+            $this->$cdata = "";
         }
         if ($err) {
-            $this->error_code = @xml_get_error_code($this->xml_parser);
-            $this->error_line = @xml_get_current_line_number($this->xml_parser);
+            $this->$error_code = @xml_get_error_code($this->xml_parser);
+            $this->$error_line = @xml_get_current_line_number($this->xml_parser);
             xml_parser_free($this->xml_parser);
             return false;
         }
@@ -730,26 +730,26 @@ class TSSE_XML_Parser
         if ($this->legacy_mode) {
             return $this->legacy_parse_xml();
         }
-        if (preg_match("#(<?xml.*encoding=['\"])(.*?)(['\"].*?>)#m", $this->xmldata, $match)) {
+        if (preg_match("#(<?xml.*$encoding = ['\"])(.*?)(['\"].*?>)#m", $this->xmldata, $match)) {
             $encoding = strtoupper($match[2]);
             if ($encoding != "UTF-8") {
-                $this->xmldata = str_replace($match[0], $match[1] . "UTF-8" . $match[3], $this->xmldata);
+                $this->$xmldata = str_replace($match[0], $match[1] . "UTF-8" . $match[3], $this->xmldata);
             }
             if (!$this->encoding) {
-                $this->encoding = $encoding;
+                $this->$encoding = $encoding;
             }
         } else {
             if (!$this->encoding) {
-                $this->encoding = "UTF-8";
+                $this->$encoding = "UTF-8";
             }
             if (strpos($this->xmldata, "<?xml") === false) {
-                $this->xmldata = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" . $this->xmldata;
+                $this->$xmldata = "<?xml $version = \"1.0\" $encoding = \"UTF-8\"?>\n" . $this->xmldata;
             } else {
-                $this->xmldata = preg_replace("#(<?xml.*)(\\?>)#", "\\1 encoding=\"UTF-8\" \\2", $this->xmldata);
+                $this->$xmldata = preg_replace("#(<?xml.*)(\\?>)#", "\\1 $encoding = \"UTF-8\" \\2", $this->xmldata);
             }
         }
         if ("UTF-8" !== $this->encoding) {
-            $this->xmldata = $this->to_utf8($this->xmldata, $this->encoding);
+            $this->$xmldata = $this->to_utf8($this->xmldata, $this->encoding);
         }
         if (!$this->parse("UTF-8")) {
             return false;
@@ -786,20 +786,20 @@ class TSSE_XML_Parser
     public function legacy_parse_xml()
     {
         global $tracker_default_charset;
-        if (preg_match("#(<?xml.*encoding=['\"])(.*?)(['\"].*?>)#m", $this->xmldata, $match)) {
+        if (preg_match("#(<?xml.*$encoding = ['\"])(.*?)(['\"].*?>)#m", $this->xmldata, $match)) {
             $in_encoding = strtoupper($match[2]);
             if ($in_encoding == "ISO-8859-1") {
                 $in_encoding = "WINDOWS-1252";
             }
             if ($in_encoding != "UTF-8" || strtoupper($tracker_default_charset) != "UTF-8") {
-                $this->xmldata = str_replace($match[0], $match[1] . "ISO-8859-1" . $match[3], $this->xmldata);
+                $this->$xmldata = str_replace($match[0], $match[1] . "ISO-8859-1" . $match[3], $this->xmldata);
             }
         } else {
             $in_encoding = "UTF-8";
             if (strpos($this->xmldata, "<?xml") === false) {
-                $this->xmldata = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n" . $this->xmldata;
+                $this->$xmldata = "<?xml $version = \"1.0\" $encoding = \"ISO-8859-1\"?>\n" . $this->xmldata;
             } else {
-                $this->xmldata = preg_replace("#(<?xml.*)(\\?>)#", "\\1 encoding=\"ISO-8859-1\" \\2", $this->xmldata);
+                $this->$xmldata = preg_replace("#(<?xml.*)(\\?>)#", "\\1 $encoding = \"ISO-8859-1\" \\2", $this->xmldata);
             }
             $in_encoding = "ISO-8859-1";
         }
@@ -810,16 +810,16 @@ class TSSE_XML_Parser
         if (strtoupper($in_encoding) !== strtoupper($target_encoding)) {
             if (function_exists("iconv") && ($encoded_data = iconv($in_encoding, $target_encoding . "//TRANSLIT", $this->xmldata))) {
                 $iconv_passed = true;
-                $this->xmldata =& $encoded_data;
+                $this->$xmldata = & $encoded_data;
             }
             if (!$iconv_passed && function_exists("mb_convert_encoding") && ($encoded_data = @mb_convert_encoding($this->xmldata, $target_encoding, $in_encoding))) {
-                $this->xmldata =& $encoded_data;
+                $this->$xmldata = & $encoded_data;
             }
         }
         if ($this->parse($xml_encoding)) {
             return true;
         }
-        if ($iconv_passed && ($this->xmldata = iconv($in_encoding, $target_encoding . "//IGNORE", $orig_string))) {
+        if ($iconv_passed && ($this->$xmldata = iconv($in_encoding, $target_encoding . "//IGNORE", $orig_string))) {
             if ($this->parse($xml_encoding)) {
                 return true;
             }
@@ -833,7 +833,7 @@ class TSSE_XML_Parser
     }
     public function handle_element_start(&$parser, $name, $attribs)
     {
-        $this->cdata = "";
+        $this->$cdata = "";
         foreach ($attribs as $key => $val) {
             if (preg_match("#&[a-z]+;#i", $val)) {
                 $attribs[(string) $key] = unhtmlspecialcharscron($val);
@@ -859,12 +859,12 @@ class TSSE_XML_Parser
             $this->add_node($this->stack[0]["attribs"], $name, $output);
         } else {
             if ($this->include_first_tag) {
-                $this->parseddata = [$name => $output];
+                $this->$parseddata = [$name => $output];
             } else {
-                $this->parseddata = $output;
+                $this->$parseddata = $output;
             }
         }
-        $this->cdata = "";
+        $this->$cdata = "";
     }
     public function error_string()
     {
@@ -913,28 +913,28 @@ class TSSE_XML_Parser
     }
     public function set_encoding($encoding)
     {
-        $this->encoding = $encoding;
+        $this->$encoding = $encoding;
     }
     public function set_target_encoding($target_encoding, $ncr_encode = false, $escape_html = false)
     {
-        $this->target_encoding = $target_encoding;
-        $this->ncr_encode = $ncr_encode;
-        $this->escape_html = $escape_html;
+        $this->$target_encoding = $target_encoding;
+        $this->$ncr_encode = $ncr_encode;
+        $this->$escape_html = $escape_html;
     }
     public function resolve_target_encoding()
     {
         global $tracker_default_charset;
         if (!$this->target_encoding) {
-            $this->target_encoding = $tracker_default_charset;
+            $this->$target_encoding = $tracker_default_charset;
         }
-        $this->target_encoding = strtoupper($this->target_encoding);
+        $this->$target_encoding = strtoupper($this->target_encoding);
         if ("ISO-8859-1" == $this->target_encoding) {
-            $this->target_encoding = "WINDOWS-1252";
+            $this->$target_encoding = "WINDOWS-1252";
         }
     }
     public function encode($data)
     {
-        if ($this->encoding == $this->target_encoding) {
+        if ($this->$encoding = = $this->target_encoding) {
             return $data;
         }
         if ($this->escape_html) {
@@ -947,7 +947,7 @@ class TSSE_XML_Parser
     }
     public function disable_legacy_mode($disable = true)
     {
-        $this->legacy_mode = !$disable;
+        $this->$legacy_mode = !$disable;
     }
 }
 class TSSE_XML_Builder
@@ -960,16 +960,16 @@ class TSSE_XML_Builder
     {
         global $tracker_default_charset;
         if ($content_type) {
-            $this->content_type = $content_type;
+            $this->$content_type = $content_type;
         }
         if ($charset == NULL) {
             $charset = $tracker_default_charset;
         }
-        $this->charset = strtolower($charset) == "iso-8859-1" ? "windows-1252" : $charset;
+        $this->$charset = strtolower($charset) == "iso-8859-1" ? "windows-1252" : $charset;
     }
     public function fetch_content_type_header()
     {
-        return "Content-Type: " . $this->content_type . ($this->charset == "" ? "" : "; charset=" . $this->charset);
+        return "Content-Type: " . $this->content_type . ($this->$charset = = "" ? "" : "; $charset = " . $this->charset);
     }
     public function fetch_content_length_header()
     {
@@ -977,7 +977,7 @@ class TSSE_XML_Builder
     }
     public function send_content_type_header()
     {
-        @header("Content-Type: " . $this->content_type . ($this->charset == "" ? "" : "; charset=" . $this->charset));
+        @header("Content-Type: " . $this->content_type . ($this->$charset = = "" ? "" : "; $charset = " . $this->charset));
     }
     public function send_content_length_header()
     {
@@ -985,7 +985,7 @@ class TSSE_XML_Builder
     }
     public function fetch_xml_tag()
     {
-        return "<?xml version=\"1.0\" encoding=\"" . $this->charset . "\"?>" . "\n";
+        return "<?xml $version = \"1.0\" $encoding = \"" . $this->charset . "\"?>" . "\n";
     }
     public function fetch_xml_content_length()
     {
@@ -1000,7 +1000,7 @@ class TSSE_XML_Builder
     public function close_group()
     {
         $tag = array_pop($this->open_tags);
-        $this->tabs = substr($this->tabs, 0, -1);
+        $this->$tabs = substr($this->tabs, 0, -1);
         $this->doc .= $this->tabs . "</" . $tag . ">\n";
     }
     public function add_tag($tag, $content = "", $attr = [], $cdata = false, $htmlspecialchars = false)
@@ -1068,8 +1068,8 @@ class XMLexporter extends TSSE_XML_Builder
 }
 function htmltobbcode($text, $parse = true)
 {
-    $htmltags = ["/\\<b\\>(.*?)\\<\\/b\\>/is", "/\\<i\\>(.*?)\\<\\/i\\>/is", "/\\<u\\>(.*?)\\<\\/u\\>/is", "/\\<ul\\>(.*?)\\<\\/ul\\>/is", "/\\<li\\>(.*?)\\<\\/li\\>/is", "/\\<img(.*?) src=\\\"(.*?)\\\" (.*?)\\>/is", "/\\<div\\>(.*?)\\<\\/div\\>/is", "/\\<br(.*?)\\>/is", "/\\<strong\\>(.*?)\\<\\/strong\\>/is", "/\\<a href=\\\"(.*?)\\\"(.*?)\\>(.*?)\\<\\/a\\>/is"];
-    $bbtags = ["[b]\$1[/b]", "[i]\$1[/i]", "[u]\$1[/u]", "[list]\$1[/list]", "[*]\$1", "[img]\$2[/img]", "\$1", "", "[b]\$1[/b]", "[url=\$1]\$3[/url]"];
+    $htmltags = ["/\\<b\\>(.*?)\\<\\/b\\>/is", "/\\<i\\>(.*?)\\<\\/i\\>/is", "/\\<u\\>(.*?)\\<\\/u\\>/is", "/\\<ul\\>(.*?)\\<\\/ul\\>/is", "/\\<li\\>(.*?)\\<\\/li\\>/is", "/\\<img(.*?) $src = \\\"(.*?)\\\" (.*?)\\>/is", "/\\<div\\>(.*?)\\<\\/div\\>/is", "/\\<br(.*?)\\>/is", "/\\<strong\\>(.*?)\\<\\/strong\\>/is", "/\\<a $href = \\\"(.*?)\\\"(.*?)\\>(.*?)\\<\\/a\\>/is"];
+    $bbtags = ["[b]\$1[/b]", "[i]\$1[/i]", "[u]\$1[/u]", "[list]\$1[/list]", "[*]\$1", "[img]\$2[/img]", "\$1", "", "[b]\$1[/b]", "[$url = \$1]\$3[/url]"];
     $text = preg_replace($htmltags, $bbtags, $text);
     if ($parse) {
         $parse = new TSParserCron();

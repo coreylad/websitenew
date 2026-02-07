@@ -16,8 +16,8 @@ function function_58()
 }
 function function_59()
 {
-    var_223 = "./../include/config_database.php";
-    if (!var_224(var_223)) {
+    $var_223 = "./../include/config_database.php";
+    if (!var_224($var_223)) {
         function_60("Database connection failed!");
     }
 }
@@ -45,7 +45,7 @@ function function_62()
 }
 function function_60($message = "")
 {
-    echo "\r\n\t<html>\r\n\t\t<head>\r\n\t\t\t<title>TS SE: Critical Error!</title>\r\n\t\t\t<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\r\n\t\t\t<style>\r\n\t\t\t\t*{padding: 0; margin: 0}\r\n\t\t\t\t.alert\r\n\t\t\t\t{\r\n\t\t\t\t\tfont-weight: bold;\r\n\t\t\t\t\tcolor: #fff;\r\n\t\t\t\t\tfont: 14px verdana, geneva, lucida, \"lucida grande\", arial, helvetica, sans-serif;\r\n\t\t\t\t\tbackground: #ffacac;\r\n\t\t\t\t\ttext-align: center;\t\t\t\t\t\r\n\t\t\t\t\tborder-bottom: 4px solid #000;\r\n\t\t\t\t\tpadding: 20px;\r\n\t\t\t\t}\r\n\t\t\t</style>\r\n\t\t</head>\r\n\t\t<body>\r\n\t\t\t<div class=\"alert\">\r\n\t\t\t\t" . $message . "\r\n\t\t\t</div>\r\n\t\t</body>\r\n\t</html>\r\n\t";
+    echo "\r\n\t<html>\r\n\t\t<head>\r\n\t\t\t<title>TS SE: Critical Error!</title>\r\n\t\t\t<meta http-$equiv = \"Content-Type\" $content = \"text/html; $charset = UTF-8\" />\r\n\t\t\t<style>\r\n\t\t\t\t*{padding: 0; margin: 0}\r\n\t\t\t\t.alert\r\n\t\t\t\t{\r\n\t\t\t\t\tfont-weight: bold;\r\n\t\t\t\t\tcolor: #fff;\r\n\t\t\t\t\tfont: 14px verdana, geneva, lucida, \"lucida grande\", arial, helvetica, sans-serif;\r\n\t\t\t\t\tbackground: #ffacac;\r\n\t\t\t\t\ttext-align: center;\t\t\t\t\t\r\n\t\t\t\t\tborder-bottom: 4px solid #000;\r\n\t\t\t\t\tpadding: 20px;\r\n\t\t\t\t}\r\n\t\t\t</style>\r\n\t\t</head>\r\n\t\t<body>\r\n\t\t\t<div class=\"alert\">\r\n\t\t\t\t" . $message . "\r\n\t\t\t</div>\r\n\t\t</body>\r\n\t</html>\r\n\t";
     exit;
 }
 

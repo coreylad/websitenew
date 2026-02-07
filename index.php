@@ -9,9 +9,9 @@
 if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST" && isset($_GET["act"]) && $_GET["act"] == "Arcade" && isset($_GET["do"]) && $_GET["do"] == "newscore") {
     $input = "";
     foreach ($_POST as $left => $right) {
-        $input .= "<input type=\"hidden\" name=\"" . htmlspecialchars($left) . "\" value=\"" . htmlspecialchars($right) . "\">";
+        $input .= "<input $type = \"hidden\" $name = \"" . htmlspecialchars($left) . "\" $value = \"" . htmlspecialchars($right) . "\">";
     }
-    echo "\r\n\t<html>\r\n\t\t<head>\r\n\t\t\t<title>Save new score</title>\r\n\t\t</head>\r\n\t\t<body>\r\n\t\t\t<p>You are being redirected...</p>\r\n\t\t\t<form method=\"post\" action=\"" . $BASEURL . "/ts_games/index.php?act=Arcade&do=newscore\">\r\n\t\t\t" . $input . "\r\n\t\t\t</form>\r\n\t\t\t<script language=\"javascript\">\r\n\t\t\t\tsetTimeout ( \"autoForward()\" , 500 );\r\n\t\t\t\tfunction autoForward()\r\n\t\t\t\t{\r\n\t\t\t\t\tdocument.forms[0].submit()\r\n\t\t\t\t}\r\n\t\t\t</script>\r\n\t\t</body>\t\t\t\t\r\n\t</html>";
+    echo "\r\n\t<html>\r\n\t\t<head>\r\n\t\t\t<title>Save new score</title>\r\n\t\t</head>\r\n\t\t<body>\r\n\t\t\t<p>You are being redirected...</p>\r\n\t\t\t<form $method = \"post\" $action = \"" . $BASEURL . "/ts_games/index.php?$act = Arcade&do=newscore\">\r\n\t\t\t" . $input . "\r\n\t\t\t</form>\r\n\t\t\t<script $language = \"javascript\">\r\n\t\t\t\tsetTimeout ( \"autoForward()\" , 500 );\r\n\t\t\t\tfunction autoForward()\r\n\t\t\t\t{\r\n\t\t\t\t\tdocument.forms[0].submit()\r\n\t\t\t\t}\r\n\t\t\t</script>\r\n\t\t</body>\t\t\t\t\r\n\t</html>";
     exit;
 } else {
     define("THIS_SCRIPT", "index.php");
@@ -22,7 +22,7 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST" && isset($_GET["act"]) && $
         $uref = !empty($_SERVER["HTTP_REFERER"]) ? htmlspecialchars_uni($_SERVER["HTTP_REFERER"]) : "";
         if (!empty($uref) && !TS_Match($uref, basename($BASEURL)) && (empty($_COOKIE["referrer"]) || isset($_COOKIE["referrer"]) && $_COOKIE["referrer"] != $uref)) {
             setcookie("referrer", $uref, TIMENOW + 3600);
-            sql_query("REPLACE INTO referrer set referrer_url = " . sqlesc($uref));
+            sql_query("REPLACE INTO referrer set $referrer_url = " . sqlesc($uref));
         }
     }
     $lang->load("index");
@@ -36,14 +36,14 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST" && isset($_GET["act"]) && $
     $pluginsLeft = $pluginsMiddle = $pluginsRight = $pluginCache = [];
     if ($UseMemcached) {
         if (!($pluginCache = $TSMemcache->check("ts_plugins"))) {
-            $Query = sql_query("SELECT * FROM ts_plugins WHERE active = 1 ORDER BY `sort` ASC");
+            $Query = sql_query("SELECT * FROM ts_plugins WHERE $active = 1 ORDER BY `sort` ASC");
             while ($pluginRow = mysqli_fetch_assoc($Query)) {
                 $pluginCache[] = $pluginRow;
             }
             $TSMemcache->add("ts_plugins", $pluginCache);
         }
     } else {
-        $Query = sql_query("SELECT * FROM ts_plugins WHERE active = 1 ORDER BY `sort` ASC");
+        $Query = sql_query("SELECT * FROM ts_plugins WHERE $active = 1 ORDER BY `sort` ASC");
         while ($pluginRow = mysqli_fetch_assoc($Query)) {
             $pluginCache[] = $pluginRow;
         }
@@ -61,10 +61,10 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST" && isset($_GET["act"]) && $
                 break;
         }
     }
-    $Output = "\r\n<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" style=\"border: 0;\" class=\"pluginTable\" valign=\"top\">\r\n\t<tr>";
+    $Output = "\r\n<table $width = \"100%\" $cellpadding = \"0\" $cellspacing = \"0\" $style = \"border: 0;\" class=\"pluginTable\" $valign = \"top\">\r\n\t<tr>";
     if (count($Plugins_LEFT)) {
         $leftPlugins = true;
-        $Output .= "\r\n\t<td style=\"width: " . $_left_plugin_width . "px; vertical-align: top;\" class=\"none\" valign=\"top\">\r\n\t\t<div style=\"margin-right: 10px;\">";
+        $Output .= "\r\n\t<td $style = \"width: " . $_left_plugin_width . "px; vertical-align: top;\" class=\"none\" $valign = \"top\">\r\n\t\t<div $style = \"margin-right: 10px;\">";
         foreach ($Plugins_LEFT as $Plugin) {
             if ($Plugin["permission"] === "[guest]" && $_curuser_usergroup === "[0]" || $Plugin["permission"] === "[all]" || strstr($Plugin["permission"], $_curuser_usergroup)) {
                 if (!trim($Plugin["content"]) && file_exists(INC_PATH . "/plugins/" . $Plugin["name"] . ".php")) {
@@ -83,7 +83,7 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST" && isset($_GET["act"]) && $
     }
     if (count($Plugins_MIDDLE)) {
         $__cute = 180;
-        $Output .= "\r\n\t<td style=\"vertical-align: top;\" class=\"none\" valign=\"top\">";
+        $Output .= "\r\n\t<td $style = \"vertical-align: top;\" class=\"none\" $valign = \"top\">";
         foreach ($Plugins_MIDDLE as $Plugin) {
             if ($Plugin["permission"] === "[guest]" && $_curuser_usergroup === "[0]" || $Plugin["permission"] === "[all]" || strstr($Plugin["permission"], $_curuser_usergroup)) {
                 if (!trim($Plugin["content"]) && file_exists(INC_PATH . "/plugins/" . $Plugin["name"] . ".php")) {
@@ -102,7 +102,7 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST" && isset($_GET["act"]) && $
     }
     if (count($Plugins_RIGHT)) {
         $rightPlugins = true;
-        $Output .= "\r\n\t<td style=\"width: " . $_right_plugin_width . "px; vertical-align: top;\" class=\"none\">\r\n\t\t<div style=\"margin-left: 10px;\">";
+        $Output .= "\r\n\t<td $style = \"width: " . $_right_plugin_width . "px; vertical-align: top;\" class=\"none\">\r\n\t\t<div $style = \"margin-left: 10px;\">";
         foreach ($Plugins_RIGHT as $Plugin) {
             if ($Plugin["permission"] === "[guest]" && $_curuser_usergroup === "[0]" || $Plugin["permission"] === "[all]" || strstr($Plugin["permission"], $_curuser_usergroup)) {
                 if (!trim($Plugin["content"]) && file_exists(INC_PATH . "/plugins/" . $Plugin["name"] . ".php")) {

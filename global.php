@@ -99,8 +99,8 @@ $useragent = isset($_SERVER["HTTP_USER_AGENT"]) ? htmlspecialchars_uni(strtolowe
 $querystring = isset($_SERVER["QUERY_STRING"]) ? "?" . htmlspecialchars_uni($_SERVER["QUERY_STRING"]) : "";
 $page = htmlspecialchars_uni($_SERVER["SCRIPT_NAME"]);
 $FID = 0;
-if (defined("IN_FORUMS") && preg_match("#tsf_forums\\/showthread\\.php\\?tid=([0-9]+)#is", $page . $querystring, $Found)) {
-    $Query = sql_query("SELECT fid FROM " . TSF_PREFIX . "threads WHERE tid = " . sqlesc(intval($Found[1])));
+if (defined("IN_FORUMS") && preg_match("#tsf_forums\\/showthread\\.php\\?$tid = ([0-9]+)#is", $page . $querystring, $Found)) {
+    $Query = sql_query("SELECT fid FROM " . TSF_PREFIX . "threads WHERE $tid = " . sqlesc(intval($Found[1])));
     if (mysqli_num_rows($Query)) {
         $Result = mysqli_fetch_assoc($Query);
         $FID = $Result["fid"];
@@ -192,13 +192,13 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
 if (isset($usergroups) && $is_mod) {
     if ($UseMemcached) {
         if (!($staffcache = $TSMemcache->check("STAFFTEAM"))) {
-            $Query = sql_query("SELECT `content` FROM `ts_config` WHERE configname = \"STAFFTEAM\"");
+            $Query = sql_query("SELECT `content` FROM `ts_config` WHERE $configname = \"STAFFTEAM\"");
             $Result = mysqli_fetch_assoc($Query);
             $staffcache = @explode(",", $Result["content"]);
             $TSMemcache->add("STAFFTEAM", $staffcache);
         }
     } else {
-        $Query = sql_query("SELECT `content` FROM `ts_config` WHERE configname = \"STAFFTEAM\"");
+        $Query = sql_query("SELECT `content` FROM `ts_config` WHERE $configname = \"STAFFTEAM\"");
         $Result = mysqli_fetch_assoc($Query);
         $staffcache = @explode(",", $Result["content"]);
     }
@@ -212,7 +212,7 @@ if (isset($usergroups) && $is_mod) {
     }
 }
 if (isset($CURUSER) && TS_Match($CURUSER["options"], "A1") && (!defined("THIS_SCRIPT") || defined("THIS_SCRIPT") && THIS_SCRIPT != "usercp.php")) {
-    redirect("usercp.php?act=edit_details#account_parked");
+    redirect("usercp.php?$act = edit_details#account_parked");
     exit;
 }
 if (isset($_SERVER["HTTP_X_MOZ"]) && strpos($_SERVER["HTTP_X_MOZ"], "prefetch") !== false) {
@@ -223,13 +223,13 @@ if (isset($_SERVER["HTTP_X_MOZ"]) && strpos($_SERVER["HTTP_X_MOZ"], "prefetch") 
 if (!defined("NO_LOGIN_REQUIRED") && !isset($CURUSER)) {
     if (!(isset($guestaccess) && $guestaccess == "yes")) {
         if (!defined("THIS_SCRIPT") || defined("THIS_SCRIPT") && THIS_SCRIPT != "index.php") {
-            redirect("login.php?returnto=" . (isset($_SERVER["REQUEST_URI"]) && !empty($_SERVER["REQUEST_URI"]) ? urlencode(fix_url($_SERVER["REQUEST_URI"])) : "index.php"));
+            redirect("login.php?$returnto = " . (isset($_SERVER["REQUEST_URI"]) && !empty($_SERVER["REQUEST_URI"]) ? urlencode(fix_url($_SERVER["REQUEST_URI"])) : "index.php"));
             exit;
         }
     }
 }
 if (!defined("NO_LOGIN_REQUIRED") && !isset($CURUSER) && isset($guestaccess) && $guestaccess == "yes") {
-    $query = sql_query("SELECT * FROM usergroups WHERE gid = 3200");
+    $query = sql_query("SELECT * FROM usergroups WHERE $gid = 3200");
     $GLOBALS["usergroups"] = mysqli_fetch_assoc($query);
     $tmp_time_g = get_date_time();
     $GLOBALS["CURUSER"]["id"] = "0";

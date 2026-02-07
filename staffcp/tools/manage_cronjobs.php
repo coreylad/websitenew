@@ -7,28 +7,28 @@
  */
 
 var_235();
-$Language = file("languages/" . function_75() . "/manage_cronjobs.lang");
+$Language = file("languages/" . getStaffLanguage() . "/manage_cronjobs.lang");
 $Act = isset($_GET["act"]) ? trim($_GET["act"]) : (isset($_POST["act"]) ? trim($_POST["act"]) : "");
 $Message = "";
 $STATUS = "";
 $Error = [];
 if ($Act == "delete" && ($cronid = intval($_GET["cronid"]))) {
-    mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM ts_cron WHERE cronid = " . $cronid);
-    function_79(str_replace("{1}", $_SESSION["ADMIN_USERNAME"], $Language[27]));
-    $STATUS = "<tr><td class=\"alt2\" align=\"center\" colspan=\"7\"><div class=\"icon-ok\">" . $Language[42] . "</div></td></tr>";
+    mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM ts_cron WHERE $cronid = " . $cronid);
+    logStaffAction(str_replace("{1}", $_SESSION["ADMIN_USERNAME"], $Language[27]));
+    $STATUS = "<tr><td class=\"alt2\" $align = \"center\" $colspan = \"7\"><div class=\"icon-ok\">" . $Language[42] . "</div></td></tr>";
 }
 if ($Act == "set_status" && ($cronid = intval($_GET["cronid"]))) {
-    mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE ts_cron SET active = IF(active = 1, 0, 1) WHERE cronid = " . $cronid);
-    function_79(str_replace("{1}", $_SESSION["ADMIN_USERNAME"], $Language[27]));
-    $STATUS = "<tr><td class=\"alt2\" align=\"center\" colspan=\"7\"><div class=\"icon-ok\">" . $Language[43] . "</div></td></tr>";
+    mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE ts_cron SET $active = IF($active = 1, 0, 1) WHERE $cronid = " . $cronid);
+    logStaffAction(str_replace("{1}", $_SESSION["ADMIN_USERNAME"], $Language[27]));
+    $STATUS = "<tr><td class=\"alt2\" $align = \"center\" $colspan = \"7\"><div class=\"icon-ok\">" . $Language[43] . "</div></td></tr>";
 }
 if ($Act == "run" && ($cronid = intval($_GET["cronid"]))) {
-    mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE ts_cron SET nextrun = 0 WHERE cronid = " . $cronid);
-    function_79(str_replace("{1}", $_SESSION["ADMIN_USERNAME"], $Language[27]));
-    $STATUS = "<tr><td class=\"alt2\" align=\"center\" colspan=\"7\"><div class=\"icon-ok\">" . $Language[43] . "</div></td></tr>";
+    mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE ts_cron SET $nextrun = 0 WHERE $cronid = " . $cronid);
+    logStaffAction(str_replace("{1}", $_SESSION["ADMIN_USERNAME"], $Language[27]));
+    $STATUS = "<tr><td class=\"alt2\" $align = \"center\" $colspan = \"7\"><div class=\"icon-ok\">" . $Language[43] . "</div></td></tr>";
 }
 if ($Act == "edit" && ($cronid = intval($_GET["cronid"]))) {
-    $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM ts_cron WHERE cronid = " . $cronid);
+    $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM ts_cron WHERE $cronid = " . $cronid);
     if (mysqli_num_rows($Query)) {
         if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
             $filename = trim($_POST["filename"]);
@@ -59,9 +59,9 @@ if ($Act == "edit" && ($cronid = intval($_GET["cronid"]))) {
             $TArray = function_326($minutes);
             if ($filename && file_exists("../include/cron/" . $filename)) {
                 if (0 < $minutes) {
-                    mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE ts_cron SET minutes = " . $minutes . ", filename = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $filename) . "', description = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $description) . "', loglevel = " . $loglevel . ", active = " . $active . " WHERE cronid = " . $cronid);
-                    function_79(str_replace("{1}", $_SESSION["ADMIN_USERNAME"], $Language[27]));
-                    $STATUS = "<tr><td class=\"alt2\" align=\"center\" colspan=\"7\"><div class=\"icon-ok\">" . $Language[43] . "</div></td></tr>";
+                    mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE ts_cron SET $minutes = " . $minutes . ", $filename = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $filename) . "', $description = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $description) . "', $loglevel = " . $loglevel . ", $active = " . $active . " WHERE $cronid = " . $cronid);
+                    logStaffAction(str_replace("{1}", $_SESSION["ADMIN_USERNAME"], $Language[27]));
+                    $STATUS = "<tr><td class=\"alt2\" $align = \"center\" $colspan = \"7\"><div class=\"icon-ok\">" . $Language[43] . "</div></td></tr>";
                 } else {
                     $Error[] = $Language[46];
                 }
@@ -79,28 +79,28 @@ if ($Act == "edit" && ($cronid = intval($_GET["cronid"]))) {
         if (empty($STATUS)) {
             $months = "";
             for ($i = 0; $i <= 12; $i++) {
-                $months .= "<option value=\"" . $i . "\"" . function_318($TArray["months"] == $i, " selected=\"selected\"") . ">" . $i . " " . function_318(1 < $i, $Language[31], $Language[30]) . "</option>";
+                $months .= "<option $value = \"" . $i . "\"" . function_318($TArray["months"] == $i, " $selected = \"selected\"") . ">" . $i . " " . function_318(1 < $i, $Language[31], $Language[30]) . "</option>";
             }
             $weeks = "";
             for ($i = 0; $i <= 4; $i++) {
-                $weeks .= "<option value=\"" . $i . "\"" . function_318($TArray["weeks"] == $i, " selected=\"selected\"") . ">" . $i . " " . function_318(1 < $i, $Language[33], $Language[32]) . "</option>";
+                $weeks .= "<option $value = \"" . $i . "\"" . function_318($TArray["weeks"] == $i, " $selected = \"selected\"") . ">" . $i . " " . function_318(1 < $i, $Language[33], $Language[32]) . "</option>";
             }
             $days = "";
             for ($i = 0; $i <= 31; $i++) {
-                $days .= "<option value=\"" . $i . "\"" . function_318($TArray["days"] == $i, " selected=\"selected\"") . ">" . $i . " " . function_318(1 < $i, $Language[35], $Language[34]) . "</option>";
+                $days .= "<option $value = \"" . $i . "\"" . function_318($TArray["days"] == $i, " $selected = \"selected\"") . ">" . $i . " " . function_318(1 < $i, $Language[35], $Language[34]) . "</option>";
             }
             $hours = "";
             for ($i = 0; $i <= 24; $i++) {
-                $hours .= "<option value=\"" . $i . "\"" . function_318($TArray["hours"] == $i, " selected=\"selected\"") . ">" . $i . " " . function_318(1 < $i, $Language[37], $Language[36]) . "</option>";
+                $hours .= "<option $value = \"" . $i . "\"" . function_318($TArray["hours"] == $i, " $selected = \"selected\"") . ">" . $i . " " . function_318(1 < $i, $Language[37], $Language[36]) . "</option>";
             }
             $minutes = "";
             for ($i = 0; $i <= 60; $i++) {
-                $minutes .= "<option value=\"" . $i . "\"" . function_318($TArray["minutes"] == $i, " selected=\"selected\"") . ">" . $i . " " . function_318(1 < $i, $Language[39], $Language[38]) . "</option>";
+                $minutes .= "<option $value = \"" . $i . "\"" . function_318($TArray["minutes"] == $i, " $selected = \"selected\"") . ">" . $i . " " . function_318(1 < $i, $Language[39], $Language[38]) . "</option>";
             }
-            $ActionTab = "\r\n\t\t\t<form method=\"post\" action=\"" . $_SERVER["SCRIPT_NAME"] . "?do=manage_cronjobs&amp;act=edit&amp;cronid=" . $cronid . "\">\r\n\t\t\t\t<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" class=\"mainTable\">\r\n\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t<td class=\"tcat\" colspan=\"2\" align=\"center\">\r\n\t\t\t\t\t\t\t" . $Language[4] . "\r\n\t\t\t\t\t\t</td>\r\n\t\t\t\t\t</tr>\r\n\t\t\t\t\t" . (isset($Error[0]) && $Error[0] != "" ? "<tr><td class=\"alt2\" align=\"center\" colspan=\"2\"><div class=\"icon-error\">" . implode("<br />", $Error) . "</div></td></tr>" : "") . "\r\n\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t<td class=\"alt2\" colspan=\"2\">" . $Language[8] . "</td>\r\n\t\t\t\t\t</tr>\r\n\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t<td class=\"alt1\" width=\"50%\" align=\"justify\">\r\n\t\t\t\t\t\t\t" . $Language[47] . "\r\n\t\t\t\t\t\t</td>\r\n\t\t\t\t\t\t<td class=\"alt1\" width=\"50%\" valign=\"top\">\r\n\t\t\t\t\t\t\t<input type=\"text\" name=\"filename\" value=\"" . $filename . "\" size=\"30\" />\r\n\t\t\t\t\t\t</td>\r\n\t\t\t\t\t</tr>\r\n\r\n\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t<td class=\"alt2\" colspan=\"2\">" . $Language[9] . "</td>\r\n\t\t\t\t\t</tr>\r\n\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t<td class=\"alt1\" width=\"50%\" align=\"justify\" valign=\"top\">\r\n\t\t\t\t\t\t\t" . $Language[48] . "\r\n\t\t\t\t\t\t</td>\r\n\t\t\t\t\t\t<td class=\"alt1\" width=\"50%\" valign=\"top\">\r\n\t\t\t\t\t\t\t<textarea name=\"description\" cols=\"70\" rows=\"4\">" . $description . "</textarea>\r\n\t\t\t\t\t\t</td>\r\n\t\t\t\t\t</tr>\r\n\r\n\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t<td class=\"alt2\" colspan=\"2\">" . $Language[10] . "</td>\r\n\t\t\t\t\t</tr>\r\n\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t<td class=\"alt1\" width=\"50%\" align=\"justify\" valign=\"top\">\r\n\t\t\t\t\t\t\t" . $Language[49] . "\r\n\t\t\t\t\t\t</td>\r\n\t\t\t\t\t\t<td class=\"alt1\" width=\"50%\" valign=\"top\">\r\n\t\t\t\t\t\t\t<select name=\"months\">" . $months . "</select>\r\n\t\t\t\t\t\t\t<select name=\"weeks\">" . $weeks . "</select>\r\n\t\t\t\t\t\t\t<select name=\"days\">" . $days . "</select>\r\n\t\t\t\t\t\t\t<select name=\"hours\">" . $hours . "</select>\r\n\t\t\t\t\t\t\t<select name=\"minutes\">" . $minutes . "</select>\r\n\t\t\t\t\t\t</td>\r\n\t\t\t\t\t</tr>\r\n\r\n\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t<td class=\"alt2\" colspan=\"2\">" . $Language[17] . "</td>\r\n\t\t\t\t\t</tr>\r\n\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t<td class=\"alt1\" width=\"50%\" align=\"justify\" valign=\"top\">\r\n\t\t\t\t\t\t\t" . $Language[50] . "\r\n\t\t\t\t\t\t</td>\r\n\t\t\t\t\t\t<td class=\"alt1\" width=\"50%\" valign=\"top\">\r\n\t\t\t\t\t\t\t<input type=\"radio\" name=\"active\" value=\"1\"" . ($active == "1" ? " checked=\"checked\"" : "") . " /> " . $Language[15] . "\r\n\t\t\t\t\t\t\t<input type=\"radio\" name=\"active\" value=\"0\"" . ($active == "0" ? " checked=\"checked\"" : "") . " /> " . $Language[16] . "\r\n\t\t\t\t\t\t</td>\r\n\t\t\t\t\t</tr>\r\n\r\n\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t<td class=\"alt2\" colspan=\"2\">" . $Language[12] . "</td>\r\n\t\t\t\t\t</tr>\r\n\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t<td class=\"alt1\" width=\"50%\" align=\"justify\" valign=\"top\">\r\n\t\t\t\t\t\t\t" . $Language[51] . "\r\n\t\t\t\t\t\t</td>\r\n\t\t\t\t\t\t<td class=\"alt1\" width=\"50%\" valign=\"top\">\r\n\t\t\t\t\t\t\t<input type=\"radio\" name=\"loglevel\" value=\"1\"" . ($loglevel == "1" ? " checked=\"checked\"" : "") . " /> " . $Language[15] . "\r\n\t\t\t\t\t\t\t<input type=\"radio\" name=\"loglevel\" value=\"0\"" . ($loglevel == "0" ? " checked=\"checked\"" : "") . " /> " . $Language[16] . "\r\n\t\t\t\t\t\t</td>\r\n\t\t\t\t\t</tr>\r\n\r\n\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t<td class=\"tcat2\"></td>\r\n\t\t\t\t\t\t<td class=\"tcat2\">\r\n\t\t\t\t\t\t\t<input type=\"submit\" value=\"" . $Language[24] . "\" /> <input type=\"reset\" value=\"" . $Language[25] . "\" />\r\n\t\t\t\t\t\t</td>\r\n\t\t\t\t</tr>\r\n\t\t\t\t</table>\r\n\t\t\t</form>\r\n\t\t\t";
+            $ActionTab = "\r\n\t\t\t<form $method = \"post\" $action = \"" . $_SERVER["SCRIPT_NAME"] . "?do=manage_cronjobs&amp;$act = edit&amp;$cronid = " . $cronid . "\">\r\n\t\t\t\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t<td class=\"tcat\" $colspan = \"2\" $align = \"center\">\r\n\t\t\t\t\t\t\t" . $Language[4] . "\r\n\t\t\t\t\t\t</td>\r\n\t\t\t\t\t</tr>\r\n\t\t\t\t\t" . (isset($Error[0]) && $Error[0] != "" ? "<tr><td class=\"alt2\" $align = \"center\" $colspan = \"2\"><div class=\"icon-error\">" . implode("<br />", $Error) . "</div></td></tr>" : "") . "\r\n\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t<td class=\"alt2\" $colspan = \"2\">" . $Language[8] . "</td>\r\n\t\t\t\t\t</tr>\r\n\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t<td class=\"alt1\" $width = \"50%\" $align = \"justify\">\r\n\t\t\t\t\t\t\t" . $Language[47] . "\r\n\t\t\t\t\t\t</td>\r\n\t\t\t\t\t\t<td class=\"alt1\" $width = \"50%\" $valign = \"top\">\r\n\t\t\t\t\t\t\t<input $type = \"text\" $name = \"filename\" $value = \"" . $filename . "\" $size = \"30\" />\r\n\t\t\t\t\t\t</td>\r\n\t\t\t\t\t</tr>\r\n\r\n\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t<td class=\"alt2\" $colspan = \"2\">" . $Language[9] . "</td>\r\n\t\t\t\t\t</tr>\r\n\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t<td class=\"alt1\" $width = \"50%\" $align = \"justify\" $valign = \"top\">\r\n\t\t\t\t\t\t\t" . $Language[48] . "\r\n\t\t\t\t\t\t</td>\r\n\t\t\t\t\t\t<td class=\"alt1\" $width = \"50%\" $valign = \"top\">\r\n\t\t\t\t\t\t\t<textarea $name = \"description\" $cols = \"70\" $rows = \"4\">" . $description . "</textarea>\r\n\t\t\t\t\t\t</td>\r\n\t\t\t\t\t</tr>\r\n\r\n\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t<td class=\"alt2\" $colspan = \"2\">" . $Language[10] . "</td>\r\n\t\t\t\t\t</tr>\r\n\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t<td class=\"alt1\" $width = \"50%\" $align = \"justify\" $valign = \"top\">\r\n\t\t\t\t\t\t\t" . $Language[49] . "\r\n\t\t\t\t\t\t</td>\r\n\t\t\t\t\t\t<td class=\"alt1\" $width = \"50%\" $valign = \"top\">\r\n\t\t\t\t\t\t\t<select $name = \"months\">" . $months . "</select>\r\n\t\t\t\t\t\t\t<select $name = \"weeks\">" . $weeks . "</select>\r\n\t\t\t\t\t\t\t<select $name = \"days\">" . $days . "</select>\r\n\t\t\t\t\t\t\t<select $name = \"hours\">" . $hours . "</select>\r\n\t\t\t\t\t\t\t<select $name = \"minutes\">" . $minutes . "</select>\r\n\t\t\t\t\t\t</td>\r\n\t\t\t\t\t</tr>\r\n\r\n\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t<td class=\"alt2\" $colspan = \"2\">" . $Language[17] . "</td>\r\n\t\t\t\t\t</tr>\r\n\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t<td class=\"alt1\" $width = \"50%\" $align = \"justify\" $valign = \"top\">\r\n\t\t\t\t\t\t\t" . $Language[50] . "\r\n\t\t\t\t\t\t</td>\r\n\t\t\t\t\t\t<td class=\"alt1\" $width = \"50%\" $valign = \"top\">\r\n\t\t\t\t\t\t\t<input $type = \"radio\" $name = \"active\" $value = \"1\"" . ($active == "1" ? " $checked = \"checked\"" : "") . " /> " . $Language[15] . "\r\n\t\t\t\t\t\t\t<input $type = \"radio\" $name = \"active\" $value = \"0\"" . ($active == "0" ? " $checked = \"checked\"" : "") . " /> " . $Language[16] . "\r\n\t\t\t\t\t\t</td>\r\n\t\t\t\t\t</tr>\r\n\r\n\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t<td class=\"alt2\" $colspan = \"2\">" . $Language[12] . "</td>\r\n\t\t\t\t\t</tr>\r\n\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t<td class=\"alt1\" $width = \"50%\" $align = \"justify\" $valign = \"top\">\r\n\t\t\t\t\t\t\t" . $Language[51] . "\r\n\t\t\t\t\t\t</td>\r\n\t\t\t\t\t\t<td class=\"alt1\" $width = \"50%\" $valign = \"top\">\r\n\t\t\t\t\t\t\t<input $type = \"radio\" $name = \"loglevel\" $value = \"1\"" . ($loglevel == "1" ? " $checked = \"checked\"" : "") . " /> " . $Language[15] . "\r\n\t\t\t\t\t\t\t<input $type = \"radio\" $name = \"loglevel\" $value = \"0\"" . ($loglevel == "0" ? " $checked = \"checked\"" : "") . " /> " . $Language[16] . "\r\n\t\t\t\t\t\t</td>\r\n\t\t\t\t\t</tr>\r\n\r\n\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t<td class=\"tcat2\"></td>\r\n\t\t\t\t\t\t<td class=\"tcat2\">\r\n\t\t\t\t\t\t\t<input $type = \"submit\" $value = \"" . $Language[24] . "\" /> <input $type = \"reset\" $value = \"" . $Language[25] . "\" />\r\n\t\t\t\t\t\t</td>\r\n\t\t\t\t</tr>\r\n\t\t\t\t</table>\r\n\t\t\t</form>\r\n\t\t\t";
         }
     } else {
-        $Message = function_76($Language[44]);
+        $Message = showAlertError($Language[44]);
     }
 }
 if ($Act == "new") {
@@ -144,8 +144,8 @@ if ($Act == "new") {
         if ($filename && file_exists("../include/cron/" . $filename)) {
             if (0 < $minutes) {
                 mysqli_query($GLOBALS["DatabaseConnect"], "INSERT INTO ts_cron (minutes, filename, description, loglevel, active) VALUES (" . $minutes . ", '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $filename) . "', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $description) . "', " . $loglevel . ", " . $active . ")");
-                function_79(str_replace("{1}", $_SESSION["ADMIN_USERNAME"], $Language[27]));
-                $STATUS = "<tr><td class=\"alt2\" align=\"center\" colspan=\"7\"><div class=\"icon-ok\">" . $Language[52] . "</div></td></tr>";
+                logStaffAction(str_replace("{1}", $_SESSION["ADMIN_USERNAME"], $Language[27]));
+                $STATUS = "<tr><td class=\"alt2\" $align = \"center\" $colspan = \"7\"><div class=\"icon-ok\">" . $Language[52] . "</div></td></tr>";
             } else {
                 $Error[] = $Language[46];
             }
@@ -156,25 +156,25 @@ if ($Act == "new") {
     if (empty($STATUS)) {
         $months = "";
         for ($i = 0; $i <= 12; $i++) {
-            $months .= "<option value=\"" . $i . "\"" . function_318($TArray["months"] == $i, " selected=\"selected\"") . ">" . $i . " " . function_318(1 < $i, $Language[31], $Language[30]) . "</option>";
+            $months .= "<option $value = \"" . $i . "\"" . function_318($TArray["months"] == $i, " $selected = \"selected\"") . ">" . $i . " " . function_318(1 < $i, $Language[31], $Language[30]) . "</option>";
         }
         $weeks = "";
         for ($i = 0; $i <= 4; $i++) {
-            $weeks .= "<option value=\"" . $i . "\"" . function_318($TArray["weeks"] == $i, " selected=\"selected\"") . ">" . $i . " " . function_318(1 < $i, $Language[33], $Language[32]) . "</option>";
+            $weeks .= "<option $value = \"" . $i . "\"" . function_318($TArray["weeks"] == $i, " $selected = \"selected\"") . ">" . $i . " " . function_318(1 < $i, $Language[33], $Language[32]) . "</option>";
         }
         $days = "";
         for ($i = 0; $i <= 31; $i++) {
-            $days .= "<option value=\"" . $i . "\"" . function_318($TArray["days"] == $i, " selected=\"selected\"") . ">" . $i . " " . function_318(1 < $i, $Language[35], $Language[34]) . "</option>";
+            $days .= "<option $value = \"" . $i . "\"" . function_318($TArray["days"] == $i, " $selected = \"selected\"") . ">" . $i . " " . function_318(1 < $i, $Language[35], $Language[34]) . "</option>";
         }
         $hours = "";
         for ($i = 0; $i <= 24; $i++) {
-            $hours .= "<option value=\"" . $i . "\"" . function_318($TArray["hours"] == $i, " selected=\"selected\"") . ">" . $i . " " . function_318(1 < $i, $Language[37], $Language[36]) . "</option>";
+            $hours .= "<option $value = \"" . $i . "\"" . function_318($TArray["hours"] == $i, " $selected = \"selected\"") . ">" . $i . " " . function_318(1 < $i, $Language[37], $Language[36]) . "</option>";
         }
         $minutes = "";
         for ($i = 0; $i <= 60; $i++) {
-            $minutes .= "<option value=\"" . $i . "\"" . function_318($TArray["minutes"] == $i, " selected=\"selected\"") . ">" . $i . " " . function_318(1 < $i, $Language[39], $Language[38]) . "</option>";
+            $minutes .= "<option $value = \"" . $i . "\"" . function_318($TArray["minutes"] == $i, " $selected = \"selected\"") . ">" . $i . " " . function_318(1 < $i, $Language[39], $Language[38]) . "</option>";
         }
-        $ActionTab = "\r\n\t\t<form method=\"post\" action=\"" . $_SERVER["SCRIPT_NAME"] . "?do=manage_cronjobs&amp;act=new\">\r\n\t\t\t<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" class=\"mainTable\">\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td class=\"tcat\" colspan=\"3\" align=\"center\">\r\n\t\t\t\t\t\t" . $Language[23] . "\r\n\t\t\t\t\t</td>\r\n\t\t\t\t</tr>\r\n\t\t\t\t" . (isset($Error[0]) && $Error[0] != "" ? "<tr><td class=\"alt2\" align=\"center\" colspan=\"4\"><div class=\"icon-error\">" . implode("<br />", $Error) . "</div></td></tr>" : "") . "\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td class=\"alt2\" colspan=\"2\">" . $Language[8] . "</td>\r\n\t\t\t\t</tr>\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td class=\"alt1\" width=\"50%\" align=\"justify\">\r\n\t\t\t\t\t\t" . $Language[47] . "\r\n\t\t\t\t\t</td>\r\n\t\t\t\t\t<td class=\"alt1\" width=\"50%\" valign=\"top\">\r\n\t\t\t\t\t\t<input type=\"text\" name=\"filename\" value=\"" . $filename . "\" style=\"width: 433px;\" />\r\n\t\t\t\t\t</td>\r\n\t\t\t\t</tr>\r\n\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td class=\"alt2\" colspan=\"2\">" . $Language[9] . "</td>\r\n\t\t\t\t</tr>\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td class=\"alt1\" width=\"50%\" align=\"justify\" valign=\"top\">\r\n\t\t\t\t\t\t" . $Language[48] . "\r\n\t\t\t\t\t</td>\r\n\t\t\t\t\t<td class=\"alt1\" width=\"50%\" valign=\"top\">\r\n\t\t\t\t\t\t<textarea name=\"description\" style=\"width: 433px; height: 30px;\">" . $description . "</textarea>\r\n\t\t\t\t\t</td>\r\n\t\t\t\t</tr>\r\n\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td class=\"alt2\" colspan=\"2\">" . $Language[10] . "</td>\r\n\t\t\t\t</tr>\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td class=\"alt1\" width=\"50%\" align=\"justify\" valign=\"top\">\r\n\t\t\t\t\t\t" . $Language[49] . "\r\n\t\t\t\t\t</td>\r\n\t\t\t\t\t<td class=\"alt1\" width=\"50%\" valign=\"top\">\r\n\t\t\t\t\t\t<select name=\"months\">" . $months . "</select>\r\n\t\t\t\t\t\t<select name=\"weeks\">" . $weeks . "</select>\r\n\t\t\t\t\t\t<select name=\"days\">" . $days . "</select>\r\n\t\t\t\t\t\t<select name=\"hours\">" . $hours . "</select>\r\n\t\t\t\t\t\t<select name=\"minutes\">" . $minutes . "</select>\r\n\t\t\t\t\t</td>\r\n\t\t\t\t</tr>\r\n\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td class=\"alt2\" colspan=\"2\">" . $Language[17] . "</td>\r\n\t\t\t\t</tr>\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td class=\"alt1\" width=\"50%\" align=\"justify\" valign=\"top\">\r\n\t\t\t\t\t\t" . $Language[50] . "\r\n\t\t\t\t\t</td>\r\n\t\t\t\t\t<td class=\"alt1\" width=\"50%\" valign=\"top\">\r\n\t\t\t\t\t\t<input type=\"radio\" name=\"active\" value=\"1\"" . ($active == "1" ? " checked=\"checked\"" : "") . " /> " . $Language[15] . "\r\n\t\t\t\t\t\t<input type=\"radio\" name=\"active\" value=\"0\"" . ($active == "0" ? " checked=\"checked\"" : "") . " /> " . $Language[16] . "\r\n\t\t\t\t\t</td>\r\n\t\t\t\t</tr>\r\n\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td class=\"alt2\" colspan=\"2\">" . $Language[12] . "</td>\r\n\t\t\t\t</tr>\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td class=\"alt1\" width=\"50%\" align=\"justify\" valign=\"top\">\r\n\t\t\t\t\t\t" . $Language[51] . "\r\n\t\t\t\t\t</td>\r\n\t\t\t\t\t<td class=\"alt1\" width=\"50%\" valign=\"top\">\r\n\t\t\t\t\t\t<input type=\"radio\" name=\"loglevel\" value=\"1\"" . ($loglevel == "1" ? " checked=\"checked\"" : "") . " /> " . $Language[15] . "\r\n\t\t\t\t\t\t<input type=\"radio\" name=\"loglevel\" value=\"0\"" . ($loglevel == "0" ? " checked=\"checked\"" : "") . " /> " . $Language[16] . "\r\n\t\t\t\t\t</td>\r\n\t\t\t\t</tr>\r\n\r\n\t\t\t\t<tr>\r\n\t\t\t\t<td class=\"tcat2\"></td>\r\n\t\t\t\t<td class=\"tcat2\">\r\n\t\t\t\t\t<input type=\"submit\" value=\"" . $Language[24] . "\" /> <input type=\"reset\" value=\"" . $Language[25] . "\" />\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t\t</table>\r\n\t\t</form>\r\n\t\t";
+        $ActionTab = "\r\n\t\t<form $method = \"post\" $action = \"" . $_SERVER["SCRIPT_NAME"] . "?do=manage_cronjobs&amp;$act = new\">\r\n\t\t\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td class=\"tcat\" $colspan = \"3\" $align = \"center\">\r\n\t\t\t\t\t\t" . $Language[23] . "\r\n\t\t\t\t\t</td>\r\n\t\t\t\t</tr>\r\n\t\t\t\t" . (isset($Error[0]) && $Error[0] != "" ? "<tr><td class=\"alt2\" $align = \"center\" $colspan = \"4\"><div class=\"icon-error\">" . implode("<br />", $Error) . "</div></td></tr>" : "") . "\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td class=\"alt2\" $colspan = \"2\">" . $Language[8] . "</td>\r\n\t\t\t\t</tr>\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td class=\"alt1\" $width = \"50%\" $align = \"justify\">\r\n\t\t\t\t\t\t" . $Language[47] . "\r\n\t\t\t\t\t</td>\r\n\t\t\t\t\t<td class=\"alt1\" $width = \"50%\" $valign = \"top\">\r\n\t\t\t\t\t\t<input $type = \"text\" $name = \"filename\" $value = \"" . $filename . "\" $style = \"width: 433px;\" />\r\n\t\t\t\t\t</td>\r\n\t\t\t\t</tr>\r\n\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td class=\"alt2\" $colspan = \"2\">" . $Language[9] . "</td>\r\n\t\t\t\t</tr>\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td class=\"alt1\" $width = \"50%\" $align = \"justify\" $valign = \"top\">\r\n\t\t\t\t\t\t" . $Language[48] . "\r\n\t\t\t\t\t</td>\r\n\t\t\t\t\t<td class=\"alt1\" $width = \"50%\" $valign = \"top\">\r\n\t\t\t\t\t\t<textarea $name = \"description\" $style = \"width: 433px; height: 30px;\">" . $description . "</textarea>\r\n\t\t\t\t\t</td>\r\n\t\t\t\t</tr>\r\n\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td class=\"alt2\" $colspan = \"2\">" . $Language[10] . "</td>\r\n\t\t\t\t</tr>\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td class=\"alt1\" $width = \"50%\" $align = \"justify\" $valign = \"top\">\r\n\t\t\t\t\t\t" . $Language[49] . "\r\n\t\t\t\t\t</td>\r\n\t\t\t\t\t<td class=\"alt1\" $width = \"50%\" $valign = \"top\">\r\n\t\t\t\t\t\t<select $name = \"months\">" . $months . "</select>\r\n\t\t\t\t\t\t<select $name = \"weeks\">" . $weeks . "</select>\r\n\t\t\t\t\t\t<select $name = \"days\">" . $days . "</select>\r\n\t\t\t\t\t\t<select $name = \"hours\">" . $hours . "</select>\r\n\t\t\t\t\t\t<select $name = \"minutes\">" . $minutes . "</select>\r\n\t\t\t\t\t</td>\r\n\t\t\t\t</tr>\r\n\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td class=\"alt2\" $colspan = \"2\">" . $Language[17] . "</td>\r\n\t\t\t\t</tr>\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td class=\"alt1\" $width = \"50%\" $align = \"justify\" $valign = \"top\">\r\n\t\t\t\t\t\t" . $Language[50] . "\r\n\t\t\t\t\t</td>\r\n\t\t\t\t\t<td class=\"alt1\" $width = \"50%\" $valign = \"top\">\r\n\t\t\t\t\t\t<input $type = \"radio\" $name = \"active\" $value = \"1\"" . ($active == "1" ? " $checked = \"checked\"" : "") . " /> " . $Language[15] . "\r\n\t\t\t\t\t\t<input $type = \"radio\" $name = \"active\" $value = \"0\"" . ($active == "0" ? " $checked = \"checked\"" : "") . " /> " . $Language[16] . "\r\n\t\t\t\t\t</td>\r\n\t\t\t\t</tr>\r\n\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td class=\"alt2\" $colspan = \"2\">" . $Language[12] . "</td>\r\n\t\t\t\t</tr>\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td class=\"alt1\" $width = \"50%\" $align = \"justify\" $valign = \"top\">\r\n\t\t\t\t\t\t" . $Language[51] . "\r\n\t\t\t\t\t</td>\r\n\t\t\t\t\t<td class=\"alt1\" $width = \"50%\" $valign = \"top\">\r\n\t\t\t\t\t\t<input $type = \"radio\" $name = \"loglevel\" $value = \"1\"" . ($loglevel == "1" ? " $checked = \"checked\"" : "") . " /> " . $Language[15] . "\r\n\t\t\t\t\t\t<input $type = \"radio\" $name = \"loglevel\" $value = \"0\"" . ($loglevel == "0" ? " $checked = \"checked\"" : "") . " /> " . $Language[16] . "\r\n\t\t\t\t\t</td>\r\n\t\t\t\t</tr>\r\n\r\n\t\t\t\t<tr>\r\n\t\t\t\t<td class=\"tcat2\"></td>\r\n\t\t\t\t<td class=\"tcat2\">\r\n\t\t\t\t\t<input $type = \"submit\" $value = \"" . $Language[24] . "\" /> <input $type = \"reset\" $value = \"" . $Language[25] . "\" />\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t\t</table>\r\n\t\t</form>\r\n\t\t";
     }
 }
 if (!isset($List)) {
@@ -182,60 +182,60 @@ if (!isset($List)) {
     $List = "";
     for ($Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM ts_cron ORDER by active DESC, minutes"); $Cron = mysqli_fetch_assoc($Query); $Count++) {
         $class = $Count % 2 == 1 ? "alt2" : "alt1";
-        $List .= "\r\n\t\t<tr>\r\n\t\t\t<td class=\"" . $class . "\">" . htmlspecialchars($Cron["filename"]) . "</td>\r\n\t\t\t<td class=\"" . $class . "\">" . htmlspecialchars($Cron["description"]) . "</td>\r\n\t\t\t<td class=\"" . $class . "\">" . ($Cron["minutes"] ? var_239($Cron["minutes"]) : "---") . "</td>\r\n\t\t\t<td class=\"" . $class . "\">" . ($Cron["nextrun"] ? function_84($Cron["nextrun"]) : "---") . "</td>\r\n\t\t\t<td class=\"" . $class . "\" align=\"center\">" . ($Cron["loglevel"] == 1 ? $Language[15] : $Language[16]) . "</td>\r\n\t\t\t<td class=\"" . $class . "\"><font color=\"" . ($Cron["active"] == 1 ? "green\">" . $Language[17] : "red\">" . $Language[18]) . "</font></td>\r\n\t\t\t<td class=\"" . $class . "\" align=\"center\">\r\n\t\t\t\t<a href=\"index.php?do=manage_cronjobs&amp;act=set_status&amp;cronid=" . $Cron["cronid"] . "\"><img src=\"images/" . ($Cron["active"] == 1 ? "alert" : "accept") . ".png\" alt=\"" . trim($Language[$Cron["active"] == 1 ? "6" : "7"]) . "\" title=\"" . trim($Language[$Cron["active"] == 1 ? "6" : "7"]) . "\" border=\"0\" /></a>\r\n\t\t\t\t<a href=\"index.php?do=manage_cronjobs&amp;act=run&amp;cronid=" . $Cron["cronid"] . "\"><img src=\"images/tool_refresh.png\" alt=\"" . trim($Language[5]) . "\" title=\"" . trim($Language[5]) . "\" border=\"0\" /></a>\r\n\t\t\t\t<a href=\"index.php?do=manage_cronjobs&amp;act=edit&amp;cronid=" . $Cron["cronid"] . "\"><img src=\"images/tool_edit.png\" alt=\"" . trim($Language[4]) . "\" title=\"" . trim($Language[4]) . "\" border=\"0\" /></a>\r\n\t\t\t\t<a href=\"#\" onclick=\"ConfirmDelete(" . $Cron["cronid"] . ");\"><img src=\"images/tool_delete.png\" alt=\"" . trim($Language[3]) . "\" title=\"" . trim($Language[3]) . "\" border=\"0\" /></a>\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t";
+        $List .= "\r\n\t\t<tr>\r\n\t\t\t<td class=\"" . $class . "\">" . htmlspecialchars($Cron["filename"]) . "</td>\r\n\t\t\t<td class=\"" . $class . "\">" . htmlspecialchars($Cron["description"]) . "</td>\r\n\t\t\t<td class=\"" . $class . "\">" . ($Cron["minutes"] ? var_239($Cron["minutes"]) : "---") . "</td>\r\n\t\t\t<td class=\"" . $class . "\">" . ($Cron["nextrun"] ? formatTimestamp($Cron["nextrun"]) : "---") . "</td>\r\n\t\t\t<td class=\"" . $class . "\" $align = \"center\">" . ($Cron["loglevel"] == 1 ? $Language[15] : $Language[16]) . "</td>\r\n\t\t\t<td class=\"" . $class . "\"><font $color = \"" . ($Cron["active"] == 1 ? "green\">" . $Language[17] : "red\">" . $Language[18]) . "</font></td>\r\n\t\t\t<td class=\"" . $class . "\" $align = \"center\">\r\n\t\t\t\t<a $href = \"index.php?do=manage_cronjobs&amp;$act = set_status&amp;$cronid = " . $Cron["cronid"] . "\"><img $src = \"images/" . ($Cron["active"] == 1 ? "alert" : "accept") . ".png\" $alt = \"" . trim($Language[$Cron["active"] == 1 ? "6" : "7"]) . "\" $title = \"" . trim($Language[$Cron["active"] == 1 ? "6" : "7"]) . "\" $border = \"0\" /></a>\r\n\t\t\t\t<a $href = \"index.php?do=manage_cronjobs&amp;$act = run&amp;$cronid = " . $Cron["cronid"] . "\"><img $src = \"images/tool_refresh.png\" $alt = \"" . trim($Language[5]) . "\" $title = \"" . trim($Language[5]) . "\" $border = \"0\" /></a>\r\n\t\t\t\t<a $href = \"index.php?do=manage_cronjobs&amp;$act = edit&amp;$cronid = " . $Cron["cronid"] . "\"><img $src = \"images/tool_edit.png\" $alt = \"" . trim($Language[4]) . "\" $title = \"" . trim($Language[4]) . "\" $border = \"0\" /></a>\r\n\t\t\t\t<a $href = \"#\" $onclick = \"ConfirmDelete(" . $Cron["cronid"] . ");\"><img $src = \"images/tool_delete.png\" $alt = \"" . trim($Language[3]) . "\" $title = \"" . trim($Language[3]) . "\" $border = \"0\" /></a>\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t";
     }
-    $ListLogs = "\r\n\t<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" class=\"mainTable\">\r\n\t\t<tr>\r\n\t\t\t<td class=\"tcat\" align=\"center\" colspan=\"4\">\r\n\t\t\t\t" . $Language[19] . "\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt2\">\r\n\t\t\t\t<b>" . $Language[8] . "</b>\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt2\">\r\n\t\t\t\t<b>" . $Language[20] . "</b>\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt2\">\r\n\t\t\t\t<b>" . $Language[21] . "</b>\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt2\">\r\n\t\t\t\t<b>" . $Language[22] . "</b>\r\n\t\t\t</td>\r\n\t\t</tr>";
+    $ListLogs = "\r\n\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t<tr>\r\n\t\t\t<td class=\"tcat\" $align = \"center\" $colspan = \"4\">\r\n\t\t\t\t" . $Language[19] . "\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt2\">\r\n\t\t\t\t<b>" . $Language[8] . "</b>\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt2\">\r\n\t\t\t\t<b>" . $Language[20] . "</b>\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt2\">\r\n\t\t\t\t<b>" . $Language[21] . "</b>\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt2\">\r\n\t\t\t\t<b>" . $Language[22] . "</b>\r\n\t\t\t</td>\r\n\t\t</tr>";
     $Count = 0;
     for ($Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM ts_cron_log ORDER by runtime DESC, querycount"); $Logs = mysqli_fetch_assoc($Query); $Count++) {
         $class = $Count % 2 == 1 ? "alt2" : "alt1";
-        $ListLogs .= "\r\n\t\t<tr>\r\n\t\t\t<td class=\"" . $class . "\">" . htmlspecialchars($Logs["filename"]) . "</td>\r\n\t\t\t<td class=\"" . $class . "\">" . number_format($Logs["querycount"]) . "</td>\r\n\t\t\t<td class=\"" . $class . "\">" . htmlspecialchars($Logs["executetime"]) . "</td>\r\n\t\t\t<td class=\"" . $class . "\">" . ($Logs["runtime"] ? function_84($Logs["runtime"]) : "---") . "</td>\r\n\t\t</tr>\r\n\t\t";
+        $ListLogs .= "\r\n\t\t<tr>\r\n\t\t\t<td class=\"" . $class . "\">" . htmlspecialchars($Logs["filename"]) . "</td>\r\n\t\t\t<td class=\"" . $class . "\">" . number_format($Logs["querycount"]) . "</td>\r\n\t\t\t<td class=\"" . $class . "\">" . htmlspecialchars($Logs["executetime"]) . "</td>\r\n\t\t\t<td class=\"" . $class . "\">" . ($Logs["runtime"] ? formatTimestamp($Logs["runtime"]) : "---") . "</td>\r\n\t\t</tr>\r\n\t\t";
     }
     $ListLogs .= "\r\n\t</table>";
-    echo "\r\n\t<script type=\"text/javascript\">\r\n\t\tfunction ConfirmDelete(ToolID)\r\n\t\t{\r\n\t\t\tif (confirm(\"" . trim($Language[26]) . "\"))\r\n\t\t\t{\r\n\t\t\t\tTSJump(\"index.php?do=manage_cronjobs&act=delete&cronid=\"+ToolID);\r\n\t\t\t}\r\n\t\t\telse\r\n\t\t\t{\r\n\t\t\t\treturn false;\r\n\t\t\t}\r\n\t\t}\r\n\t</script>\r\n\t" . function_81("<a href=\"index.php?do=manage_cronjobs&amp;act=new\">" . $Language[23] . "</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href=\"index.php?do=manage_settings&amp;tab=1&amp;stab=99\">" . $Language[53] . "</a>") . "\r\n\t" . $Message . "\r\n\t" . (isset($ActionTab) ? $ActionTab : "") . "\r\n\t<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" class=\"mainTable\">\r\n\t\t<tr>\r\n\t\t\t<td class=\"tcat\" align=\"center\" colspan=\"7\">\r\n\t\t\t\t" . $Language[2] . "\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t" . $STATUS . "\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt2\">\r\n\t\t\t\t<b>" . $Language[8] . "</b>\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt2\">\r\n\t\t\t\t<b>" . $Language[9] . "</b>\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt2\">\r\n\t\t\t\t<b>" . $Language[10] . "</b>\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt2\">\r\n\t\t\t\t<b>" . $Language[11] . "</b>\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt2\" align=\"center\">\r\n\t\t\t\t<b>" . $Language[12] . "</b>\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt2\">\r\n\t\t\t\t<b>" . $Language[13] . "</b>\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt2\" align=\"center\">\r\n\t\t\t\t<b>" . $Language[14] . "</b>\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t" . $List . "\r\n\t</table>\r\n\t" . $ListLogs;
+    echo "\r\n\t<script $type = \"text/javascript\">\r\n\t\tfunction ConfirmDelete(ToolID)\r\n\t\t{\r\n\t\t\tif (confirm(\"" . trim($Language[26]) . "\"))\r\n\t\t\t{\r\n\t\t\t\tTSJump(\"index.php?do=manage_cronjobs&$act = delete&$cronid = \"+ToolID);\r\n\t\t\t}\r\n\t\t\telse\r\n\t\t\t{\r\n\t\t\t\treturn false;\r\n\t\t\t}\r\n\t\t}\r\n\t</script>\r\n\t" . showAlertMessage("<a $href = \"index.php?do=manage_cronjobs&amp;$act = new\">" . $Language[23] . "</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a $href = \"index.php?do=manage_settings&amp;$tab = 1&amp;$stab = 99\">" . $Language[53] . "</a>") . "\r\n\t" . $Message . "\r\n\t" . (isset($ActionTab) ? $ActionTab : "") . "\r\n\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t<tr>\r\n\t\t\t<td class=\"tcat\" $align = \"center\" $colspan = \"7\">\r\n\t\t\t\t" . $Language[2] . "\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t" . $STATUS . "\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt2\">\r\n\t\t\t\t<b>" . $Language[8] . "</b>\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt2\">\r\n\t\t\t\t<b>" . $Language[9] . "</b>\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt2\">\r\n\t\t\t\t<b>" . $Language[10] . "</b>\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt2\">\r\n\t\t\t\t<b>" . $Language[11] . "</b>\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt2\" $align = \"center\">\r\n\t\t\t\t<b>" . $Language[12] . "</b>\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt2\">\r\n\t\t\t\t<b>" . $Language[13] . "</b>\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt2\" $align = \"center\">\r\n\t\t\t\t<b>" . $Language[14] . "</b>\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t" . $List . "\r\n\t</table>\r\n\t" . $ListLogs;
 } else {
     echo $List;
 }
-function function_75()
+function getStaffLanguage()
 {
     if (isset($_COOKIE["staffcplanguage"]) && is_dir("languages/" . $_COOKIE["staffcplanguage"]) && is_file("languages/" . $_COOKIE["staffcplanguage"] . "/staffcp.lang")) {
         return $_COOKIE["staffcplanguage"];
     }
     return "english";
 }
-function function_77()
+function checkStaffAuthentication()
 {
     if (!defined("IN-TSSE-STAFF-PANEL")) {
         var_236("../index.php");
     }
 }
-function function_78($url, $timeout = false)
+function redirectTo($url, $timeout = false)
 {
     if (!headers_sent()) {
         if (!$timeout) {
             header("Location: " . $url);
         } else {
-            header("Refresh: 5; url=" . $url);
+            header("Refresh: 5; $url = " . $url);
         }
     } else {
         if (!$timeout) {
-            echo "\r\n\t\t\t\t<script type=\"text/javascript\">\r\n\t\t\t\t\twindow.location.href=\"" . $url . "\";\r\n\t\t\t\t</script>\r\n\t\t\t\t<noscript>\r\n\t\t\t\t\t<meta http-equiv=\"refresh\" content=\"0;url=" . $url . "\" />\r\n\t\t\t\t</noscript>";
+            echo "\r\n\t\t\t\t<script $type = \"text/javascript\">\r\n\t\t\t\t\twindow.location.$href = \"" . $url . "\";\r\n\t\t\t\t</script>\r\n\t\t\t\t<noscript>\r\n\t\t\t\t\t<meta http-$equiv = \"refresh\" $content = \"0;$url = " . $url . "\" />\r\n\t\t\t\t</noscript>";
         } else {
-            echo "\r\n\t\t\t<script type=\"text/javascript\">\r\n\t\t\t\tsetTimeout( \"window.location.href='" . $url . "'\", 5000);\r\n\t\t\t</script>\r\n\t\t\t<noscript>\r\n\t\t\t\t<meta http-equiv=\"refresh\" content=\"5;url=" . $url . "\" />\r\n\t\t\t</noscript>\r\n\t\t\t";
+            echo "\r\n\t\t\t<script $type = \"text/javascript\">\r\n\t\t\t\tsetTimeout( \"window.location.$href = '" . $url . "'\", 5000);\r\n\t\t\t</script>\r\n\t\t\t<noscript>\r\n\t\t\t\t<meta http-$equiv = \"refresh\" $content = \"5;$url = " . $url . "\" />\r\n\t\t\t</noscript>\r\n\t\t\t";
         }
     }
     exit;
 }
-function function_76($Error)
+function showAlertError($Error)
 {
     return "<div class=\"alert\"><div>" . $Error . "</div></div>";
 }
-function function_79($log)
+function logStaffAction($log)
 {
     mysqli_query($GLOBALS["DatabaseConnect"], "INSERT INTO ts_staffcp_logs (uid, date, log) VALUES ('" . $_SESSION["ADMIN_ID"] . "', '" . time() . "', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $log) . "')");
 }
-function function_84($timestamp = "")
+function formatTimestamp($timestamp = "")
 {
-    var_265 = "m-d-Y h:i A";
+    $var_265 = "m-d-Y h:i A";
     if (empty($timestamp)) {
         $timestamp = time();
     } else {
@@ -243,19 +243,19 @@ function function_84($timestamp = "")
             $timestamp = strtotime($timestamp);
         }
     }
-    return date(var_265, $timestamp);
+    return date($var_265, $timestamp);
 }
 function function_89($stamp = "")
 {
     global $Language;
-    var_270 = 31536000;
+    $var_270 = 31536000;
     $mosecs = 2678400;
     $wsecs = 604800;
     $dsecs = 86400;
     $hsecs = 3600;
     $msecs = 60;
-    var_276 = floor($stamp / var_270);
-    $stamp %= var_270;
+    $var_276 = floor($stamp / $var_270);
+    $stamp %= $var_270;
     $months = floor($stamp / $mosecs);
     $stamp %= $mosecs;
     $weeks = floor($stamp / $wsecs);
@@ -266,77 +266,77 @@ function function_89($stamp = "")
     $stamp %= $hsecs;
     $minutes = floor($stamp / $msecs);
     $stamp %= $msecs;
-    var_269 = $stamp;
-    if (var_276 == 1) {
-        var_280["years"] = "<b>1</b> " . $Language[28];
+    $var_269 = $stamp;
+    if ($var_276 == 1) {
+        $var_280["years"] = "<b>1</b> " . $Language[28];
     } else {
-        if (1 < var_276) {
-            var_280["years"] = "<b>" . var_276 . "</b> " . $Language[29];
+        if (1 < $var_276) {
+            $var_280["years"] = "<b>" . $var_276 . "</b> " . $Language[29];
         }
     }
     if ($months == 1) {
-        var_280["months"] = "<b>1</b> " . $Language[30];
+        $var_280["months"] = "<b>1</b> " . $Language[30];
     } else {
         if (1 < $months) {
-            var_280["months"] = "<b>" . $months . "</b> " . $Language[31];
+            $var_280["months"] = "<b>" . $months . "</b> " . $Language[31];
         }
     }
     if ($weeks == 1) {
-        var_280["weeks"] = "<b>1</b> " . $Language[32];
+        $var_280["weeks"] = "<b>1</b> " . $Language[32];
     } else {
         if (1 < $weeks) {
-            var_280["weeks"] = "<b>" . $weeks . "</b> " . $Language[33];
+            $var_280["weeks"] = "<b>" . $weeks . "</b> " . $Language[33];
         }
     }
     if ($days == 1) {
-        var_280["days"] = "<b>1</b> " . $Language[34];
+        $var_280["days"] = "<b>1</b> " . $Language[34];
     } else {
         if (1 < $days) {
-            var_280["days"] = "<b>" . $days . "</b> " . $Language[35];
+            $var_280["days"] = "<b>" . $days . "</b> " . $Language[35];
         }
     }
     if ($hours == 1) {
-        var_280["hours"] = "<b>1</b> " . $Language[36];
+        $var_280["hours"] = "<b>1</b> " . $Language[36];
     } else {
         if (1 < $hours) {
-            var_280["hours"] = "<b>" . $hours . "</b> " . $Language[37];
+            $var_280["hours"] = "<b>" . $hours . "</b> " . $Language[37];
         }
     }
     if ($minutes == 1) {
-        var_280["minutes"] = "<b>1</b> " . $Language[38];
+        $var_280["minutes"] = "<b>1</b> " . $Language[38];
     } else {
         if (1 < $minutes) {
-            var_280["minutes"] = "<b>" . $minutes . "</b> " . $Language[39];
+            $var_280["minutes"] = "<b>" . $minutes . "</b> " . $Language[39];
         }
     }
-    if (var_269 == 1) {
-        var_280["seconds"] = "<b>1</b> " . $Language[40];
+    if ($var_269 == 1) {
+        $var_280["seconds"] = "<b>1</b> " . $Language[40];
     } else {
-        if (1 < var_269) {
-            var_280["seconds"] = "<b>" . var_269 . "</b> " . $Language[41];
+        if (1 < $var_269) {
+            $var_280["seconds"] = "<b>" . $var_269 . "</b> " . $Language[41];
         }
     }
-    if (isset(var_280) && is_array(var_280)) {
-        var_528 = implode(", ", var_280);
+    if (isset($var_280) && is_array($var_280)) {
+        $var_528 = implode(", ", $var_280);
     } else {
-        var_528 = "0 " . $Language[40];
+        $var_528 = "0 " . $Language[40];
     }
-    return "<small\">" . var_528 . "</small>";
+    return "<small\">" . $var_528 . "</small>";
 }
-function function_81($message = "")
+function showAlertMessage($message = "")
 {
     return "<div class=\"alert\"><div>" . $message . "</div></div>";
 }
 function function_326($stamp)
 {
-    var_270 = 31536000;
+    $var_270 = 31536000;
     $mosecs = 2678400;
     $wsecs = 604800;
     $dsecs = 86400;
     $hsecs = 3600;
     $msecs = 60;
-    var_276 = floor($stamp / var_270);
-    $stamp %= var_270;
+    $var_276 = floor($stamp / $var_270);
+    $stamp %= $var_270;
     $months = floor($stamp / $mosecs);
     $stamp %= $mosecs;
     $weeks = floor($stamp / $wsecs);
@@ -347,8 +347,8 @@ function function_326($stamp)
     $stamp %= $hsecs;
     $minutes = floor($stamp / $msecs);
     $stamp %= $msecs;
-    var_269 = $stamp;
-    return ["years" => var_276, "months" => $months, "weeks" => $weeks, "days" => $days, "hours" => $hours, "minutes" => $minutes];
+    $var_269 = $stamp;
+    return ["years" => $var_276, "months" => $months, "weeks" => $weeks, "days" => $days, "hours" => $hours, "minutes" => $minutes];
 }
 function function_318($expression, $returntrue, $returnfalse = "")
 {

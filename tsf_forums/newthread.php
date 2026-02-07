@@ -17,7 +17,7 @@ if (is_valid_id($fid)) {
         print_no_permission();
         exit;
     }
-    ($query = @sql_query("SELECT f.name, f.pid, f.type, f.moderate, ff.name as realforum, ff.fid as realforumid, ff.moderate as moderaterf FROM " . TSF_PREFIX . "forums f LEFT JOIN " . TSF_PREFIX . "forums ff ON (ff.fid=f.pid) WHERE f.fid = " . @sqlesc($fid))) || sqlerr(__FILE__, 42);
+    ($query = @sql_query("SELECT f.name, f.pid, f.type, f.moderate, ff.name as realforum, ff.fid as realforumid, ff.moderate as moderaterf FROM " . TSF_PREFIX . "forums f LEFT JOIN " . TSF_PREFIX . "forums ff ON (ff.$fid = f.pid) WHERE f.$fid = " . @sqlesc($fid))) || sqlerr(__FILE__, 42);
     if (mysqli_num_rows($query) == 0) {
         stderr($lang->global["error"], $lang->tsf_forums["invalidfid"]);
         exit;
@@ -71,7 +71,7 @@ if (is_valid_id($fid)) {
         $orjSubject = $subject;
         $subject = sqlesc($subject);
         $message = sqlesc($message);
-        ($query = sql_query("SELECT dateline FROM " . TSF_PREFIX . "posts WHERE uid = " . sqlesc($CURUSER["id"]) . " ORDER by dateline DESC LIMIT 1")) || sqlerr(__FILE__, 124);
+        ($query = sql_query("SELECT dateline FROM " . TSF_PREFIX . "posts WHERE $uid = " . sqlesc($CURUSER["id"]) . " ORDER by dateline DESC LIMIT 1")) || sqlerr(__FILE__, 124);
         if (0 < mysqli_num_rows($query)) {
             $Result = mysqli_fetch_assoc($query);
             $last_post = $Result["dateline"];
@@ -94,12 +94,12 @@ if (is_valid_id($fid)) {
             if ($subscribe) {
                 sql_query("INSERT INTO " . TSF_PREFIX . "subscribe (tid,userid) VALUES (" . sqlesc($tid) . "," . $uid . ")") || sqlerr(__FILE__, 153);
             }
-            @sql_query("UPDATE " . TSF_PREFIX . "posts SET tid = " . $tid . " WHERE pid = '" . $pid . "'") || sqlerr(__FILE__, 156);
-            @sql_query("UPDATE " . TSF_PREFIX . "forums SET threads = threads + 1, posts = posts + 1, lastpost = " . $dateline . ", lastposter = " . $username . ", lastposteruid = " . $uid . ", lastposttid = " . $tid . ", lastpostsubject = " . $subject . " WHERE fid = '" . $fid . "'") || sqlerr(__FILE__, 158);
+            @sql_query("UPDATE " . TSF_PREFIX . "posts SET $tid = " . $tid . " WHERE $pid = '" . $pid . "'") || sqlerr(__FILE__, 156);
+            @sql_query("UPDATE " . TSF_PREFIX . "forums SET $threads = threads + 1, $posts = posts + 1, $lastpost = " . $dateline . ", $lastposter = " . $username . ", $lastposteruid = " . $uid . ", $lastposttid = " . $tid . ", $lastpostsubject = " . $subject . " WHERE $fid = '" . $fid . "'") || sqlerr(__FILE__, 158);
             if ($useparent) {
-                @sql_query("UPDATE " . TSF_PREFIX . "forums SET lastpost = " . $dateline . ", lastposter = " . $username . ", lastposteruid = " . $uid . ", lastposttid = " . $tid . ", lastpostsubject = " . $subject . " WHERE fid = '" . $realforumid . "'") || sqlerr(__FILE__, 162);
+                @sql_query("UPDATE " . TSF_PREFIX . "forums SET $lastpost = " . $dateline . ", $lastposter = " . $username . ", $lastposteruid = " . $uid . ", $lastposttid = " . $tid . ", $lastpostsubject = " . $subject . " WHERE $fid = '" . $realforumid . "'") || sqlerr(__FILE__, 162);
             }
-            @sql_query("UPDATE users SET totalposts = totalposts + 1 WHERE id = " . $uid) || sqlerr(__FILE__, 165);
+            @sql_query("UPDATE users SET $totalposts = totalposts + 1 WHERE $id = " . $uid) || sqlerr(__FILE__, 165);
             $TSSEConfig->TSLoadConfig("KPS");
             KPS("+", $kpscomment, $uid);
             if ($canpostattachments && $pid && $tid && isset($_FILES)) {
@@ -148,7 +148,7 @@ if (is_valid_id($fid)) {
             }
             if ($createpoll == "yes" && $usergroups["cancreatepoll"] == "yes") {
                 define("FORCE_REDIRECT_MESSAGE", true);
-                redirect("tsf_forums/poll.php?do=new&amp;tid=" . $tid . "&amp;polloptions=" . $polloptions, $lang->tsf_forums["poll10"] . "<br />" . (is_array($error) && 0 < count($error) ? @implode("<br />", $error) : ""));
+                redirect("tsf_forums/poll.php?do=new&amp;$tid = " . $tid . "&amp;$polloptions = " . $polloptions, $lang->tsf_forums["poll10"] . "<br />" . (is_array($error) && 0 < count($error) ? @implode("<br />", $error) : ""));
                 exit;
             }
             if ($moderateForum == 0 && $moderateForumRF == 0) {
@@ -173,7 +173,7 @@ if (is_valid_id($fid)) {
     $prvp = showPreview("message");
     define("IN_EDITOR", true);
     include_once INC_PATH . "/editor.php";
-    $str = "\r\n<form method=\"post\" name=\"newthread\" action=\"" . $_SERVER["SCRIPT_NAME"] . "\" enctype=\"multipart/form-data\">\r\n<input type=\"hidden\" name=\"fid\" value=\"" . $fid . "\">";
+    $str = "\r\n<form $method = \"post\" $name = \"newthread\" $action = \"" . $_SERVER["SCRIPT_NAME"] . "\" $enctype = \"multipart/form-data\">\r\n<input $type = \"hidden\" $name = \"fid\" $value = \"" . $fid . "\">";
     if (!empty($prvp)) {
         $str .= $prvp;
     }
@@ -187,38 +187,38 @@ if (is_valid_id($fid)) {
     if ($moderator || $forummoderator) {
         if (isset($postoptionstitle) && isset($postoptions)) {
             array_push($postoptionstitle, $lang->tsf_forums["mod_options"]);
-            array_push($postoptions, "<label><input class=\"checkbox\" name=\"closethread\" value=\"yes\" type=\"checkbox\"" . (isset($_POST["closethread"]) && $_POST["closethread"] == "yes" ? " checked=\"checked\"" : "") . ">" . $lang->tsf_forums["mod_options_c"] . "</label><br /><label><input class=\"checkbox\" name=\"stickthread\" value=\"yes\" type=\"checkbox\"" . (isset($_POST["stickthread"]) && $_POST["stickthread"] == "yes" ? " checked=\"checked\"" : "") . ">" . $lang->tsf_forums["mod_options_s"] . "</label></span>");
+            array_push($postoptions, "<label><input class=\"checkbox\" $name = \"closethread\" $value = \"yes\" $type = \"checkbox\"" . (isset($_POST["closethread"]) && $_POST["closethread"] == "yes" ? " $checked = \"checked\"" : "") . ">" . $lang->tsf_forums["mod_options_c"] . "</label><br /><label><input class=\"checkbox\" $name = \"stickthread\" $value = \"yes\" $type = \"checkbox\"" . (isset($_POST["stickthread"]) && $_POST["stickthread"] == "yes" ? " $checked = \"checked\"" : "") . ">" . $lang->tsf_forums["mod_options_s"] . "</label></span>");
         } else {
             $postoptionstitle = [1 => $lang->tsf_forums["mod_options"]];
-            $postoptions = [1 => "\r\n\t\t\t\t\t<label><input class=\"checkbox\" name=\"closethread\" value=\"yes\" type=\"checkbox\"" . (isset($_POST["closethread"]) && $_POST["closethread"] == "yes" ? " checked=\"checked\"" : "") . ">" . $lang->tsf_forums["mod_options_c"] . "</label><br />\r\n\t\t\t\t\t<label><input class=\"checkbox\" name=\"stickthread\" value=\"yes\" type=\"checkbox\"" . (isset($_POST["stickthread"]) && $_POST["stickthread"] == "yes" ? " checked=\"checked\"" : "") . ">" . $lang->tsf_forums["mod_options_s"] . "</label></span>"];
+            $postoptions = [1 => "\r\n\t\t\t\t\t<label><input class=\"checkbox\" $name = \"closethread\" $value = \"yes\" $type = \"checkbox\"" . (isset($_POST["closethread"]) && $_POST["closethread"] == "yes" ? " $checked = \"checked\"" : "") . ">" . $lang->tsf_forums["mod_options_c"] . "</label><br />\r\n\t\t\t\t\t<label><input class=\"checkbox\" $name = \"stickthread\" $value = \"yes\" $type = \"checkbox\"" . (isset($_POST["stickthread"]) && $_POST["stickthread"] == "yes" ? " $checked = \"checked\"" : "") . ">" . $lang->tsf_forums["mod_options_s"] . "</label></span>"];
         }
     }
     if ($canpostattachments) {
         if (isset($postoptionstitle) && isset($postoptions)) {
             array_push($postoptionstitle, $lang->tsf_forums["attachment"]);
-            array_push($postoptions, "<label><input name=\"attachment[]\" size=\"50\" type=\"file\"></label><br /><label><input name=\"attachment[]\" size=\"50\" type=\"file\"></label><br /><label><input name=\"attachment[]\" size=\"50\" type=\"file\"></label>");
+            array_push($postoptions, "<label><input $name = \"attachment[]\" $size = \"50\" $type = \"file\"></label><br /><label><input $name = \"attachment[]\" $size = \"50\" $type = \"file\"></label><br /><label><input $name = \"attachment[]\" $size = \"50\" $type = \"file\"></label>");
             array_push($postoptionstitle, "<b>" . $lang->tsf_forums["subs"] . ":</b>");
-            array_push($postoptions, "<label><input class=\"checkbox\" name=\"subscribe\" value=\"yes\" type=\"checkbox\"" . (isset($_POST["subscribe"]) && $_POST["subscribe"] == "yes" ? " checked=\"checked\"" : "") . "></label> " . $lang->tsf_forums["isubs"]);
+            array_push($postoptions, "<label><input class=\"checkbox\" $name = \"subscribe\" $value = \"yes\" $type = \"checkbox\"" . (isset($_POST["subscribe"]) && $_POST["subscribe"] == "yes" ? " $checked = \"checked\"" : "") . "></label> " . $lang->tsf_forums["isubs"]);
         } else {
             $postoptionstitle = [1 => $lang->tsf_forums["attachment"], 2 => "<b>" . $lang->tsf_forums["subs"] . ":</b>"];
-            $postoptions = [1 => "<label><input name=\"attachment[]\" size=\"50\" type=\"file\"></label><br /><label><input name=\"attachment[]\" size=\"50\" type=\"file\"></label><br /><label><input name=\"attachment[]\" size=\"50\" type=\"file\"></label>", 2 => "<label><input class=\"checkbox\" name=\"subscribe\" value=\"yes\" type=\"checkbox\"" . (isset($_POST["subscribe"]) && $_POST["subscribe"] == "yes" ? " checked=\"checked\"" : "") . "></label> " . $lang->tsf_forums["isubs"]];
+            $postoptions = [1 => "<label><input $name = \"attachment[]\" $size = \"50\" $type = \"file\"></label><br /><label><input $name = \"attachment[]\" $size = \"50\" $type = \"file\"></label><br /><label><input $name = \"attachment[]\" $size = \"50\" $type = \"file\"></label>", 2 => "<label><input class=\"checkbox\" $name = \"subscribe\" $value = \"yes\" $type = \"checkbox\"" . (isset($_POST["subscribe"]) && $_POST["subscribe"] == "yes" ? " $checked = \"checked\"" : "") . "></label> " . $lang->tsf_forums["isubs"]];
         }
     } else {
         if (isset($postoptionstitle) && isset($postoptions)) {
             array_push($postoptionstitle, $lang->tsf_forums["subs"] . ":");
-            array_push($postoptions, "<label><input class=\"checkbox\" name=\"subscribe\" value=\"yes\" type=\"checkbox\"" . (isset($_POST["subscribe"]) && $_POST["subscribe"] == "yes" ? " checked=\"checked\"" : "") . "></label> " . $lang->tsf_forums["isubs"]);
+            array_push($postoptions, "<label><input class=\"checkbox\" $name = \"subscribe\" $value = \"yes\" $type = \"checkbox\"" . (isset($_POST["subscribe"]) && $_POST["subscribe"] == "yes" ? " $checked = \"checked\"" : "") . "></label> " . $lang->tsf_forums["isubs"]);
         } else {
             $postoptionstitle = [1 => $lang->tsf_forums["subs"] . ":"];
-            $postoptions = [1 => "<label><input class=\"checkbox\" name=\"subscribe\" value=\"yes\" type=\"checkbox\"" . (isset($_POST["subscribe"]) && $_POST["subscribe"] == "yes" ? " checked=\"checked\"" : "") . "></label> " . $lang->tsf_forums["isubs"]];
+            $postoptions = [1 => "<label><input class=\"checkbox\" $name = \"subscribe\" $value = \"yes\" $type = \"checkbox\"" . (isset($_POST["subscribe"]) && $_POST["subscribe"] == "yes" ? " $checked = \"checked\"" : "") . "></label> " . $lang->tsf_forums["isubs"]];
         }
     }
     if ($usergroups["cancreatepoll"] == "yes") {
         if (isset($postoptionstitle) && isset($postoptions)) {
             array_push($postoptionstitle, $lang->tsf_forums["poll1"] . ":");
-            array_push($postoptions, "<label><input class=\"checkbox\" name=\"createpoll\" value=\"yes\" type=\"checkbox\"" . ($createpoll == "yes" ? " checked=\"checked\"" : "") . "> " . $lang->tsf_forums["poll2"] . "</label><br />" . $lang->tsf_forums["poll3"] . " <label><input size=\"2\" name=\"polloptions\" value=\"" . $polloptions . "\" type=\"text\"></label>");
+            array_push($postoptions, "<label><input class=\"checkbox\" $name = \"createpoll\" $value = \"yes\" $type = \"checkbox\"" . ($createpoll == "yes" ? " $checked = \"checked\"" : "") . "> " . $lang->tsf_forums["poll2"] . "</label><br />" . $lang->tsf_forums["poll3"] . " <label><input $size = \"2\" $name = \"polloptions\" $value = \"" . $polloptions . "\" $type = \"text\"></label>");
         } else {
             $postoptionstitle = [1 => $lang->tsf_forums["poll1"] . ":"];
-            $postoptions = [1 => "<label><input class=\"checkbox\" name=\"createpoll\" value=\"yes\" type=\"checkbox\"" . ($createpoll == "yes" ? " checked=\"checked\"" : "") . "> " . $lang->tsf_forums["poll2"] . "</label><br />" . $lang->tsf_forums["poll3"] . " <label><input size=\"2\" name=\"polloptions\" value=\"" . $polloptions . "\" type=\"text\"></label>"];
+            $postoptions = [1 => "<label><input class=\"checkbox\" $name = \"createpoll\" $value = \"yes\" $type = \"checkbox\"" . ($createpoll == "yes" ? " $checked = \"checked\"" : "") . "> " . $lang->tsf_forums["poll2"] . "</label><br />" . $lang->tsf_forums["poll3"] . " <label><input $size = \"2\" $name = \"polloptions\" $value = \"" . $polloptions . "\" $type = \"text\"></label>"];
         }
     }
     $str .= insert_editor(true, isset($_POST["subject"]) ? $_POST["subject"] : "", isset($_POST["message"]) ? $_POST["message"] : "", $lang->tsf_forums["new_thread_head"], $new_thread_in, $postoptionstitle, $postoptions);

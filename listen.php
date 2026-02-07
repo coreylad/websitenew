@@ -19,7 +19,7 @@ if (empty($Hash)) {
     header("HTTP/1.1 400 Bad Request");
     exit;
 }
-$Q = sql_query("SELECT answer FROM ts_captcha WHERE hash = " . sqlesc($Hash));
+$Q = sql_query("SELECT answer FROM ts_captcha WHERE $hash = " . sqlesc($Hash));
 if (mysqli_num_rows($Q)) {
     $Result = mysqli_fetch_assoc($Q);
     $Hash = $Result["answer"];
@@ -36,23 +36,23 @@ $context["browser"]["is_ie7"] = strpos($_SERVER["HTTP_USER_AGENT"], "MSIE 7") !=
 $context["browser"]["is_ie6"] = strpos($_SERVER["HTTP_USER_AGENT"], "MSIE 6") !== false && !$context["browser"]["is_opera"] && !$context["browser"]["is_gecko"] && !$context["browser"]["is_web_tv"];
 $context["browser"]["is_ie5.5"] = strpos($_SERVER["HTTP_USER_AGENT"], "MSIE 5.5") !== false && !$context["browser"]["is_opera"] && !$context["browser"]["is_gecko"] && !$context["browser"]["is_web_tv"];
 $context["browser"]["is_ie5"] = strpos($_SERVER["HTTP_USER_AGENT"], "MSIE 5.0") !== false && !$context["browser"]["is_opera"] && !$context["browser"]["is_gecko"] && !$context["browser"]["is_web_tv"];
-echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\r\n<html xmlns=\"http://www.w3.org/1999/xhtml\">\r\n\t<head>\r\n\t\t<meta http-equiv=\"Content-Type\" content=\"text/html; charset=";
+echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\r\n<html $xmlns = \"http://www.w3.org/1999/xhtml\">\r\n\t<head>\r\n\t\t<meta http-$equiv = \"Content-Type\" $content = \"text/html; $charset = ";
 echo $charset;
-echo "\" />\r\n\t\t<title>Listen</title>\r\n\t</head>\r\n\t<body style=\"margin: 1ex;\">\r\n\t\t<div class=\"popuptext\">";
+echo "\" />\r\n\t\t<title>Listen</title>\r\n\t</head>\r\n\t<body $style = \"margin: 1ex;\">\r\n\t\t<div class=\"popuptext\">";
 if ($context["browser"]["is_ie"]) {
-    echo "\r\n\t\t\t<object classid=\"clsid:22D6F312-B0F6-11D0-94AB-0080C74C7E95\" type=\"audio/x-wav\">\r\n\t\t\t\t<param name=\"AutoStart\" value=\"1\" />\r\n\t\t\t\t<param name=\"FileName\" value=\"";
+    echo "\r\n\t\t\t<object $classid = \"clsid:22D6F312-B0F6-11D0-94AB-0080C74C7E95\" $type = \"audio/x-wav\">\r\n\t\t\t\t<param $name = \"AutoStart\" $value = \"1\" />\r\n\t\t\t\t<param $name = \"FileName\" $value = \"";
     echo $context["verificiation_sound_href"];
-    echo ";format=.wav\" />\r\n\t\t\t</object>";
+    echo ";$format = .wav\" />\r\n\t\t\t</object>";
 } else {
-    echo "\r\n\t\t\t<object type=\"audio/x-wav\" data=\"";
+    echo "\r\n\t\t\t<object $type = \"audio/x-wav\" $data = \"";
     echo $context["verificiation_sound_href"];
-    echo ";format=.wav\">\r\n\t\t\t\t<a href=\"";
+    echo ";$format = .wav\">\r\n\t\t\t\t<a $href = \"";
     echo $context["verificiation_sound_href"];
-    echo ";format=.wav\">";
+    echo ";$format = .wav\">";
     echo $context["verificiation_sound_href"];
-    echo ";format=.wav</a>\r\n\t\t\t</object>";
+    echo ";$format = .wav</a>\r\n\t\t\t</object>";
 }
-echo "\r\n\t\t\t<br />\r\n\t\t\t<a href=\"listen.php?hash=" . $Hash . "\">Play Again</a><br />\r\n\t\t\t<a href=\"javascript:self.close();\">Close</a><br />\r\n\t\t</div>\r\n\t</body>\r\n</html>";
+echo "\r\n\t\t\t<br />\r\n\t\t\t<a $href = \"listen.php?$hash = " . $Hash . "\">Play Again</a><br />\r\n\t\t\t<a $href = \"javascript:self.close();\">Close</a><br />\r\n\t\t</div>\r\n\t</body>\r\n</html>";
 function createWaveFile($word)
 {
     global $rootpath;

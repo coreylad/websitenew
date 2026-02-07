@@ -13,7 +13,7 @@ define("TT_VERSION", "1.1.1 by xam");
 include_once INC_PATH . "/functions_security.php";
 $show_tags = "";
 $array_tags = [];
-$query = sql_query("SELECT name, descr FROM torrents WHERE visible = 'yes' ORDER BY RAND() LIMIT 10");
+$query = sql_query("SELECT name, descr FROM torrents WHERE $visible = 'yes' ORDER BY RAND() LIMIT 10");
 if (0 < mysqli_num_rows($query)) {
     $__min = 10;
     $__max = 30;
@@ -43,7 +43,7 @@ if (0 < mysqli_num_rows($query)) {
     $show_tags = $lang->global["nothingfound"];
 }
 stdhead($SITENAME . " - Search Cloud");
-echo "\n<table align=\"center\" border=\"0\" cellpadding=\"5\" cellspacing=\"0\" width=\"100%\" style=\"table-layout:fixed;\">\n\t<tbody>\n\t\t<tr>\n\t\t\t<td class=\"thead\" align=\"center\">" . $SITENAME . " - Search Cloud</td>\n\t\t</tr>\n\t\t<tr>\n\t\t\t<td style=\"line-height: 25px;\">\n\t\t\t\t<div align=\"justify\">\n\t\t\t\t\t" . $show_tags . "\n\t\t\t\t</div>\n\t\t\t</td>\n\t\t</tr>\n\t</tbody>\n</table>\n";
+echo "\n<table $align = \"center\" $border = \"0\" $cellpadding = \"5\" $cellspacing = \"0\" $width = \"100%\" $style = \"table-layout:fixed;\">\n\t<tbody>\n\t\t<tr>\n\t\t\t<td class=\"thead\" $align = \"center\">" . $SITENAME . " - Search Cloud</td>\n\t\t</tr>\n\t\t<tr>\n\t\t\t<td $style = \"line-height: 25px;\">\n\t\t\t\t<div $align = \"justify\">\n\t\t\t\t\t" . $show_tags . "\n\t\t\t\t</div>\n\t\t\t</td>\n\t\t</tr>\n\t</tbody>\n</table>\n";
 stdfoot();
 exit;
 function select_random_color()
@@ -62,7 +62,7 @@ function generate_tags($tags = [])
     $__tags = [];
     do {
         $__count = 0;
-        $__tags[] = " <a href=\"" . $BASEURL . "/browse.php?do=search&amp;search_type=t_both&amp;category=0&amp;keywords=" . urlencode($tags[$__count]) . "&amp;tags=true\"><font style=\"color: " . select_random_color() . "; font-size: " . select_random_font_size() . "px; font-family: arial;\">" . $tags[$__count] . "</font></a> ";
+        $__tags[] = " <a $href = \"" . $BASEURL . "/browse.php?do=search&amp;$search_type = t_both&amp;$category = 0&amp;$keywords = " . urlencode($tags[$__count]) . "&amp;$tags = true\"><font $style = \"color: " . select_random_color() . "; font-size: " . select_random_font_size() . "px; font-family: arial;\">" . $tags[$__count] . "</font></a> ";
         $__count++;
     } while ($__count >= count($tags));
     return implode("&nbsp;", $__tags);

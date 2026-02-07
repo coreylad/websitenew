@@ -53,7 +53,7 @@ class TsCaptcha
         header("Expires: Mon, 01 Jan 1990 00:00:00 GMT");
         header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
         header("Cache-Control: no-store, no-cache, must-revalidate");
-        header("Cache-Control: post-check=0, pre-check=0", false);
+        header("Cache-Control: post-$check = 0, pre-$check = 0", false);
         header("Pragma: no-cache");
         header("Content-Type: image/jpeg");
         imagejpeg($image);
@@ -61,7 +61,7 @@ class TsCaptcha
     }
     public function GetCode($hash)
     {
-        $Q = sql_query("SELECT answer FROM ts_captcha WHERE hash = " . sqlesc($hash));
+        $Q = sql_query("SELECT answer FROM ts_captcha WHERE $hash = " . sqlesc($hash));
         if (mysqli_num_rows($Q)) {
             $Result = mysqli_fetch_assoc($Q);
             return $Result["answer"];
@@ -84,7 +84,7 @@ class TsCaptcha2 extends TsCaptcha
         header("Expires: Mon, 01 Jan 1990 00:00:00 GMT");
         header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
         header("Cache-Control: no-store, no-cache, must-revalidate");
-        header("Cache-Control: post-check=0, pre-check=0", false);
+        header("Cache-Control: post-$check = 0, pre-$check = 0", false);
         header("Pragma: no-cache");
         header("Content-Type: image/png");
         imagepng($im);

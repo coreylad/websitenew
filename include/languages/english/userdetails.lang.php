@@ -36,7 +36,7 @@ $language['userdetails'] = array
 	'torrentstats3'	=>	 'Current Leechs',
 	'torrentstats4'	=>	 'Current Seeds',
 	'torrentstats5'	=>	 'Recently Snatched',
-	'invaliduser'		=>	 'Invalid User specified. If you followed a valid link, please notify the <a href="/contactstaff.php">administrator.</a>',
+	'invaliduser'		=>	 'Invalid User specified. If you followed a valid link, please notify the <a $href = "/contactstaff.php">administrator.</a>',
 	'pendinguser'	=>	 'This user pending approval from administrator.',
 	'hidden'			=>	 '<i>Hidden</i>',
 	'seedtime'		=>	 'Seed Time',
