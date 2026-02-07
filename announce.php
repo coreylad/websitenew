@@ -91,11 +91,11 @@ if (strlen($passkey) == 32 && strlen($info_hash) == 20 && strlen($peer_id) == 20
 } else {
     if (strlen($info_hash) != 20 && strpos($ORJ_Get_Passkey, "?")) {
         $passkey = $ORJ_Get_Passkey;
-        $tmp = substr($passkey, strpos($passkey, "?"));
+        $queryString = substr($passkey, strpos($passkey, "?"));
         $passkey = substr($passkey, 0, strpos($passkey, "?"));
-        $tmpname = substr($tmp, 1, strpos($tmp, "=") - 1);
-        $tmpvalue = substr($tmp, strpos($tmp, "=") + 1);
-        $GLOBALS[$tmpname] = $tmpvalue;
+        $parameterName = substr($queryString, 1, strpos($queryString, "=") - 1);
+        $parameterValue = substr($queryString, strpos($queryString, "=") + 1);
+        $GLOBALS[$parameterName] = $parameterValue;
         if (strlen($info_hash) != 20) {
             stop($l["error"]);
         }

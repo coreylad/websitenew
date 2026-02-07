@@ -39,17 +39,17 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST" && isset($_POST["avatars"])
             $__exp = explode("_", $__exp);
             $__userid = intval($__exp[1]);
             $new_name = substr(md5(time()), 0, 15) . "_" . $__userid;
-            $foo = new Class_3($AvatarPath . $_avatar_);
-            if ($foo->uploaded) {
-                $foo->$image_text = $MAIN["SITENAME"];
-                $foo->$image_crop = "0 0 -16 0";
-                $foo->$image_background_color = "#000000";
-                $foo->$image_text_font = 2;
-                $foo->$image_text_position = "B";
-                $foo->$image_text_padding_y = 2;
-                $foo->$file_new_name_body = $new_name;
-                $foo->function_47($AvatarPath);
-                if ($foo->processed && unlink($AvatarPath . $_avatar_)) {
+            $uploadHandler = new Class_3($AvatarPath . $_avatar_);
+            if ($uploadHandler->uploaded) {
+                $uploadHandler->$image_text = $MAIN["SITENAME"];
+                $uploadHandler->$image_crop = "0 0 -16 0";
+                $uploadHandler->$image_background_color = "#000000";
+                $uploadHandler->$image_text_font = 2;
+                $uploadHandler->$image_text_position = "B";
+                $uploadHandler->$image_text_padding_y = 2;
+                $uploadHandler->$file_new_name_body = $new_name;
+                $uploadHandler->function_47($AvatarPath);
+                if ($uploadHandler->processed && unlink($AvatarPath . $_avatar_)) {
                     $Newavatar = $BASEURL . "/include/avatars/" . $new_name . "." . $File_Ext;
                     mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET $avatar = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $Newavatar) . "' WHERE `id` = '" . $__userid . "'");
                 }
@@ -64,20 +64,20 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST" && isset($_POST["avatars"])
             $__exp = explode("_", $__exp);
             $__userid = intval($__exp[1]);
             $new_name = substr(md5(time()), 0, 15) . "_" . $__userid;
-            $foo = new Class_3($AvatarPath . $_avatar_);
-            if ($foo->uploaded) {
-                $foo->$image_resize = true;
-                $foo->$image_y = $FORUMCP["f_avatar_maxheight"];
-                $foo->$image_x = $FORUMCP["f_avatar_maxwidth"];
-                $foo->$image_text = $MAIN["SITENAME"];
-                $foo->$image_crop = "0 0 -16 0";
-                $foo->$image_background_color = "#000000";
-                $foo->$image_text_font = 2;
-                $foo->$image_text_position = "B";
-                $foo->$image_text_padding_y = 2;
-                $foo->$file_new_name_body = $new_name;
-                $foo->function_47($AvatarPath);
-                if ($foo->processed && unlink($AvatarPath . $_avatar_)) {
+            $uploadHandler = new Class_3($AvatarPath . $_avatar_);
+            if ($uploadHandler->uploaded) {
+                $uploadHandler->$image_resize = true;
+                $uploadHandler->$image_y = $FORUMCP["f_avatar_maxheight"];
+                $uploadHandler->$image_x = $FORUMCP["f_avatar_maxwidth"];
+                $uploadHandler->$image_text = $MAIN["SITENAME"];
+                $uploadHandler->$image_crop = "0 0 -16 0";
+                $uploadHandler->$image_background_color = "#000000";
+                $uploadHandler->$image_text_font = 2;
+                $uploadHandler->$image_text_position = "B";
+                $uploadHandler->$image_text_padding_y = 2;
+                $uploadHandler->$file_new_name_body = $new_name;
+                $uploadHandler->function_47($AvatarPath);
+                if ($uploadHandler->processed && unlink($AvatarPath . $_avatar_)) {
                     $Newavatar = $BASEURL . "/include/avatars/" . $new_name . "." . $File_Ext;
                     mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET $avatar = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $Newavatar) . "' WHERE `id` = '" . $__userid . "'");
                 }
