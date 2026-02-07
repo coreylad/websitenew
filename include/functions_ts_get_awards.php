@@ -16,7 +16,7 @@ function TSGetAwards($Userid = "", $Username = "")
     global $usergroups;
     global $is_mod;
     global $staffcp_path;
-    $Query = sql_query("SELECT a.userid, a.reason, a.date, aw.award_name, aw.award_image FROM ts_awards_users a LEFT JOIN ts_awards aw ON (a.$award_id = aw.award_id) WHERE a.$userid = '" . intval($Userid) . "' ORDER by aw.award_sort");
+    $Query = sql_query("SELECT a.userid, a.reason, a.date, aw.award_name, aw.award_image FROM ts_awards_users a LEFT JOIN ts_awards aw ON (a.award_id = aw.award_id) WHERE a.userid = '" . intval($Userid) . "' ORDER by aw.award_sort");
     if (mysqli_num_rows($Query)) {
         $Return = "";
         while ($Award = mysqli_fetch_assoc($Query)) {

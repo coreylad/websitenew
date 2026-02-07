@@ -178,21 +178,21 @@ class TSParserCron
     public function parse_message($message)
     {
         $this->cache_tscode();
-        $this->$message = str_replace("\r", "", $message);
+        $this->message = str_replace("\r", "", $message);
         if ($this->options["htmlspecialchars"]) {
-            $this->$message = htmlspecialchars($this->message);
-            $this->$message = str_replace("&amp;", "&", $this->message);
+            $this->message = htmlspecialchars($this->message);
+            $this->message = str_replace("&amp;", "&", $this->message);
         }
         $this->fix_javascript();
         $this->parse_codes();
-        $this->$message = nl2br($this->message);
+        $this->message = nl2br($this->message);
         $this->ts_wordwrap();
     }
     public function ts_wordwrap($wraptext = "  ")
     {
         $limit = 136;
         if (!empty($this->message)) {
-            $this->$message = preg_replace("\r\n\t\t\t\t#((?>[^\\s&/<>\"\\-\\[\\]]|&[\\#a-z0-9]{1,7};){" . $limit . "})(?=[^\\s&/<>\"\\-\\[\\]]|&[\\#a-z0-9]{1,7};)#i", "\$0" . $wraptext, $this->message);
+            $this->message = preg_replace("\r\n\t\t\t\t#((?>[^\\s&/<>\"\\-\\[\\]]|&[\\#a-z0-9]{1,7};){" . $limit . "})(?=[^\\s&/<>\"\\-\\[\\]]|&[\\#a-z0-9]{1,7};)#i", "\$0" . $wraptext, $this->message);
         }
     }
     public function parse_codes()
@@ -200,40 +200,40 @@ class TSParserCron
         if ($this->options["auto_url"]) {
             $this->tscode_auto_url();
         }
-        $this->$message = str_replace("\$", "&#36;", $this->message);
-        $this->$message = preg_replace($this->tscode_cache["find"], $this->tscode_cache["replacement"], $this->message);
-        $this->$message = preg_replace_callback("#\\[url\\]([a-z]+?://)([^\r\n\"<]+?)\\[/url\\]#si", function ($matches) {
+        $this->message = str_replace("\$", "&#36;", $this->message);
+        $this->message = preg_replace($this->tscode_cache["find"], $this->tscode_cache["replacement"], $this->message);
+        $this->message = preg_replace_callback("#\\[url\\]([a-z]+?://)([^\r\n\"<]+?)\\[/url\\]#si", function ($matches) {
             return $this->tscode_parse_url($matches[1] . $matches[2]);
         }, $this->message);
-        $this->$message = preg_replace_callback("#\\[url\\]([^\r\n\"<]+?)\\[/url\\]#si", function ($matches) {
+        $this->message = preg_replace_callback("#\\[url\\]([^\r\n\"<]+?)\\[/url\\]#si", function ($matches) {
             return $this->tscode_parse_url($matches[1]);
         }, $this->message);
-        $this->$message = preg_replace_callback("#\\[$url = ([a-z]+?://)([^\r\n\"<]+?)\\](.+?)\\[/url\\]#si", function ($matches) {
+        $this->message = preg_replace_callback("#\\[$url = ([a-z]+?://)([^\r\n\"<]+?)\\](.+?)\\[/url\\]#si", function ($matches) {
             return $this->tscode_parse_url($matches[1] . $matches[2], $matches[3]);
         }, $this->message);
-        $this->$message = preg_replace_callback("#\\[$url = ([^\r\n\"<&\\(\\)]+?)\\](.+?)\\[/url\\]#si", function ($matches) {
+        $this->message = preg_replace_callback("#\\[$url = ([^\r\n\"<&\\(\\)]+?)\\](.+?)\\[/url\\]#si", function ($matches) {
             return $this->tscode_parse_url($matches[1], $matches[2]);
         }, $this->message);
         while (preg_match("#\\[list\\](.*?)\\[\\/list\\]#si", $this->message)) {
-            $this->$message = preg_replace_callback("#\\[list\\](.*?)\\[\\/list\\]#si", function ($matches) {
+            $this->message = preg_replace_callback("#\\[list\\](.*?)\\[\\/list\\]#si", function ($matches) {
                 return $this->tscode_parse_list($matches[1], false);
             }, $this->message);
         }
         while (preg_match("#\\[$list = ol\\](.*?)\\[\\/list\\]#si", $this->message)) {
-            $this->$message = preg_replace_callback("#\\[$list = ol\\](.*?)\\[\\/list\\]#si", function ($matches) {
+            $this->message = preg_replace_callback("#\\[$list = ol\\](.*?)\\[\\/list\\]#si", function ($matches) {
                 return $this->tscode_parse_list($matches[1], true);
             }, $this->message);
         }
-        $this->$message = preg_replace_callback("#\\[img\\]\\s*(https?://([^*\\r\\n]+|[a-z0-9/\\._\\- !]+))\\[/img\\]#iU", function ($matches) {
+        $this->message = preg_replace_callback("#\\[img\\]\\s*(https?://([^*\\r\\n]+|[a-z0-9/\\._\\- !]+))\\[/img\\]#iU", function ($matches) {
             return $this->tscode_parse_img($matches[1]) . "\n";
         }, $this->message);
     }
     public function tscode_auto_url()
     {
-        $this->$message = " " . $this->message;
-        $this->$message = preg_replace("#([\\>\\s\\(\\)])(https?|ftp|news){1}://([\\w\\-]+\\.([\\w\\-]+\\.)*[\\w]+(:[0-9]+)?(/[^\"\\s<\\[]*)?)#i", "\$1[url]\$2://\$3[/url]", $this->message);
-        $this->$message = preg_replace("#([\\>\\s\\(\\)])(www|ftp)\\.(([\\w\\-]+\\.)*[\\w]+(:[0-9]+)?(/[^\"\\s<\\[]*)?)#i", "\$1[url]\$2.\$3[/url]", $this->message);
-        $this->$message = substr($this->message, 1);
+        $this->message = " " . $this->message;
+        $this->message = preg_replace("#([\\>\\s\\(\\)])(https?|ftp|news){1}://([\\w\\-]+\\.([\\w\\-]+\\.)*[\\w]+(:[0-9]+)?(/[^\"\\s<\\[]*)?)#i", "\$1[url]\$2://\$3[/url]", $this->message);
+        $this->message = preg_replace("#([\\>\\s\\(\\)])(www|ftp)\\.(([\\w\\-]+\\.)*[\\w]+(:[0-9]+)?(/[^\"\\s<\\[]*)?)#i", "\$1[url]\$2.\$3[/url]", $this->message);
+        $this->message = substr($this->message, 1);
     }
     public function tscode_parse_list($message, $type = "")
     {
@@ -257,7 +257,7 @@ class TSParserCron
     public function fix_javascript()
     {
         $js_array = ["#(&\\#(0*)106;|&\\#(0*)74;|j)((&\\#(0*)97;|&\\#(0*)65;|a)(&\\#(0*)118;|&\\#(0*)86;|v)(&\\#(0*)97;|&\\#(0*)65;|a)(\\s)?(&\\#(0*)115;|&\\#(0*)83;|s)(&\\#(0*)99;|&\\#(0*)67;|c)(&\\#(0*)114;|&\\#(0*)82;|r)(&\\#(0*)105;|&\\#(0*)73;|i)(&\\#112;|&\\#(0*)80;|p)(&\\#(0*)116;|&\\#(0*)84;|t)(&\\#(0*)58;|\\:))#i", "#(o)(nmouseover\\s?=)#i", "#(o)(nmouseout\\s?=)#i", "#(o)(nmousedown\\s?=)#i", "#(o)(nmousemove\\s?=)#i", "#(o)(nmouseup\\s?=)#i", "#(o)(nclick\\s?=)#i", "#(o)(ndblclick\\s?=)#i", "#(o)(nload\\s?=)#i", "#(o)(nsubmit\\s?=)#i", "#(o)(nblur\\s?=)#i", "#(o)(nchange\\s?=)#i", "#(o)(nfocus\\s?=)#i", "#(o)(nselect\\s?=)#i", "#(o)(nunload\\s?=)#i", "#(o)(nkeypress\\s?=)#i"];
-        $this->$message = preg_replace($js_array, "\$1<strong></strong>\$2\$4", $this->message);
+        $this->message = preg_replace($js_array, "\$1<strong></strong>\$2\$4", $this->message);
         unset($js_array);
     }
     public function cache_tscode()

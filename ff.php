@@ -25,8 +25,8 @@ print("<tr><td $align = center>");
 <script $language = "JavaScript1.2">    
 function addEngine(name,ext,cat)  
 {  
-  if ((typeof window.$sidebar = = "object") && (typeof  
-  window.sidebar.$addSearchEngine = = "function"))  
+  if ((typeof window.sidebar == "object") && (typeof  
+  window.sidebar.addSearchEngine == "function"))  
   {  
     window.sidebar.addSearchEngine(  
       baseurl + "/misc/"+name+".src",  

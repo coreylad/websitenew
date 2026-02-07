@@ -123,7 +123,7 @@ class createZip
         }
         header("Pragma: public");
         header("Expires: 0");
-        header("Cache-Control: must-revalidate, post-$check = 0, pre-$check = 0");
+        header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
         header("Content-Disposition: attachment; $filename = " . basename($archiveName) . ";");
         header("Content-Transfer-Encoding: binary");
         header("Content-Type: application/x-zip-compressed");

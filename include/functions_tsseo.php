@@ -45,7 +45,7 @@ function ts_seo($id, $text, $type = "u")
         }
     } else {
         if ($type == "c") {
-            return $BASEURL . "/browse.php?$category = " . $id;
+            return $BASEURL . "/browse.php?category= " . $id;
         }
         if ($type == "d") {
             return $BASEURL . "/download.php?$id = " . $id;
