@@ -52,15 +52,15 @@ function function_63()
 // DEAD CODE: function_65() is only called by function_67() to get INSTALL_IP, but INSTALL_IP is never used anywhere. Legacy IP detection via templateshares.biz.
 function function_65()
 {
-    $var_228 = "./../../cache/ip.srv";
+    $ipCacheFile = "./../../cache/ip.srv";
     if (isset($_SERVER["SERVER_ADDR"]) && !empty($_SERVER["SERVER_ADDR"]) && function_66($_SERVER["SERVER_ADDR"])) {
         $ip = $_SERVER["SERVER_ADDR"];
     } else {
         if (isset($_SERVER["LOCAL_ADDR"]) && !empty($_SERVER["LOCAL_ADDR"]) && function_66($_SERVER["LOCAL_ADDR"])) {
             $ip = $_SERVER["LOCAL_ADDR"];
         } else {
-            if (file_exists($var_228) && TIMENOW < filemtime($var_228) + 1800) {
-                $ip = file_get_contents($var_228);
+            if (file_exists($ipCacheFile) && TIMENOW < filemtime($ipCacheFile) + 1800) {
+                $ip = file_get_contents($ipCacheFile);
             } else {
                 if (function_exists("curl_init") && ($ch = curl_init())) {
                     curl_setopt($ch, CURLOPT_URL, "http://templateshares.biz/ip.php");
@@ -71,7 +71,7 @@ function function_65()
                     $ip = curl_exec($ch);
                     curl_close($ch);
                     if (is_writable("./../../cache/ip.srv")) {
-                        @file_put_contents($var_228, $ip);
+                        @file_put_contents($ipCacheFile, $ip);
                     }
                 }
             }
@@ -80,8 +80,8 @@ function function_65()
     if (function_66($ip)) {
         return $ip;
     }
-    if (file_exists($var_228)) {
-        @unlink($var_228);
+    if (file_exists($ipCacheFile)) {
+        @unlink($ipCacheFile);
     }
 }
 // DEAD CODE: function_66() is only called by unused function_65(). Helper for IP validation.
@@ -124,13 +124,13 @@ function function_69()
 // DEAD CODE: function_70() is never called. Legacy TSSE license key response parser - validates license key format and MD5 hash.
 function function_70()
 {
-    $var_230 = var_231();
-    @preg_match("#{LISENCE_KEY_RESPONSE}(.*){LISENCE_KEY_RESPONSE}#is", $var_230, $licenseKey);
+    $licenseResponse = var_231();
+    @preg_match("#{LISENCE_KEY_RESPONSE}(.*){LISENCE_KEY_RESPONSE}#is", $licenseResponse, $licenseKey);
     if (isset($licenseKey[1]) && $licenseKey[1]) {
-        $var_232 = trim($licenseKey[1]);
-        $licenseKey = strtoupper($var_232);
+        $trimmedKey = trim($licenseKey[1]);
+        $licenseKey = strtoupper($trimmedKey);
         if (!function_71($licenseKey)) {
-            function_64("<b>Critical Error:</b> " . $var_232);
+            function_64("<b>Critical Error:</b> " . $trimmedKey);
         } else {
             if (md5(INSTALL_URL . $licenseKey . INSTALL_URL) != ADMIN_CACHE) {
                 function_64("System Error: License key mismatch. Please re-run the installation script.");
@@ -144,7 +144,7 @@ function function_70()
 function function_72()
 {
     $GLOBALS["Sifrele"] = new Class_4("TSSE8.02020httpstemplateshares.net!");
-    $var_233 = "0=4&1=" . function_73(INSTALL_URL) . "&2=" . function_73(INSTALL_IP) . "&3=" . function_73(SHORT_SCRIPT_VERSION);
+    $postData = "0=4&1=" . function_73(INSTALL_URL) . "&2=" . function_73(INSTALL_IP) . "&3=" . function_73(SHORT_SCRIPT_VERSION);
     $licenseUrl = "http://www.templateshares.info";
     $licenseHost = "www.templateshares.info";
     $licensePath = "/authenticate/" . SHORT_SCRIPT_VERSION . "/license.php";
@@ -159,7 +159,7 @@ function function_72()
         curl_setopt($ch, CURLOPT_USERAGENT, $userAgent);
         curl_setopt($ch, CURLOPT_REFERER, $referer);
         curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $var_233);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
         $curlResult = curl_exec($ch);
         curl_close($ch);
         return $curlResult;
@@ -170,9 +170,9 @@ function function_72()
         $httpRequest .= "User-Agent: " . $userAgent . "\r\n";
         $httpRequest .= "Referer: " . $referer . "\r\n";
         $httpRequest .= "Content-Type: application/x-www-form-urlencoded\r\n";
-        $httpRequest .= "Content-Length: " . strlen($var_233) . "\r\n\r\n";
+        $httpRequest .= "Content-Length: " . strlen($postData) . "\r\n\r\n";
         @socket_set_timeout(fsock, $connectTimeout);
-        @fwrite(fsock, $httpRequest . $var_233);
+        @fwrite(fsock, $httpRequest . $postData);
         $curlResult = "";
         while (!@feof(fsock)) {
             $curlResult .= @fgets(fsock, 1024);
@@ -185,9 +185,9 @@ function function_72()
 // DEAD CODE: function_71() is only called by unused function_70(). Validates license key format using regex pattern.
 function function_71($installkey = "")
 {
-    $var_97 = "{########-####-####-####-############}";
-    $var_97 = @str_replace("#", "[0-9,A-F]", $var_97);
-    if (@preg_match($var_97, $installkey)) {
+    $licenseKeyPattern = "{########-####-####-####-############}";
+    $licenseKeyPattern = @str_replace("#", "[0-9,A-F]", $licenseKeyPattern);
+    if (@preg_match($licenseKeyPattern, $installkey)) {
         return true;
     }
     return false;

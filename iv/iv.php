@@ -30,11 +30,11 @@ if (!isset($_SESSION["correct_image_entered"])) {
             if ($answer_position == $i) {
                 $show_image[] = $the_answer;
             }
-            $tmp = rand(1, $amount);
-            while ($tmp == $the_answer || isset($show_image) && is_array($show_image) && in_array($tmp, $show_image)) {
-                $tmp = rand(1, $amount);
+            $randomImageIndex = rand(1, $amount);
+            while ($randomImageIndex == $the_answer || isset($show_image) && is_array($show_image) && in_array($randomImageIndex, $show_image)) {
+                $randomImageIndex = rand(1, $amount);
             }
-            $show_image[] = $tmp;
+            $show_image[] = $randomImageIndex;
         }
         if ($answer_position == $i) {
             $show_image[] = $the_answer;

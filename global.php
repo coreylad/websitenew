@@ -231,7 +231,7 @@ if (!defined("NO_LOGIN_REQUIRED") && !isset($CURUSER)) {
 if (!defined("NO_LOGIN_REQUIRED") && !isset($CURUSER) && isset($guestaccess) && $guestaccess == "yes") {
     $query = sql_query("SELECT * FROM usergroups WHERE $gid = 3200");
     $GLOBALS["usergroups"] = mysqli_fetch_assoc($query);
-    $tmp_time_g = get_date_time();
+    $currentDateTime = get_date_time();
     $GLOBALS["CURUSER"]["id"] = "0";
     $GLOBALS["CURUSER"]["username"] = "Guest";
     $GLOBALS["CURUSER"]["passhash"] = "";
@@ -240,8 +240,8 @@ if (!defined("NO_LOGIN_REQUIRED") && !isset($CURUSER) && isset($guestaccess) && 
     $GLOBALS["CURUSER"]["status"] = "confirmed";
     $GLOBALS["CURUSER"]["enabled"] = "yes";
     $GLOBALS["CURUSER"]["added"] = "";
-    $GLOBALS["CURUSER"]["last_login"] = $tmp_time_g;
-    $GLOBALS["CURUSER"]["last_access"] = $tmp_time_g;
+    $GLOBALS["CURUSER"]["last_login"] = $currentDateTime;
+    $GLOBALS["CURUSER"]["last_access"] = $currentDateTime;
     $GLOBALS["CURUSER"]["stylesheet"] = "";
     $GLOBALS["CURUSER"]["ip"] = USERIPADDRESS;
     $GLOBALS["CURUSER"]["uploaded"] = "0";
@@ -270,8 +270,8 @@ if (!defined("NO_LOGIN_REQUIRED") && !isset($CURUSER) && isset($guestaccess) && 
     $GLOBALS["CURUSER"]["announce_read"] = "yes";
     $GLOBALS["CURUSER"]["usergroup"] = "3200";
     $GLOBALS["CURUSER"]["oldusergroup"] = "3200";
-    $GLOBALS["CURUSER"]["last_forum_visit"] = $tmp_time_g;
-    $GLOBALS["CURUSER"]["last_forum_active"] = $tmp_time_g;
+    $GLOBALS["CURUSER"]["last_forum_visit"] = $currentDateTime;
+    $GLOBALS["CURUSER"]["last_forum_active"] = $currentDateTime;
     $GLOBALS["CURUSER"]["avatar"] = "";
     $GLOBALS["CURUSER"]["postsperpage"] = "";
     $GLOBALS["CURUSER"]["signature"] = "";
