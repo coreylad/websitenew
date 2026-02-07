@@ -61,14 +61,14 @@ $postoptions = [];
 $extrasubject = "";
 if ($isGuest) {
     if ($iv == "reCAPTCHA") {
-        $tmp = show_image_code_editor();
-        $postoptionstitle = [1 => $tmp[0]];
-        $postoptions = [1 => $tmp[1]];
+        $imageCodeEditorParts = show_image_code_editor();
+        $postoptionstitle = [1 => $imageCodeEditorParts[0]];
+        $postoptions = [1 => $imageCodeEditorParts[1]];
     }
     if ($iv == "yes") {
-        $tmp = show_image_code_editor();
-        $postoptionstitle = [1 => $tmp[0], 2 => $tmp[2]];
-        $postoptions = [1 => $tmp[1], 2 => $tmp[3]];
+        $imageCodeEditorParts = show_image_code_editor();
+        $postoptionstitle = [1 => $imageCodeEditorParts[0], 2 => $imageCodeEditorParts[2]];
+        $postoptions = [1 => $imageCodeEditorParts[1], 2 => $imageCodeEditorParts[3]];
     }
     $extrasubject = [$lang->contactstaff["email"] => "<input $type = \"text\" $name = \"email\" $style = \"width: 100%\" $value = \"" . (isset($email) && !empty($email) ? htmlspecialchars_uni($email) : "") . "\" $tabindex = \"2\" />"];
 }
