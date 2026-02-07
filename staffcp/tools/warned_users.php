@@ -6,7 +6,7 @@
  * @ Release: 10/08/2022
  */
 
-var_235();
+checkStaffAuthentication();
 $Language = file("languages/" . getStaffLanguage() . "/warned_users.lang");
 $Message = "";
 if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST" && isset($_POST["ids"]) && $_POST["ids"][0] != "") {
@@ -15,7 +15,7 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST" && isset($_POST["ids"]) && 
     mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET $warned = \"no\", $warneduntil = \"0000-00-00 00:00:00\", $leechwarn = \"no\", $leechwarnuntil = \"0000-00-00 00:00:00\", $modcomment = CONCAT(\"" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $modcomment) . "\", modcomment) WHERE id IN (" . implode(",", $_POST["ids"]) . ")");
     if (mysqli_affected_rows($GLOBALS["DatabaseConnect"])) {
         foreach ($_POST["ids"] as $id) {
-            var_237($id, $SysMsg, $Language[15]);
+            sendPrivateMessage($id, $SysMsg, $Language[15]);
         }
         $SysMsg = str_replace(["{1}", "{2}"], [$_SESSION["ADMIN_USERNAME"], implode(",", $_POST["ids"])], $Language[17]);
         logStaffAction($SysMsg);
@@ -43,7 +43,7 @@ function getStaffLanguage()
 function checkStaffAuthentication()
 {
     if (!defined("IN-TSSE-STAFF-PANEL")) {
-        var_236("../index.php");
+        redirectTo("../index.php");
     }
 }
 function redirectTo($url)

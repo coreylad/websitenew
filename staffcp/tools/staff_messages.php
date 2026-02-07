@@ -6,7 +6,7 @@
  * @ Release: 10/08/2022
  */
 
-var_235();
+checkStaffAuthentication();
 $Language = file("languages/" . getStaffLanguage() . "/staff_messages.lang");
 $Message = "";
 $Act = isset($_GET["act"]) ? trim($_GET["act"]) : (isset($_POST["act"]) ? trim($_POST["act"]) : "");
@@ -40,7 +40,7 @@ if ($Act == "view_msg" && $id) {
                     if (isset($_POST["answer"]) && !empty($_POST["answer"])) {
                         $answer = $_POST["answer"];
                         mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE staffmessages SET $answeredby = \"" . $_SESSION["ADMIN_ID"] . "\", $answer = \"" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $answer) . "\" WHERE `id` = \"" . $id . "\"");
-                        var_237($StaffMsg["sender"], $answer, $Language[17], $_SESSION["ADMIN_ID"]);
+                        sendPrivateMessage($StaffMsg["sender"], $answer, $Language[17], $_SESSION["ADMIN_ID"]);
                         redirectTo("index.php?do=staff_messages&$id = " . $id);
                     } else {
                         $Message = showAlertError($Language[3]);
@@ -452,7 +452,7 @@ function getStaffLanguage()
 function checkStaffAuthentication()
 {
     if (!defined("IN-TSSE-STAFF-PANEL")) {
-        var_236("../index.php");
+        redirectTo("../index.php");
     }
 }
 function redirectTo($url)

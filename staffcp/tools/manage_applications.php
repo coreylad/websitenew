@@ -6,7 +6,7 @@
  * @ Release: 10/08/2022
  */
 
-var_235();
+checkStaffAuthentication();
 $Act = isset($_GET["act"]) ? trim($_GET["act"]) : (isset($_POST["act"]) ? trim($_POST["act"]) : "");
 $id = isset($_GET["id"]) ? intval($_GET["id"]) : (isset($_POST["id"]) ? intval($_POST["id"]) : "");
 $Language = file("languages/" . getStaffLanguage() . "/manage_applications.lang");
@@ -79,7 +79,7 @@ if ($Act == "view" && $id) {
                 if (mysqli_affected_rows($GLOBALS["DatabaseConnect"])) {
                     $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT uid FROM ts_application_requests WHERE rid IN (" . $rids . ")");
                     while ($User = mysqli_fetch_assoc($query)) {
-                        var_237($User["uid"], $Language[37], $Language[36], $_SESSION["ADMIN_ID"]);
+                        sendPrivateMessage($User["uid"], $Language[37], $Language[36], $_SESSION["ADMIN_ID"]);
                     }
                     $Message = str_replace(["{1}", "{2}"], [$rids, $_SESSION["ADMIN_USERNAME"]], $Language[33]);
                     logStaffAction($Message);
@@ -91,7 +91,7 @@ if ($Act == "view" && $id) {
                     if (mysqli_affected_rows($GLOBALS["DatabaseConnect"])) {
                         $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT uid FROM ts_application_requests WHERE rid IN (" . $rids . ")");
                         while ($User = mysqli_fetch_assoc($query)) {
-                            var_237($User["uid"], $Language[38], $Language[36], $_SESSION["ADMIN_ID"]);
+                            sendPrivateMessage($User["uid"], $Language[38], $Language[36], $_SESSION["ADMIN_ID"]);
                         }
                         $Message = str_replace(["{1}", "{2}"], [$rids, $_SESSION["ADMIN_USERNAME"]], $Language[34]);
                         logStaffAction($Message);
@@ -166,7 +166,7 @@ function getStaffLanguage()
 function checkStaffAuthentication()
 {
     if (!defined("IN-TSSE-STAFF-PANEL")) {
-        var_236("../index.php");
+        redirectTo("../index.php");
     }
 }
 function redirectTo($url)

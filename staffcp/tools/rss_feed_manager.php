@@ -10,7 +10,7 @@ if (($current_memory_limit = function_271(@ini_get("memory_limit"))) < 134217728
     @ini_set("memory_limit", 134217728);
 }
 @set_time_limit(0);
-var_235();
+checkStaffAuthentication();
 if (!function_exists("xml_set_element_handler")) {
     $extension_dir = ini_get("extension_dir");
     if (strtoupper(substr(PHP_OS, 0, 3)) == "WIN") {
@@ -1251,7 +1251,7 @@ function getStaffLanguage()
 function checkStaffAuthentication()
 {
     if (!defined("IN-TSSE-STAFF-PANEL")) {
-        var_236("../index.php");
+        redirectTo("../index.php");
     }
 }
 function redirectTo($url)

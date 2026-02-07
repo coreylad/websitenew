@@ -6,7 +6,7 @@
  * @ Release: 10/08/2022
  */
 
-var_235();
+checkStaffAuthentication();
 $action = isset($_GET["action"]) ? $_GET["action"] : (isset($_POST["action"]) ? $_POST["action"] : "showlist");
 $Language = file("languages/" . getStaffLanguage() . "/manage_polls.lang");
 $Message = "";
@@ -236,7 +236,7 @@ function getStaffLanguage()
 function checkStaffAuthentication()
 {
     if (!defined("IN-TSSE-STAFF-PANEL")) {
-        var_236("../index.php");
+        redirectTo("../index.php");
     }
 }
 function redirectTo($url)

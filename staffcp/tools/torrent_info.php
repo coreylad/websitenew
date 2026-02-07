@@ -9,7 +9,7 @@
 @ini_set("upload_max_filesize", 10485760);
 @ini_set("memory_limit", "20000M");
 @set_time_limit(0);
-var_235();
+checkStaffAuthentication();
 $Language = file("languages/" . getStaffLanguage() . "/torrent_info.lang");
 $Message = "";
 $tid = isset($_GET["tid"]) ? intval($_GET["tid"]) : (isset($_POST["tid"]) ? intval($_POST["tid"]) : "");
@@ -554,7 +554,7 @@ function getStaffLanguage()
 function checkStaffAuthentication()
 {
     if (!defined("IN-TSSE-STAFF-PANEL")) {
-        var_236("../index.php");
+        redirectTo("../index.php");
     }
 }
 function redirectTo($url)

@@ -6,7 +6,7 @@
  * @ Release: 10/08/2022
  */
 
-var_235();
+checkStaffAuthentication();
 $Language = file("languages/" . getStaffLanguage() . "/warn_user.lang");
 $Message = "";
 $username = isset($_GET["username"]) ? trim($_GET["username"]) : "";
@@ -30,7 +30,7 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
                 mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET $warned = 'yes', $timeswarned = timeswarned + 1, $warneduntil = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $warneduntil) . "', $modcomment = CONCAT('" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $modcomment) . "', modcomment) WHERE `username` = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $username) . "'");
                 if (mysqli_affected_rows($GLOBALS["DatabaseConnect"])) {
                     logStaffAction($SysMsg);
-                    var_237($User["id"], str_replace(["{1}", "{2}"], [$_SESSION["ADMIN_USERNAME"], $reason], $Language[11]), $Language[7]);
+                    sendPrivateMessage($User["id"], str_replace(["{1}", "{2}"], [$_SESSION["ADMIN_USERNAME"], $reason], $Language[11]), $Language[7]);
                     $Message = showAlertError($Language[3]);
                 } else {
                     $Message = showAlertError($Language[12]);
@@ -77,7 +77,7 @@ function getStaffLanguage()
 function checkStaffAuthentication()
 {
     if (!defined("IN-TSSE-STAFF-PANEL")) {
-        var_236("../index.php");
+        redirectTo("../index.php");
     }
 }
 function redirectTo($url)

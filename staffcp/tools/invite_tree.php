@@ -6,7 +6,7 @@
  * @ Release: 10/08/2022
  */
 
-var_235();
+checkStaffAuthentication();
 $Language = file("languages/" . getStaffLanguage() . "/invite_tree.lang");
 $Message = "";
 $username = isset($_GET["username"]) ? trim($_GET["username"]) : (isset($_POST["username"]) ? trim($_POST["username"]) : "");
@@ -60,7 +60,7 @@ function getStaffLanguage()
 function checkStaffAuthentication()
 {
     if (!defined("IN-TSSE-STAFF-PANEL")) {
-        var_236("../index.php");
+        redirectTo("../index.php");
     }
 }
 function redirectTo($url)

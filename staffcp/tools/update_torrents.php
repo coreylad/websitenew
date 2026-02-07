@@ -7,7 +7,7 @@
  */
 
 @set_time_limit(0);
-var_235();
+checkStaffAuthentication();
 $Language = file("languages/" . getStaffLanguage() . "/update_torrents.lang");
 $Message = "";
 @ini_set("upload_max_filesize", 10485760);
@@ -111,7 +111,7 @@ function getStaffLanguage()
 function checkStaffAuthentication()
 {
     if (!defined("IN-TSSE-STAFF-PANEL")) {
-        var_236("../index.php");
+        redirectTo("../index.php");
     }
 }
 function redirectTo($url)

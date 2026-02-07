@@ -6,7 +6,7 @@
  * @ Release: 10/08/2022
  */
 
-var_235();
+checkStaffAuthentication();
 $Language = file("languages/" . getStaffLanguage() . "/unconnectable_peers.lang");
 $Message = "";
 $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'ANNOUNCE'");
@@ -45,7 +45,7 @@ if (!isset($STOP)) {
                 foreach ($userids as $id) {
                     if (!in_array($id, $DoneArray)) {
                         $DoneArray[] = $id;
-                        var_237($id, $Language[21], $Language[20], $_SESSION["ADMIN_ID"]);
+                        sendPrivateMessage($id, $Language[21], $Language[20], $_SESSION["ADMIN_ID"]);
                     }
                 }
                 $Message = showAlertError($Language[22]);
@@ -75,7 +75,7 @@ function getStaffLanguage()
 function checkStaffAuthentication()
 {
     if (!defined("IN-TSSE-STAFF-PANEL")) {
-        var_236("../index.php");
+        redirectTo("../index.php");
     }
 }
 function redirectTo($url)
