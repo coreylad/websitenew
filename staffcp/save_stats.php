@@ -9,7 +9,7 @@
 function_54();
 require "./ts_db_connect.php";
 function_55();
-$_FileData = base64_decode("R0lGODlhAQABAIAAAMDAwAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==") /* GIF89a\0\0€\0\0ÀÀÀ\0\0\0!ù\0\0\0\0,\0\0\0\0\0\0\0D\0;... */ /* GIF89a\0\0€\0\0ÀÀÀ\0\0\0!ù\0\0\0\0,\0\0\0\0\0\0\0D\0;... */;
+$_FileData = base64_decode("R0lGODlhAQABAIAAAMDAwAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==") /* GIF89a\0\0€\0\0ÀÀÀ\0\0\0!ù\0\0\0\0,\0\0\0\0\0\0\0D\0;... */ /* GIF89a\0\0€\0\0ÀÀÀ\0\0\0!ù\0\0\0\0,\0\0\0\0\0\0\0D\0;... */ /* GIF89a\0\0€\0\0ÀÀÀ\0\0\0!ù\0\0\0\0,\0\0\0\0\0\0\0D\0;... */;
 $_FileSize = strlen($_FileData);
 header("Content-type: image/gif");
 if (!(strpos($_SERVER["SERVER_SOFTWARE"], "Microsoft-IIS") !== false && strpos(php_sapi_name(), "cgi") !== false)) {
