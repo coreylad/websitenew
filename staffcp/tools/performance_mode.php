@@ -141,7 +141,7 @@ function logStaffAction($log)
 }
 function function_136()
 {
-    $var_375 = "";
+    $configCodeBuffer = "";
     $var_281 = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'ANNOUNCE'");
     $Result = mysqli_fetch_assoc($var_281);
     $var_56 = unserialize($Result["content"]);
@@ -160,60 +160,60 @@ function function_136()
     $var_388 = $var_56["checkip"];
     $var_389 = $var_56["banned_ports"];
     $var_390 = $var_56["nc"];
-    $var_375 .= "/* ANNOUNCE */";
-    $var_375 .= "\$xbt_active = '" . $var_376 . "';";
+    $configCodeBuffer .= "/* ANNOUNCE */";
+    $configCodeBuffer .= "\$xbt_active = '" . $var_376 . "';";
     if ($var_376 == "yes") {
-        $var_375 .= "\$xbt_announce_url = '" . $var_377 . "';";
+        $configCodeBuffer .= "\$xbt_announce_url = '" . $var_377 . "';";
     }
-    $var_375 .= "\$announce_system = '" . $var_378 . "';";
-    $var_375 .= "\$announce_interval = '" . $var_379 . "';";
-    $var_375 .= "\$bannedclientdetect = '" . $var_380 . "';";
+    $configCodeBuffer .= "\$announce_system = '" . $var_378 . "';";
+    $configCodeBuffer .= "\$announce_interval = '" . $var_379 . "';";
+    $configCodeBuffer .= "\$bannedclientdetect = '" . $var_380 . "';";
     if ($var_380 == "yes") {
-        $var_375 .= "\$allowed_clients = '" . $var_381 . "';";
+        $configCodeBuffer .= "\$allowed_clients = '" . $var_381 . "';";
     }
-    $var_375 .= "\$announce_actions = '" . $var_382 . "';";
-    $var_375 .= "\$max_rate = '" . $var_383 . "';";
-    $var_375 .= "\$announce_wait = '" . $var_384 . "';";
-    $var_375 .= "\$aggressivecheat = '" . $var_385 . "';";
-    $var_375 .= "\$detectbrowsercheats = '" . $var_386 . "';";
-    $var_375 .= "\$A_checkconnectable = '" . $var_387 . "';";
-    $var_375 .= "\$checkip = '" . $var_388 . "';";
-    $var_375 .= "\$banned_ports = '" . $var_389 . "';";
-    $var_375 .= "\$nc = '" . $var_390 . "';";
+    $configCodeBuffer .= "\$announce_actions = '" . $var_382 . "';";
+    $configCodeBuffer .= "\$max_rate = '" . $var_383 . "';";
+    $configCodeBuffer .= "\$announce_wait = '" . $var_384 . "';";
+    $configCodeBuffer .= "\$aggressivecheat = '" . $var_385 . "';";
+    $configCodeBuffer .= "\$detectbrowsercheats = '" . $var_386 . "';";
+    $configCodeBuffer .= "\$A_checkconnectable = '" . $var_387 . "';";
+    $configCodeBuffer .= "\$checkip = '" . $var_388 . "';";
+    $configCodeBuffer .= "\$banned_ports = '" . $var_389 . "';";
+    $configCodeBuffer .= "\$nc = '" . $var_390 . "';";
     $var_281 = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'MAIN'");
     $Result = mysqli_fetch_assoc($var_281);
     $var_27 = unserialize($Result["content"]);
     $var_391 = $var_27["BASEURL"];
     $var_392 = $var_27["SITENAME"];
     $var_393 = $var_27["cache"];
-    $var_375 .= "/* MAIN */";
-    $var_375 .= "\$BASEURL = '" . $var_391 . "';";
-    $var_375 .= "\$SITENAME = '" . $var_392 . "';";
-    $var_375 .= "\$cache = '" . $var_393 . "';";
+    $configCodeBuffer .= "/* MAIN */";
+    $configCodeBuffer .= "\$BASEURL = '" . $var_391 . "';";
+    $configCodeBuffer .= "\$SITENAME = '" . $var_392 . "';";
+    $configCodeBuffer .= "\$cache = '" . $var_393 . "';";
     $var_281 = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'TWEAK'");
     $Result = mysqli_fetch_assoc($var_281);
     $var_394 = unserialize($Result["content"]);
     $var_395 = $var_394["snatchmod"];
     $var_396 = $var_394["gzipcompress"];
-    $var_375 .= "/* TWEAK */";
-    $var_375 .= "\$snatchmod = '" . $var_395 . "';";
-    $var_375 .= "\$gzipcompress = '" . $var_396 . "';";
+    $configCodeBuffer .= "/* TWEAK */";
+    $configCodeBuffer .= "\$snatchmod = '" . $var_395 . "';";
+    $configCodeBuffer .= "\$gzipcompress = '" . $var_396 . "';";
     $var_281 = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'SECURITY'");
     $Result = mysqli_fetch_assoc($var_281);
     $var_400 = unserialize($Result["content"]);
     $var_401 = $var_400["privatetrackerpatch"];
     $var_402 = $var_400["aggressivecheckip"];
-    $var_375 .= "/* SECURITY */";
-    $var_375 .= "\$privatetrackerpatch = '" . $var_401 . "';";
-    $var_375 .= "\$aggressivecheckip = '" . $var_402 . "';";
+    $configCodeBuffer .= "/* SECURITY */";
+    $configCodeBuffer .= "\$privatetrackerpatch = '" . $var_401 . "';";
+    $configCodeBuffer .= "\$aggressivecheckip = '" . $var_402 . "';";
     $var_281 = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'THEME'");
     $Result = mysqli_fetch_assoc($var_281);
     $var_28 = unserialize($Result["content"]);
     $var_403 = $var_28["defaultlanguage"];
     $var_10 = $var_28["charset"];
-    $var_375 .= "/* THEME */";
-    $var_375 .= "\$defaultlanguage = '" . $var_403 . "';";
-    $var_375 .= "\$charset = '" . $var_10 . "';";
+    $configCodeBuffer .= "/* THEME */";
+    $configCodeBuffer .= "\$defaultlanguage = '" . $var_403 . "';";
+    $configCodeBuffer .= "\$charset = '" . $var_10 . "';";
     $var_281 = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'KPS'");
     $Result = mysqli_fetch_assoc($var_281);
     $var_404 = unserialize($Result["content"]);
@@ -223,14 +223,14 @@ function function_136()
     $var_408 = $var_404["kpsseed"];
     $var_409 = $var_404["kpstype"];
     $var_410 = $var_404["kpsgbamount"];
-    $var_375 .= "/* KPS */";
-    $var_375 .= "\$bdayreward = '" . $var_405 . "';";
-    $var_375 .= "\$bdayrewardtype = '" . $var_406 . "';";
-    $var_375 .= "\$bonus = '" . $var_407 . "';";
-    $var_375 .= "\$kpsseed = '" . $var_408 . "';";
-    $var_375 .= "\$kpstype = '" . $var_409 . "';";
-    $var_375 .= "\$kpsgbamount = '" . $var_410 . "';";
-    if (file_put_contents("../include/config_announce.php", "<?php\r\n/* Please use Setting Panel to Modify this file! */\r\n" . $var_375 . "\r\n/* Please use Setting Panel to Modify this file! */\r\n?>")) {
+    $configCodeBuffer .= "/* KPS */";
+    $configCodeBuffer .= "\$bdayreward = '" . $var_405 . "';";
+    $configCodeBuffer .= "\$bdayrewardtype = '" . $var_406 . "';";
+    $configCodeBuffer .= "\$bonus = '" . $var_407 . "';";
+    $configCodeBuffer .= "\$kpsseed = '" . $var_408 . "';";
+    $configCodeBuffer .= "\$kpstype = '" . $var_409 . "';";
+    $configCodeBuffer .= "\$kpsgbamount = '" . $var_410 . "';";
+    if (file_put_contents("../include/config_announce.php", "<?php\r\n/* Please use Setting Panel to Modify this file! */\r\n" . $configCodeBuffer . "\r\n/* Please use Setting Panel to Modify this file! */\r\n?>")) {
         return "";
     }
     return showAlertError("<b>include/config_announce.php</b> isn't writable. Plesae check permissions.");

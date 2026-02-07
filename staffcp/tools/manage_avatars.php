@@ -163,7 +163,7 @@ function logStaffAction($log)
 }
 function formatTimestamp($timestamp = "")
 {
-    $var_265 = "m-d-Y h:i A";
+    $dateFormatPattern = "m-d-Y h:i A";
     if (empty($timestamp)) {
         $timestamp = time();
     } else {
@@ -171,7 +171,7 @@ function formatTimestamp($timestamp = "")
             $timestamp = strtotime($timestamp);
         }
     }
-    return date($var_265, $timestamp);
+    return date($dateFormatPattern, $timestamp);
 }
 function formatBytes($bytes = 0)
 {

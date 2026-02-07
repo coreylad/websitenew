@@ -107,13 +107,13 @@ function validatePerPage($numresults, &$page, &$perpage, $maxperpage = 20, $defa
 }
 function calculatePagination($pagenumber, $perpage, $total)
 {
-    $var_241 = $perpage * ($pagenumber - 1);
-    $var_89 = $var_241 + $perpage;
-    if ($total < $var_89) {
-        $var_89 = $total;
+    $paginationFirstItem = $perpage * ($pagenumber - 1);
+    $paginationLastItem = $paginationFirstItem + $perpage;
+    if ($total < $paginationLastItem) {
+        $paginationLastItem = $total;
     }
-    $var_241++;
-    return ["first" => number_format($var_241), "last" => number_format($var_89)];
+    $paginationFirstItem++;
+    return ["first" => number_format($paginationFirstItem), "last" => number_format($paginationLastItem)];
 }
 function buildPaginationLinks($perpage, $results, $address)
 {
@@ -161,25 +161,25 @@ function buildPaginationLinks($perpage, $results, $address)
         $paginationHtml["next"] = true;
     }
     $var_256 = "3";
-    if (!isset($var_257) || !is_array($var_257)) {
+    if (!isset($paginationSkipLinksArray) || !is_array($paginationSkipLinksArray)) {
         $var_258 = "10 50 100 500 1000";
-        $var_257[] = preg_split("#\\s+#s", $var_258, -1, PREG_SPLIT_NO_EMPTY);
+        $paginationSkipLinksArray[] = preg_split("#\\s+#s", $var_258, -1, PREG_SPLIT_NO_EMPTY);
         while ($currentPage++ < $queryResult) {
         }
         $var_259 = isset($previousPage) && $previousPage != 1 ? "page=" . $previousPage : "";
-        $paginationLinks = "\r\n\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTableNoBorder\">\r\n\t\t<tr>\t\t\t\t\r\n\t\t\t<td $style = \"padding: 0px 0px 1px 0px;\">\r\n\t\t\t\t<div $style = \"float: left;\" $id = \"navcontainer_f\">\r\n\t\t\t\t\t<ul>\r\n\t\t\t\t\t\t<li>" . $pagenumber . " - " . $queryResult . "</li>\r\n\t\t\t\t\t\t" . ($paginationHtml["first"] ? "<li><a class=\"smalltext\" $href = \"" . $address . "\" $title = \"First Page - Show Results " . $var_260["first"] . " to " . $var_260["last"] . " of " . $total . "\">&laquo; First</a></li>" : "") . ($paginationHtml["prev"] ? "<li><a class=\"smalltext\" $href = \"" . $address . $var_259 . "\" $title = \"Previous Page - Show Results " . $var_253["first"] . " to " . $var_253["last"] . " of " . $total . "\">&lt;</a></li>" : "") . "\r\n\t\t\t\t\t\t" . $paginationLinks . "\r\n\t\t\t\t\t\t" . ($paginationHtml["next"] ? "<li><a class=\"smalltext\" $href = \"" . $address . "page=" . $var_254 . "\" $title = \"Next Page - Show Results " . $var_255["first"] . " to " . $var_255["last"] . " of " . $total . "\">&gt;</a></li>" : "") . ($paginationHtml["last"] ? "<li><a class=\"smalltext\" $href = \"" . $address . "page=" . $queryResult . "\" $title = \"Last Page - Show Results " . $var_261["first"] . " to " . $var_261["last"] . " of " . $total . "\">Last <strong>&raquo;</strong></a></li>" : "") . "\r\n\t\t\t\t\t</ul>\t\t\t\t\t\r\n\t\t\t\t</div>\t\t\t\t\r\n\t\t\t</td>\t\t\t\r\n\t\t</tr>\r\n\t</table>";
+        $paginationLinks = "\r\n\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTableNoBorder\">\r\n\t\t<tr>\t\t\t\t\r\n\t\t\t<td $style = \"padding: 0px 0px 1px 0px;\">\r\n\t\t\t\t<div $style = \"float: left;\" $id = \"navcontainer_f\">\r\n\t\t\t\t\t<ul>\r\n\t\t\t\t\t\t<li>" . $pagenumber . " - " . $queryResult . "</li>\r\n\t\t\t\t\t\t" . ($paginationHtml["first"] ? "<li><a class=\"smalltext\" $href = \"" . $address . "\" $title = \"First Page - Show Results " . $firstPageInfo["first"] . " to " . $firstPageInfo["last"] . " of " . $total . "\">&laquo; First</a></li>" : "") . ($paginationHtml["prev"] ? "<li><a class=\"smalltext\" $href = \"" . $address . $var_259 . "\" $title = \"Previous Page - Show Results " . $var_253["first"] . " to " . $var_253["last"] . " of " . $total . "\">&lt;</a></li>" : "") . "\r\n\t\t\t\t\t\t" . $paginationLinks . "\r\n\t\t\t\t\t\t" . ($paginationHtml["next"] ? "<li><a class=\"smalltext\" $href = \"" . $address . "page=" . $var_254 . "\" $title = \"Next Page - Show Results " . $var_255["first"] . " to " . $var_255["last"] . " of " . $total . "\">&gt;</a></li>" : "") . ($paginationHtml["last"] ? "<li><a class=\"smalltext\" $href = \"" . $address . "page=" . $queryResult . "\" $title = \"Last Page - Show Results " . $lastPageInfo["first"] . " to " . $lastPageInfo["last"] . " of " . $total . "\">Last <strong>&raquo;</strong></a></li>" : "") . "\r\n\t\t\t\t\t</ul>\t\t\t\t\t\r\n\t\t\t\t</div>\t\t\t\t\r\n\t\t\t</td>\t\t\t\r\n\t\t</tr>\r\n\t</table>";
         return [$paginationLinks, "LIMIT " . $limitOffset . ", " . $perpage];
     }
     if ($var_256 <= abs($currentPage - $pagenumber) && $var_256 != 0) {
         if ($currentPage == 1) {
-            $var_260 = calculatePagination(1, $perpage, $results);
+            $firstPageInfo = calculatePagination(1, $perpage, $results);
             $paginationHtml["first"] = true;
         }
         if ($currentPage == $queryResult) {
-            $var_261 = calculatePagination($queryResult, $perpage, $results);
+            $lastPageInfo = calculatePagination($queryResult, $perpage, $results);
             $paginationHtml["last"] = true;
         }
-        if (in_array(abs($currentPage - $pagenumber), $var_257) && $currentPage != 1 && $currentPage != $queryResult) {
+        if (in_array(abs($currentPage - $pagenumber), $paginationSkipLinksArray) && $currentPage != 1 && $currentPage != $queryResult) {
             $pageRangeInfo = calculatePagination($currentPage, $perpage, $results);
             $pageOffsetDisplay = $currentPage - $pagenumber;
             if (0 < $pageOffsetDisplay) {
@@ -189,8 +189,8 @@ function buildPaginationLinks($perpage, $results, $address)
         }
     } else {
         if ($currentPage == $pagenumber) {
-            $var_264 = calculatePagination($currentPage, $perpage, $results);
-            $paginationLinks .= "<li><a $name = \"current\" class=\"current\" $title = \"Showing results " . $var_264["first"] . " to " . $var_264["last"] . " of " . $total . "\">" . $currentPage . "</a></li>";
+            $currentPageInfo = calculatePagination($currentPage, $perpage, $results);
+            $paginationLinks .= "<li><a $name = \"current\" class=\"current\" $title = \"Showing results " . $currentPageInfo["first"] . " to " . $currentPageInfo["last"] . " of " . $total . "\">" . $currentPage . "</a></li>";
         } else {
             $pageRangeInfo = calculatePagination($currentPage, $perpage, $results);
             $paginationLinks .= "<li><a $href = \"" . $address . ($currentPage != 1 ? "page=" . $currentPage : "") . "\" $title = \"Show results " . $pageRangeInfo["first"] . " to " . $pageRangeInfo["last"] . " of " . $total . "\">" . $currentPage . "</a></li>";
@@ -199,7 +199,7 @@ function buildPaginationLinks($perpage, $results, $address)
 }
 function formatTimestamp($timestamp = "")
 {
-    $var_265 = "m-d-Y h:i A";
+    $dateFormatPattern = "m-d-Y h:i A";
     if (empty($timestamp)) {
         $timestamp = time();
     } else {
@@ -207,7 +207,7 @@ function formatTimestamp($timestamp = "")
             $timestamp = strtotime($timestamp);
         }
     }
-    return date($var_265, $timestamp);
+    return date($dateFormatPattern, $timestamp);
 }
 function applyUsernameStyle($username, $namestyle)
 {
