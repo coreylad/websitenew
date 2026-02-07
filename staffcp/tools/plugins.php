@@ -172,6 +172,7 @@ function showAlertMessage($message = "")
 {
     return "<div class=\"alert\"><div>" . $message . "</div></div>";
 }
+// DEAD CODE: function_316() is never called. Appears to format plugin positions for JSON output.
 function function_316()
 {
     $plugins = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM ts_plugins ORDER BY sort ASC");

@@ -2,6 +2,9 @@
 /**
  * Function Renaming Script - Phase 1
  * Renames the most common obfuscated functions (10+ occurrences)
+ * 
+ * DEAD CODE: This is a temporary utility script for renaming obfuscated functions.
+ * Not part of the application runtime. Can be removed after renaming is complete.
  */
 
 set_time_limit(0);

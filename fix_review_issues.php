@@ -2,6 +2,9 @@
 /**
  * Fix Specific Issues Found in Code Review
  * Addresses edge cases where $ was incorrectly added/left in place
+ * 
+ * DEAD CODE: This is a temporary utility script for fixing review issues.
+ * Not part of the application runtime. Can be removed after fixes are applied.
  */
 
 $fixes = [

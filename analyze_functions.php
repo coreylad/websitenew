@@ -2,6 +2,9 @@
 /**
  * Function Analysis Script
  * Analyzes obfuscated function_XX to determine their purpose and suggest descriptive names
+ * 
+ * DEAD CODE: This is a temporary utility script for analyzing obfuscated functions.
+ * Not part of the application runtime. Can be removed after analysis is complete.
  */
 
 set_time_limit(0);
@@ -13,6 +16,7 @@ $outputFile = __DIR__ . '/function_mappings.txt';
 // Store function analysis
 $functionAnalysis = [];
 
+// DEAD CODE: getAllFiles() function is defined here but never called - script uses different iteration approach
 function analyzeFunctionPurpose($functionName, $filePath, $functionBody) {
     $suggestions = [];
     

@@ -357,6 +357,7 @@ function function_149($file)
 {
     return strtolower(substr(strrchr($file, "."), 1));
 }
+// DEAD CODE: function_321() is never called. XML parser function to extract values by tag name.
 function function_321($inXmlset, $needle)
 {
     $var_629 = "";

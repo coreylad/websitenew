@@ -1,4 +1,5 @@
 <?php
+// DEAD CODE: Temporary utility script for deobfuscation. Not part of application runtime.
 // Blanket deobfuscation script for all file types
 // Scans all files for _obfuscated_ names and replaces them using the mapping in deobfuscation_progress.md
 // Updates mapping for new obfuscated names found in non-PHP files
@@ -24,6 +25,7 @@ function getAllFiles($dir) {
     return $files;
 }
 
+// DEAD CODE: generateName() function is never called - the script uses direct mapping assignment instead
 function generateName($obf, $type = 'var') {
     // Simple readable name generator
     static $counts = [];

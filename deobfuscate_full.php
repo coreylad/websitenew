@@ -2,6 +2,9 @@
 /**
  * Complete De-obfuscation Script for PHP 7.4 Codebase
  * Fixes IonCube decoder artifacts and renames obfuscated identifiers
+ * 
+ * DEAD CODE: This is a temporary utility script for one-time deobfuscation.
+ * Not part of the application runtime. Can be removed after deobfuscation is complete.
  */
 
 set_time_limit(0);
@@ -16,6 +19,7 @@ $stats = [
     'files_processed' => 0,
     'files_fixed' => 0,
     'syntax_fixes' => 0,
+    // DEAD CODE: These counters are initialized but never incremented - no function/variable renaming logic implemented in this script
     'function_renames' => 0,
     'variable_renames' => 0,
     'base64_decodes' => 0,
