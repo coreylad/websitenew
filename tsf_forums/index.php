@@ -57,7 +57,7 @@ while ($subforum = mysqli_fetch_assoc($query)) {
         $deepsubforums[$subforum["pid"]] = (isset($deepsubforums[$subforum["pid"]]) ? $deepsubforums[$subforum["pid"]] : "") . "<img $src = \"" . $BASEURL . "/tsf_forums/images/subforums.gif\" $alt = \"" . $subforum["name"] . "\" $title = \"" . $subforum["name"] . "\" /> <a $href = \"" . tsf_seo_clean_text($subforum["name"], "fd", $subforum["fid"]) . "\">" . $subforum["name"] . "</a> <font $size = \"1\">(" . ts_nf($subforum["sthreads"]) . "/" . ts_nf($subforum["sposts"]) . ")</font>~~~";
     }
 }
-$query = sql_query("SELECT m.userid, m.forumid, u.username, g.namestyle\r\n\t\t\t\t\t\t\tFROM " . TSF_PREFIX . "moderators m \r\n\t\t\t\t\t\t\tINNER JOIN users u ON (m.$userid = u.id)\r\n\t\t\t\t\t\t\tINNER JOIN usergroups g ON (u.$usergroup = g.gid)");
+$query = sql_query("SELECT m.userid, m.forumid, u.username, g.namestyle\r\n\t\t\t\t\t\t\tFROM " . TSF_PREFIX . "moderators m \r\n\t\t\t\t\t\t\tINNER JOIN users u ON (m.$userid = u.id)\r\n\t\t\t\t\t\t\tINNER JOIN usergroups g ON (u.`usergroup` = g.gid)");
 $imodcache = [];
 while ($forummoderators = mysqli_fetch_assoc($query)) {
     $imodcache[(string) $forummoderators["forumid"]][(string) $forummoderators["userid"]] = $forummoderators;
@@ -199,7 +199,7 @@ function tsf_forum_stats()
     include_once TSDIR . "/" . $cache . "/indexstats.php";
     include_once INC_PATH . "/functions_icons.php";
     $dt = TIMENOW - TS_TIMEOUT;
-    ($res = sql_query("SELECT u.id, u.username, u.usergroup, u.options, u.enabled, u.donor, u.leechwarn, u.warned, p.canupload, p.candownload, p.cancomment, p.canmessage, p.canshout, g.namestyle, g.title FROM users u LEFT JOIN ts_u_perm p ON (u.$id = p.userid) LEFT JOIN usergroups g ON (u.$usergroup = g.gid) WHERE u.last_forum_active >= " . $dt . " ORDER BY u.username")) || sqlerr(__FILE__, 400);
+    ($res = sql_query("SELECT u.id, u.username, u.usergroup, u.options, u.enabled, u.donor, u.leechwarn, u.warned, p.canupload, p.candownload, p.cancomment, p.canmessage, p.canshout, g.namestyle, g.title FROM users u LEFT JOIN ts_u_perm p ON (u.`id` = p.userid) LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) WHERE u.last_forum_active >= " . $dt . " ORDER BY u.username")) || sqlerr(__FILE__, 400);
     $webtotal = 0;
     $activeusers = "";
     while ($arr = mysqli_fetch_array($res)) {
@@ -231,7 +231,7 @@ function tsf_forum_stats()
     if ($no_cache) {
         $todaybday = date("j-n");
         $todaybday2 = date("j-m");
-        $query = sql_query("SELECT u.id,u.username,u.birthday,g.namestyle FROM users u LEFT JOIN usergroups g ON (u.$usergroup = g.gid) WHERE (u.birthday REGEXP '^" . $todaybday . "-([1-9][0-9][0-9][0-9])' OR u.birthday REGEXP '^" . $todaybday2 . "-([1-9][0-9][0-9][0-9])') AND u.$enabled = 'yes'");
+        $query = sql_query("SELECT u.id,u.username,u.birthday,g.namestyle FROM users u LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) WHERE (u.birthday REGEXP '^" . $todaybday . "-([1-9][0-9][0-9][0-9])' OR u.birthday REGEXP '^" . $todaybday2 . "-([1-9][0-9][0-9][0-9])') AND u.$enabled = 'yes'");
         $bdaycount = mysqli_num_rows($query);
         if (0 < $bdaycount) {
             $showbday = "\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td class=\"subheader\" $colspan = \"2\">\r\n\t\t\t\t\t\t<b>" . $lang->tsf_forums["tbdays"] . "</b>\r\n\t\t\t\t\t</td>\r\n\t\t\t\t</tr>\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td $width = \"1%\"><img $src = \"" . $BASEURL . "/tsf_forums/images/bday.gif\" $alt = \"\" $title = \"\" /></td>\r\n\t\t\t\t\t<td>" . sprintf($lang->tsf_forums["tbdayss"], $bdaycount) . "<br />\r\n\t\t\t";

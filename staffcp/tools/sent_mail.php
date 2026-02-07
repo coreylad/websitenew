@@ -15,14 +15,14 @@ $usergroups = [];
 $subject = "";
 $message = "";
 $emails = isset($_GET["emails"]) ? trim($_GET["emails"]) : "";
-$Q = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'MAIN'");
-$Result = mysqli_fetch_assoc($Q);
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'MAIN'");
+$Result = mysqli_fetch_assoc($query);
 $MAIN = unserialize($Result["content"]);
-$Q = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'THEME'");
-$Result = mysqli_fetch_assoc($Q);
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'THEME'");
+$Result = mysqli_fetch_assoc($query);
 $THEME = unserialize($Result["content"]);
-$Q = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'SMTP'");
-$Result = mysqli_fetch_assoc($Q);
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'SMTP'");
+$Result = mysqli_fetch_assoc($query);
 $SMTP = unserialize($Result["content"]);
 if ($Act == "post_mails") {
     $subject = $_POST["subject"] ? trim($_POST["subject"]) : "";
@@ -73,7 +73,7 @@ if ($Act == "post_mails") {
         $Message = showAlertError($Language[9]);
     }
 }
-$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT u.id, g.cansettingspanel, g.canstaffpanel, g.issupermod FROM users u LEFT JOIN usergroups g ON (u.$usergroup = g.gid) WHERE u.$id = '" . $_SESSION["ADMIN_ID"] . "' LIMIT 1");
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT u.id, g.cansettingspanel, g.canstaffpanel, g.issupermod FROM users u LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) WHERE u.$id = '" . $_SESSION["ADMIN_ID"] . "' LIMIT 1");
 $LoggedAdminDetails = mysqli_fetch_assoc($query);
 $showusergroups = "";
 $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT gid, title, cansettingspanel, canstaffpanel, issupermod, namestyle FROM usergroups ORDER by disporder ASC");

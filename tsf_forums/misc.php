@@ -24,7 +24,7 @@ if ($action == "markread") {
         exit;
     }
     if ($CURUSER["id"] != 0) {
-        sql_query("UPDATE users SET $last_forum_visit = '" . TIMENOW . "' WHERE $id = " . sqlesc($CURUSER["id"]));
+        sql_query("UPDATE users SET $last_forum_visit = '" . TIMENOW . "' WHERE `id` = " . sqlesc($CURUSER["id"]));
     }
     redirect("tsf_forums/", $lang->tsf_forums["markforumsread"]);
     exit;

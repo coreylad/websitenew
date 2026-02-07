@@ -36,12 +36,12 @@ if ($xbt_active != "yes" && $Enabled == "yes" && (0 < $MinSeedTime || 0 < $MinRa
         $Queries[] = "s.uploaded / s.downloaded < " . $MinRatio;
     }
     $WarnUsers = [];
-    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT s.id, s.torrentid, s.userid, s.seedtime, t.name, u.username FROM snatched s INNER JOIN torrents t ON (s.$torrentid = t.id) INNER JOIN users u ON (s.$userid = u.id) WHERE " . implode(" AND ", $Queries));
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT s.id, s.torrentid, s.userid, s.seedtime, t.name, u.username FROM snatched s INNER JOIN torrents t ON (s.`torrentid` = t.id) INNER JOIN users u ON (s.`userid` = u.id) WHERE " . implode(" AND ", $Queries));
     $CQueryCount++;
     if (mysqli_num_rows($query)) {
         require_once INC_PATH . "/functions_pm.php";
         while ($HR = mysqli_fetch_assoc($query)) {
-            mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE snatched SET $warned = 1 WHERE $id = " . sqlesc($HR["id"]));
+            mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE snatched SET $warned = 1 WHERE `id` = " . sqlesc($HR["id"]));
             send_pm($HR["userid"], sprintf($lang->cronjobs["hr_warn_message"], $HR["username"], "[URL=" . $BASEURL . "/details.php?$id = " . $HR["torrentid"] . "]" . htmlspecialchars($HR["name"]) . "[/URL]", 0 < $HR["seedtime"] ? floor($HR["seedtime"] / 3600) : 0, $MinSeedTime, $MinRatio, "[URL=" . $BASEURL . "/download.php?$id = " . $HR["torrentid"] . "]" . htmlspecialchars($HR["name"]) . "[/URL]"), $lang->cronjobs["hr_warn_subject"]);
             $CQueryCount++;
             if (!in_array($HR["userid"], $WarnUsers)) {
@@ -49,7 +49,7 @@ if ($xbt_active != "yes" && $Enabled == "yes" && (0 < $MinSeedTime || 0 < $MinRa
             }
         }
         if (count($WarnUsers)) {
-            mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET $timeswarned = timeswarned + 1 WHERE id IN (" . implode(",", $WarnUsers) . ")");
+            mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET `timeswarned` = timeswarned + 1 WHERE id IN (" . implode(",", $WarnUsers) . ")");
             $CQueryCount++;
         }
     }

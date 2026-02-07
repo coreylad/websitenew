@@ -12,14 +12,14 @@
 var_235();
 $Language = file("languages/" . getStaffLanguage() . "/fix_hash.lang");
 $Message = "";
-$Q = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = \"MAIN\"");
-$Result = mysqli_fetch_assoc($Q);
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = \"MAIN\"");
+$Result = mysqli_fetch_assoc($query);
 $MAIN = unserialize($Result["content"]);
 if (isset($_GET["usedid"])) {
     $usedid = intval($_GET["usedid"]);
-    $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id, info_hash, filename FROM torrents WHERE id > \"" . $usedid . "\" ORDER BY id ASC LIMIT 1");
-    if (mysqli_num_rows($Query)) {
-        $Result = mysqli_fetch_assoc($Query);
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id, info_hash, filename FROM torrents WHERE id > \"" . $usedid . "\" ORDER BY id ASC LIMIT 1");
+    if (mysqli_num_rows($query)) {
+        $Result = mysqli_fetch_assoc($query);
         $id = $Result["id"];
         $filename = $Result["filename"];
         $orj_info_hash = $Result["info_hash"];
@@ -28,8 +28,8 @@ if (isset($_GET["usedid"])) {
         $Done = true;
     }
 } else {
-    $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id, info_hash, filename FROM torrents ORDER BY id ASC LIMIT 1");
-    $Result = mysqli_fetch_assoc($Query);
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id, info_hash, filename FROM torrents ORDER BY id ASC LIMIT 1");
+    $Result = mysqli_fetch_assoc($query);
     $id = $Result["id"];
     $filename = $Result["filename"];
     $orj_info_hash = $Result["info_hash"];
@@ -41,7 +41,7 @@ if (!isset($Done)) {
             $info_hash = $Torrent->function_166();
             if ($info_hash != $orj_info_hash) {
                 if ($info_hash) {
-                    mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE torrents SET $info_hash = \"" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $info_hash) . "\" WHERE $id = \"" . $id . "\"");
+                    mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE torrents SET $info_hash = \"" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $info_hash) . "\" WHERE `id` = \"" . $id . "\"");
                     if (!mysqli_affected_rows($GLOBALS["DatabaseConnect"])) {
                         $INFO = $Language[6];
                     } else {

@@ -41,7 +41,7 @@ if ($thread["closed"] == "yes" && !$moderator && !$forummoderator) {
     stderr($lang->global["error"], $lang->tsf_forums["thread_closed"]);
     exit;
 }
-$query1 = sql_query("SELECT userid FROM " . TSF_PREFIX . "threadrate WHERE $userid = '" . $userid . "' AND $threadid = '" . $threadid . "'");
+$query1 = sql_query("SELECT userid FROM " . TSF_PREFIX . "threadrate WHERE `userid` = '" . $userid . "' AND $threadid = '" . $threadid . "'");
 if (0 < mysqli_num_rows($query1)) {
     stderr($lang->global["error"], $lang->tsf_forums["rateresult2"]);
     exit;

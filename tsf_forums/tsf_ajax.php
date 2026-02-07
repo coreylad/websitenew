@@ -27,7 +27,7 @@ if ($ajax_action == "thanks" && strtoupper($_SERVER["REQUEST_METHOD"]) == "POST"
     if (!is_valid_id($tid) || !is_valid_id($pid)) {
         xmlhttp_error($lang->tsf_forums["invalid_tid"]);
     }
-    ($query = sql_query("SELECT p.uid as posterid, t.closed, f.type, f.fid as currentforumid, ff.fid as deepforumid, u.username, g.namestyle\r\n\t\t\tFROM " . TSF_PREFIX . "posts p\r\n\t\t\tLEFT JOIN " . TSF_PREFIX . "threads t ON (p.$tid = t.tid)\t\r\n\t\t\tLEFT JOIN " . TSF_PREFIX . "forums f ON (f.$fid = t.fid)\r\n\t\t\tLEFT JOIN " . TSF_PREFIX . "forums ff ON (ff.$fid = f.pid)\r\n\t\t\tLEFT JOIN users u ON (p.$uid = u.id)\r\n\t\t\tLEFT JOIN usergroups g ON (u.$usergroup = g.gid)\r\n\t\t\tWHERE p.$tid = " . sqlesc($tid) . " AND p.$pid = " . sqlesc($pid) . " LIMIT 1")) || sqlerr(__FILE__, 63);
+    ($query = sql_query("SELECT p.uid as posterid, t.closed, f.type, f.fid as currentforumid, ff.fid as deepforumid, u.username, g.namestyle\r\n\t\t\tFROM " . TSF_PREFIX . "posts p\r\n\t\t\tLEFT JOIN " . TSF_PREFIX . "threads t ON (p.$tid = t.tid)\t\r\n\t\t\tLEFT JOIN " . TSF_PREFIX . "forums f ON (f.$fid = t.fid)\r\n\t\t\tLEFT JOIN " . TSF_PREFIX . "forums ff ON (ff.$fid = f.pid)\r\n\t\t\tLEFT JOIN users u ON (p.$uid = u.id)\r\n\t\t\tLEFT JOIN usergroups g ON (u.`usergroup` = g.gid)\r\n\t\t\tWHERE p.$tid = " . sqlesc($tid) . " AND p.$pid = " . sqlesc($pid) . " LIMIT 1")) || sqlerr(__FILE__, 63);
     if (mysqli_num_rows($query) == 0) {
         xmlhttp_error($lang->tsf_forums["invalid_tid"]);
     }
@@ -115,7 +115,7 @@ if ($ajax_action == "save_quick_edit" && strtoupper($_SERVER["REQUEST_METHOD"]) 
         if (strlen($text) < $f_minmsglength) {
             xmlhttp_error($lang->tsf_forums["too_short"]);
         }
-        ($query = sql_query("SELECT dateline FROM " . TSF_PREFIX . "posts WHERE $uid = " . $uid . " ORDER by dateline DESC LIMIT 1")) || sqlerr(__FILE__, 194);
+        ($query = sql_query("SELECT dateline FROM " . TSF_PREFIX . "posts WHERE `uid` = " . $uid . " ORDER by dateline DESC LIMIT 1")) || sqlerr(__FILE__, 194);
         if (0 < mysqli_num_rows($query)) {
             $Result = mysqli_fetch_assoc($query);
             $last_post = $Result["dateline"];
@@ -193,7 +193,7 @@ if ($ajax_action == "edit_subject" && strtoupper($_SERVER["REQUEST_METHOD"]) == 
     if (strlen($_POST["value"]) < $f_minmsglength) {
         xmlhttp_error($lang->tsf_forums["too_short"]);
     }
-    ($query = sql_query("SELECT dateline FROM " . TSF_PREFIX . "posts WHERE $uid = " . sqlesc($CURUSER["id"]) . " ORDER by dateline DESC LIMIT 1")) || sqlerr(__FILE__, 313);
+    ($query = sql_query("SELECT dateline FROM " . TSF_PREFIX . "posts WHERE `uid` = " . sqlesc($CURUSER["id"]) . " ORDER by dateline DESC LIMIT 1")) || sqlerr(__FILE__, 313);
     if (0 < mysqli_num_rows($query)) {
         $Result = mysqli_fetch_assoc($query);
         $last_post = $Result["dateline"];
@@ -250,7 +250,7 @@ function show_thanks($Remove = false)
     global $pid;
     global $posterforthanks;
     $array = [];
-    $Query = sql_query("SELECT t.uid, u.username, g.namestyle FROM tsf_thanks t LEFT JOIN users u ON (t.$uid = u.id) LEFT JOIN usergroups g ON (u.$usergroup = g.gid) WHERE t.$tid = '" . $tid . "' AND t.$pid = '" . $pid . "' ORDER BY u.username");
+    $Query = sql_query("SELECT t.uid, u.username, g.namestyle FROM tsf_thanks t LEFT JOIN users u ON (t.$uid = u.id) LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) WHERE t.$tid = '" . $tid . "' AND t.$pid = '" . $pid . "' ORDER BY u.username");
     if (mysqli_num_rows($Query) == 0) {
         exit;
     }

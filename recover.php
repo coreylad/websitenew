@@ -53,10 +53,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && empty($act)) {
     if (!check_email($email)) {
         failedlogins($lang->recover["error2"], true);
     }
-    ($res = sql_query("SELECT id, passhash, email FROM users WHERE $email = " . sqlesc($email) . " LIMIT 1")) || sqlerr(__FILE__, 100);
+    ($res = sql_query("SELECT id, passhash, email FROM users WHERE `email` = " . sqlesc($email) . " LIMIT 1")) || sqlerr(__FILE__, 100);
     ($arr = mysqli_fetch_assoc($res)) || failedlogins($lang->recover["error3"], true);
     $sec = mksecret();
-    sql_query("DELETE FROM ts_user_validation WHERE $userid = " . sqlesc($arr["id"]));
+    sql_query("DELETE FROM ts_user_validation WHERE `userid` = " . sqlesc($arr["id"]));
     sql_query("INSERT INTO ts_user_validation (editsecret, userid) VALUES (" . sqlesc($sec) . ", " . sqlesc($arr["id"]) . ")") || sqlerr(__FILE__, 104);
     if (!mysqli_affected_rows($GLOBALS["DatabaseConnect"])) {
         stderr($lang->global["error"], $lang->global["dberror"]);
@@ -75,7 +75,7 @@ if (isset($_GET["id"]) && isset($_GET["secret"])) {
     if (empty($id) || !is_valid_id($id) || strlen($md5) != 32) {
         stderr($lang->global["error"], $lang->recover["invalidcodeorid"]);
     }
-    $res = sql_query("SELECT u.username, u.email, u.passhash, e.editsecret FROM users u LEFT JOIN ts_user_validation e ON (u.$id = e.userid) WHERE u.$id = " . sqlesc($id));
+    $res = sql_query("SELECT u.username, u.email, u.passhash, e.editsecret FROM users u LEFT JOIN ts_user_validation e ON (u.`id` = e.userid) WHERE u.$id = " . sqlesc($id));
     ($arr = mysqli_fetch_assoc($res)) || stderr($lang->global["error"], $lang->global["nouserid"]);
     $email = $arr["email"];
     $sec = hash_pad($arr["editsecret"]);
@@ -88,11 +88,11 @@ if (isset($_GET["id"]) && isset($_GET["secret"])) {
     $newpassword = mksecret(10);
     $sec = mksecret();
     $newpasshash = md5($sec . $newpassword . $sec);
-    sql_query("UPDATE users SET $secret = " . sqlesc($sec) . ", $passhash = " . sqlesc($newpasshash) . " WHERE $id = " . sqlesc($id)) || stderr($lang->global["error"], $lang->global["dberror"]);
+    sql_query("UPDATE users SET $secret = " . sqlesc($sec) . ", $passhash = " . sqlesc($newpasshash) . " WHERE `id` = " . sqlesc($id)) || stderr($lang->global["error"], $lang->global["dberror"]);
     if (!mysqli_affected_rows($GLOBALS["DatabaseConnect"])) {
         stderr($lang->global["error"], $lang->global["dberror"]);
     }
-    sql_query("DELETE FROM ts_user_validation WHERE $userid = " . sqlesc($id));
+    sql_query("DELETE FROM ts_user_validation WHERE `userid` = " . sqlesc($id));
     $body = sprintf($lang->recover["body2"], $arr["username"], $newpassword, $BASEURL, $SITENAME);
     sent_mail($email, sprintf($lang->recover["subject2"], $SITENAME), $body, "details");
 } else {

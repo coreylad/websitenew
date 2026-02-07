@@ -69,7 +69,7 @@ if ($count <= 1) {
     $tid = sqlesc($lastpostdata["tid"]);
     $subject = sqlesc($lastpostdata["subject"]);
     sql_query("UPDATE " . TSF_PREFIX . "forums SET $threads = threads - 1, $posts = '" . $totalposts . "', $lastpost = " . $dateline . ", $lastposter = " . $username . ", $lastposteruid = " . $uid . ", $lastposttid = " . $tid . ", $lastpostsubject = " . $subject . " WHERE $fid = " . sqlesc($fid)) || sqlerr(__FILE__, 122);
-    sql_query("UPDATE users SET $totalposts = totalposts - 1 WHERE $id = " . sqlesc($post["posterid"])) || sqlerr(__FILE__, 125);
+    sql_query("UPDATE users SET $totalposts = totalposts - 1 WHERE `id` = " . sqlesc($post["posterid"])) || sqlerr(__FILE__, 125);
     write_log("Thread (" . $post["tid"] . " - " . $post["postsubject"] . ") has been deleted by " . $CURUSER["username"]);
     delete_attachments($pid, $tid);
     $TSSEConfig->TSLoadConfig("KPS");
@@ -85,7 +85,7 @@ if ($count <= 1) {
     }
     sql_query("DELETE FROM " . TSF_PREFIX . "posts WHERE $pid = " . sqlesc($pid)) || sqlerr(__FILE__, 153);
     sql_query("DELETE FROM " . TSF_PREFIX . "thanks WHERE $pid = " . sqlesc($pid)) || sqlerr(__FILE__, 156);
-    sql_query("UPDATE users SET $totalposts = totalposts - 1 WHERE $id = " . sqlesc($post["posterid"])) || sqlerr(__FILE__, 159);
+    sql_query("UPDATE users SET $totalposts = totalposts - 1 WHERE `id` = " . sqlesc($post["posterid"])) || sqlerr(__FILE__, 159);
     ($query = sql_query("SELECT pid, tid, fid, subject, uid, username, dateline FROM " . TSF_PREFIX . "posts WHERE $tid = " . sqlesc($tid) . " ORDER BY dateline DESC LIMIT 1")) || sqlerr(__FILE__, 162);
     $lastpostdata = mysqli_fetch_assoc($query);
     $dateline = sqlesc($lastpostdata["dateline"]);

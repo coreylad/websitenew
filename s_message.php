@@ -16,7 +16,7 @@ if (!$torrentid || !$is_mod) {
 }
 $TSSEConfig->TSLoadConfig("ANNOUNCE");
 if ($xbt_active != "yes") {
-    $FirstQuery = sql_query("SELECT DISTINCT userid FROM snatched WHERE $torrentid = " . sqlesc($torrentid) . " AND $finished = 'yes'");
+    $FirstQuery = sql_query("SELECT DISTINCT userid FROM snatched WHERE `torrentid` = " . sqlesc($torrentid) . " AND $finished = 'yes'");
 } else {
     $FirstQuery = sql_query("SELECT DISTINCT uid as userid FROM xbt_files_users WHERE `fid` = " . sqlesc($torrentid) . " AND `active` = 0 AND `left` = 0");
 }

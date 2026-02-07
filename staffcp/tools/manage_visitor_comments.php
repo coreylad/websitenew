@@ -13,7 +13,7 @@ $WHERE = "";
 $LINK = "";
 $perpage = 8;
 if (isset($_GET["delete"]) && ($VID = intval($_GET["vid"]))) {
-    mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM ts_visitor_messages WHERE $id = " . $VID);
+    mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM ts_visitor_messages WHERE `id` = " . $VID);
 }
 if (isset($_GET["sender"]) && ($SENDER = intval($_GET["sender"]))) {
     $WHERE = " WHERE v.$visitorid = " . $SENDER;
@@ -26,9 +26,9 @@ if (isset($_GET["receiver"]) && ($RECEIVER = intval($_GET["receiver"]))) {
 $results = mysqli_num_rows(mysqli_query($GLOBALS["DatabaseConnect"], "SELECT v.id FROM ts_visitor_messages v" . $WHERE));
 list($pagertop, $limit) = buildPaginationLinks($perpage, $results, $_SERVER["SCRIPT_NAME"] . "?do=manage_visitor_comments&amp;" . $LINK);
 $Found = "";
-$Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT v.id, v.userid, v.visitorid, v.visitormsg, v.added, u.username, g.namestyle, uu.username as tousername, gg.namestyle as tonamestyle FROM ts_visitor_messages v LEFT JOIN users u ON (u.$id = v.visitorid) LEFT JOIN usergroups g ON (u.$usergroup = g.gid) LEFT JOIN users uu ON (uu.$id = v.userid) LEFT JOIN usergroups gg ON (uu.$usergroup = gg.gid)" . $WHERE . " ORDER by v.added DESC " . $limit);
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT v.id, v.userid, v.visitorid, v.visitormsg, v.added, u.username, g.namestyle, uu.username as tousername, gg.namestyle as tonamestyle FROM ts_visitor_messages v LEFT JOIN users u ON (u.`id` = v.visitorid) LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) LEFT JOIN users uu ON (uu.$id = v.userid) LEFT JOIN usergroups gg ON (uu.$usergroup = gg.gid)" . $WHERE . " ORDER by v.added DESC " . $limit);
 if ($results) {
-    while ($R = mysqli_fetch_assoc($Query)) {
+    while ($R = mysqli_fetch_assoc($query)) {
         $page_url = isset($_GET["page"]) ? "&amp;$page = " . intval($_GET["page"]) : "";
         $msgtext = function_114($R["visitormsg"]);
         $Found .= "\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t<p class=\"alt2\">\r\n\t\t\t\t\t<span $style = \"float: right;\">\r\n\r\n\t\t\t\t\t</span>\r\n\t\t\t\t\t<a $href = \"" . $_SERVER["SCRIPT_NAME"] . "?do=manage_visitor_comments&amp;$delete = true&amp;$vid = " . $R["id"] . (isset($_GET["page"]) ? "&amp;$page = " . intval($_GET["page"]) : "") . "\"><img $src = \"images/tool_delete.png\" $style = \"vertical-align: middle;\" $border = \"0\" /></a> <a $href = \"../userdetails.php?$id = " . $R["userid"] . $page_url . "#msg" . $R["id"] . "\" $target = \"_blank\">#" . intval($R["id"]) . "</a> " . formatTimestamp($R["added"]) . " " . $Language[3] . " <a $href = \"" . $_SERVER["SCRIPT_NAME"] . "?do=manage_visitor_comments&amp;$sender = " . $R["visitorid"] . "\">" . applyUsernameStyle($R["username"], $R["namestyle"]) . "</a> " . $Language[4] . " <a $href = \"" . $_SERVER["SCRIPT_NAME"] . "?do=manage_visitor_comments&amp;$receiver = " . $R["userid"] . "\">" . applyUsernameStyle($R["tousername"], $R["tonamestyle"]) . "</a>\r\n\t\t\t\t</p>\r\n\t\t\t\t<p>\r\n\t\t\t\t\t" . $msgtext . "\r\n\t\t\t\t</p>\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t";
@@ -59,7 +59,7 @@ class Class_6
     }
     public function function_115()
     {
-        $var_281 = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'MAIN'");
+        $var_281 = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'MAIN'");
         $var_20 = mysqli_fetch_assoc($var_281);
         $this->Settings = unserialize($var_20["content"]);
     }

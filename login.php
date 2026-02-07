@@ -44,7 +44,7 @@ if ($do == "activation_code") {
                 return str_replace(["<", ">", "\\'", "\\\"", "\\\\"], "", $email);
             }
             $email = safe_email($email);
-            $res = sql_query("SELECT id, username, secret FROM users WHERE $enabled = 'yes' AND $status = 'pending' AND $email = " . sqlesc($email));
+            $res = sql_query("SELECT id, username, secret FROM users WHERE `enabled` = 'yes' AND $status = 'pending' AND $email = " . sqlesc($email));
             if (!mysqli_num_rows($res)) {
                 $activation_error[] = $lang->login["resend4"];
             } else {

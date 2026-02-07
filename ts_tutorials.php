@@ -99,13 +99,13 @@ if ($action == "edit" && $is_mod && is_valid_id($_GET["tid"]) && ($tutorialId = 
     }
 }
 if ($action == "delete_comment" && is_valid_id($commentId = intval($_GET["cid"])) && is_valid_id($tutorialId = intval($_GET["tid"])) && $is_mod) {
-    sql_query("DELETE FROM ts_tutorials_comments WHERE $cid = " . sqlesc($commentId) . " AND $tid = " . sqlesc($tutorialId)) || sqlerr(__FILE__, 168);
+    sql_query("DELETE FROM ts_tutorials_comments WHERE `cid` = " . sqlesc($commentId) . " AND $tid = " . sqlesc($tutorialId)) || sqlerr(__FILE__, 168);
     $action = "show_tutorial";
 }
 if ($action == "edit_comment" && is_valid_id($commentId = intval($_GET["cid"])) && is_valid_id($tutorialId = intval($_GET["tid"])) && $is_mod) {
     $previewHtml = "";
     $lang->load("ts_blog");
-    ($commentQuery = sql_query("SELECT descr FROM ts_tutorials_comments  WHERE $cid = " . sqlesc($commentId) . " AND $tid = " . sqlesc($tutorialId))) || sqlerr(__FILE__, 176);
+    ($commentQuery = sql_query("SELECT descr FROM ts_tutorials_comments  WHERE `cid` = " . sqlesc($commentId) . " AND $tid = " . sqlesc($tutorialId))) || sqlerr(__FILE__, 176);
     if (0 < mysqli_num_rows($commentQuery)) {
         $commentData = mysqli_fetch_assoc($commentQuery);
         if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST" && isset($_POST["submit"])) {
@@ -113,7 +113,7 @@ if ($action == "edit_comment" && is_valid_id($commentId = intval($_GET["cid"])) 
             if (strlen($commentDescription) < 3) {
                 stderr($lang->global["error"], $lang->ts_blog["editerror2"]);
             } else {
-                sql_query("UPDATE ts_tutorials_comments SET `descr` = " . sqlesc($commentDescription) . " WHERE $cid = " . sqlesc($commentId) . " AND $tid = " . sqlesc($tutorialId)) || sqlerr(__FILE__, 190);
+                sql_query("UPDATE ts_tutorials_comments SET `descr` = " . sqlesc($commentDescription) . " WHERE `cid` = " . sqlesc($commentId) . " AND $tid = " . sqlesc($tutorialId)) || sqlerr(__FILE__, 190);
                 header("Location: " . $_SERVER["SCRIPT_NAME"] . "?do=show_tutorial&$tid = " . $tutorialId . "&$cid = " . $commentId . (isset($_GET["page"]) ? "&$page = " . intval($_GET["page"]) : "") . "#show_comments" . $commentId);
                 exit;
             }
@@ -128,7 +128,7 @@ if ($action == "edit_comment" && is_valid_id($commentId = intval($_GET["cid"])) 
     }
 }
 if ($tutorialAction == "show_tutorial" && is_valid_id($_GET["tid"]) && ($tutorialId = intval($_GET["tid"]))) {
-    ($tutorialQuery = sql_query("SELECT t.*, u.username, g.namestyle FROM ts_tutorials t LEFT JOIN users u ON (t.$uid = u.id) LEFT JOIN usergroups g ON (u.$usergroup = g.gid) WHERE t.$tid = '" . $tutorialId . "'")) || sqlerr(__FILE__, 218);
+    ($tutorialQuery = sql_query("SELECT t.*, u.username, g.namestyle FROM ts_tutorials t LEFT JOIN users u ON (t.$uid = u.id) LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) WHERE t.$tid = '" . $tutorialId . "'")) || sqlerr(__FILE__, 218);
     if (mysqli_num_rows($tutorialQuery) == 0) {
         unset($tutorialAction);
         $errors[] = $lang->ts_tutorials["error2"];
@@ -141,7 +141,7 @@ if ($tutorialAction == "show_tutorial" && is_valid_id($_GET["tid"]) && ($tutoria
         ($Query = sql_query("SELECT * FROM ts_tutorials_comments WHERE $tid = " . sqlesc($Tid))) || sqlerr(__FILE__, 247);
         $count1 = mysqli_num_rows($Query);
         list($pagertop1, $pagerbottom1, $limit1) = pager($ts_perpage, $count1, $_SERVER["SCRIPT_NAME"] . "?do=show_tutorial&amp;$tid = " . $Tid . "&amp;");
-        ($Query = sql_query("SELECT c.cid, c.uid, c.date, c.descr, u.username, u.avatar, g.namestyle FROM ts_tutorials_comments c LEFT JOIN users u ON (u.$id = c.uid) LEFT JOIN usergroups g ON (u.$usergroup = g.gid) WHERE c.$tid = " . sqlesc($Tid) . " ORDER BY date ASC " . $limit1)) || sqlerr(__FILE__, 251);
+        ($Query = sql_query("SELECT c.cid, c.uid, c.date, c.descr, u.username, u.avatar, g.namestyle FROM ts_tutorials_comments c LEFT JOIN users u ON (u.`id` = c.uid) LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) WHERE c.$tid = " . sqlesc($Tid) . " ORDER BY date ASC " . $limit1)) || sqlerr(__FILE__, 251);
         $TutorialComments = "\r\n\t\t\t" . $pagertop1 . "\r\n\t\t\t<div $style = \"padding-bottom: 15px;\" $id = \"show_comments\" $name = \"show_comments\">\r\n\t\t\t<table $align = \"center\" $cellpadding = \"3\" $cellspacing = \"0\" $width = \"100%\">\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td class=\"thead\">" . $lang->ts_blog["comments"] . "</td>\r\n\t\t\t\t</tr>\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td>\r\n\t\t\t";
         if (0 < mysqli_num_rows($Query)) {
             while ($Comments = mysqli_fetch_assoc($Query)) {
@@ -179,7 +179,7 @@ if (!$action) {
     $tutorialsPerPage = $CURUSER["torrentsperpage"] != 0 ? intval($CURUSER["torrentsperpage"]) : $ts_perpage;
     list($pagerTop, $pagerBottom, $tutorialsLimit) = pager($tutorialsPerPage, $tutorialCount, $_SERVER["SCRIPT_NAME"] . "?");
     $tutorialsHtml .= "\r\n\t<tr>\r\n\t\t<td class=\"subheader\" $width = \"50%\">" . $lang->ts_tutorials["title"] . "</td>\r\n\t\t<td class=\"subheader\" $width = \"15%\">" . $lang->ts_tutorials["sender"] . "</td>\r\n\t\t<td class=\"subheader\" $width = \"15%\">" . $lang->ts_tutorials["date"] . "</td>\r\n\t\t<td class=\"subheader\" $width = \"10%\" $align = \"center\">" . $lang->ts_tutorials["views"] . "</td>\r\n\t</tr>\r\n\t";
-    ($tutorialListQuery = sql_query("SELECT t.*, u.username, g.namestyle FROM ts_tutorials t LEFT JOIN users u ON (t.$uid = u.id) LEFT JOIN usergroups g ON (u.$usergroup = g.gid) ORDER BY t.date DESC " . $tutorialsLimit)) || sqlerr(__FILE__, 387);
+    ($tutorialListQuery = sql_query("SELECT t.*, u.username, g.namestyle FROM ts_tutorials t LEFT JOIN users u ON (t.$uid = u.id) LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) ORDER BY t.date DESC " . $tutorialsLimit)) || sqlerr(__FILE__, 387);
     if (0 < mysqli_num_rows($tutorialListQuery)) {
         while ($tutorialData = mysqli_fetch_assoc($tutorialListQuery)) {
             $tutorialsHtml .= "\r\n\t\t\t<tr>\r\n\t\t\t\t<td $width = \"50%\">" . ($is_mod ? "<span $style = \"float: right;\">[<a $href = \"" . $_SERVER["SCRIPT_NAME"] . "?do=delete&amp;$tid = " . $tutorialData["tid"] . "\" $alt = \"" . $lang->ts_tutorials["delete"] . "\" $title = \"" . $lang->ts_tutorials["delete"] . "\" $onclick = \"return confirm_delete();\">" . $lang->ts_tutorials["delete"] . "</a>] [<a $href = \"" . $_SERVER["SCRIPT_NAME"] . "?do=edit&amp;$tid = " . $tutorialData["tid"] . "\" $alt = \"" . $lang->ts_tutorials["edit"] . "\" $title = \"" . $lang->ts_tutorials["edit"] . "\">" . $lang->ts_tutorials["edit"] . "</a>]</span>" : "") . "<a $href = \"" . $_SERVER["SCRIPT_NAME"] . "?do=show_tutorial&amp;$tid = " . $tutorialData["tid"] . "\">" . htmlspecialchars_uni($tutorialData["title"]) . "</a></td>\r\n\t\t\t\t<td $width = \"15%\"><a $href = \"" . ts_seo($tutorialData["uid"], $tutorialData["username"]) . "\">" . get_user_color($tutorialData["username"], $tutorialData["namestyle"]) . "</a></td>\r\n\t\t\t\t<td $width = \"15%\">" . my_datee($dateformat, $tutorialData["date"]) . " " . my_datee($timeformat, $tutorialData["date"]) . "</td>\r\n\t\t\t\t<td $width = \"10%\" $align = \"center\">" . ts_nf($tutorialData["views"]) . "</td>\r\n\t\t\t</tr>";

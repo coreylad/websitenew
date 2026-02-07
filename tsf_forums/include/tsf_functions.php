@@ -106,7 +106,7 @@ function send_sub_mails()
     global $subject;
     global $lang;
     global $rootpath;
-    $query = sql_query("SELECT s.*, u.email, u.username FROM " . TSF_PREFIX . "subscribe s LEFT JOIN users u ON (s.$userid = u.id) WHERE s.$tid = " . sqlesc($tid) . " AND s.userid != " . sqlesc($CURUSER["id"]));
+    $query = sql_query("SELECT s.*, u.email, u.username FROM " . TSF_PREFIX . "subscribe s LEFT JOIN users u ON (s.`userid` = u.id) WHERE s.$tid = " . sqlesc($tid) . " AND s.userid != " . sqlesc($CURUSER["id"]));
     if (0 < mysqli_num_rows($query)) {
         require_once INC_PATH . "/functions_pm.php";
         while ($sub = mysqli_fetch_assoc($query)) {
@@ -125,7 +125,7 @@ function show_announcements($forumid = "", $pid = "")
     if (empty($forumid) || !is_valid_id($forumid)) {
         return NULL;
     }
-    ($query = sql_query("SELECT a.*, u.id, u.username, g.namestyle, g.title as usergrouptitle FROM " . TSF_PREFIX . "announcement a LEFT JOIN users u ON (a.$userid = u.id) LEFT JOIN usergroups g ON (u.$usergroup = g.gid) WHERE a.$forumid = " . sqlesc($forumid) . " OR a.$forumid = " . sqlesc($pid) . " ORDER by a.posted DESC")) || sqlerr(__FILE__, 188);
+    ($query = sql_query("SELECT a.*, u.id, u.username, g.namestyle, g.title as usergrouptitle FROM " . TSF_PREFIX . "announcement a LEFT JOIN users u ON (a.$userid = u.id) LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) WHERE a.$forumid = " . sqlesc($forumid) . " OR a.$forumid = " . sqlesc($pid) . " ORDER by a.posted DESC")) || sqlerr(__FILE__, 188);
     if (mysqli_num_rows($query) == 0) {
         return NULL;
     }

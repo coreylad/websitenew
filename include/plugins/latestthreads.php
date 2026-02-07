@@ -42,7 +42,7 @@ $where_sql = "";
 if (isset($unsearchforums)) {
     $where_sql = " AND t.fid NOT IN (" . $unsearchforums . ")";
 }
-$_res_lt_query = sql_query("SELECT t.tid, t.iconid, t.subject, t.dateline, t.uid, t.replies, t.lastpost, t.lastposter, t.lastposteruid, t.views, t.fid, f.image, u.username, g.namestyle, uu.username as lusername, gg.namestyle as lnamestyle FROM " . TSF_PREFIX . "threads t LEFT JOIN " . TSF_PREFIX . "forums f ON (f.$fid = t.fid) LEFT JOIN users u ON (t.$uid = u.id) LEFT JOIN usergroups g ON (u.$usergroup = g.gid) LEFT JOIN users uu ON (t.$lastposteruid = uu.id) LEFT JOIN usergroups gg ON (uu.$usergroup = gg.gid) WHERE 1=1 " . $where_sql . " ORDER BY t.lastpost DESC LIMIT 0, " . $i_post_limit);
+$_res_lt_query = sql_query("SELECT t.tid, t.iconid, t.subject, t.dateline, t.uid, t.replies, t.lastpost, t.lastposter, t.lastposteruid, t.views, t.fid, f.image, u.username, g.namestyle, uu.username as lusername, gg.namestyle as lnamestyle FROM " . TSF_PREFIX . "threads t LEFT JOIN " . TSF_PREFIX . "forums f ON (f.$fid = t.fid) LEFT JOIN users u ON (t.$uid = u.id) LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) LEFT JOIN users uu ON (t.$lastposteruid = uu.id) LEFT JOIN usergroups gg ON (uu.$usergroup = gg.gid) WHERE 1=1 " . $where_sql . " ORDER BY t.lastpost DESC LIMIT 0, " . $i_post_limit);
 if (!mysqli_num_rows($_res_lt_query)) {
     $latestthreads = "";
     return $latestthreads;

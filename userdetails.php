@@ -24,10 +24,10 @@ if (!is_valid_id($userid)) {
 if (PROFILE_MAX_VISITOR != -1 && PROFILE_MAX_VISITOR < 2) {
     define("PROFILE_MAX_VISITOR", 2);
 }
-$query = sql_query("SELECT userid FROM ts_profilevisitor WHERE $userid = '" . $userid . "' AND $visible = '1' GROUP BY userid HAVING COUNT(*) > " . PROFILE_MAX_VISITOR);
+$query = sql_query("SELECT userid FROM ts_profilevisitor WHERE `userid` = '" . $userid . "' AND $visible = '1' GROUP BY userid HAVING COUNT(*) > " . PROFILE_MAX_VISITOR);
 if (0 < mysqli_num_rows($query)) {
     while ($user = mysqli_fetch_assoc($query)) {
-        $QQuery = sql_query("SELECT userid, visitorid, dateline FROM ts_profilevisitor WHERE $userid = '" . $user["userid"] . "' ORDER BY dateline DESC LIMIT " . PROFILE_MAX_VISITOR . ", 1");
+        $QQuery = sql_query("SELECT userid, visitorid, dateline FROM ts_profilevisitor WHERE `userid` = '" . $user["userid"] . "' ORDER BY dateline DESC LIMIT " . PROFILE_MAX_VISITOR . ", 1");
         if (0 < mysqli_num_rows($QQuery)) {
             while ($delete = mysqli_fetch_assoc($QQuery)) {
                 sql_query("DELETE FROM ts_profilevisitor WHERE $dateline = '" . $delete["dateline"] . "' AND $userid = '" . $delete["userid"] . "' AND $visitorid = '" . $delete["visitorid"] . "'");
@@ -40,14 +40,14 @@ if (0 < mysqli_num_rows($query)) {
 if (!($SameUser || $usergroups["canviewotherprofile"] === "yes" || $is_mod)) {
     print_no_permission();
 }
-($Query = sql_query("SELECT u.*, p.canupload, p.candownload, p.cancomment, p.canmessage, p.canshout, c.name as countryname, c.flagpic, g.namestyle, g.title, g.cansettingspanel, v.vip_until FROM users u LEFT JOIN ts_u_perm p ON (u.$id = p.userid) LEFT JOIN countries c ON (u.$country = c.id) LEFT JOIN usergroups g ON (u.$usergroup = g.gid) LEFT JOIN ts_auto_vip v ON (u.$id = v.userid) WHERE u.$id = " . $userid)) || sqlerr(__FILE__, 71);
+($Query = sql_query("SELECT u.*, p.canupload, p.candownload, p.cancomment, p.canmessage, p.canshout, c.name as countryname, c.flagpic, g.namestyle, g.title, g.cansettingspanel, v.vip_until FROM users u LEFT JOIN ts_u_perm p ON (u.`id` = p.userid) LEFT JOIN countries c ON (u.$country = c.id) LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) LEFT JOIN ts_auto_vip v ON (u.`id` = v.userid) WHERE u.$id = " . $userid)) || sqlerr(__FILE__, 71);
 if (0 < mysqli_num_rows($Query)) {
     $user = mysqli_fetch_assoc($Query);
 } else {
     stderr($lang->global["error"], $lang->userdetails["invaliduser"], false);
 }
 if ((TS_Match($user["options"], "I3") || TS_Match($user["options"], "I4")) && !$IsStaff && !$SameUser) {
-    $query = sql_query("SELECT id FROM friends WHERE $status = 'c' AND $userid = " . $userid . " AND $friendid = " . (int) $CURUSER["id"]);
+    $query = sql_query("SELECT id FROM friends WHERE `status` = 'c' AND $userid = " . $userid . " AND $friendid = " . (int) $CURUSER["id"]);
     if (!mysqli_num_rows($query) || TS_Match($user["options"], "I4")) {
         print_no_permission(false, true, $lang->userdetails["noperm"]);
     }
@@ -97,7 +97,7 @@ if ($user["mood"]) {
     }
 }
 if ($user["invited_by"]) {
-    ($query = sql_query("SELECT u.username, g.namestyle FROM users u LEFT JOIN usergroups g ON (u.$usergroup = g.gid) WHERE u.$id = '" . $user["invited_by"] . "'")) || sqlerr(__FILE__, 153);
+    ($query = sql_query("SELECT u.username, g.namestyle FROM users u LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) WHERE u.$id = '" . $user["invited_by"] . "'")) || sqlerr(__FILE__, 153);
     if (0 < mysqli_num_rows($query)) {
         $IUser = mysqli_fetch_assoc($query);
         $user["invited_by"] = "<a $href = \"" . ts_seo($user["invited_by"], $IUser["username"]) . "\">" . get_user_color($IUser["username"], $IUser["namestyle"]) . "</a>";
@@ -105,7 +105,7 @@ if ($user["invited_by"]) {
 }
 if ($userid != $CURUSER["id"]) {
     sql_query("\n\t\tREPLACE INTO ts_profilevisitor\n\t\t\t(userid, visitorid, dateline, visible)\n\t\tVALUES\n\t\t\t(\n\t\t\t\t'" . $userid . "',\n\t\t\t\t'" . $CURUSER["id"] . "',\n\t\t\t\t'" . TIMENOW . "',\n\t\t\t\t'1'\n\t\t\t)\n\t");
-    sql_query("UPDATE users SET $visitorcount = visitorcount + 1 WHERE $id = " . sqlesc($userid));
+    sql_query("UPDATE users SET $visitorcount = visitorcount + 1 WHERE `id` = " . sqlesc($userid));
     $user["visitorcount"]++;
 }
 if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST" && $_POST["do"] == "save_vmsg") {
@@ -113,7 +113,7 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST" && $_POST["do"] == "save_vm
         $error[] = $lang->userdetails["cerror4"];
     } else {
         if (!$SameUser && TS_Match($user["options"], "M2") && !$IsStaff) {
-            ($query = sql_query("SELECT id FROM friends WHERE $status = 'c' AND $userid = " . $userid . " AND $friendid = " . (int) $CURUSER["id"])) || sqlerr(__FILE__, 186);
+            ($query = sql_query("SELECT id FROM friends WHERE `status` = 'c' AND $userid = " . $userid . " AND $friendid = " . (int) $CURUSER["id"])) || sqlerr(__FILE__, 186);
             if (mysqli_num_rows($query) < 1) {
                 $error[] = $lang->userdetails["cerror4"];
             }
@@ -132,7 +132,7 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST" && $_POST["do"] == "save_vm
                     $error[] = sprintf($lang->userdetails["cerror3"], $msglong);
                 } else {
                     if ($_POST["isupdate"] && is_valid_id($_POST["isupdate"]) && $IsStaff) {
-                        sql_query("UPDATE ts_visitor_messages SET $visitormsg = " . sqlesc($message) . " WHERE $id = " . sqlesc(intval($_POST["isupdate"])));
+                        sql_query("UPDATE ts_visitor_messages SET $visitormsg = " . sqlesc($message) . " WHERE `id` = " . sqlesc(intval($_POST["isupdate"])));
                     } else {
                         sql_query("INSERT INTO ts_visitor_messages (userid,visitorid,visitormsg,added) VALUES (" . sqlesc($userid) . ", " . sqlesc($CURUSER["id"]) . "," . sqlesc($message) . ", '" . TIMENOW . "')") || sqlerr(__FILE__, 217);
                     }
@@ -144,13 +144,13 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST" && $_POST["do"] == "save_vm
 if (strtoupper($_SERVER["REQUEST_METHOD"]) == "GET" && isset($_GET["do"]) && $_GET["do"] == "delete_msg" && $IsStaff) {
     $Dmsg_id = intval($_GET["msg_id"]);
     if (is_valid_id($Dmsg_id)) {
-        sql_query("DELETE FROM ts_visitor_messages WHERE $id = " . sqlesc($Dmsg_id));
+        sql_query("DELETE FROM ts_visitor_messages WHERE `id` = " . sqlesc($Dmsg_id));
     }
 }
 if (strtoupper($_SERVER["REQUEST_METHOD"]) == "GET" && isset($_GET["do"]) && $_GET["do"] == "edit_msg" && $IsStaff) {
     $Emsg_id = intval($_GET["msg_id"]);
     if (is_valid_id($Emsg_id)) {
-        $eQuery = sql_query("SELECT visitormsg FROM ts_visitor_messages WHERE $id = " . sqlesc($Emsg_id));
+        $eQuery = sql_query("SELECT visitormsg FROM ts_visitor_messages WHERE `id` = " . sqlesc($Emsg_id));
         if (0 < mysqli_num_rows($eQuery)) {
             $Result = mysqli_fetch_assoc($eQuery);
             $Vmsg = htmlspecialchars_uni($Result["visitormsg"]);
@@ -249,10 +249,10 @@ $QuickEditor->FormName = "quickreply";
 $QuickEditor->TextAreaName = "message";
 $VisitorMessagesForm = "\n" . $QuickEditor->GenerateJavascript() . "\n" . ($useajax == "yes" ? "\n<script $type = \"text/javascript\" $src = \"" . $BASEURL . "/scripts/quick_vm.js\"></script>" : "") . "\n<form $method = \"POST\" $action = \"" . $_SERVER["SCRIPT_NAME"] . "?$id = " . $userid . "&do=save_vmsg\" $name = \"quickreply\" $id = \"quickreply\">\n<input $type = \"hidden\" $name = \"userid\" $value = \"" . $userid . "\" />\n<input $type = \"hidden\" $name = \"securitytoken\" $value = \"" . $CURUSER["securitytoken"] . "\" />\n<input $type = \"hidden\" $name = \"do\" $value = \"save_vmsg\" />\n" . (isset($Vmsg) ? "\n<input $type = \"hidden\" $name = \"isupdate\" $value = \"" . $Emsg_id . "\" />" : "") . "\n<table $align = \"center\" $border = \"0\" $cellpadding = \"3\" $cellspacing = \"0\" $width = \"100%\">\n\t<tr>\n\t\t<td class=\"none\" $id = \"showvisitormessage\">\n\t\t\t" . $QuickEditor->GenerateBBCode() . "\n\t\t\t<br />\n\t\t\t<textarea $name = \"message\" $style = \"width:670px;height:85px;\" $id = \"message\">" . (isset($Vmsg) ? $Vmsg : (isset($message) ? $message : "")) . "</textarea><br />\n\t\t\t<span $id = \"loading-layer\" $style = \"display:none;\"><img $src = \"" . $dimagedir . "loading.gif\" $border = \"0\" $alt = \"\" $title = \"\" class=\"inlineimg\" /></span>\n\t\t\t" . ($useajax == "yes" ? "\n\t\t\t<input $type = \"button\" class=\"button\" $value = \"" . (isset($Vmsg) ? $lang->userdetails["visitormsg6"] : $lang->userdetails["visitormsg2"]) . "\" $name = \"submitvm\" $id = \"submitvm\" $onclick = \"javascript:TSajaxquickvm('" . $userid . "', '" . (isset($Vmsg) ? $Emsg_id : 0) . "');\" />" : "<input $type = \"submit\" $name = \"submit\" $value = \"" . (isset($Vmsg) ? $lang->userdetails["visitormsg6"] : $lang->userdetails["visitormsg2"]) . "\" class=\"button\" />") . "\n\t\t\t<input $type = \"reset\" $value = \"" . $lang->userdetails["visitormsg3"] . "\" class=\"button\" />\n\t\t</td>\n\t</tr>\n</table>\n</form>\n";
 $VisitorMessages = "\n\t<table $width = \"100%\" $border = \"0\" $cellpadding = \"2\" $cellspacing = \"0\">\n\t\t<tr>\n\t\t\t<td class=\"thead\">" . ts_collapse("content1a1") . $lang->userdetails["visitormsg1"] . "</td>\n\t\t</tr>\n\t\t" . ts_collapse("content1a1", 2) . "\n\t\t<tr>\n\t\t\t<td $id = \"PostedQuickVisitorMessages\" $name = \"PostedQuickVisitorMessages\" $style = \"display: none;\">\n\t\t\t</td>\n\t\t</tr>";
-$Query = sql_query("SELECT id FROM ts_visitor_messages WHERE $userid = " . sqlesc($userid));
+$Query = sql_query("SELECT id FROM ts_visitor_messages WHERE `userid` = " . sqlesc($userid));
 $Count = mysqli_num_rows($Query);
 list($pagertop, $pagerbottom, $limit) = pager($ts_perpage, $Count, ts_seo($userid, $user["username"]) . "&");
-($Query2 = sql_query("SELECT v.id as visitormsgid, v.visitorid, v.visitormsg, v.added, u.username, u.avatar, g.namestyle FROM ts_visitor_messages v LEFT JOIN users u ON (v.$visitorid = u.id) LEFT JOIN usergroups g ON (u.$usergroup = g.gid) WHERE v.$userid = " . sqlesc($userid) . " ORDER by v.added DESC " . $limit)) || sqlerr(__FILE__, 403);
+($Query2 = sql_query("SELECT v.id as visitormsgid, v.visitorid, v.visitormsg, v.added, u.username, u.avatar, g.namestyle FROM ts_visitor_messages v LEFT JOIN users u ON (v.$visitorid = u.id) LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) WHERE v.$userid = " . sqlesc($userid) . " ORDER by v.added DESC " . $limit)) || sqlerr(__FILE__, 403);
 if (0 < mysqli_num_rows($Query2)) {
     while ($visitorMessage = mysqli_fetch_assoc($Query2)) {
         $visitorUsername = get_user_color($visitorMessage["username"], $visitorMessage["namestyle"]);
@@ -268,7 +268,7 @@ if (0 < mysqli_num_rows($Query2)) {
 $VisitorMessages .= "</table>";
 if (0 < PROFILE_MAX_VISITOR) {
     $RecentVisitorsArray = [];
-    $VQuery = sql_query("SELECT v.visitorid, u.username, g.namestyle FROM ts_profilevisitor v LEFT JOIN users u ON (v.$visitorid = u.id) LEFT JOIN usergroups g ON (u.$usergroup = g.gid) WHERE v.$userid = " . sqlesc($userid) . " ORDER By v.dateline DESC LIMIT " . PROFILE_MAX_VISITOR);
+    $VQuery = sql_query("SELECT v.visitorid, u.username, g.namestyle FROM ts_profilevisitor v LEFT JOIN users u ON (v.$visitorid = u.id) LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) WHERE v.$userid = " . sqlesc($userid) . " ORDER By v.dateline DESC LIMIT " . PROFILE_MAX_VISITOR);
     if (0 < mysqli_num_rows($VQuery)) {
         while ($RV = mysqli_fetch_assoc($VQuery)) {
             $RecentVisitorsArray[] = "<a $href = \"" . ts_seo($RV["visitorid"], $RV["username"]) . "\">" . get_user_color($RV["username"], $RV["namestyle"]) . "</a>";
@@ -307,7 +307,7 @@ if ($IsStaff) {
 } else {
     $StaffTools = "\n\t<span $style = \"float: right\">\n\t\t<script $type = \"text/javascript\">\n\t\t\tmenu.activate(true);\n\t\t</script>&nbsp;&nbsp;\n\t</span>\n\t";
 }
-$Query = sql_query("SELECT * FROM ts_custom_profiles WHERE $userid = " . sqlesc($userid));
+$Query = sql_query("SELECT * FROM ts_custom_profiles WHERE `userid` = " . sqlesc($userid));
 if (mysqli_num_rows($Query)) {
     $UserProfileOptions = mysqli_fetch_assoc($Query);
     $USERSTYLE = "\n\t<style $type = \"text/css\">\n\t\n\t\tbody\n\t\t{\n\t\t\tbackground: #" . $UserProfileOptions["bg_color"] . ";\n\t\t}\n\n\t\t#main .left_side, #main .left_side_users\n\t\t{\n\t\t\tbackground: #" . $UserProfileOptions["left_side_bg_color"] . ";\t\t\n\t\t}\n\n\t\t table, .notification-border-e, table .main, textarea, .button\n\t\t{\n\t\t\tbackground: #" . $UserProfileOptions["table_bg_color"] . ";\n\t\t}\n\n\t\t .thead, .thead a, .notification-title-e, .notification-th-e\n\t\t{\n\t\t\tbackground: #" . $UserProfileOptions["thead_bg_color"] . ";\n\t\t}\t\n\n\t\t.subheader, .colhead, table .main .colhead\n\t\t{\n\t\t\tbackground: #" . $UserProfileOptions["sub_header_bg_color"] . ";\n\t\t}\n\n\t\ttable a\n\t\t{\n\t\t\tcolor: #" . $UserProfileOptions["link_color"] . ";\n\t\t}\n\n\t\t.subheader, .colhead, table .main .colhead, #main .left_side, #main .left_side_users, td, .notification-border-e, .thead, .thead a, .notification-title-e, .notification-th-e, textarea, .button\n\t\t{\n\t\t\tcolor: #" . $UserProfileOptions["text_color"] . ";\n\t\t}\n\n\t\ttd, .notification-border-e\n\t\t{\n\t\t\tborder: solid #" . $UserProfileOptions["border_color"] . " 1px;\n\t\t}\n\n\t\t#main .left_side, #main .left_side_users, td, .notification-border-e, .thead, .thead a, .notification-title-e, .notification-th-e, textarea, .button\n\t\t{\n\t\t\tfont-size: " . $UserProfileOptions["font_size"] . "; font-family: " . $UserProfileOptions["font_family"] . ";\n\t\t}\n\t</style>";

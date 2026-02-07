@@ -21,8 +21,8 @@ if ($Act == "settings") {
         logStaffAction($Message);
         $Message = showAlertError($Message);
     }
-    $Q = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'FORUMCP'");
-    $Result = mysqli_fetch_assoc($Q);
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'FORUMCP'");
+    $Result = mysqli_fetch_assoc($query);
     $FORUMCP = unserialize($Result["content"]);
     $List = loadTinyMCEEditor(1, "exact", "f_offlinemsg") . "\r\n\t" . showAlertMessage("<a $href = \"index.php?do=forums\">" . $Language[36] . "</a>") . "\r\n\t" . $Message . "\r\n\t<form $method = \"post\" $action = \"index.php?do=forums&$act = settings\">\r\n\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\r\n\t\t<tr>\r\n\t\t\t<td class=\"tcat\" $align = \"center\" $colspan = \"2\">" . $Language[71] . "</td>\r\n\t\t</tr>\r\n\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt2\" $colspan = \"2\">" . $Language[73] . "</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\" $width = \"50%\" $align = \"justify\">\r\n\t\t\t\t" . $Language[74] . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\" $width = \"50%\" $valign = \"top\">\r\n\t\t\t\t<input $type = \"radio\" $name = \"FORUMCP[f_forum_online]\" $value = \"yes\"" . ($FORUMCP["f_forum_online"] == "yes" ? " $checked = \"checked\"" : "") . " /> " . $Language[26] . "\r\n\t\t\t\t<input $type = \"radio\" $name = \"FORUMCP[f_forum_online]\" $value = \"no\"" . ($FORUMCP["f_forum_online"] == "no" ? " $checked = \"checked\"" : "") . " /> " . $Language[27] . "\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt2\" $colspan = \"2\">" . $Language[75] . "</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\" $width = \"50%\" $align = \"justify\" $valign = \"top\">\r\n\t\t\t\t" . $Language[76] . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\" $width = \"50%\" $valign = \"top\">\r\n\t\t\t\t<textarea $name = \"FORUMCP[f_offlinemsg]\" $id = \"f_offlinemsg\" $rows = \"10\" $cols = \"99\">" . $FORUMCP["f_offlinemsg"] . "</textarea>\r\n\t\t\t\t<p><a $href = \"javascript:toggleEditor('f_offlinemsg');\"><img $src = \"images/tool_refresh.png\" $border = \"0\" /></a></p>\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt2\" $colspan = \"2\">" . $Language[77] . "</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\" $width = \"50%\" $align = \"justify\" $valign = \"top\">\r\n\t\t\t\t" . $Language[78] . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\" $width = \"50%\" $valign = \"top\">\r\n\t\t\t\t<input $type = \"text\" $name = \"FORUMCP[f_forumname]\" $value = \"" . $FORUMCP["f_forumname"] . "\" $size = \"50\" />\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt2\" $colspan = \"2\">" . $Language[79] . "</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\" $width = \"50%\" $align = \"justify\" $valign = \"top\">\r\n\t\t\t\t" . $Language[80] . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\" $width = \"50%\" $valign = \"top\">\r\n\t\t\t\t<input $type = \"text\" $name = \"FORUMCP[f_upload_path]\" $value = \"" . $FORUMCP["f_upload_path"] . "\" $size = \"30\" />\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt2\" $colspan = \"2\">" . $Language[81] . "</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\" $width = \"50%\" $align = \"justify\" $valign = \"top\">\r\n\t\t\t\t" . $Language[82] . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\" $width = \"50%\" $valign = \"top\">\r\n\t\t\t\t<input $type = \"text\" $name = \"FORUMCP[f_upload_maxsize]\" $value = \"" . $FORUMCP["f_upload_maxsize"] . "\" $size = \"10\" /> " . var_238($FORUMCP["f_upload_maxsize"]) . "\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt2\" $colspan = \"2\">" . $Language[83] . "</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\" $width = \"50%\" $align = \"justify\" $valign = \"top\">\r\n\t\t\t\t" . $Language[84] . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\" $width = \"50%\" $valign = \"top\">\r\n\t\t\t\t<input $type = \"text\" $name = \"FORUMCP[f_allowed_types]\" $value = \"" . $FORUMCP["f_allowed_types"] . "\" $size = \"30\" />\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt2\" $colspan = \"2\">" . $Language[85] . "</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\" $width = \"50%\" $align = \"justify\" $valign = \"top\">\r\n\t\t\t\t" . $Language[86] . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\" $width = \"50%\" $valign = \"top\">\r\n\t\t\t\t<input $type = \"text\" $name = \"FORUMCP[f_threadsperpage]\" $value = \"" . $FORUMCP["f_threadsperpage"] . "\" $size = \"10\" />\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt2\" $colspan = \"2\">" . $Language[87] . "</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\" $width = \"50%\" $align = \"justify\" $valign = \"top\">\r\n\t\t\t\t" . $Language[88] . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\" $width = \"50%\" $valign = \"top\">\r\n\t\t\t\t<input $type = \"text\" $name = \"FORUMCP[f_postsperpage]\" $value = \"" . $FORUMCP["f_postsperpage"] . "\" $size = \"10\" />\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt2\" $colspan = \"2\">" . $Language[89] . "</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\" $width = \"50%\" $align = \"justify\" $valign = \"top\">\r\n\t\t\t\t" . $Language[90] . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\" $width = \"50%\" $valign = \"top\">\r\n\t\t\t\t<input $type = \"text\" $name = \"FORUMCP[f_minmsglength]\" $value = \"" . $FORUMCP["f_minmsglength"] . "\" $size = \"10\" />\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt2\" $colspan = \"2\">" . $Language[91] . "</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\" $width = \"50%\" $align = \"justify\" $valign = \"top\">\r\n\t\t\t\t" . $Language[92] . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\" $width = \"50%\" $valign = \"top\">\r\n\t\t\t\t<input $type = \"text\" $name = \"FORUMCP[f_avatar_maxwidth]\" $value = \"" . $FORUMCP["f_avatar_maxwidth"] . "\" $size = \"10\" />\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt2\" $colspan = \"2\">" . $Language[93] . "</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\" $width = \"50%\" $align = \"justify\" $valign = \"top\">\r\n\t\t\t\t" . $Language[94] . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\" $width = \"50%\" $valign = \"top\">\r\n\t\t\t\t<input $type = \"text\" $name = \"FORUMCP[f_avatar_maxheight]\" $value = \"" . $FORUMCP["f_avatar_maxheight"] . "\" $size = \"10\" />\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt2\" $colspan = \"2\">" . $Language[106] . "</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\" $width = \"50%\" $align = \"justify\">\r\n\t\t\t\t" . $Language[107] . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\" $width = \"50%\" $valign = \"top\">\r\n\t\t\t\t<input $type = \"radio\" $name = \"FORUMCP[f_resizeavatars]\" $value = \"yes\"" . ($FORUMCP["f_resizeavatars"] == "yes" ? " $checked = \"checked\"" : "") . " /> " . $Language[26] . "\r\n\t\t\t\t<input $type = \"radio\" $name = \"FORUMCP[f_resizeavatars]\" $value = \"no\"" . ($FORUMCP["f_resizeavatars"] == "no" ? " $checked = \"checked\"" : "") . " /> " . $Language[27] . "\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt2\" $colspan = \"2\">" . $Language[95] . "</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\" $width = \"50%\" $align = \"justify\" $valign = \"top\">\r\n\t\t\t\t" . $Language[96] . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\" $width = \"50%\" $valign = \"top\">\r\n\t\t\t\t<input $type = \"text\" $name = \"FORUMCP[f_avatar_maxsize]\" $value = \"" . $FORUMCP["f_avatar_maxsize"] . "\" $size = \"10\" /> " . var_238($FORUMCP["f_avatar_maxsize"]) . "\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt2\" $colspan = \"2\">" . $Language[97] . "</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\" $width = \"50%\" $align = \"justify\">\r\n\t\t\t\t" . $Language[98] . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\" $width = \"50%\" $valign = \"top\">\r\n\t\t\t\t<input $type = \"radio\" $name = \"FORUMCP[f_showstats]\" $value = \"yes\"" . ($FORUMCP["f_showstats"] == "yes" ? " $checked = \"checked\"" : "") . " /> " . $Language[26] . "\r\n\t\t\t\t<input $type = \"radio\" $name = \"FORUMCP[f_showstats]\" $value = \"no\"" . ($FORUMCP["f_showstats"] == "no" ? " $checked = \"checked\"" : "") . " /> " . $Language[27] . "\r\n\t\t\t\t<input $type = \"radio\" $name = \"FORUMCP[f_showstats]\" $value = \"staffonly\"" . ($FORUMCP["f_showstats"] == "staffonly" ? " $checked = \"checked\"" : "") . " /> " . $Language[105] . "\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt2\" $colspan = \"2\">" . $Language[99] . "</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\" $width = \"50%\" $align = \"justify\" $valign = \"top\">\r\n\t\t\t\t" . $Language[100] . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\" $width = \"50%\" $valign = \"top\">\r\n\t\t\t\t<input $type = \"text\" $name = \"FORUMCP[f_sfpertr]\" $value = \"" . $FORUMCP["f_sfpertr"] . "\" $size = \"10\" />\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt2\" $colspan = \"2\">" . $Language[101] . "</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\" $width = \"50%\" $align = \"justify\">\r\n\t\t\t\t" . $Language[102] . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\" $width = \"50%\" $valign = \"top\">\r\n\t\t\t\t<input $type = \"radio\" $name = \"FORUMCP[f_EnableBookmarks]\" $value = \"yes\"" . ($FORUMCP["f_EnableBookmarks"] == "yes" ? " $checked = \"checked\"" : "") . " /> " . $Language[26] . "\r\n\t\t\t\t<input $type = \"radio\" $name = \"FORUMCP[f_EnableBookmarks]\" $value = \"no\"" . ($FORUMCP["f_EnableBookmarks"] == "no" ? " $checked = \"checked\"" : "") . " /> " . $Language[27] . "\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt2\" $colspan = \"2\">" . $Language[108] . "</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\" $width = \"50%\" $align = \"justify\">\r\n\t\t\t\t" . $Language[109] . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\" $width = \"50%\" $valign = \"top\">\r\n\t\t\t\t<input $type = \"radio\" $name = \"FORUMCP[f_thanksbeforedl]\" $value = \"yes\"" . ($FORUMCP["f_thanksbeforedl"] == "yes" ? " $checked = \"checked\"" : "") . " /> " . $Language[26] . "\r\n\t\t\t\t<input $type = \"radio\" $name = \"FORUMCP[f_thanksbeforedl]\" $value = \"no\"" . ($FORUMCP["f_thanksbeforedl"] == "no" ? " $checked = \"checked\"" : "") . " /> " . $Language[27] . "\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt2\" $colspan = \"2\">" . $Language[103] . "</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\" $width = \"50%\" $align = \"justify\" $valign = \"top\">\r\n\t\t\t\t" . $Language[104] . " <div $style = \"margin-top: 10px; font-size: 11px;\">" . $Language2[6] . "</div>\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\" $width = \"50%\" $valign = \"top\">\r\n\t\t\t\t<textarea $name = \"FORUMCP[f_ads]\" $id = \"f_ads\" $rows = \"10\" $cols = \"99\">" . $FORUMCP["f_ads"] . "</textarea>\r\n\t\t\t\t<p><a $href = \"javascript:toggleEditor('f_ads');\"><img $src = \"images/tool_refresh.png\" $border = \"0\" /></a></p>\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt2\"></td>\r\n\t\t\t<td class=\"alt2\">\r\n\t\t\t\t<input $type = \"submit\" $value = \"" . $Language[17] . "\" /> <input $type = \"reset\" $value = \"" . $Language[18] . "\" />\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\r\n\t</table>\r\n\t</form>\r\n\t";
 }
@@ -80,9 +80,9 @@ if ($Act == "add_moderator" && ($fid = intval($_GET["fid"]))) {
         $removemoderator = isset($_POST["removemoderator"]) ? $_POST["removemoderator"] : [];
         if (0 < count($removemoderator)) {
             foreach ($removemoderator as $ruserid) {
-                mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM " . TSF_PREFIX . "moderators WHERE $userid = '" . $ruserid . "' AND $forumid = '" . $fid . "'");
+                mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM " . TSF_PREFIX . "moderators WHERE `userid` = '" . $ruserid . "' AND $forumid = '" . $fid . "'");
                 if ($doapplytochild && 0 < count($plistforums)) {
-                    mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM " . TSF_PREFIX . "moderators WHERE $userid = '" . $ruserid . "' AND forumid IN (" . implode(",", $plistforums) . ")");
+                    mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM " . TSF_PREFIX . "moderators WHERE `userid` = '" . $ruserid . "' AND forumid IN (" . implode(",", $plistforums) . ")");
                 }
             }
         }
@@ -103,7 +103,7 @@ if ($Act == "add_moderator" && ($fid = intval($_GET["fid"]))) {
                 if ($doapplytochild && 0 < count($plistforums)) {
                     foreach ($plistforums as $pfid) {
                         if (in_array($modname, $alreadymod) !== true && $modname != "") {
-                            $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id FROM users WHERE $username = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $modname) . "'");
+                            $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id FROM users WHERE `username` = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $modname) . "'");
                             if (0 < mysqli_num_rows($query)) {
                                 $Result = mysqli_fetch_assoc($query);
                                 $userid = $Result["id"];
@@ -115,7 +115,7 @@ if ($Act == "add_moderator" && ($fid = intval($_GET["fid"]))) {
                     }
                 } else {
                     if (in_array($modname, $alreadymod) !== true && $modname != "") {
-                        $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id FROM users WHERE $username = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $modname) . "'");
+                        $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id FROM users WHERE `username` = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $modname) . "'");
                         if (0 < mysqli_num_rows($query)) {
                             $Result = mysqli_fetch_assoc($query);
                             $userid = $Result["id"];
@@ -133,10 +133,10 @@ if ($Act == "add_moderator" && ($fid = intval($_GET["fid"]))) {
         $Updated = true;
     }
     if (!isset($Updated)) {
-        $hiddenvalues = "";
+        $hiddenFields = "";
         $Moderators = "";
         if ($ForumType == "c") {
-            $hiddenvalues = "\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td $align = \"right\">\r\n\t\t\t\t\t\t" . $Language[55] . "\r\n\t\t\t\t\t</td>\r\n\t\t\t\t\t<td>\r\n\t\t\t\t\t\t<input $type = \"checkbox\" $name = \"applychild\" $value = \"yes\" $checked = \"checked\" />\r\n\t\t\t\t\t</td>\r\n\t\t\t\t</tr>\r\n\t\t\t";
+            $hiddenFields = "\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td $align = \"right\">\r\n\t\t\t\t\t\t" . $Language[55] . "\r\n\t\t\t\t\t</td>\r\n\t\t\t\t\t<td>\r\n\t\t\t\t\t\t<input $type = \"checkbox\" $name = \"applychild\" $value = \"yes\" $checked = \"checked\" />\r\n\t\t\t\t\t</td>\r\n\t\t\t\t</tr>\r\n\t\t\t";
         }
         $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT m.userid, u.username FROM " . TSF_PREFIX . "moderators m LEFT JOIN users u ON (m.$userid = u.id) WHERE m.$forumid = " . $fid);
         $rowcount = mysqli_num_rows($query);
@@ -153,7 +153,7 @@ if ($Act == "add_moderator" && ($fid = intval($_GET["fid"]))) {
                 $Moderators .= "\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td $align = \"right\">\r\n\t\t\t\t\t\t<strong>\r\n\t\t\t\t\t\t\t" . $Language[53] . "[" . $i . "]:\r\n\t\t\t\t\t\t</strong>\r\n\t\t\t\t\t</td>\r\n\t\t\t\t\t<td $align = \"left\">\r\n\t\t\t\t\t\t<input $type = \"text\" $name = \"moderator[" . $i . "]\" $value = \"\" $size = \"30\" />\r\n\t\t\t\t\t</td>\r\n\t\t\t\t</tr>\r\n\t\t\t\t";
             }
         }
-        $List = "\r\n\t\t" . showAlertMessage("<a $href = \"index.php?do=forums\">" . $Language[36] . "</a>") . "\r\n\t\t" . $Message . "\r\n\t\t<form $method = \"post\" $action = \"index.php?do=forums&$act = add_moderator&$fid = " . $fid . "\" $name = \"add_moderator\">\r\n\t\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"tcat\" $align = \"center\">\r\n\t\t\t\t\t" . $Language[2] . " - " . $Language[6] . " (" . $ForumName . ")\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t<table $align = \"center\" $border = \"0\" $cellpadding = \"5\" $cellspacing = \"0\" $width = \"100%\">\r\n\t\t\t\t\t\t" . $Moderators . "\r\n\t\t\t\t\t\t" . $hiddenvalues . "\r\n\t\t\t\t\t</table>\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"tcat2\" $align = \"center\">\r\n\t\t\t\t\t<input $type = \"submit\" $value = \"" . $Language[17] . "\" /> <input $type = \"reset\" $value = \"" . $Language[18] . "\" />\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t</table>\r\n\t\t</form>";
+        $List = "\r\n\t\t" . showAlertMessage("<a $href = \"index.php?do=forums\">" . $Language[36] . "</a>") . "\r\n\t\t" . $Message . "\r\n\t\t<form $method = \"post\" $action = \"index.php?do=forums&$act = add_moderator&$fid = " . $fid . "\" $name = \"add_moderator\">\r\n\t\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"tcat\" $align = \"center\">\r\n\t\t\t\t\t" . $Language[2] . " - " . $Language[6] . " (" . $ForumName . ")\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t<table $align = \"center\" $border = \"0\" $cellpadding = \"5\" $cellspacing = \"0\" $width = \"100%\">\r\n\t\t\t\t\t\t" . $Moderators . "\r\n\t\t\t\t\t\t" . $hiddenFields . "\r\n\t\t\t\t\t</table>\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"tcat2\" $align = \"center\">\r\n\t\t\t\t\t<input $type = \"submit\" $value = \"" . $Language[17] . "\" /> <input $type = \"reset\" $value = \"" . $Language[18] . "\" />\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t</table>\r\n\t\t</form>";
     }
 }
 if ($Act == "delete_announcement" && ($announcementid = intval($_GET["announcementid"]))) {
@@ -205,8 +205,8 @@ if ($Act == "add_announcement" && ($fid = intval($_GET["fid"])) || $Act == "edit
     }
     if (!isset($Updated)) {
         $SelectBox2 = "\r\n\t\t<select $name = \"forumid\">";
-        $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT fid, name FROM " . TSF_PREFIX . "forums ORDER BY type, disporder");
-        while ($ForumList = mysqli_fetch_assoc($Query)) {
+        $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT fid, name FROM " . TSF_PREFIX . "forums ORDER BY type, disporder");
+        while ($ForumList = mysqli_fetch_assoc($query)) {
             $SelectBox2 .= "\r\n\t\t\t\t<option $value = \"" . $ForumList["fid"] . "\"" . ($ForumList["fid"] == $fid ? " $selected = \"selected\"" : "") . ">" . $ForumList["name"] . "</option>";
         }
         $SelectBox2 .= "\r\n\t\t</select>";
@@ -215,7 +215,7 @@ if ($Act == "add_announcement" && ($fid = intval($_GET["fid"])) || $Act == "edit
 }
 if ($Act == "manage_announcements") {
     $announcements = "";
-    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT a.announcementid, a.title, f.name, u.id, u.username, g.namestyle FROM " . TSF_PREFIX . "announcement a LEFT JOIN " . TSF_PREFIX . "forums f ON (a.$forumid = f.fid) LEFT JOIN users u ON (a.$userid = u.id) LEFT JOIN usergroups g ON (u.$usergroup = g.gid) ORDER by a.posted DESC");
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT a.announcementid, a.title, f.name, u.id, u.username, g.namestyle FROM " . TSF_PREFIX . "announcement a LEFT JOIN " . TSF_PREFIX . "forums f ON (a.$forumid = f.fid) LEFT JOIN users u ON (a.$userid = u.id) LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) ORDER by a.posted DESC");
     while ($a = mysqli_fetch_assoc($query)) {
         $announcements .= "\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t" . $a["name"] . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t" . $a["title"] . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t<a $href = \"index.php?do=forums&amp;$act = edit_announcement&amp;$announcementid = " . $a["announcementid"] . "\"><img $src = \"images/tool_edit.png\" $alt = \"" . trim($Language[63]) . "\" $title = \"" . trim($Language[63]) . "\" $border = \"0\" $style = \"vertical-align: middle;\" /></a> <a $href = \"index.php?do=forums&amp;$act = delete_announcement&amp;$announcementid = " . $a["announcementid"] . "\" $onclick = \"return confirm('" . trim($Language[69]) . "');\"><img $src = \"images/tool_delete.png\" $alt = \"" . trim($Language[64]) . "\" $title = \"" . trim($Language[64]) . "\" $border = \"0\" $style = \"vertical-align: middle;\" /></a>\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t";
     }
@@ -223,8 +223,8 @@ if ($Act == "manage_announcements") {
 }
 if ($Act == "edit_forum" && ($fid = intval($_GET["fid"])) || $Act == "new_forum" || $Act == "add_child_forum" && ($fid = intval($_GET["fid"]))) {
     if ($Act == "edit_forum") {
-        $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM " . TSF_PREFIX . "forums WHERE $fid = " . $fid);
-        $Forum = mysqli_fetch_assoc($Query);
+        $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM " . TSF_PREFIX . "forums WHERE $fid = " . $fid);
+        $Forum = mysqli_fetch_assoc($query);
         $ForumName = $Forum["name"];
     } else {
         if ($Act == "new_forum") {
@@ -312,8 +312,8 @@ if ($Act == "edit_forum" && ($fid = intval($_GET["fid"])) || $Act == "new_forum"
         }
         $SelectBox .= "\r\n\t\t</select>";
         $SelectBox2 = "\r\n\t\t<select $name = \"pid\">\r\n\t\t\t<option $value = \"0\"" . ($pid == 0 ? " $selected = \"selected\"" : "") . ">" . $Language[31] . "</option>";
-        $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT fid, name FROM " . TSF_PREFIX . "forums WHERE" . ($Act == "add_child_forum" ? "" : " fid != " . $fid . " AND") . " `type` IN ('c','f') ORDER BY type, disporder");
-        while ($ForumList = mysqli_fetch_assoc($Query)) {
+        $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT fid, name FROM " . TSF_PREFIX . "forums WHERE" . ($Act == "add_child_forum" ? "" : " fid != " . $fid . " AND") . " `type` IN ('c','f') ORDER BY type, disporder");
+        while ($ForumList = mysqli_fetch_assoc($query)) {
             $SelectBox2 .= "\r\n\t\t\t\t<option $value = \"" . $ForumList["fid"] . "\"" . ($ForumList["fid"] == $pid ? " $selected = \"selected\"" : "") . ">" . $ForumList["name"] . "</option>";
         }
         $SelectBox2 .= "\r\n\t\t</select>";
@@ -347,13 +347,13 @@ if ($Act == "permissions" && ($fid = intval($_GET["fid"]))) {
         $Updated = true;
     }
     if (!isset($Updated)) {
-        $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM " . TSF_PREFIX . "forumpermissions WHERE $fid = " . $fid);
-        if ($ForumType != "c" && $ForumPID && !mysqli_num_rows($Query)) {
-            $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM " . TSF_PREFIX . "forumpermissions WHERE $fid = " . $ForumPID);
+        $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM " . TSF_PREFIX . "forumpermissions WHERE $fid = " . $fid);
+        if ($ForumType != "c" && $ForumPID && !mysqli_num_rows($query)) {
+            $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM " . TSF_PREFIX . "forumpermissions WHERE $fid = " . $ForumPID);
         }
         $ForumPermissions = [];
-        if (mysqli_num_rows($Query)) {
-            while ($FP = mysqli_fetch_assoc($Query)) {
+        if (mysqli_num_rows($query)) {
+            while ($FP = mysqli_fetch_assoc($query)) {
                 $ForumPermissions[$FP["gid"]] = $FP;
             }
         }
@@ -372,8 +372,8 @@ if (!isset($List)) {
     $MainForums = [];
     $SubForums = [];
     $DeepSubForums = [];
-    $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM " . TSF_PREFIX . "forums ORDER BY disporder");
-    while ($Forum = mysqli_fetch_assoc($Query)) {
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM " . TSF_PREFIX . "forums ORDER BY disporder");
+    while ($Forum = mysqli_fetch_assoc($query)) {
         if ($Forum["type"] == "c") {
             $MainForums[$Forum["fid"]] = $Forum;
         } else {

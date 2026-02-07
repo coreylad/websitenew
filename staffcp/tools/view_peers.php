@@ -10,8 +10,8 @@ var_235();
 $Language = file("languages/" . getStaffLanguage() . "/view_peers.lang");
 $Message = "";
 $ShowType = isset($_GET["type"]) && in_array($_GET["type"], ["s", "l"]) ? $_GET["type"] : "";
-$Q = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'ANNOUNCE'");
-$Result = mysqli_fetch_assoc($Q);
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'ANNOUNCE'");
+$Result = mysqli_fetch_assoc($query);
 $ANNOUNCE = unserialize($Result["content"]);
 if ($ANNOUNCE["xbt_active"] == "yes") {
     $results = mysqli_num_rows(mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM xbt_files_users WHERE $active = 1"));
@@ -35,9 +35,9 @@ if ($ANNOUNCE["xbt_active"] == "yes") {
                 break;
         }
     }
-    $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT p.uploaded, p.downloaded, p.fid, p.uid, p.active, p.announced, p.completed, p.`left`, p.mtime, p.down_rate, p.up_rate, u.id, u.enabled, u.username, u.options, u.warned, u.donor, g.namestyle, tr.name as torrentname, tr.size FROM xbt_files_users p LEFT JOIN users u ON (p.$uid = u.id) LEFT JOIN usergroups g ON (u.$usergroup = g.gid) LEFT JOIN torrents tr ON (p.$fid = tr.id) WHERE p.$active = 1 ORDER by " . $ORDERBY . " " . $limit);
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT p.uploaded, p.downloaded, p.fid, p.uid, p.active, p.announced, p.completed, p.`left`, p.mtime, p.down_rate, p.up_rate, u.id, u.enabled, u.username, u.options, u.warned, u.donor, g.namestyle, tr.name as torrentname, tr.size FROM xbt_files_users p LEFT JOIN users u ON (p.$uid = u.id) LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) LEFT JOIN torrents tr ON (p.$fid = tr.id) WHERE p.$active = 1 ORDER by " . $ORDERBY . " " . $limit);
     if ($results) {
-        while ($R = mysqli_fetch_assoc($Query)) {
+        while ($R = mysqli_fetch_assoc($query)) {
             $Left = 0 < $R["left"] ? round($R["size"] / $R["left"] * 100) . "%" : "";
             $seedtime = var_239($R["announced"] * $xbt_announce_interval);
             $ratio = 0 < $R["uploaded"] && 0 < $R["downloaded"] ? number_format($R["uploaded"] / $R["downloaded"], 2) : "0.0";
@@ -59,9 +59,9 @@ if ($ANNOUNCE["xbt_active"] == "yes") {
                 break;
         }
     }
-    $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT t.*,  u.username, g.namestyle, tr.name as torrentname FROM peers t LEFT JOIN users u ON (t.$userid = u.id) LEFT JOIN usergroups g ON (u.$usergroup = g.gid) LEFT JOIN torrents tr ON (t.$torrent = tr.id) ORDER by " . $ORDERBY . " " . $limit);
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT t.*,  u.username, g.namestyle, tr.name as torrentname FROM peers t LEFT JOIN users u ON (t.$userid = u.id) LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) LEFT JOIN torrents tr ON (t.$torrent = tr.id) ORDER by " . $ORDERBY . " " . $limit);
     if ($results) {
-        while ($R = mysqli_fetch_assoc($Query)) {
+        while ($R = mysqli_fetch_assoc($query)) {
             $Found .= "\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t<a $href = \"index.php?do=edit_user&amp;$username = " . $R["username"] . "\">" . applyUsernameStyle($R["username"], $R["namestyle"]) . "</a>\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t<a $href = \"../details.php?$id = " . $R["torrent"] . "\" $alt = \"" . htmlspecialchars($R["torrentname"]) . "\" $title = \"" . htmlspecialchars($R["torrentname"]) . "\">" . substr(htmlspecialchars($R["torrentname"]), 0, 25) . "</a>\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . htmlspecialchars($R["ip"]) . ":" . intval($R["port"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . var_238($R["uploaded"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . var_238($R["downloaded"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . substr(htmlspecialchars($R["peer_id"]), 0, 8) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . $R["connectable"] . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . $R["seeder"] . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . formatTimestamp($R["started"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . formatTimestamp($R["last_action"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . formatTimestamp($R["prev_action"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . var_238($R["uploadoffset"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . var_238($R["downloadoffset"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . var_238($R["to_go"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t\t";
         }
     } else {

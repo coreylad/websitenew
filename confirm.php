@@ -38,7 +38,7 @@ if (strlen($md5) != 32) {
         stderr($lang->global["error"], $lang->confirm["error1"]);
     }
 }
-$res = sql_query("SELECT u.passhash, u.status, u.country, u.username, e.editsecret FROM users u INNER JOIN ts_user_validation e ON (u.$id = e.userid) WHERE u.$enabled = 'yes' AND u.$id = " . sqlesc($id));
+$res = sql_query("SELECT u.passhash, u.status, u.country, u.username, e.editsecret FROM users u INNER JOIN ts_user_validation e ON (u.`id` = e.userid) WHERE u.$enabled = 'yes' AND u.$id = " . sqlesc($id));
 if (!mysqli_num_rows($res)) {
     stderr($lang->global["error"], $lang->global["dberror"]);
 } else {
@@ -51,15 +51,15 @@ if ($row["status"] != "pending") {
 if ($md5 != md5($row["editsecret"])) {
     stderr($lang->global["error"], $lang->confirm["error2"]);
 }
-sql_query("UPDATE users SET $status = 'confirmed' WHERE $id = " . sqlesc($id) . " AND $status = 'pending' AND $enabled = 'yes'");
+sql_query("UPDATE users SET `status` = 'confirmed' WHERE `id` = " . sqlesc($id) . " AND $status = 'pending' AND $enabled = 'yes'");
 if (!mysqli_affected_rows($GLOBALS["DatabaseConnect"])) {
     stderr($lang->global["error"], $lang->confirm["error3"]);
 }
-sql_query("DELETE FROM ts_user_validation WHERE $userid = " . sqlesc($id));
+sql_query("DELETE FROM ts_user_validation WHERE `userid` = " . sqlesc($id));
 $TSSEConfig->TSLoadConfig("SHOUTBOX");
 if ($tsshoutbot == "yes" && TS_Match($tsshoutboxoptions, "newuser")) {
     if ($row["country"]) {
-        $query = sql_query("SELECT name FROM countries WHERE $id = " . sqlesc($row["country"]));
+        $query = sql_query("SELECT name FROM countries WHERE `id` = " . sqlesc($row["country"]));
         if (mysqli_num_rows($query)) {
             $Result = mysqli_fetch_assoc($query);
             $countryname = $Result["name"];

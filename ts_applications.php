@@ -16,7 +16,7 @@ $userId = 0 + $CURUSER["id"];
 if (!isset($CURUSER) || $CURUSER["id"] == 0) {
     print_no_permission();
 }
-($query = sql_query("SELECT rid FROM ts_application_requests WHERE $uid = '" . $userId . "' AND $status = '0'")) || sqlerr(__FILE__, 59);
+($query = sql_query("SELECT rid FROM ts_application_requests WHERE `uid` = '" . $userId . "' AND $status = '0'")) || sqlerr(__FILE__, 59);
 if (0 < mysqli_num_rows($query)) {
     stderr($lang->global["error"], $lang->ts_applications["error5"]);
 }
@@ -35,7 +35,7 @@ if ($applicationAction == "save_apply" && ($applicationId = intval($_GET["aid"])
     } else {
         sql_query("INSERT INTO ts_application_requests (aid, uid, url, info, created) VALUES ('" . $applicationId . "', '" . $userId . "', " . sqlesc($url) . ", " . sqlesc($info) . ", '" . TIMENOW . "')") || sqlerr(__FILE__, 87);
         if (mysqli_affected_rows($GLOBALS["DatabaseConnect"])) {
-            ($query = sql_query("SELECT u.id, g.gid FROM users u LEFT JOIN usergroups g ON (u.$usergroup = g.gid) WHERE g.$cansettingspanel = 'yes' AND u.$enabled = 'yes'")) || sqlerr(__FILE__, 90);
+            ($query = sql_query("SELECT u.id, g.gid FROM users u LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) WHERE g.$cansettingspanel = 'yes' AND u.$enabled = 'yes'")) || sqlerr(__FILE__, 90);
             if (0 < mysqli_num_rows($query)) {
                 $subject = $lang->ts_applications["subject"];
                 $msg = sprintf($lang->ts_applications["msg"], "[URL=" . $BASEURL . "/userdetails.php?$id = " . $userId . "]" . $CURUSER["username"] . "[/URL]", "[URL=" . $BASEURL . "/" . $staffcp_path . "/index.php?do=manage_applications&$act = view&$id = " . $applicationId . "]", "[/URL]");
@@ -58,7 +58,7 @@ if ($applicationAction == "apply" && ($applicationId = intval($_GET["aid"])) && 
         if (!$_POST["apply"][$aid] || $_POST["apply"][$aid] != "yes") {
             $errors[] = $lang->ts_applications["error"];
         } else {
-            ($query = sql_query("SELECT title FROM ts_applications WHERE $enabled = '1' AND $aid = '" . $aid . "'")) || sqlerr(__FILE__, 124);
+            ($query = sql_query("SELECT title FROM ts_applications WHERE `enabled` = '1' AND $aid = '" . $aid . "'")) || sqlerr(__FILE__, 124);
             if (0 < mysqli_num_rows($query)) {
                 $app = mysqli_fetch_assoc($query);
                 $title = sprintf($lang->ts_applications["header"], $SITENAME);

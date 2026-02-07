@@ -71,7 +71,7 @@ if (is_valid_id($fid)) {
         $orjSubject = $subject;
         $subject = sqlesc($subject);
         $message = sqlesc($message);
-        ($query = sql_query("SELECT dateline FROM " . TSF_PREFIX . "posts WHERE $uid = " . sqlesc($CURUSER["id"]) . " ORDER by dateline DESC LIMIT 1")) || sqlerr(__FILE__, 124);
+        ($query = sql_query("SELECT dateline FROM " . TSF_PREFIX . "posts WHERE `uid` = " . sqlesc($CURUSER["id"]) . " ORDER by dateline DESC LIMIT 1")) || sqlerr(__FILE__, 124);
         if (0 < mysqli_num_rows($query)) {
             $Result = mysqli_fetch_assoc($query);
             $last_post = $Result["dateline"];
@@ -99,7 +99,7 @@ if (is_valid_id($fid)) {
             if ($useparent) {
                 @sql_query("UPDATE " . TSF_PREFIX . "forums SET $lastpost = " . $dateline . ", $lastposter = " . $username . ", $lastposteruid = " . $uid . ", $lastposttid = " . $tid . ", $lastpostsubject = " . $subject . " WHERE $fid = '" . $realforumid . "'") || sqlerr(__FILE__, 162);
             }
-            @sql_query("UPDATE users SET $totalposts = totalposts + 1 WHERE $id = " . $uid) || sqlerr(__FILE__, 165);
+            @sql_query("UPDATE users SET $totalposts = totalposts + 1 WHERE `id` = " . $uid) || sqlerr(__FILE__, 165);
             $TSSEConfig->TSLoadConfig("KPS");
             KPS("+", $kpscomment, $uid);
             if ($canpostattachments && $pid && $tid && isset($_FILES)) {

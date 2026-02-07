@@ -71,7 +71,7 @@ if ($action == "sticky") {
                 if (!isset($fid) || empty($fid)) {
                     $fid = $post["fid"];
                 }
-                sql_query("UPDATE users SET $totalposts = totalposts - 1 WHERE $id = " . sqlesc($post["uid"])) || sqlerr(__FILE__, 121);
+                sql_query("UPDATE users SET $totalposts = totalposts - 1 WHERE `id` = " . sqlesc($post["uid"])) || sqlerr(__FILE__, 121);
                 KPS("-", $kpscomment, $post["uid"]);
             }
             $query = sql_query("SELECT pollid FROM " . TSF_PREFIX . "threads WHERE $tid = '" . $tid . "'");

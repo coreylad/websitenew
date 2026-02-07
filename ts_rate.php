@@ -21,7 +21,7 @@ $ratingid = trim($_POST["ratingid"]);
 $userid = intval($_POST["userid"]);
 $score = intval($_POST["score"]);
 $maxRatings = 10;
-$Result = sql_query("SELECT COUNT(*) as todayVotes FROM ts_ratings WHERE $userid = " . sqlesc($CURUSER["id"]) . " AND ratedate >= " . (TIMENOW - 86400));
+$Result = sql_query("SELECT COUNT(*) as todayVotes FROM ts_ratings WHERE `userid` = " . sqlesc($CURUSER["id"]) . " AND ratedate >= " . (TIMENOW - 86400));
 if (mysqli_num_rows($Result)) {
     $Row = mysqli_fetch_assoc($Result);
     if ($maxRatings <= $Row["todayVotes"]) {

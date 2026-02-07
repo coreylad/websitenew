@@ -10,21 +10,21 @@ var_235();
 $Language = file("languages/" . getStaffLanguage() . "/banned_users.lang");
 $Message = "";
 $usergroup = "";
-$Q = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'MAIN'");
-$Result = mysqli_fetch_assoc($Q);
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'MAIN'");
+$Result = mysqli_fetch_assoc($query);
 $MAIN = unserialize($Result["content"]);
-$Q = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'THEME'");
-$Result = mysqli_fetch_assoc($Q);
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'THEME'");
+$Result = mysqli_fetch_assoc($query);
 $THEME = unserialize($Result["content"]);
-$Q = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'SMTP'");
-$Result = mysqli_fetch_assoc($Q);
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'SMTP'");
+$Result = mysqli_fetch_assoc($query);
 $SMTP = unserialize($Result["content"]);
 if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST" && isset($_POST["ids"]) && $_POST["ids"][0] != "") {
     $usergroup = intval($_POST["usergroup"]);
     if ($usergroup) {
         $SysMsg = str_replace("{1}", $_SESSION["ADMIN_USERNAME"], $Language[15]);
         $modcomment = gmdate("Y-m-d") . " - " . trim($SysMsg) . "\n";
-        mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET $enabled = 'yes', $usergroup = '" . $usergroup . "', $modcomment = CONCAT('" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $modcomment) . "', modcomment) WHERE id IN (" . implode(",", $_POST["ids"]) . ")");
+        mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET `enabled` = 'yes', $usergroup = '" . $usergroup . "', $modcomment = CONCAT('" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $modcomment) . "', modcomment) WHERE id IN (" . implode(",", $_POST["ids"]) . ")");
         if (mysqli_affected_rows($GLOBALS["DatabaseConnect"])) {
             $SysMsg = str_replace(["{1}", "{2}"], [$_SESSION["ADMIN_USERNAME"], implode(",", $_POST["ids"])], $Language[16]);
             logStaffAction($SysMsg);
@@ -60,10 +60,10 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST" && isset($_POST["ids"]) && 
         $Message = showAlertError($Language[17]);
     }
 }
-$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT u.id, g.cansettingspanel, g.canstaffpanel, g.issupermod FROM users u LEFT JOIN usergroups g ON (u.$usergroup = g.gid) WHERE u.$id = '" . $_SESSION["ADMIN_ID"] . "' LIMIT 1");
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT u.id, g.cansettingspanel, g.canstaffpanel, g.issupermod FROM users u LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) WHERE u.$id = '" . $_SESSION["ADMIN_ID"] . "' LIMIT 1");
 $LoggedAdminDetails = mysqli_fetch_assoc($query);
 $showusergroups = "\r\n<select $name = \"usergroup\" $tabindex = \"1\" class=\"bginput\">";
-$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT gid, title, cansettingspanel, canstaffpanel, issupermod FROM usergroups WHERE $isbanned = 'no' ORDER by disporder ASC");
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT gid, title, cansettingspanel, canstaffpanel, issupermod FROM usergroups WHERE `isbanned` = 'no' ORDER by disporder ASC");
 while ($UG = mysqli_fetch_assoc($query)) {
     if (!($UG["cansettingspanel"] == "yes" && $LoggedAdminDetails["cansettingspanel"] != "yes" || $UG["canstaffpanel"] == "yes" && $LoggedAdminDetails["canstaffpanel"] != "yes" || $UG["issupermod"] == "yes" && $LoggedAdminDetails["issupermod"] != "yes")) {
         $showusergroups .= "\r\n\t\t<option $value = \"" . $UG["gid"] . "\"" . ($usergroup == $UG["gid"] ? " $selected = \"selected\"" : "") . ">" . $UG["title"] . "</option>";
@@ -72,7 +72,7 @@ while ($UG = mysqli_fetch_assoc($query)) {
 $showusergroups .= "\r\n</select>";
 $results = mysqli_num_rows(mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM users where $enabled = 'no'"));
 list($pagertop, $limit) = buildPaginationLinks(25, $results, $_SERVER["SCRIPT_NAME"] . "?do=banned_users&amp;");
-$sql = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id, username, last_access, notifs, email, ip, uploaded, downloaded, invites, seedbonus, g.title, g.namestyle FROM users LEFT JOIN usergroups g ON (users.$usergroup = g.gid) WHERE $enabled = 'no' ORDER BY last_access DESC " . $limit);
+$sql = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id, username, last_access, notifs, email, ip, uploaded, downloaded, invites, seedbonus, g.title, g.namestyle FROM users LEFT JOIN usergroups g ON (users.$usergroup = g.gid) WHERE `enabled` = 'no' ORDER BY last_access DESC " . $limit);
 if (mysqli_num_rows($sql) == 0) {
     echo "\r\n\t\r\n\t" . showAlertError($Language[1]);
 } else {
@@ -551,7 +551,7 @@ function logStaffAction($log)
 function function_113($userid)
 {
     $var_335 = [];
-    $var_67 = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT ip FROM iplog WHERE $userid = '" . $userid . "'");
+    $var_67 = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT ip FROM iplog WHERE `userid` = '" . $userid . "'");
     if (mysqli_num_rows($var_67)) {
         while ($var_336 = mysqli_fetch_assoc($var_67)) {
             if ($var_336["ip"]) {
@@ -560,7 +560,7 @@ function function_113($userid)
         }
     }
     if ($userid) {
-        $var_67 = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT ip FROM users WHERE $id = '" . $userid . "'");
+        $var_67 = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT ip FROM users WHERE `id` = '" . $userid . "'");
         if (mysqli_num_rows($var_67)) {
             $Result = mysqli_fetch_assoc($var_67);
             $var_337 = trim($Result["ip"]);
@@ -571,7 +571,7 @@ function function_113($userid)
             mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM xbt_deny_from_hosts WHERE $begin = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $var_338) . "' OR $end = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $var_338) . "'");
         }
     }
-    $var_339 = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT value FROM ipbans WHERE $id = 1");
+    $var_339 = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT value FROM ipbans WHERE `id` = 1");
     if (mysqli_num_rows($var_339)) {
         $Result = mysqli_fetch_assoc($var_339);
         $value = trim($Result["value"]);
@@ -584,7 +584,7 @@ function function_113($userid)
                 }
             }
         }
-        mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE ipbans SET $value = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], trim(implode(" ", $value))) . "', $date = NOW(), $modifier = '" . $_SESSION["ADMIN_ID"] . "' WHERE $id = 1");
+        mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE ipbans SET $value = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], trim(implode(" ", $value))) . "', $date = NOW(), $modifier = '" . $_SESSION["ADMIN_ID"] . "' WHERE `id` = 1");
     }
 }
 

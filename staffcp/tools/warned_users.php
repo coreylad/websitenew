@@ -21,9 +21,9 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST" && isset($_POST["ids"]) && 
         logStaffAction($SysMsg);
     }
 }
-$results = mysqli_num_rows(mysqli_query($GLOBALS["DatabaseConnect"], "SELECT u.id, g.gid FROM users u LEFT JOIN usergroups g ON (u.$usergroup = g.gid) WHERE (u.$warned = \"yes\" OR u.$leechwarn = \"yes\") AND u.$enabled = \"yes\" AND g.$isbanned = \"no\""));
+$results = mysqli_num_rows(mysqli_query($GLOBALS["DatabaseConnect"], "SELECT u.id, g.gid FROM users u LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) WHERE (u.$warned = \"yes\" OR u.$leechwarn = \"yes\") AND u.$enabled = \"yes\" AND g.$isbanned = \"no\""));
 list($pagertop, $limit) = buildPaginationLinks(25, $results, $_SERVER["SCRIPT_NAME"] . "?do=warned_users&amp;");
-$sql = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id, username, last_access, email, ip, uploaded, downloaded, invites, seedbonus, warned, warneduntil, leechwarn, leechwarnuntil, g.title, g.namestyle FROM users LEFT JOIN usergroups g ON (users.$usergroup = g.gid) WHERE $enabled = \"yes\" AND ($warned = \"yes\" OR $leechwarn = \"yes\") AND g.$isbanned = \"no\" ORDER BY username " . $limit);
+$sql = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id, username, last_access, email, ip, uploaded, downloaded, invites, seedbonus, warned, warneduntil, leechwarn, leechwarnuntil, g.title, g.namestyle FROM users LEFT JOIN usergroups g ON (users.$usergroup = g.gid) WHERE `enabled` = \"yes\" AND ($warned = \"yes\" OR $leechwarn = \"yes\") AND g.$isbanned = \"no\" ORDER BY username " . $limit);
 if (mysqli_num_rows($sql) == 0) {
     echo "\r\n\t\r\n\t" . showAlertError($Language[1]);
 } else {
@@ -76,7 +76,7 @@ function sendPrivateMessage($receiver = 0, $msg = "", $subject = "", $sender = 0
 {
     if (!($sender != 0 && !$sender || !$receiver || empty($msg))) {
         mysqli_query($GLOBALS["DatabaseConnect"], "\r\n\t\t\t\t\tINSERT INTO messages \r\n\t\t\t\t\t\t(sender, receiver, added, subject, msg, unread, saved, location)\r\n\t\t\t\t\t\tVALUES \r\n\t\t\t\t\t\t('" . $sender . "', '" . $receiver . "', NOW(), '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $subject) . "', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $msg) . "', '" . $unread . "', '" . $saved . "', '" . $location . "')\r\n\t\t\t\t\t");
-        mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET $pmunread = pmunread + 1 WHERE $id = '" . $receiver . "'");
+        mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET $pmunread = pmunread + 1 WHERE `id` = '" . $receiver . "'");
     }
 }
 function showAlertError($Error)

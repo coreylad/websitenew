@@ -20,7 +20,7 @@ if ($blogAction == "create_blog") {
         print_no_permission();
         exit;
     }
-    $totalBlogs = mysqli_num_rows(sql_query("SELECT uid FROM ts_blogs WHERE $uid = " . sqlesc($CURUSER["id"])));
+    $totalBlogs = mysqli_num_rows(sql_query("SELECT uid FROM ts_blogs WHERE `uid` = " . sqlesc($CURUSER["id"])));
     $allowedMaxBlogs = intval(substr($usergroups["blogperms"], -1, 1));
     if (0 < $allowedMaxBlogs && $allowedMaxBlogs <= $totalBlogs) {
         stderr($lang->global["error"], sprintf($lang->ts_blog["maxallowed"], $totalBlogs, $allowedMaxBlogs), false);
@@ -57,11 +57,11 @@ if ($do == "subscribe" && is_valid_id($BID = intval($_GET["bid"]))) {
     if ($CURUSER["id"] == 0) {
         print_no_permission();
     }
-    ($Query = sql_query("SELECT uid FROM ts_blogs WHERE $bid = " . sqlesc($BID))) || sqlerr(__FILE__, 206);
+    ($Query = sql_query("SELECT uid FROM ts_blogs WHERE `bid` = " . sqlesc($BID))) || sqlerr(__FILE__, 206);
     if (0 < mysqli_num_rows($Query)) {
-        ($Query = sql_query("SELECT uid FROM ts_blogs_subscribe WHERE $bid = " . sqlesc($BID) . " AND $uid = " . sqlesc($CURUSER["id"]))) || sqlerr(__FILE__, 209);
+        ($Query = sql_query("SELECT uid FROM ts_blogs_subscribe WHERE `bid` = " . sqlesc($BID) . " AND $uid = " . sqlesc($CURUSER["id"]))) || sqlerr(__FILE__, 209);
         if (0 < mysqli_num_rows($Query)) {
-            sql_query("DELETE FROM ts_blogs_subscribe WHERE $bid = " . sqlesc($BID) . " AND $uid = " . sqlesc($CURUSER["id"])) or sql_query("DELETE FROM ts_blogs_subscribe WHERE $bid = " . sqlesc($BID) . " AND $uid = " . sqlesc($CURUSER["id"])) || sqlerr(__FILE__, 212);
+            sql_query("DELETE FROM ts_blogs_subscribe WHERE `bid` = " . sqlesc($BID) . " AND $uid = " . sqlesc($CURUSER["id"])) or sql_query("DELETE FROM ts_blogs_subscribe WHERE `bid` = " . sqlesc($BID) . " AND $uid = " . sqlesc($CURUSER["id"])) || sqlerr(__FILE__, 212);
         } else {
             sql_query("INSERT INTO ts_blogs_subscribe VALUES (NULL, " . sqlesc($BID) . ", " . sqlesc($CURUSER["id"]) . ")") || sqlerr(__FILE__, 216);
         }
@@ -71,7 +71,7 @@ if ($do == "subscribe" && is_valid_id($BID = intval($_GET["bid"]))) {
     }
 }
 if ($do == "delete_blog" && is_valid_id($BID = intval($_GET["bid"])) && ($is_mod || blogpermission("candeleteb"))) {
-    ($Query = sql_query("SELECT uid FROM ts_blogs WHERE $bid = " . sqlesc($BID))) || sqlerr(__FILE__, 228);
+    ($Query = sql_query("SELECT uid FROM ts_blogs WHERE `bid` = " . sqlesc($BID))) || sqlerr(__FILE__, 228);
     if (0 < mysqli_num_rows($Query)) {
         $Result = mysqli_fetch_assoc($Query);
         $owner = $Result["uid"];
@@ -79,23 +79,23 @@ if ($do == "delete_blog" && is_valid_id($BID = intval($_GET["bid"])) && ($is_mod
             print_no_permission(true);
             exit;
         }
-        sql_query("DELETE FROM ts_blogs WHERE $bid = " . sqlesc($BID)) || sqlerr(__FILE__, 241);
-        sql_query("DELETE FROM ts_blogs_comments WHERE $bid = " . sqlesc($BID)) || sqlerr(__FILE__, 242);
-        sql_query("DELETE FROM ts_blogs_subscribe WHERE $bid = " . sqlesc($BID)) || sqlerr(__FILE__, 243);
+        sql_query("DELETE FROM ts_blogs WHERE `bid` = " . sqlesc($BID)) || sqlerr(__FILE__, 241);
+        sql_query("DELETE FROM ts_blogs_comments WHERE `bid` = " . sqlesc($BID)) || sqlerr(__FILE__, 242);
+        sql_query("DELETE FROM ts_blogs_subscribe WHERE `bid` = " . sqlesc($BID)) || sqlerr(__FILE__, 243);
         header("Location: " . $_SERVER["SCRIPT_NAME"]);
         exit;
     }
     $blog_error[] = $lang->ts_blog["invalidbid"];
 }
 if ($do == "edit_comment" && is_valid_id($CID = intval($_GET["cid"])) && is_valid_id($BID = intval($_GET["bid"])) && ($is_mod || blogpermission("caneditc"))) {
-    ($Query = sql_query("SELECT uid, descr FROM ts_blogs_comments  WHERE $cid = " . sqlesc($CID) . " AND $bid = " . sqlesc($BID))) || sqlerr(__FILE__, 255);
+    ($Query = sql_query("SELECT uid, descr FROM ts_blogs_comments  WHERE `cid` = " . sqlesc($CID) . " AND $bid = " . sqlesc($BID))) || sqlerr(__FILE__, 255);
     if (0 < mysqli_num_rows($Query)) {
         $Comment = mysqli_fetch_assoc($Query);
         if (!$is_mod && $Comment["uid"] != $CURUSER["id"]) {
             print_no_permission(true);
             exit;
         }
-        ($Query = sql_query("SELECT `title`  FROM ts_blogs WHERE $bid = " . sqlesc($BID))) || sqlerr(__FILE__, 269);
+        ($Query = sql_query("SELECT `title`  FROM ts_blogs WHERE `bid` = " . sqlesc($BID))) || sqlerr(__FILE__, 269);
         if (0 < mysqli_num_rows($Query)) {
             $Blog = mysqli_fetch_assoc($Query);
             if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST" && isset($_POST["submit"])) {
@@ -103,7 +103,7 @@ if ($do == "edit_comment" && is_valid_id($CID = intval($_GET["cid"])) && is_vali
                 if (strlen($descr) < 3) {
                     $blog_error[] = $lang->ts_blog["editerror2"];
                 } else {
-                    sql_query("UPDATE ts_blogs_comments SET `descr` = " . sqlesc($descr) . " WHERE $cid = " . sqlesc($CID) . " AND $bid = " . sqlesc($BID)) || sqlerr(__FILE__, 289);
+                    sql_query("UPDATE ts_blogs_comments SET `descr` = " . sqlesc($descr) . " WHERE `cid` = " . sqlesc($CID) . " AND $bid = " . sqlesc($BID)) || sqlerr(__FILE__, 289);
                     header("Location: " . $_SERVER["SCRIPT_NAME"] . "?do=show_blog&$bid = " . $BID . "&$cid = " . $CID . (isset($_GET["page"]) ? "&$page = " . intval($_GET["page"]) : "") . "#show_comments" . $CID);
                     exit;
                 }
@@ -129,7 +129,7 @@ if ($do == "edit_comment" && is_valid_id($CID = intval($_GET["cid"])) && is_vali
     $blog_error[] = $lang->ts_blog["invalidcid"];
 }
 if ($do == "delete_comment" && is_valid_id($CID = intval($_GET["cid"])) && is_valid_id($BID = intval($_GET["bid"])) && ($is_mod || blogpermission("candeletec"))) {
-    ($Query = sql_query("SELECT uid FROM ts_blogs_comments WHERE $cid = " . sqlesc($CID) . " AND $bid = " . sqlesc($BID))) || sqlerr(__FILE__, 325);
+    ($Query = sql_query("SELECT uid FROM ts_blogs_comments WHERE `cid` = " . sqlesc($CID) . " AND $bid = " . sqlesc($BID))) || sqlerr(__FILE__, 325);
     if (0 < mysqli_num_rows($Query)) {
         $Result = mysqli_fetch_assoc($Query);
         $owner = $Result["uid"];
@@ -137,14 +137,14 @@ if ($do == "delete_comment" && is_valid_id($CID = intval($_GET["cid"])) && is_va
             print_no_permission(true);
             exit;
         }
-        sql_query("DELETE FROM ts_blogs_comments WHERE $cid = " . sqlesc($CID) . " AND $bid = " . sqlesc($BID)) || sqlerr(__FILE__, 339);
+        sql_query("DELETE FROM ts_blogs_comments WHERE `cid` = " . sqlesc($CID) . " AND $bid = " . sqlesc($BID)) || sqlerr(__FILE__, 339);
         if (mysqli_affected_rows($GLOBALS["DatabaseConnect"])) {
-            ($query = sql_query("SELECT uid, date FROM ts_blogs_comments WHERE $bid = " . sqlesc($BID))) || sqlerr(__FILE__, 342);
+            ($query = sql_query("SELECT uid, date FROM ts_blogs_comments WHERE `bid` = " . sqlesc($BID))) || sqlerr(__FILE__, 342);
             if (0 < mysqli_num_rows($query)) {
                 $LastPostData = mysqli_fetch_assoc($query);
-                sql_query("UPDATE ts_blogs SET $comments = IF(comments > 1, comments - 1, 0), $lastposter = " . sqlesc($LastPostData["uid"]) . ", $lastpostdate = " . sqlesc($LastPostData["date"]) . " WHERE $bid = " . sqlesc($BID)) or sql_query("UPDATE ts_blogs SET $comments = IF(comments > 1, comments - 1, 0), $lastposter = " . sqlesc($LastPostData["uid"]) . ", $lastpostdate = " . sqlesc($LastPostData["date"]) . " WHERE $bid = " . sqlesc($BID)) || sqlerr(__FILE__, 346);
+                sql_query("UPDATE ts_blogs SET $comments = IF(comments > 1, comments - 1, 0), $lastposter = " . sqlesc($LastPostData["uid"]) . ", $lastpostdate = " . sqlesc($LastPostData["date"]) . " WHERE `bid` = " . sqlesc($BID)) or sql_query("UPDATE ts_blogs SET $comments = IF(comments > 1, comments - 1, 0), $lastposter = " . sqlesc($LastPostData["uid"]) . ", $lastpostdate = " . sqlesc($LastPostData["date"]) . " WHERE `bid` = " . sqlesc($BID)) || sqlerr(__FILE__, 346);
             } else {
-                sql_query("UPDATE ts_blogs SET $comments = IF(comments > 1, comments - 1, 0), $lastposter = 0, $lastpostdate = 0 WHERE $bid = " . sqlesc($BID)) || sqlerr(__FILE__, 350);
+                sql_query("UPDATE ts_blogs SET $comments = IF(comments > 1, comments - 1, 0), $lastposter = 0, $lastpostdate = 0 WHERE `bid` = " . sqlesc($BID)) || sqlerr(__FILE__, 350);
             }
         }
         header("Location: " . $_SERVER["SCRIPT_NAME"] . "?do=show_blog&$bid = " . $BID . (isset($_GET["page"]) ? "&$page = " . intval($_GET["page"]) : "") . "#show_comments");
@@ -153,7 +153,7 @@ if ($do == "delete_comment" && is_valid_id($CID = intval($_GET["cid"])) && is_va
     $blog_error[] = $lang->ts_blog["invalidcid"];
 }
 if ($do == "edit_entry" && is_valid_id($BID = intval($_GET["bid"])) && ($is_mod || blogpermission("caneditb"))) {
-    ($Query = sql_query("SELECT `uid`, `title`, `desc` FROM ts_blogs WHERE $bid = " . sqlesc($BID))) || sqlerr(__FILE__, 364);
+    ($Query = sql_query("SELECT `uid`, `title`, `desc` FROM ts_blogs WHERE `bid` = " . sqlesc($BID))) || sqlerr(__FILE__, 364);
     if (0 < mysqli_num_rows($Query)) {
         $Blog = mysqli_fetch_assoc($Query);
         if (!$is_mod && $Blog["uid"] != $CURUSER["id"]) {
@@ -166,7 +166,7 @@ if ($do == "edit_entry" && is_valid_id($BID = intval($_GET["bid"])) && ($is_mod 
             if (strlen($title) < 3 || strlen($desc) < 10) {
                 $blog_error[] = $lang->ts_blog["editerror"];
             } else {
-                sql_query("UPDATE ts_blogs SET `title` = " . sqlesc($title) . ", `desc` = " . sqlesc($desc) . ", `updatedate` = " . sqlesc(TIMENOW) . ", `updatedby` = " . sqlesc($CURUSER["id"]) . " WHERE $bid = " . sqlesc($BID)) || sqlerr(__FILE__, 387);
+                sql_query("UPDATE ts_blogs SET `title` = " . sqlesc($title) . ", `desc` = " . sqlesc($desc) . ", `updatedate` = " . sqlesc(TIMENOW) . ", `updatedby` = " . sqlesc($CURUSER["id"]) . " WHERE `bid` = " . sqlesc($BID)) || sqlerr(__FILE__, 387);
                 header("Location: " . $_SERVER["SCRIPT_NAME"] . "?do=show_blog&$bid = " . $BID . (isset($_GET["page"]) ? "&$page = " . intval($_GET["page"]) : ""));
                 exit;
             }
@@ -189,7 +189,7 @@ if ($do == "edit_entry" && is_valid_id($BID = intval($_GET["bid"])) && ($is_mod 
     $blog_error[] = $lang->ts_blog["invalidbid"];
 }
 if ($do == "enable_disable_comments" && is_valid_id($BID = intval($_GET["bid"])) && ($is_mod || blogpermission("candisablec"))) {
-    ($Query = sql_query("SELECT uid FROM ts_blogs WHERE $bid = " . sqlesc($BID))) || sqlerr(__FILE__, 422);
+    ($Query = sql_query("SELECT uid FROM ts_blogs WHERE `bid` = " . sqlesc($BID))) || sqlerr(__FILE__, 422);
     if (0 < mysqli_num_rows($Query)) {
         $Result = mysqli_fetch_assoc($Query);
         $owner = $Result["uid"];
@@ -197,14 +197,14 @@ if ($do == "enable_disable_comments" && is_valid_id($BID = intval($_GET["bid"]))
             print_no_permission(true);
             exit;
         }
-        sql_query("UPDATE ts_blogs SET $allowcomments = IF($allowcomments = 1, 0, 1) WHERE $bid = " . sqlesc($BID)) || sqlerr(__FILE__, 435);
+        sql_query("UPDATE ts_blogs SET $allowcomments = IF($allowcomments = 1, 0, 1) WHERE `bid` = " . sqlesc($BID)) || sqlerr(__FILE__, 435);
         header("Location: " . $_SERVER["SCRIPT_NAME"] . "?do=show_blog&$bid = " . $BID . (isset($_GET["page"]) ? "&$page = " . intval($_GET["page"]) : ""));
         exit;
     }
     $blog_error[] = $lang->ts_blog["invalidbid"];
 }
 if ($do == "save_comment" && is_valid_id($BID = intval($_GET["bid"])) && ($is_mod || blogpermission("canpost"))) {
-    $Query = sql_query("SELECT uid, allowcomments FROM ts_blogs WHERE $bid = " . sqlesc($BID));
+    $Query = sql_query("SELECT uid, allowcomments FROM ts_blogs WHERE `bid` = " . sqlesc($BID));
     if (mysqli_num_rows($Query) == 0) {
         $blog_error[] = $lang->ts_blog["disabled"];
     } else {
@@ -227,7 +227,7 @@ if ($do == "save_comment" && is_valid_id($BID = intval($_GET["bid"])) && ($is_mo
                 send_pm($Blog["uid"], sprintf($lang->ts_blog["s4"], $BASEURL . "/ts_blog.php?do=show_blog&$bid = " . $BID . "&$cid = " . $CID . "#show_comments" . $CID), $lang->ts_blog["s5"]);
             }
             send_pm($Blog["uid"], sprintf($lang->ts_blog["s4"], $BASEURL . "/ts_blog.php?do=show_blog&$bid = " . $BID . "&$cid = " . $CID . "#show_comments" . $CID), $lang->ts_blog["s5"]);
-            $query = sql_query("SELECT uid FROM ts_blogs_subscribe WHERE $bid = " . sqlesc($BID) . " AND uid != " . sqlesc($CURUSER["id"]));
+            $query = sql_query("SELECT uid FROM ts_blogs_subscribe WHERE `bid` = " . sqlesc($BID) . " AND uid != " . sqlesc($CURUSER["id"]));
             if (0 < mysqli_num_rows($query)) {
                 require_once INC_PATH . "/functions_pm.php";
                 while ($User = mysqli_fetch_assoc($query)) {
@@ -245,7 +245,7 @@ if ($do == "show_blog" && is_valid_id($BID = intval($_GET["bid"]))) {
         print_no_permission();
         exit;
     }
-    ($Query = sql_query("SELECT b.uid, b.title, b.desc, b.views, b.comments, b.date, b.allowcomments, b.updatedate, b.updatedby, u.username, u.added, u.last_access, u.last_login, u.options, u.avatar, g.namestyle, uu.username as updater, gg.namestyle as updaterns, s.uid as issubs FROM ts_blogs b LEFT JOIN users u ON (b.$uid = u.id) LEFT JOIN usergroups g ON (u.$usergroup = g.gid) LEFT JOIN users uu ON (b.$updatedby = uu.id) LEFT JOIN usergroups gg ON (uu.$usergroup = gg.gid) LEFT JOIN ts_blogs_subscribe s ON (s.$bid = b.bid AND s.$uid = " . $CURUSER["id"] . ") WHERE b.$bid = " . sqlesc($BID))) || sqlerr(__FILE__, 508);
+    ($Query = sql_query("SELECT b.uid, b.title, b.desc, b.views, b.comments, b.date, b.allowcomments, b.updatedate, b.updatedby, u.username, u.added, u.last_access, u.last_login, u.options, u.avatar, g.namestyle, uu.username as updater, gg.namestyle as updaterns, s.uid as issubs FROM ts_blogs b LEFT JOIN users u ON (b.$uid = u.id) LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) LEFT JOIN users uu ON (b.$updatedby = uu.id) LEFT JOIN usergroups gg ON (uu.$usergroup = gg.gid) LEFT JOIN ts_blogs_subscribe s ON (s.$bid = b.bid AND s.$uid = " . $CURUSER["id"] . ") WHERE b.$bid = " . sqlesc($BID))) || sqlerr(__FILE__, 508);
     if (0 < mysqli_num_rows($Query)) {
         $rating = "";
         if ($ratingsystem == "yes") {
@@ -257,7 +257,7 @@ if ($do == "show_blog" && is_valid_id($BID = intval($_GET["bid"]))) {
         $Blog = mysqli_fetch_assoc($Query);
         $Options = "\r\n\t\t<div $style = \"padding-bottom: 15px;\" $id = \"show_calendar\" $name = \"show_calendar\">\r\n\t\t\t<table $align = \"center\" $cellpadding = \"3\" $cellspacing = \"0\" $width = \"100%\">\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td class=\"thead\">" . $lang->ts_blog["options"] . "</td>\r\n\t\t\t\t</tr>\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td>\r\n\t\t\t\t\t\t<a $href = \"" . $_SERVER["SCRIPT_NAME"] . "?do=subscribe&amp;$bid = " . $BID . "\">" . ($Blog["issubs"] == $CURUSER["id"] ? $lang->ts_blog["s2"] : $lang->ts_blog["s1"]) . "</a>\r\n\t\t\t\t\t</td>\r\n\t\t\t\t</tr>\r\n\t\t\t</table>\r\n\t\t</div>\r\n\t\t";
         $ShowCalendar = "\r\n\t\t<div $style = \"padding-bottom: 15px;\" $id = \"show_calendar\" $name = \"show_calendar\">\r\n\t\t\t<table $align = \"center\" $cellpadding = \"3\" $cellspacing = \"0\" $width = \"100%\">\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td class=\"thead\">" . $lang->ts_blog["archive"] . "</td>\r\n\t\t\t\t</tr>\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td>\r\n\t\t\t\t\t\t" . show_calendar() . "\r\n\t\t\t\t\t</td>\r\n\t\t\t\t</tr>\r\n\t\t\t</table>\r\n\t\t</div>\r\n\t\t";
-        $TotalBlogs = ts_nf(mysqli_num_rows(sql_query("SELECT uid FROM ts_blogs WHERE $uid = " . sqlesc($Blog["uid"]))));
+        $TotalBlogs = ts_nf(mysqli_num_rows(sql_query("SELECT uid FROM ts_blogs WHERE `uid` = " . sqlesc($Blog["uid"]))));
         $Owner = "<a $href = \"" . ts_seo($Blog["uid"], $Blog["username"]) . "\">" . get_user_color($Blog["username"], $Blog["namestyle"]) . "</a>";
         $imagepath = $pic_base_url . "friends/";
         $xoffline = sprintf($lang->ts_blog["xoffline"], $Blog["username"]);
@@ -280,16 +280,16 @@ if ($do == "show_blog" && is_valid_id($BID = intval($_GET["bid"]))) {
         $BlogTitle = htmlspecialchars_uni($Blog["title"]);
         $TITLE = sprintf($lang->ts_blog["showblog"], $BlogTitle);
         if ($Blog["uid"] != $CURUSER["id"]) {
-            sql_query("UPDATE ts_blogs SET $views = views + 1 WHERE $bid = " . sqlesc($BID)) || sqlerr(__FILE__, 617);
+            sql_query("UPDATE ts_blogs SET $views = views + 1 WHERE `bid` = " . sqlesc($BID)) || sqlerr(__FILE__, 617);
         }
         $Updated = "";
         if (0 < $Blog["updatedate"] && 0 < $Blog["updatedby"]) {
             $Updated = "<br />" . sprintf($lang->ts_blog["updated"], my_datee($dateformat, $Blog["updatedate"]), my_datee($timeformat, $Blog["updatedate"]));
         }
-        ($Query = sql_query("SELECT * FROM ts_blogs_comments WHERE $bid = " . sqlesc($BID))) || sqlerr(__FILE__, 626);
+        ($Query = sql_query("SELECT * FROM ts_blogs_comments WHERE `bid` = " . sqlesc($BID))) || sqlerr(__FILE__, 626);
         $count = mysqli_num_rows($Query);
         list($pagertop, $pagerbottom, $limit) = pager($ts_perpage, $count, $_SERVER["SCRIPT_NAME"] . "?do=show_blog&amp;$bid = " . $BID . "&amp;");
-        ($Query = sql_query("SELECT c.cid, c.uid, c.date, c.descr, u.username, u.avatar, g.namestyle FROM ts_blogs_comments c LEFT JOIN users u ON (u.$id = c.uid) LEFT JOIN usergroups g ON (u.$usergroup = g.gid) WHERE c.$bid = " . sqlesc($BID) . " ORDER BY date ASC " . $limit)) || sqlerr(__FILE__, 630);
+        ($Query = sql_query("SELECT c.cid, c.uid, c.date, c.descr, u.username, u.avatar, g.namestyle FROM ts_blogs_comments c LEFT JOIN users u ON (u.`id` = c.uid) LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) WHERE c.$bid = " . sqlesc($BID) . " ORDER BY date ASC " . $limit)) || sqlerr(__FILE__, 630);
         $BlogComments = "\r\n\t\t\t" . $pagertop . "\r\n\t\t\t<div $style = \"padding-bottom: 15px;\" $id = \"show_comments\" $name = \"show_comments\">\r\n\t\t\t<table $align = \"center\" $cellpadding = \"3\" $cellspacing = \"0\" $width = \"100%\">\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td class=\"thead\">" . $lang->ts_blog["comments"] . "</td>\r\n\t\t\t\t</tr>\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td>\r\n\t\t\t";
         if (0 < mysqli_num_rows($Query)) {
             while ($Comments = mysqli_fetch_assoc($Query)) {
@@ -359,7 +359,7 @@ if (0 < mysqli_num_rows($Query)) {
 } else {
     $RecentBlogs = $lang->ts_blog["noblogs"];
 }
-($Query = sql_query("SELECT c.cid, c.bid, c.uid, c.date, b.title, u.username, g.namestyle FROM ts_blogs_comments c LEFT JOIN ts_blogs b ON (c.$bid = b.bid) LEFT JOIN users u ON (c.$uid = u.id) LEFT JOIN usergroups g ON (u.$usergroup = g.gid) ORDER BY date DESC LIMIT 5")) || sqlerr(__FILE__, 889);
+($Query = sql_query("SELECT c.cid, c.bid, c.uid, c.date, b.title, u.username, g.namestyle FROM ts_blogs_comments c LEFT JOIN ts_blogs b ON (c.$bid = b.bid) LEFT JOIN users u ON (c.$uid = u.id) LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) ORDER BY date DESC LIMIT 5")) || sqlerr(__FILE__, 889);
 if (0 < mysqli_num_rows($Query)) {
     $RecentComments = "";
     while ($RC = mysqli_fetch_assoc($Query)) {
@@ -408,7 +408,7 @@ if ($do == "search_blog") {
 $count = mysqli_num_rows($Query);
 list($pagertop, $pagerbottom, $limit) = pager($ts_perpage, $count, $_SERVER["SCRIPT_NAME"] . "?" . ($keywords ? "do=search_blog&amp;$keywords = " . urlencode(htmlspecialchars_uni($keywords)) . "&amp;" : ""));
 $BlogList = "";
-($Query = sql_query("SELECT b.*, u.username as owner, u.avatar, g.namestyle as ownerns, uu.username as lastpostername, gg.namestyle as lastposterns FROM ts_blogs b LEFT JOIN users u ON (b.$uid = u.id) LEFT JOIN usergroups g ON (u.$usergroup = g.gid) LEFT JOIN users uu ON (b.$lastposter = uu.id) LEFT JOIN usergroups gg ON (uu.$usergroup = gg.gid)" . (count($Esql) ? " WHERE " . implode(" AND ", $Esql) : "") . " ORDER BY " . $orderby . " " . $limit)) || sqlerr(__FILE__, 968);
+($Query = sql_query("SELECT b.*, u.username as owner, u.avatar, g.namestyle as ownerns, uu.username as lastpostername, gg.namestyle as lastposterns FROM ts_blogs b LEFT JOIN users u ON (b.$uid = u.id) LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) LEFT JOIN users uu ON (b.$lastposter = uu.id) LEFT JOIN usergroups gg ON (uu.$usergroup = gg.gid)" . (count($Esql) ? " WHERE " . implode(" AND ", $Esql) : "") . " ORDER BY " . $orderby . " " . $limit)) || sqlerr(__FILE__, 968);
 if (0 < mysqli_num_rows($Query)) {
     $BlogList = "\r\n\t<table $width = \"100%\" $align = \"center\" $border = \"0\" $cellpadding = \"3\" $cellspacing = \"0\">\r\n\t";
     while ($BL = mysqli_fetch_assoc($Query)) {

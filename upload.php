@@ -26,7 +26,7 @@ $UploadErrors = [];
 if (isset($_GET["id"]) && is_valid_id($_GET["id"])) {
     if ($EditTorrentID = intval(TS_Global("id"))) {
         // Query for editing torrent
-        $editTorrentQuery = sql_query("SELECT * FROM torrents WHERE $id = " . sqlesc($EditTorrentID));
+        $editTorrentQuery = sql_query("SELECT * FROM torrents WHERE `id` = " . sqlesc($EditTorrentID));
         if (mysqli_num_rows($editTorrentQuery)) {
             $editTorrentData = mysqli_fetch_assoc($editTorrentQuery);
             if ($editTorrentData["owner"] != $CURUSER["id"] && !$is_mod) {
@@ -85,7 +85,7 @@ if (isset($_GET["id"]) && is_valid_id($_GET["id"])) {
 if ($usergroups["canupload"] == "no") {
     print_no_permission(false, true, $lang->upload["uploaderform"]);
 }
-$userPermQuery = sql_query("SELECT userid FROM ts_u_perm WHERE $userid = " . sqlesc($CURUSER["id"]) . " AND $canupload = '0'");
+$userPermQuery = sql_query("SELECT userid FROM ts_u_perm WHERE `userid` = " . sqlesc($CURUSER["id"]) . " AND $canupload = '0'");
 if (mysqli_num_rows($userPermQuery)) {
     print_no_permission(false, true, $lang->upload["uploaderform"]);
 }
@@ -356,7 +356,7 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
         if (empty($t_image_url)) {
             $UpdateSet[] = "t_image = ''";
         }
-        sql_query((isset($EditTorrent) ? "UPDATE" : "INSERT INTO") . " torrents SET " . implode(", ", $UpdateSet) . (isset($EditTorrent) ? " WHERE $id = " . sqlesc($EditTorrentID) : "")) || stderr($lang->global["error"], $lang->upload["error13"] . " {" . htmlspecialchars_uni(mysqli_error($GLOBALS["DatabaseConnect"])) . "}");
+        sql_query((isset($EditTorrent) ? "UPDATE" : "INSERT INTO") . " torrents SET " . implode(", ", $UpdateSet) . (isset($EditTorrent) ? " WHERE `id` = " . sqlesc($EditTorrentID) : "")) || stderr($lang->global["error"], $lang->upload["error13"] . " {" . htmlspecialchars_uni(mysqli_error($GLOBALS["DatabaseConnect"])) . "}");
         if (isset($EditTorrent)) {
             $NewTID = $EditTorrentID;
             if (is_file($torrent_dir . "/" . $NewTID . ".torrent")) {
@@ -386,7 +386,7 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
                             }
                             if (file_put_contents($NewImageURL, $ImageContents)) {
                                 $COVERIMAGEUPDATED = true;
-                                sql_query("UPDATE torrents SET $t_image = " . sqlesc($BASEURL . "/" . $NewImageURL) . " WHERE $id = " . sqlesc($NewTID));
+                                sql_query("UPDATE torrents SET $t_image = " . sqlesc($BASEURL . "/" . $NewImageURL) . " WHERE `id` = " . sqlesc($NewTID));
                             }
                         }
                     }
@@ -407,13 +407,13 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
                     }
                     if (file_put_contents($NewImageURL, $ImageContents)) {
                         $COVERIMAGEUPDATED = true;
-                        sql_query("UPDATE torrents SET $t_image = " . sqlesc($BASEURL . "/" . $NewImageURL) . " WHERE $id = " . sqlesc($NewTID));
+                        sql_query("UPDATE torrents SET $t_image = " . sqlesc($BASEURL . "/" . $NewImageURL) . " WHERE `id` = " . sqlesc($NewTID));
                     }
                 }
             }
         }
         if (!isset($COVERIMAGEUPDATED) && isset($cover_photo_name)) {
-            sql_query("UPDATE torrents SET $t_image = " . sqlesc($BASEURL . "/" . $cover_photo_name) . " WHERE $id = " . sqlesc($NewTID));
+            sql_query("UPDATE torrents SET $t_image = " . sqlesc($BASEURL . "/" . $cover_photo_name) . " WHERE `id` = " . sqlesc($NewTID));
         }
         if ($use_torrent_details == "yes") {
             sql_query("DELETE FROM ts_torrents_details WHERE $tid = " . sqlesc($NewTID));
@@ -448,7 +448,7 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
             if (isset($NfoContents) && !empty($NfoContents)) {
                 if ($UseNFOasDescr == "yes") {
                     $NewDescr = $BASEURL . "/viewnfo.php?$id = " . $NewTID;
-                    sql_query("UPDATE torrents SET $descr = " . sqlesc($NewDescr) . " WHERE $id = " . sqlesc($NewTID));
+                    sql_query("UPDATE torrents SET $descr = " . sqlesc($NewDescr) . " WHERE `id` = " . sqlesc($NewTID));
                 }
                 sql_query("REPLACE INTO ts_nfo (id, nfo) VALUES (" . $NewTID . ", " . sqlesc($NfoContents) . ")");
             }
@@ -462,10 +462,10 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
                 if (!isset($EditTorrent)) {
                     $TSSEConfig->TSLoadConfig("KPS");
                     KPS("+", $kpsupload, $CURUSER["id"]);
-                    $res = sql_query("SELECT name FROM categories WHERE $id = " . sqlesc($category));
+                    $res = sql_query("SELECT name FROM categories WHERE `id` = " . sqlesc($category));
                     $Result = mysqli_fetch_assoc($res);
                     $cat = $Result["name"];
-                    $res = sql_query("SELECT u.email FROM users u LEFT JOIN usergroups g ON (u.$usergroup = g.gid) WHERE u.$enabled = 'yes' AND u.$status = 'confirmed' AND u.notifs LIKE '%[cat" . $category . "]%' AND u.notifs LIKE '%[email]%' AND u.notifs != '' AND g.$isvipgroup = 'yes' AND g.$canemailnotify = 'yes'");
+                    $res = sql_query("SELECT u.email FROM users u LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) WHERE u.$enabled = 'yes' AND u.$status = 'confirmed' AND u.notifs LIKE '%[cat" . $category . "]%' AND u.notifs LIKE '%[email]%' AND u.notifs != '' AND g.$isvipgroup = 'yes' AND g.$canemailnotify = 'yes'");
                     $size = mksize($size);
                     $body = sprintf($lang->upload["emailbody"], $name, $size, $cat, $anonymous == "yes" ? "N/A" : $CURUSER["username"], $descr, $BASEURL, $NewTID, $SITENAME);
                     $emailRecipients = "";

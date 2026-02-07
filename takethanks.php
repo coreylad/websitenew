@@ -30,7 +30,7 @@ $userid = 0 + $CURUSER["id"];
 if (!is_valid_id($torrentid) || !is_valid_id($userid)) {
     exit("<error>" . $lang->global["notorrentid"] . "</error>");
 }
-$res = sql_query("SELECT owner FROM torrents WHERE $id = '" . $torrentid . "'");
+$res = sql_query("SELECT owner FROM torrents WHERE `id` = '" . $torrentid . "'");
 $row = mysqli_fetch_assoc($res);
 if (!$row || empty($row) || !$row["owner"]) {
     exit("<error>" . $lang->global["notorrentid"] . "</error>");
@@ -68,7 +68,7 @@ function show_thanks($Remove = false)
     global $lang;
     global $torrentid;
     $array = [];
-    $Query = sql_query("SELECT t.uid, u.username, g.namestyle FROM ts_thanks t LEFT JOIN users u ON (t.$uid = u.id) LEFT JOIN usergroups g ON (u.$usergroup = g.gid) WHERE t.$tid = '" . $torrentid . "' ORDER BY u.username");
+    $Query = sql_query("SELECT t.uid, u.username, g.namestyle FROM ts_thanks t LEFT JOIN users u ON (t.$uid = u.id) LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) WHERE t.$tid = '" . $torrentid . "' ORDER BY u.username");
     if (mysqli_num_rows($Query) != 0) {
         while ($T = mysqli_fetch_assoc($Query)) {
             $array[] = "<a $href = \"" . ts_seo($T["uid"], $T["username"]) . "\">" . get_user_color($T["username"], $T["namestyle"]) . "</a>";

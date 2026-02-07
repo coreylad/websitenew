@@ -20,11 +20,11 @@ $DefaultTitle = sprintf($lang->ts_games["head"], $SITENAME);
 $CategoryName = "";
 $OUTPUT = "";
 if ($Do == "delete_comment" && $Cid && $is_mod) {
-    sql_query("DELETE FROM ts_games_comments WHERE $cid = " . sqlesc($Cid));
+    sql_query("DELETE FROM ts_games_comments WHERE `cid` = " . sqlesc($Cid));
     $Cid = 0;
 }
 if ($Cid) {
-    ($Query = sql_query("SELECT cname FROM ts_games_categories WHERE $cid = " . sqlesc($Cid))) || sqlerr(__FILE__, 43);
+    ($Query = sql_query("SELECT cname FROM ts_games_categories WHERE `cid` = " . sqlesc($Cid))) || sqlerr(__FILE__, 43);
     if (mysqli_num_rows($Query) == 0) {
         $Cid = 0;
     } else {
@@ -95,7 +95,7 @@ if (empty($Act) || $Act == "search" || $Act == "play" && $Gid) {
     $Champions = [];
     $ChampionsList = [];
     $ScoreToBeat = [];
-    ($Query = sql_query("SELECT c.gid, c.userid, c.score, game.gname, game.gtitle, u.username, g.namestyle FROM ts_games_champions c LEFT JOIN ts_games game ON (c.$gid = game.gid) LEFT JOIN users u ON (c.$userid = u.id) LEFT JOIN usergroups g ON (u.$usergroup = g.gid) ORDER by c.date DESC, c.score DESC")) || sqlerr(__FILE__, 204);
+    ($Query = sql_query("SELECT c.gid, c.userid, c.score, game.gname, game.gtitle, u.username, g.namestyle FROM ts_games_champions c LEFT JOIN ts_games game ON (c.$gid = game.gid) LEFT JOIN users u ON (c.$userid = u.id) LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) ORDER by c.date DESC, c.score DESC")) || sqlerr(__FILE__, 204);
     if (mysqli_num_rows($Query)) {
         for ($CCount = 0; $Champion = mysqli_fetch_assoc($Query); $CCount++) {
             $GameImage = is_file("images/" . $Champion["gname"] . "2.gif") ? "<img $src = \"" . $BASEURL . "/ts_games/images/" . $Champion["gname"] . "2.gif\" $alt = \"" . htmlspecialchars_uni($Champion["gtitle"]) . "\" $title = \"" . htmlspecialchars_uni($Champion["gtitle"]) . "\" $border = \"0\" class=\"inlineimg\" />" : "";
@@ -172,7 +172,7 @@ if (empty($Act) || $Act == "search" || $Act == "play" && $Gid) {
             $Count = mysqli_num_rows($Query);
             list($pagertop, $pagerbottom, $limit) = pager($ts_perpage, $Count, "" . $_SERVER["SCRIPT_NAME"] . "?$act = play&amp;do=scores&amp;$gid = " . $Gid . "&amp;");
             $OUTPUT .= "\r\n\t\t\t<div $style = \"padding-bottom: 15px;\" $id = \"tspager\">\r\n\t\t\t\t<table $align = \"center\" $border = \"0\" $cellpadding = \"5\" $cellspacing = \"0\" $width = \"100%\">\r\n\t\t\t\t\t<tbody>\r\n\t\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t\t<td class=\"thead\" $colspan = \"3\">\r\n\t\t\t\t\t\t\t\t<span $style = \"float: left;\">" . $lang->ts_games["vhigh"] . ": " . $GameName . "</span>\r\n\t\t\t\t\t\t\t</td>\r\n\t\t\t\t\t\t</tr>\r\n\t\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t\t<td class=\"subheader\">" . $lang->ts_games["username"] . "</td>\r\n\t\t\t\t\t\t\t<td class=\"subheader\">" . $lang->ts_games["score"] . "</td>\r\n\t\t\t\t\t\t\t<td class=\"subheader\">" . $lang->ts_games["added"] . "</td>\r\n\t\t\t\t\t\t</tr>";
-            ($Query = sql_query("SELECT s.userid, s.added, s.score, u.username, g.namestyle FROM ts_games_scores s LEFT JOIN users u ON (s.$userid = u.id) LEFT JOIN usergroups g ON (u.$usergroup = g.gid) WHERE s.$gid = " . sqlesc($Gid) . " ORDER by s.score DESC, s.added DESC " . $limit)) || sqlerr(__FILE__, 383);
+            ($Query = sql_query("SELECT s.userid, s.added, s.score, u.username, g.namestyle FROM ts_games_scores s LEFT JOIN users u ON (s.`userid` = u.id) LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) WHERE s.$gid = " . sqlesc($Gid) . " ORDER by s.score DESC, s.added DESC " . $limit)) || sqlerr(__FILE__, 383);
             if (mysqli_num_rows($Query)) {
                 while ($Scorers = mysqli_fetch_assoc($Query)) {
                     $OUTPUT .= "\r\n\t\t\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t\t\t<td>" . get_user_color($Scorers["username"], $Scorers["namestyle"]) . "</td>\r\n\t\t\t\t\t\t\t\t<td>" . ts_nf($Scorers["score"]) . "</td>\r\n\t\t\t\t\t\t\t\t<td>" . my_datee($dateformat, $Scorers["added"]) . " " . my_datee($timeformat, $Scorers["added"]) . "</td>\r\n\t\t\t\t\t\t\t</tr>";
@@ -205,7 +205,7 @@ if (empty($Act) || $Act == "search" || $Act == "play" && $Gid) {
                         $Count = mysqli_num_rows($Query);
                         list($pagertop, $pagerbottom, $limit) = pager(4, $Count, "" . $_SERVER["SCRIPT_NAME"] . "?$act = play&amp;$gid = " . $Gid . "&amp;");
                         $VisitorMessages = "\r\n\t\t\t\t\t<table $width = \"100%\" $border = \"0\" $cellpadding = \"2\" $cellspacing = \"0\" $id = \"tspager\">\r\n\t\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t\t<td class=\"thead\" $id = \"PostedQuickVisitorMessages\">" . $lang->ts_games["visitormsg1"] . "</td>\r\n\t\t\t\t\t\t</tr>";
-                        ($Query2 = sql_query("SELECT v.cid as visitormsgid, v.userid as visitorid, v.comment as visitormsg, v.added, u.username, u.avatar, g.namestyle FROM ts_games_comments v LEFT JOIN users u ON (v.$userid = u.id) LEFT JOIN usergroups g ON (u.$usergroup = g.gid) WHERE v.$gid = '" . $Gid . "' ORDER by v.added DESC " . $limit)) || sqlerr(__FILE__, 496);
+                        ($Query2 = sql_query("SELECT v.cid as visitormsgid, v.userid as visitorid, v.comment as visitormsg, v.added, u.username, u.avatar, g.namestyle FROM ts_games_comments v LEFT JOIN users u ON (v.$userid = u.id) LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) WHERE v.$gid = '" . $Gid . "' ORDER by v.added DESC " . $limit)) || sqlerr(__FILE__, 496);
                         if (0 < mysqli_num_rows($Query2)) {
                             while ($vm = mysqli_fetch_assoc($Query2)) {
                                 $VisitorUsername = get_user_color($vm["username"], $vm["namestyle"]);

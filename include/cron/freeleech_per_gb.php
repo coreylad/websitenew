@@ -11,11 +11,11 @@ if (!defined("IN_CRON")) {
 }
 $TorrentGBLimitPerTorrent = 10;
 $TorrentGBLimitPerTorrent = $TorrentGBLimitPerTorrent * 1073741824;
-$Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id FROM torrents WHERE size > " . $TorrentGBLimitPerTorrent);
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id FROM torrents WHERE size > " . $TorrentGBLimitPerTorrent);
 $CQueryCount++;
-if (mysqli_num_rows($Query)) {
+if (mysqli_num_rows($query)) {
     $Torrents = [];
-    while ($_torrent = mysqli_fetch_assoc($Query)) {
+    while ($_torrent = mysqli_fetch_assoc($query)) {
         $Torrents[] = $_torrent["id"];
     }
     mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE torrents SET $free = 'yes' WHERE id IN (0," . implode(",", $Torrents) . ")");

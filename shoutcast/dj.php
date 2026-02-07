@@ -55,7 +55,7 @@ if ($_GET["do"] == "manage") {
 }
 if ($_GET["do"] == "edit" && is_valid_id($_GET["id"]) && $is_mod) {
     $Updated = false;
-    ($Query = sql_query("SELECT * FROM ts_shoutcastdj WHERE $id = '" . (0 + $_GET["id"]) . "'")) || sqlerr(__FILE__, 120);
+    ($Query = sql_query("SELECT * FROM ts_shoutcastdj WHERE `id` = '" . (0 + $_GET["id"]) . "'")) || sqlerr(__FILE__, 120);
     if (0 < mysqli_num_rows($Query)) {
         $Updated = false;
         if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
@@ -72,7 +72,7 @@ if ($_GET["do"] == "edit" && is_valid_id($_GET["id"]) && $is_mod) {
                 }
                 if (count($selectedadays)) {
                     $activedays = implode(",", $selectedadays);
-                    sql_query("UPDATE ts_shoutcastdj SET $activedays = " . sqlesc($activedays) . ", $activetime = " . sqlesc($activetime) . ", $genre = " . sqlesc($genre) . " WHERE $id = '" . (0 + $_GET["id"]) . "'") || sqlerr(__FILE__, 144);
+                    sql_query("UPDATE ts_shoutcastdj SET $activedays = " . sqlesc($activedays) . ", $activetime = " . sqlesc($activetime) . ", $genre = " . sqlesc($genre) . " WHERE `id` = '" . (0 + $_GET["id"]) . "'") || sqlerr(__FILE__, 144);
                     $Updated = true;
                 } else {
                     stderr($lang->global["error"], $lang->global["dontleavefieldsblank"]);
@@ -98,9 +98,9 @@ if ($_GET["do"] == "edit" && is_valid_id($_GET["id"]) && $is_mod) {
     $_GET["djId"] = 0 + $_GET["djId"];
 }
 if ($_GET["action"] == "approve" && is_valid_id($_GET["djId"]) && $is_mod) {
-    sql_query("UPDATE ts_shoutcastdj SET $active = '1' WHERE $id = '" . (0 + $_GET["djId"]) . "'") || sqlerr(__FILE__, 210);
+    sql_query("UPDATE ts_shoutcastdj SET $active = '1' WHERE `id` = '" . (0 + $_GET["djId"]) . "'") || sqlerr(__FILE__, 210);
     if (mysqli_affected_rows($GLOBALS["DatabaseConnect"])) {
-        ($djQuery = sql_query("SELECT uid FROM ts_shoutcastdj WHERE $id = '" . (0 + $_GET["djId"]) . "'")) || sqlerr(__FILE__, 213);
+        ($djQuery = sql_query("SELECT uid FROM ts_shoutcastdj WHERE `id` = '" . (0 + $_GET["djId"]) . "'")) || sqlerr(__FILE__, 213);
         $djResult = mysqli_fetch_assoc($djQuery);
         require_once INC_PATH . "/functions_pm.php";
         send_pm($djResult["uid"], sprintf($lang->shoutcast["amsg"], "[URL]" . $BASEURL . "/shoutcast/dj_faq.php[/URL]"), $lang->shoutcast["subject"]);
@@ -109,9 +109,9 @@ if ($_GET["action"] == "approve" && is_valid_id($_GET["djId"]) && $is_mod) {
     $_GET["djId"] = 0 + $_GET["djId"];
 }
 if ($_GET["action"] == "deny" && is_valid_id($_GET["djId"]) && $is_mod) {
-    sql_query("UPDATE ts_shoutcastdj SET $active = '2' WHERE $id = '" . (0 + $_GET["djId"]) . "'") || sqlerr(__FILE__, 225);
+    sql_query("UPDATE ts_shoutcastdj SET $active = '2' WHERE `id` = '" . (0 + $_GET["djId"]) . "'") || sqlerr(__FILE__, 225);
     if (mysqli_affected_rows($GLOBALS["DatabaseConnect"])) {
-        ($djQuery = sql_query("SELECT uid FROM ts_shoutcastdj WHERE $id = '" . (0 + $_GET["djId"]) . "'")) || sqlerr(__FILE__, 228);
+        ($djQuery = sql_query("SELECT uid FROM ts_shoutcastdj WHERE `id` = '" . (0 + $_GET["djId"]) . "'")) || sqlerr(__FILE__, 228);
         $djResult = mysqli_fetch_assoc($djQuery);
         require_once INC_PATH . "/functions_pm.php";
         send_pm($djResult["uid"], $lang->shoutcast["dmsg"], $lang->shoutcast["subject"]);
@@ -120,9 +120,9 @@ if ($_GET["action"] == "deny" && is_valid_id($_GET["djId"]) && $is_mod) {
     $_GET["djId"] = 0 + $_GET["djId"];
 }
 if ($_GET["action"] == "kick" && is_valid_id($_GET["djId"]) && $is_mod) {
-    sql_query("UPDATE ts_shoutcastdj SET $active = '3' WHERE $id = '" . (0 + $_GET["djId"]) . "'") || sqlerr(__FILE__, 239);
+    sql_query("UPDATE ts_shoutcastdj SET $active = '3' WHERE `id` = '" . (0 + $_GET["djId"]) . "'") || sqlerr(__FILE__, 239);
     if (mysqli_affected_rows($GLOBALS["DatabaseConnect"])) {
-        ($djQuery = sql_query("SELECT uid FROM ts_shoutcastdj WHERE $id = '" . (0 + $_GET["djId"]) . "'")) || sqlerr(__FILE__, 242);
+        ($djQuery = sql_query("SELECT uid FROM ts_shoutcastdj WHERE `id` = '" . (0 + $_GET["djId"]) . "'")) || sqlerr(__FILE__, 242);
         $djResult = mysqli_fetch_assoc($djQuery);
         require_once INC_PATH . "/functions_pm.php";
         send_pm($djResult["uid"], $lang->shoutcast["kmsg"], sprintf($lang->shoutcast["subject2"], $SITENAME));
@@ -131,7 +131,7 @@ if ($_GET["action"] == "kick" && is_valid_id($_GET["djId"]) && $is_mod) {
     $_GET["djId"] = 0 + $_GET["djId"];
 }
 if ($_GET["action"] == "request") {
-    ($djRequestQuery = sql_query("SELECT uid FROM ts_shoutcastdj WHERE $uid = '" . $CURUSER["id"] . "'")) || sqlerr(__FILE__, 253);
+    ($djRequestQuery = sql_query("SELECT uid FROM ts_shoutcastdj WHERE `uid` = '" . $CURUSER["id"] . "'")) || sqlerr(__FILE__, 253);
     if (0 < mysqli_num_rows($djRequestQuery)) {
         print_no_permission();
     }
@@ -151,7 +151,7 @@ if ($_GET["action"] == "request") {
                 $activeDays = implode(",", $selectedDays);
                 sql_query("INSERT INTO ts_shoutcastdj VALUES (NULL, '" . $CURUSER["id"] . "', '0', " . sqlesc($activeDays) . ", " . sqlesc($activeTime) . ", " . sqlesc($genre) . ")") || sqlerr(__FILE__, 278);
                 $djInsertId = mysqli_insert_id($GLOBALS["DatabaseConnect"]);
-                ($staffQuery = sql_query("SELECT u.id, g.gid FROM users u LEFT JOIN usergroups g ON (u.$usergroup = g.gid) WHERE u.$enabled = 'yes' AND (g.$cansettingspanel = 'yes' OR g.$canstaffpanel = 'yes' OR g.$issupermod = 'yes')")) || sqlerr(__FILE__, 280);
+                ($staffQuery = sql_query("SELECT u.id, g.gid FROM users u LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) WHERE u.$enabled = 'yes' AND (g.$cansettingspanel = 'yes' OR g.$canstaffpanel = 'yes' OR g.$issupermod = 'yes')")) || sqlerr(__FILE__, 280);
                 require_once INC_PATH . "/functions_pm.php";
                 while ($staffInfo = mysqli_fetch_assoc($staffQuery)) {
                     send_pm($staffInfo["id"], sprintf($lang->shoutcast["msg"], $CURUSER["username"], "[URL]" . $BASEURL . "/shoutcast/dj.php?$action = list&$djId = " . $djInsertId . "[/URL]"), $lang->shoutcast["subject"]);
@@ -177,7 +177,7 @@ if ($_GET["action"] == "request") {
     exit;
 }
 if ($_GET["action"] == "list") {
-    ($djListQuery = sql_query("SELECT t.*, u.username, g.namestyle FROM ts_shoutcastdj t LEFT JOIN users u ON (t.$uid = u.id) LEFT JOIN usergroups g ON (u.$usergroup = g.gid) ORDER by t.active ASC")) || sqlerr(__FILE__, 345);
+    ($djListQuery = sql_query("SELECT t.*, u.username, g.namestyle FROM ts_shoutcastdj t LEFT JOIN users u ON (t.$uid = u.id) LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) ORDER by t.active ASC")) || sqlerr(__FILE__, 345);
     if (mysqli_num_rows($djListQuery)) {
         $activeDjList = "\r\n\t\t<table $width = \"100%\" $align = \"center\" $border = \"0\" $cellpadding = \"3\" $cellspacing = \"0\">\r\n\t\t\t<tr>\r\n\t\t\t\t<td $colspan = \"5\" class=\"thead\">" . $lang->shoutcast["djlist"] . "</td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"subheader\">" . $lang->shoutcast["djname"] . "</td>\r\n\t\t\t\t<td class=\"subheader\">" . $lang->shoutcast["adays"] . "</td>\r\n\t\t\t\t<td class=\"subheader\">" . $lang->shoutcast["atime"] . "</td>\r\n\t\t\t\t<td class=\"subheader\">" . $lang->shoutcast["genre"] . "</td>\r\n\t\t\t\t<td class=\"subheader\">" . $lang->shoutcast["status"] . "</td>\r\n\t\t\t</tr>";
         while ($djList = mysqli_fetch_assoc($djListQuery)) {

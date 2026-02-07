@@ -22,7 +22,7 @@ while ($staffGroup = mysqli_fetch_array($staffGroupsQuery)) {
     $staffGroups[$staffGroup["gid"]] = $staffGroup;
 }
 $staffGroupsIn = implode(",", array_keys($staffGroups));
-$staffUsersQuery = sql_query("SELECT u.id,u.username,u.usergroup,u.last_access,u.options,u.country,c.name,c.flagpic,g.namestyle FROM users u LEFT JOIN countries c ON (u.$country = c.id) LEFT JOIN usergroups g ON (u.$usergroup = g.gid) WHERE u.usergroup IN (" . $staffGroupsIn . ") ORDER BY u.username");
+$staffUsersQuery = sql_query("SELECT u.id,u.username,u.usergroup,u.last_access,u.options,u.country,c.name,c.flagpic,g.namestyle FROM users u LEFT JOIN countries c ON (u.$country = c.id) LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) WHERE u.usergroup IN (" . $staffGroupsIn . ") ORDER BY u.username");
 while ($staffUser = mysqli_fetch_array($staffUsersQuery)) {
     $lastAccess = $staffUser["last_access"];
     $userId = $staffUser["id"];
@@ -44,7 +44,7 @@ while ($group = mysqli_fetch_array($query)) {
     }
 }
 $firstline = "";
-$query = sql_query("SELECT s.supportlang,s.supportfor,u.id,u.username,u.usergroup,u.last_access,u.options,u.country,c.name,c.flagpic,g.namestyle FROM ts_support s LEFT JOIN users u ON (s.$userid = u.id) LEFT JOIN countries c ON (u.$country = c.id) LEFT JOIN usergroups g ON (u.$usergroup = g.gid) ORDER BY u.username");
+$query = sql_query("SELECT s.supportlang,s.supportfor,u.id,u.username,u.usergroup,u.last_access,u.options,u.country,c.name,c.flagpic,g.namestyle FROM ts_support s LEFT JOIN users u ON (s.`userid` = u.id) LEFT JOIN countries c ON (u.$country = c.id) LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) ORDER BY u.username");
 while ($arr = mysqli_fetch_array($query)) {
     $last_access = $arr["last_access"];
     $userid = $arr["id"];

@@ -192,13 +192,13 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
 if (isset($usergroups) && $is_mod) {
     if ($UseMemcached) {
         if (!($staffcache = $TSMemcache->check("STAFFTEAM"))) {
-            $Query = sql_query("SELECT `content` FROM `ts_config` WHERE $configname = \"STAFFTEAM\"");
+            $Query = sql_query("SELECT `content` FROM `ts_config` WHERE `configname` = \"STAFFTEAM\"");
             $Result = mysqli_fetch_assoc($Query);
             $staffcache = @explode(",", $Result["content"]);
             $TSMemcache->add("STAFFTEAM", $staffcache);
         }
     } else {
-        $Query = sql_query("SELECT `content` FROM `ts_config` WHERE $configname = \"STAFFTEAM\"");
+        $Query = sql_query("SELECT `content` FROM `ts_config` WHERE `configname` = \"STAFFTEAM\"");
         $Result = mysqli_fetch_assoc($Query);
         $staffcache = @explode(",", $Result["content"]);
     }

@@ -42,7 +42,7 @@ if (strtolower($shoutboxcharset) != "utf-8") {
     }
 }
 if ($_POST["do"] == "save_comment" && is_valid_id($blogId)) {
-    $blogQuery = sql_query("SELECT uid, allowcomments FROM ts_blogs WHERE $bid = " . sqlesc($blogId));
+    $blogQuery = sql_query("SELECT uid, allowcomments FROM ts_blogs WHERE `bid` = " . sqlesc($blogId));
     if (mysqli_num_rows($blogQuery) == 0) {
         show_msg($lang->ts_blog["disabled"], true);
     } else {
@@ -59,8 +59,8 @@ if ($_POST["do"] == "save_comment" && is_valid_id($blogId)) {
             require_once INC_PATH . "/functions_pm.php";
             send_pm($blogData["uid"], sprintf($lang->ts_blog["s4"], $BASEURL . "/ts_blog.php?do=show_blog&$bid = " . $blogId . "&$cid = " . $commentId . "#show_comments" . $commentId), $lang->ts_blog["s5"]);
         }
-        sql_query("UPDATE ts_blogs SET $comments = comments + 1, $lastposter = " . sqlesc($CURUSER["id"]) . ", $lastpostdate = " . sqlesc($commentTime) . " WHERE $bid = " . sqlesc($blogId));
-        $subscriptionQuery = sql_query("SELECT uid FROM ts_blogs_subscribe WHERE $bid = " . sqlesc($blogId) . " AND uid != " . sqlesc($CURUSER["id"]));
+        sql_query("UPDATE ts_blogs SET $comments = comments + 1, $lastposter = " . sqlesc($CURUSER["id"]) . ", $lastpostdate = " . sqlesc($commentTime) . " WHERE `bid` = " . sqlesc($blogId));
+        $subscriptionQuery = sql_query("SELECT uid FROM ts_blogs_subscribe WHERE `bid` = " . sqlesc($blogId) . " AND uid != " . sqlesc($CURUSER["id"]));
         if (0 < mysqli_num_rows($subscriptionQuery)) {
             require_once INC_PATH . "/functions_pm.php";
             while ($subscriber = mysqli_fetch_assoc($subscriptionQuery)) {

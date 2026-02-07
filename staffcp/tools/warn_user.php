@@ -17,17 +17,17 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
     $reason = trim($_POST["reason"]);
     $warneduntil = trim($_POST["warneduntil"]);
     if ($username && $reason && $warneduntil) {
-        $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id, g.cansettingspanel, g.canstaffpanel, g.issupermod FROM users LEFT JOIN usergroups g ON (users.$usergroup = g.gid) WHERE $username = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $username) . "'");
-        if (mysqli_num_rows($Query) == 0) {
+        $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id, g.cansettingspanel, g.canstaffpanel, g.issupermod FROM users LEFT JOIN usergroups g ON (users.$usergroup = g.gid) WHERE `username` = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $username) . "'");
+        if (mysqli_num_rows($query) == 0) {
             $Message = showAlertError($Language[2]);
         } else {
-            $User = mysqli_fetch_assoc($Query);
+            $User = mysqli_fetch_assoc($query);
             if (strtotime($warneduntil) < time()) {
                 $Message = showAlertError($Language[14]);
             } else {
                 $SysMsg = str_replace(["{1}", "{2}"], [$username, $_SESSION["ADMIN_USERNAME"]], $Language[10]);
                 $modcomment = gmdate("Y-m-d") . " - " . trim($SysMsg) . " Reason: " . $reason . "\n";
-                mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET $warned = 'yes', $timeswarned = timeswarned + 1, $warneduntil = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $warneduntil) . "', $modcomment = CONCAT('" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $modcomment) . "', modcomment) WHERE $username = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $username) . "'");
+                mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET $warned = 'yes', $timeswarned = timeswarned + 1, $warneduntil = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $warneduntil) . "', $modcomment = CONCAT('" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $modcomment) . "', modcomment) WHERE `username` = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $username) . "'");
                 if (mysqli_affected_rows($GLOBALS["DatabaseConnect"])) {
                     logStaffAction($SysMsg);
                     var_237($User["id"], str_replace(["{1}", "{2}"], [$_SESSION["ADMIN_USERNAME"], $reason], $Language[11]), $Language[7]);
@@ -41,8 +41,8 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
         $Message = showAlertError($Language[1]);
     }
 }
-$Q = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'MAIN'");
-$Result = mysqli_fetch_assoc($Q);
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'MAIN'");
+$Result = mysqli_fetch_assoc($query);
 $MAIN = unserialize($Result["content"]);
 echo "<script $type = \"text/javascript\">\r\n\t\$(function()\r\n\t{\r\n\t\t\$('#warneduntil').datepicker({dateFormat: \"yy-mm-dd\", changeMonth: true, changeYear: true, closeText: \"X\", showButtonPanel: true});\r\n\t});\r\n</script>\r\n\r\n<form $action = \"";
 echo $_SERVER["SCRIPT_NAME"];
@@ -101,7 +101,7 @@ function sendPrivateMessage($receiver = 0, $msg = "", $subject = "", $sender = 0
 {
     if (!($sender != 0 && !$sender || !$receiver || empty($msg))) {
         mysqli_query($GLOBALS["DatabaseConnect"], "\r\n\t\t\t\t\tINSERT INTO messages\r\n\t\t\t\t\t\t(sender, receiver, added, subject, msg, unread, saved, location)\r\n\t\t\t\t\t\tVALUES\r\n\t\t\t\t\t\t('" . $sender . "', '" . $receiver . "', NOW(), '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $subject) . "', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $msg) . "', '" . $unread . "', '" . $saved . "', '" . $location . "')\r\n\t\t\t\t\t");
-        mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET $pmunread = pmunread + 1 WHERE $id = '" . $receiver . "'");
+        mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET $pmunread = pmunread + 1 WHERE `id` = '" . $receiver . "'");
     }
 }
 

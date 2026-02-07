@@ -556,7 +556,7 @@ $wait = intval($usergroups['waitlimit']) ? $usergroups['waitlimit'] : '';
 
 $torrentsperpage = ($CURUSER['torrentsperpage'] <> 0 ? intval($CURUSER['torrentsperpage']) : $ts_perpage);
 
-$countquery = 'SELECT t.id, c.name, u.usergroup, g.gid FROM torrents t'.$innerjoin.' LEFT JOIN users u ON (t.$owner = u.id) LEFT JOIN usergroups g ON (u.$usergroup = g.gid) LEFT JOIN categories c ON (t.$category = c.id)'.$WHERE.' ORDER BY '.$orderby;
+$countquery = 'SELECT t.id, c.name, u.usergroup, g.gid FROM torrents t'.$innerjoin.' LEFT JOIN users u ON (t.$owner = u.id) LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) LEFT JOIN categories c ON (t.$category = c.id)'.$WHERE.' ORDER BY '.$orderby;
 $countqueryhash = md5($countquery);
 
 if ($UseMemcached)
@@ -634,7 +634,7 @@ $ListTorrents = '
 
 $groupby = $torrentspeed == 'yes' ? ' GROUP by t.id ' : '';
 
-$query = ('SELECT '.($torrentspeed == 'yes' ? '(t.size * t.times_completed + SUM(p.downloaded)) / (UNIX_TIMESTAMP(NOW()) - UNIX_TIMESTAMP(t.added)) AS totalspeed,' : '').'t.*, c.name as catname, c.image as catimage, u.username, g.namestyle FROM torrents t'.$innerjoin.' LEFT JOIN categories c ON (t.$category = c.id) LEFT JOIN users u ON (t.$owner = u.id) LEFT JOIN usergroups g ON (u.$usergroup = g.gid)'.($torrentspeed == 'yes' ? ' LEFT JOIN '.($xbt_active == 'yes' ? 'xbt_files_users p ON (t.$id = p.fid)' : 'peers p ON (t.$id = p.torrent)') : '').$WHERE.$groupby.' ORDER BY '.$orderby.' '.$limit);
+$query = ('SELECT '.($torrentspeed == 'yes' ? '(t.size * t.times_completed + SUM(p.downloaded)) / (UNIX_TIMESTAMP(NOW()) - UNIX_TIMESTAMP(t.added)) AS totalspeed,' : '').'t.*, c.name as catname, c.image as catimage, u.username, g.namestyle FROM torrents t'.$innerjoin.' LEFT JOIN categories c ON (t.$category = c.id) LEFT JOIN users u ON (t.$owner = u.id) LEFT JOIN usergroups g ON (u.`usergroup` = g.gid)'.($torrentspeed == 'yes' ? ' LEFT JOIN '.($xbt_active == 'yes' ? 'xbt_files_users p ON (t.$id = p.fid)' : 'peers p ON (t.$id = p.torrent)') : '').$WHERE.$groupby.' ORDER BY '.$orderby.' '.$limit);
 
 $queryhash = md5($query);
 $TotalTorrents = array();

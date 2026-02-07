@@ -100,7 +100,7 @@ if ("POST" == strtoupper($_SERVER["REQUEST_METHOD"])) {
             if (strlen($username) < 3 || 12 < strlen($username)) {
                 $Errors[] = $lang->signup["validusername2"];
             } else {
-                ($UsernameQuery = sql_query("SELECT id FROM users WHERE $username = " . sqlesc($username))) || sqlerr(__FILE__, 184);
+                ($UsernameQuery = sql_query("SELECT id FROM users WHERE `username` = " . sqlesc($username))) || sqlerr(__FILE__, 184);
                 if (0 < mysqli_num_rows($UsernameQuery)) {
                     $Errors[] = $lang->signup["usernamexists"];
                 } else {
@@ -143,7 +143,7 @@ if ("POST" == strtoupper($_SERVER["REQUEST_METHOD"])) {
             if (EmailBanned($email)) {
                 $Errors[] = $lang->signup["emailbanned"];
             } else {
-                ($EmailQuery = sql_query("SELECT email FROM users WHERE $email = " . sqlesc($email))) || sqlerr(__FILE__, 247);
+                ($EmailQuery = sql_query("SELECT email FROM users WHERE `email` = " . sqlesc($email))) || sqlerr(__FILE__, 247);
                 if (0 < mysqli_num_rows($EmailQuery)) {
                     $Errors[] = $lang->signup["emailexists"];
                 }
@@ -163,7 +163,7 @@ if ("POST" == strtoupper($_SERVER["REQUEST_METHOD"])) {
     }
     if ($r_country == "yes") {
         if (isset($country)) {
-            ($CountryQuery = sql_query("SELECT id FROM countries WHERE $id = " . sqlesc($country))) || sqlerr(__FILE__, 282);
+            ($CountryQuery = sql_query("SELECT id FROM countries WHERE `id` = " . sqlesc($country))) || sqlerr(__FILE__, 282);
             if (mysqli_num_rows($CountryQuery) == 0) {
                 $Errors[] = $lang->signup["validcountry"];
             }
@@ -173,7 +173,7 @@ if ("POST" == strtoupper($_SERVER["REQUEST_METHOD"])) {
     }
     $ReferredBy = false;
     if ($r_referrer == "yes" && isset($referrer) && $referrer) {
-        ($ReferrerQuery = sql_query("SELECT id FROM users WHERE $username = " . sqlesc($referrer))) || sqlerr(__FILE__, 299);
+        ($ReferrerQuery = sql_query("SELECT id FROM users WHERE `username` = " . sqlesc($referrer))) || sqlerr(__FILE__, 299);
         if (0 < mysqli_num_rows($ReferrerQuery)) {
             $Result = mysqli_fetch_assoc($ReferrerQuery);
             $ReferredBy = $Result["id"];
@@ -253,7 +253,7 @@ if ("POST" == strtoupper($_SERVER["REQUEST_METHOD"])) {
             if (0 < $newuserid && $ReferredBy) {
                 $credit = 107374182;
                 sql_query("INSERT INTO referrals (uid,referring,credit) VALUES ('" . $ReferredBy . "', '" . $newuserid . "', '" . $credit . "')") || sqlerr(__FILE__, 418);
-                sql_query("UPDATE users SET $uploaded = uploaded + " . $credit . " WHERE $id = '" . $ReferredBy . "'") || sqlerr(__FILE__, 419);
+                sql_query("UPDATE users SET $uploaded = uploaded + " . $credit . " WHERE `id` = '" . $ReferredBy . "'") || sqlerr(__FILE__, 419);
             }
             if ($registration != "on" && $invitesystem == "on") {
                 sql_query("INSERT INTO friends VALUES (0," . sqlesc($newuserid) . ", " . sqlesc($invited_by) . ",'c')") || sqlerr(__FILE__, 424);

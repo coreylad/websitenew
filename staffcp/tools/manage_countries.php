@@ -10,16 +10,16 @@ var_235();
 $Language = file("languages/" . getStaffLanguage() . "/manage_countries.lang");
 $Act = isset($_GET["act"]) ? trim($_GET["act"]) : (isset($_POST["act"]) ? trim($_POST["act"]) : "");
 $Cid = isset($_GET["id"]) ? intval($_GET["id"]) : (isset($_POST["id"]) ? intval($_POST["id"]) : 0);
-$Q = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'MAIN'");
-$Result = mysqli_fetch_assoc($Q);
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'MAIN'");
+$Result = mysqli_fetch_assoc($query);
 $MAIN = unserialize($Result["content"]);
 $Message = "";
 if ($Act == "delete" && $Cid) {
-    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT name FROM countries WHERE $id = '" . $Cid . "'");
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT name FROM countries WHERE `id` = '" . $Cid . "'");
     if (mysqli_num_rows($query)) {
         $Result = mysqli_fetch_assoc($query);
         $name = $Result["name"];
-        mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM countries WHERE $id = '" . $Cid . "'");
+        mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM countries WHERE `id` = '" . $Cid . "'");
         $Message = str_replace(["{1}", "{2}"], [$name, $_SESSION["ADMIN_USERNAME"]], $Language[13]);
         logStaffAction($Message);
         $Message = showAlertError($Message);
@@ -48,7 +48,7 @@ if ($Act == "new") {
     }
 }
 if ($Act == "edit" && $Cid) {
-    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT name, flagpic FROM countries WHERE $id = '" . $Cid . "'");
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT name, flagpic FROM countries WHERE `id` = '" . $Cid . "'");
     if (mysqli_num_rows($query)) {
         $Country = mysqli_fetch_assoc($query);
         $name = $Country["name"];
@@ -57,7 +57,7 @@ if ($Act == "edit" && $Cid) {
             $name = trim($_POST["name"]);
             $flagpic = trim($_POST["flagpic"]);
             if ($name && $flagpic) {
-                mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE countries SET $name = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $name) . "', $flagpic = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $flagpic) . "' WHERE $id = '" . $Cid . "'");
+                mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE countries SET $name = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $name) . "', $flagpic = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $flagpic) . "' WHERE `id` = '" . $Cid . "'");
                 if (mysqli_affected_rows($GLOBALS["DatabaseConnect"])) {
                     $Message = str_replace(["{1}", "{2}"], [$name, $_SESSION["ADMIN_USERNAME"]], $Language[14]);
                     logStaffAction($Message);

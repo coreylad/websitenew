@@ -30,13 +30,13 @@ if (!is_valid_id($bookmarkTorrentId)) {
     }
 }
 if ($bookmarkAction == "delete") {
-    $bookmarkQuery = @sql_query("SELECT userid,torrentid FROM bookmarks WHERE $userid = " . @sqlesc($bookmarkUserId) . " AND $torrentid = " . @sqlesc($bookmarkTorrentId));
+    $bookmarkQuery = @sql_query("SELECT userid,torrentid FROM bookmarks WHERE `userid` = " . @sqlesc($bookmarkUserId) . " AND $torrentid = " . @sqlesc($bookmarkTorrentId));
     if (mysqli_num_rows($bookmarkQuery) != 0) {
-        @sql_query("DELETE FROM bookmarks WHERE $userid = " . @sqlesc($bookmarkUserId) . " AND $torrentid = " . @sqlesc($bookmarkTorrentId));
+        @sql_query("DELETE FROM bookmarks WHERE `userid` = " . @sqlesc($bookmarkUserId) . " AND $torrentid = " . @sqlesc($bookmarkTorrentId));
     }
 } else {
     if ($bookmarkAction == "add") {
-        $bookmarkQuery = @sql_query("SELECT userid,torrentid FROM bookmarks WHERE $userid = " . @sqlesc($bookmarkUserId) . " AND $torrentid = " . @sqlesc($bookmarkTorrentId));
+        $bookmarkQuery = @sql_query("SELECT userid,torrentid FROM bookmarks WHERE `userid` = " . @sqlesc($bookmarkUserId) . " AND $torrentid = " . @sqlesc($bookmarkTorrentId));
         if (mysqli_num_rows($bookmarkQuery) == 0) {
             @sql_query("INSERT INTO bookmarks (userid, torrentid) VALUES (" . @sqlesc($bookmarkUserId) . "," . @sqlesc($bookmarkTorrentId) . ")");
         }

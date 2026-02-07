@@ -52,7 +52,7 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
     }
     $imagepath = $pic_base_url . "friends/";
     $output = "";
-    $query = sql_query("SELECT s.*, u.username, u.enabled, u.donor, u.leechwarn, u.warned, u.options, u.last_access, u.avatar, g.namestyle FROM ts_shoutbox s LEFT JOIN users u ON (s.$uid = u.id) LEFT JOIN usergroups g ON (u.$usergroup = g.gid) WHERE $channel = " . sqlesc($channel) . " ORDER BY s.date " . ($FBShoutbox ? "ASC" : "DESC" . ($S_SPERPAGE ? " LIMIT " . $S_SPERPAGE : "")));
+    $query = sql_query("SELECT s.*, u.username, u.enabled, u.donor, u.leechwarn, u.warned, u.options, u.last_access, u.avatar, g.namestyle FROM ts_shoutbox s LEFT JOIN users u ON (s.$uid = u.id) LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) WHERE $channel = " . sqlesc($channel) . " ORDER BY s.date " . ($FBShoutbox ? "ASC" : "DESC" . ($S_SPERPAGE ? " LIMIT " . $S_SPERPAGE : "")));
     if (mysqli_num_rows($query)) {
         $dt = TIMENOW - 300;
         $lang->load("shoutbox");

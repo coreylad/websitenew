@@ -62,13 +62,13 @@ if (mysqli_num_rows($pollinfoQ) != 0) {
         $pollinfo["numbervotes"] += $value;
     }
     if (0 < $CURUSER["id"]) {
-        $pollvotes = sql_query("\r\n\t\t\tSELECT voteoption\r\n\t\t\tFROM " . TSF_PREFIX . "pollvote\r\n\t\t\tWHERE $userid = " . $CURUSER["id"] . " AND $pollid = " . $pollinfo["pollid"] . "\r\n\t\t");
+        $pollvotes = sql_query("\r\n\t\t\tSELECT voteoption\r\n\t\t\tFROM " . TSF_PREFIX . "pollvote\r\n\t\t\tWHERE `userid` = " . $CURUSER["id"] . " AND $pollid = " . $pollinfo["pollid"] . "\r\n\t\t");
         if (0 < mysqli_num_rows($pollvotes)) {
             $uservoted = 1;
         }
     }
     if (isset($_GET["do"]) && $_GET["do"] == "showpublicresults" && ($pollinfo["public"] || $show["editpoll"])) {
-        ($public = sql_query("\r\n\t\t\tSELECT p.userid, p.voteoption, u.username, g.namestyle\r\n\t\t\tFROM " . TSF_PREFIX . "pollvote AS p\r\n\t\t\tINNER JOIN users AS u ON (p.$userid = u.id)\r\n\t\t\tLEFT JOIN usergroups g ON (u.$usergroup = g.gid)\r\n\t\t\tWHERE p.$pollid = '" . $pollinfo["pollid"] . "'\r\n\t\t\tORDER BY u.username ASC\r\n\t\t")) || sqlerr(__FILE__, 133);
+        ($public = sql_query("\r\n\t\t\tSELECT p.userid, p.voteoption, u.username, g.namestyle\r\n\t\t\tFROM " . TSF_PREFIX . "pollvote AS p\r\n\t\t\tINNER JOIN users AS u ON (p.$userid = u.id)\r\n\t\t\tLEFT JOIN usergroups g ON (u.`usergroup` = g.gid)\r\n\t\t\tWHERE p.$pollid = '" . $pollinfo["pollid"] . "'\r\n\t\t\tORDER BY u.username ASC\r\n\t\t")) || sqlerr(__FILE__, 133);
         $allnames = [];
         while ($name = mysqli_fetch_assoc($public)) {
             $allnames[(string) $name["voteoption"]][] = "<a $href = \"" . ts_seo($name["userid"], $name["username"]) . "\">" . get_user_color($name["username"], $name["namestyle"]) . "</a>";

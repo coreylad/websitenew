@@ -12,29 +12,29 @@ $Message = "";
 $username = isset($_GET["username"]) ? trim($_GET["username"]) : "";
 $usergroup = "";
 $reason = "";
-$Q = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'MAIN'");
-$Result = mysqli_fetch_assoc($Q);
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'MAIN'");
+$Result = mysqli_fetch_assoc($query);
 $MAIN = unserialize($Result["content"]);
-$Q = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'THEME'");
-$Result = mysqli_fetch_assoc($Q);
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'THEME'");
+$Result = mysqli_fetch_assoc($query);
 $THEME = unserialize($Result["content"]);
-$Q = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'SMTP'");
-$Result = mysqli_fetch_assoc($Q);
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'SMTP'");
+$Result = mysqli_fetch_assoc($query);
 $SMTP = unserialize($Result["content"]);
 if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
     $username = trim($_POST["username"]);
     $usergroup = intval($_POST["usergroup"]);
     $reason = trim($_POST["reason"]);
     if ($username && $usergroup && $reason) {
-        $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT u.id, u.email, u.username, u.ip, g.cansettingspanel, g.canstaffpanel, g.issupermod FROM users u LEFT JOIN usergroups g ON (u.$usergroup = g.gid) WHERE u.$username = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $username) . "'");
+        $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT u.id, u.email, u.username, u.ip, g.cansettingspanel, g.canstaffpanel, g.issupermod FROM users u LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) WHERE u.$username = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $username) . "'");
         exit(mysqli_error($GLOBALS["DatabaseConnect"]));
     }
     $Message = showAlertError($Language[1]);
 }
-$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT u.id, g.cansettingspanel, g.canstaffpanel, g.issupermod FROM users u LEFT JOIN usergroups g ON (u.$usergroup = g.gid) WHERE u.$id = '" . $_SESSION["ADMIN_ID"] . "' LIMIT 1");
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT u.id, g.cansettingspanel, g.canstaffpanel, g.issupermod FROM users u LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) WHERE u.$id = '" . $_SESSION["ADMIN_ID"] . "' LIMIT 1");
 $LoggedAdminDetails = mysqli_fetch_assoc($query);
 $showusergroups = "\r\n<select $name = \"usergroup\" $tabindex = \"1\" class=\"bginput\">";
-$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT gid, title, cansettingspanel, canstaffpanel, issupermod FROM usergroups WHERE $isbanned = 'no' ORDER by disporder ASC");
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT gid, title, cansettingspanel, canstaffpanel, issupermod FROM usergroups WHERE `isbanned` = 'no' ORDER by disporder ASC");
 while ($UG = mysqli_fetch_assoc($query)) {
     if (!($UG["cansettingspanel"] == "yes" && $LoggedAdminDetails["cansettingspanel"] != "yes" || $UG["canstaffpanel"] == "yes" && $LoggedAdminDetails["canstaffpanel"] != "yes" || $UG["issupermod"] == "yes" && $LoggedAdminDetails["issupermod"] != "yes")) {
         $showusergroups .= "\r\n\t\t<option $value = \"" . $UG["gid"] . "\"" . ($usergroup == $UG["gid"] ? " $selected = \"selected\"" : "") . ">" . $UG["title"] . "</option>";
@@ -398,21 +398,21 @@ function sendPrivateMessage($receiver = 0, $msg = "", $subject = "", $sender = 0
 {
     if (!($sender != 0 && !$sender || !$receiver || empty($msg))) {
         mysqli_query($GLOBALS["DatabaseConnect"], "\r\n\t\t\t\t\tINSERT INTO messages\r\n\t\t\t\t\t\t(sender, receiver, added, subject, msg, unread, saved, location)\r\n\t\t\t\t\t\tVALUES\r\n\t\t\t\t\t\t('" . $sender . "', '" . $receiver . "', NOW(), '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $subject) . "', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $msg) . "', '" . $unread . "', '" . $saved . "', '" . $location . "')\r\n\t\t\t\t\t");
-        mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET $pmunread = pmunread + 1 WHERE $id = '" . $receiver . "'");
+        mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET $pmunread = pmunread + 1 WHERE `id` = '" . $receiver . "'");
     }
 }
 function function_113($userid)
 {
     $var_335 = [];
-    $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT ip FROM iplog WHERE $userid = '" . $userid . "'");
-    if (mysqli_num_rows($Query)) {
-        while ($var_336 = mysqli_fetch_assoc($Query)) {
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT ip FROM iplog WHERE `userid` = '" . $userid . "'");
+    if (mysqli_num_rows($query)) {
+        while ($var_336 = mysqli_fetch_assoc($query)) {
             if ($var_336["ip"]) {
                 $var_335[] = trim($var_336["ip"]);
             }
         }
     }
-    $var_339 = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT value FROM ipbans WHERE $id = 1");
+    $var_339 = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT value FROM ipbans WHERE `id` = 1");
     if (mysqli_num_rows($var_339)) {
         $Result = mysqli_fetch_assoc($var_339);
         $value = trim($Result["value"]);
@@ -425,7 +425,7 @@ function function_113($userid)
                 }
             }
         }
-        mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE ipbans SET $value = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], trim(implode(" ", $value))) . "', $date = NOW(), $modifier = '" . $_SESSION["ADMIN_ID"] . "' WHERE $id = 1");
+        mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE ipbans SET $value = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], trim(implode(" ", $value))) . "', $date = NOW(), $modifier = '" . $_SESSION["ADMIN_ID"] . "' WHERE `id` = 1");
     }
 }
 

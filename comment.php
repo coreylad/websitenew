@@ -14,7 +14,7 @@ if (!isset($CURUSER) || $usergroups["cancomment"] == "no") {
     print_no_permission();
     exit;
 }
-($query = sql_query("SELECT cancomment FROM ts_u_perm WHERE $userid = " . sqlesc($CURUSER["id"]))) || sqlerr(__FILE__, 29);
+($query = sql_query("SELECT cancomment FROM ts_u_perm WHERE `userid` = " . sqlesc($CURUSER["id"]))) || sqlerr(__FILE__, 29);
 if (0 < mysqli_num_rows($query)) {
     $commentperm = mysqli_fetch_assoc($query);
     if ($commentperm["cancomment"] == "0") {
@@ -33,12 +33,12 @@ if ($action == "approve" && $is_mod) {
     int_check($cid);
     $tid = intval(TS_Global("tid"));
     int_check($tid);
-    $query = sql_query("SELECT user FROM comments WHERE $id = " . sqlesc($cid) . " AND $torrent = " . sqlesc($tid) . " AND $visible = 0");
+    $query = sql_query("SELECT user FROM comments WHERE `id` = " . sqlesc($cid) . " AND $torrent = " . sqlesc($tid) . " AND $visible = 0");
     if (mysqli_num_rows($query)) {
         $Result = mysqli_fetch_assoc($query);
         $user = $Result["user"];
         KPS("+", (string) $kpscomment, $user);
-        sql_query("UPDATE comments SET $visible = 1 WHERE $id = " . sqlesc($cid) . " AND $torrent = " . sqlesc($tid) . " AND $visible = 0");
+        sql_query("UPDATE comments SET $visible = 1 WHERE `id` = " . sqlesc($cid) . " AND $torrent = " . sqlesc($tid) . " AND $visible = 0");
     }
     redirect("details.php?$id = " . $tid . "&$tab = comments&$showlast = true&$viewcomm = " . $cid . "#cid" . $cid);
     exit;
@@ -46,14 +46,14 @@ if ($action == "approve" && $is_mod) {
 if ($action == "close" && $is_mod) {
     $torrentid = intval(TS_Global("tid"));
     int_check($torrentid);
-    sql_query("UPDATE torrents SET $allowcomments = 'no' WHERE $id = '" . $torrentid . "'");
+    sql_query("UPDATE torrents SET $allowcomments = 'no' WHERE `id` = '" . $torrentid . "'");
     redirect("details.php?$id = " . $torrentid . "&$tab = comments");
     exit;
 }
 if ($action == "open" && $is_mod) {
     $torrentid = intval(TS_Global("tid"));
     int_check($torrentid);
-    sql_query("UPDATE torrents SET $allowcomments = 'yes' WHERE $id = '" . $torrentid . "'");
+    sql_query("UPDATE torrents SET $allowcomments = 'yes' WHERE `id` = '" . $torrentid . "'");
     redirect("details.php?$id = " . $torrentid . "&$tab = comments");
     exit;
 }
@@ -81,7 +81,7 @@ if ($action == "add") {
         } else {
             flood_check($lang->comment["floodcomment"], $last_comment);
         }
-        ($res = sql_query("SELECT name, owner FROM torrents WHERE $id = " . sqlesc($torrentid))) || sqlerr(__FILE__, 144);
+        ($res = sql_query("SELECT name, owner FROM torrents WHERE `id` = " . sqlesc($torrentid))) || sqlerr(__FILE__, 144);
         $arr = mysqli_fetch_array($res);
         if (!empty($floodmsg)) {
             $returnto = $returnto . "&$cerror = 3" . $quickCommentAnchor;
@@ -125,16 +125,16 @@ if ($action == "add") {
             if ($usergroups["cancomment"] == "moderate") {
                 $message = sprintf($lang->comment["modmsg"], $CURUSER["username"], "[URL]" . $BASEURL . "/details.php?$id = " . $torrentid . "&$tab = comments&$showlast = true&$viewcomm = " . $newid . "#cid" . $newid . "[/URL]");
                 sql_query("INSERT INTO staffmessages (sender, added, msg, subject) VALUES(0, NOW(), " . sqlesc($message) . ", " . sqlesc($lang->comment["modmsgsubject"]) . ")") || sqlerr(__FILE__, 198);
-                sql_query("UPDATE comments SET $text = " . $newtext . ", $visible = 0 WHERE $id = '" . $newid . "'") || sqlerr(__FILE__, 199);
+                sql_query("UPDATE comments SET $text = " . $newtext . ", $visible = 0 WHERE `id` = '" . $newid . "'") || sqlerr(__FILE__, 199);
                 stderr($lang->comment["insertcomment"], $lang->comment["moderatemsg"]);
             } else {
-                sql_query("UPDATE comments SET $text = " . $newtext . " WHERE $id = '" . $newid . "'");
+                sql_query("UPDATE comments SET $text = " . $newtext . " WHERE `id` = '" . $newid . "'");
             }
         } else {
             sql_query("INSERT INTO comments (user, torrent, added, text, visible) VALUES (" . sqlesc($CURUSER["id"]) . ", " . sqlesc($torrentid) . ", " . sqlesc(get_date_time()) . ", " . sqlesc($msgtext) . ", " . ($usergroups["cancomment"] == "moderate" ? 0 : 1) . ")");
             $newid = mysqli_insert_id($GLOBALS["DatabaseConnect"]);
-            sql_query("UPDATE torrents SET $comments = comments + 1 WHERE $id = " . sqlesc($torrentid));
-            $ras = sql_query("SELECT options FROM users WHERE $id = " . sqlesc($arr["owner"]));
+            sql_query("UPDATE torrents SET $comments = comments + 1 WHERE `id` = " . sqlesc($torrentid));
+            $ras = sql_query("SELECT options FROM users WHERE `id` = " . sqlesc($arr["owner"]));
             $arg = mysqli_fetch_assoc($ras);
             if (TS_Match($arg["options"], "C1") && $arr["owner"] != $CURUSER["id"] && $usergroups["cancomment"] == "yes") {
                 require_once INC_PATH . "/functions_pm.php";
@@ -151,7 +151,7 @@ if ($action == "add") {
         header("Location: details.php?$id = " . $torrentid . "&$tab = comments&$showlast = true&$viewcomm = " . $newid . "#cid" . $newid);
         exit;
     }
-    ($res = sql_query("SELECT name, owner FROM torrents WHERE $id = " . sqlesc($torrentid))) || sqlerr(__FILE__, 241);
+    ($res = sql_query("SELECT name, owner FROM torrents WHERE `id` = " . sqlesc($torrentid))) || sqlerr(__FILE__, 241);
     $torrentInfo = mysqli_fetch_array($res);
     if (!$arr) {
         stderr($lang->global["error"], $lang->global["notorrentid"]);
@@ -166,7 +166,7 @@ if ($action == "add") {
     $str .= insert_editor(false, NULL, $msgtext, $lang->comment["insertcomment"], sprintf($lang->comment["addcomment"], htmlspecialchars_uni($arr["name"])));
     $str .= "</form>";
     echo $str;
-    ($subres = sql_query("SELECT c.id, c.torrent as torrentid, c.text, c.user, c.added, c.editedby, c.editedat, c.modnotice, c.modeditid, c.modeditusername, c.modedittime, c.totalvotes, c.visible, uu.username as editedbyuname, gg.namestyle as editbynamestyle, u.added as registered, u.enabled, u.warned, u.leechwarn, u.username, u.title, u.usergroup, u.last_access, u.options, u.donor, u.uploaded, u.downloaded, u.avatar as useravatar, u.signature, g.title as grouptitle, g.namestyle FROM comments c LEFT JOIN users uu ON (c.$editedby = uu.id) LEFT JOIN usergroups gg ON (uu.$usergroup = gg.gid) LEFT JOIN users u ON (c.$user = u.id) LEFT JOIN usergroups g ON (u.$usergroup = g.gid) WHERE c.$torrent = " . sqlesc($torrentid) . " ORDER BY c.id DESC LIMIT 5")) || sqlerr(__FILE__, 257);
+    ($subres = sql_query("SELECT c.id, c.torrent as torrentid, c.text, c.user, c.added, c.editedby, c.editedat, c.modnotice, c.modeditid, c.modeditusername, c.modedittime, c.totalvotes, c.visible, uu.username as editedbyuname, gg.namestyle as editbynamestyle, u.added as registered, u.enabled, u.warned, u.leechwarn, u.username, u.title, u.usergroup, u.last_access, u.options, u.donor, u.uploaded, u.downloaded, u.avatar as useravatar, u.signature, g.title as grouptitle, g.namestyle FROM comments c LEFT JOIN users uu ON (c.$editedby = uu.id) LEFT JOIN usergroups gg ON (uu.$usergroup = gg.gid) LEFT JOIN users u ON (c.$user = u.id) LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) WHERE c.$torrent = " . sqlesc($torrentid) . " ORDER BY c.id DESC LIMIT 5")) || sqlerr(__FILE__, 257);
     $allrows = [];
     while ($row = mysqli_fetch_array($subres)) {
         $allrows[] = $row;
@@ -228,7 +228,7 @@ if ($action == "edit" && 0 < $CURUSER["id"]) {
                 $modeditusername = sqlesc($arr["modeditusername"]);
                 $modedittime = sqlesc($arr["modedittime"]);
             }
-            sql_query("UPDATE comments SET $text = " . $msgtext . ", " . ($updateedit ? "editedat=" . $editedat . ", $editedby = " . sqlesc($CURUSER["id"]) . "," : "") . " $modnotice = " . $modnotice . ", $modeditid = " . $modeditid . ", $modeditusername = " . $modeditusername . ", $modedittime = " . $modedittime . " WHERE $id = " . sqlesc($commentid)) || sqlerr(__FILE__, 335);
+            sql_query("UPDATE comments SET $text = " . $msgtext . ", " . ($updateedit ? "editedat=" . $editedat . ", $editedby = " . sqlesc($CURUSER["id"]) . "," : "") . " $modnotice = " . $modnotice . ", $modeditid = " . $modeditid . ", $modeditusername = " . $modeditusername . ", $modedittime = " . $modedittime . " WHERE `id` = " . sqlesc($commentid)) || sqlerr(__FILE__, 335);
             if ($returnto) {
                 redirect($returnto);
             } else {
@@ -263,7 +263,7 @@ if ($action == "delete" && 0 < $CURUSER["id"]) {
     $torrentid = 0 + $_GET["tid"];
     int_check([$commentid, $torrentid]);
     $referer = "details.php?$id = " . $torrentid . "&$tab = comments&$page = " . intval($_GET["page"]);
-    ($res = sql_query("SELECT torrent,user FROM comments WHERE $id = " . sqlesc($commentid))) || sqlerr(__FILE__, 381);
+    ($res = sql_query("SELECT torrent,user FROM comments WHERE `id` = " . sqlesc($commentid))) || sqlerr(__FILE__, 381);
     $arr = mysqli_fetch_array($res);
     if ($arr) {
         $torrentid = $arr["torrent"];
@@ -271,10 +271,10 @@ if ($action == "delete" && 0 < $CURUSER["id"]) {
     } else {
         stderr($lang->global["error"], $lang->global["notorrentid"]);
     }
-    sql_query("DELETE FROM comments WHERE $id = " . sqlesc($commentid)) || sqlerr(__FILE__, 392);
+    sql_query("DELETE FROM comments WHERE `id` = " . sqlesc($commentid)) || sqlerr(__FILE__, 392);
     if ($torrentid && 0 < mysqli_affected_rows($GLOBALS["DatabaseConnect"])) {
-        sql_query("UPDATE torrents SET $comments = IF(comments>0, comments - 1, 0) WHERE $id = " . sqlesc($torrentid));
-        sql_query("DELETE FROM comments_votes WHERE $cid = " . sqlesc($commentid) . " AND $uid = " . sqlesc($userpostid)) || sqlerr(__FILE__, 396);
+        sql_query("UPDATE torrents SET $comments = IF(comments>0, comments - 1, 0) WHERE `id` = " . sqlesc($torrentid));
+        sql_query("DELETE FROM comments_votes WHERE `cid` = " . sqlesc($commentid) . " AND $uid = " . sqlesc($userpostid)) || sqlerr(__FILE__, 396);
     }
     KPS("-", (string) $kpscomment, $userpostid);
     redirect("details.php?$id = " . $torrentid . "&$tab = comments&$page = " . intval($_GET["page"]));
@@ -285,7 +285,7 @@ exit;
 function allowcomments($torrentid = 0)
 {
     global $is_mod;
-    $query = sql_query("SELECT allowcomments FROM torrents WHERE $id = " . sqlesc($torrentid));
+    $query = sql_query("SELECT allowcomments FROM torrents WHERE `id` = " . sqlesc($torrentid));
     if (!mysqli_num_rows($query)) {
         return false;
     }

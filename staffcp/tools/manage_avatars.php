@@ -10,11 +10,11 @@ var_235();
 $Language = file("languages/" . getStaffLanguage() . "/manage_avatars.lang");
 $Message = "";
 $AvatarPath = "../include/avatars/";
-$Q = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'FORUMCP'");
-$Result = mysqli_fetch_assoc($Q);
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'FORUMCP'");
+$Result = mysqli_fetch_assoc($query);
 $FORUMCP = unserialize($Result["content"]);
-$Q = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'MAIN'");
-$Result = mysqli_fetch_assoc($Q);
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'MAIN'");
+$Result = mysqli_fetch_assoc($query);
 $MAIN = unserialize($Result["content"]);
 $BASEURL = $MAIN["BASEURL"];
 $AllowedFileTypes = ["gif", "jpg", "jpeg", "png", "bmp"];
@@ -27,7 +27,7 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST" && isset($_POST["avatars"])
             $__exp = explode("_", $__exp);
             $__userid = intval($__exp[1]);
             if (unlink($AvatarPath . $delete_avatar)) {
-                mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET $avatar = '' WHERE $id = " . $__userid);
+                mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET $avatar = '' WHERE `id` = " . $__userid);
             }
         }
     }
@@ -51,7 +51,7 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST" && isset($_POST["avatars"])
                 $foo->function_47($AvatarPath);
                 if ($foo->processed && unlink($AvatarPath . $_avatar_)) {
                     $Newavatar = $BASEURL . "/include/avatars/" . $new_name . "." . $File_Ext;
-                    mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET $avatar = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $Newavatar) . "' WHERE $id = '" . $__userid . "'");
+                    mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET $avatar = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $Newavatar) . "' WHERE `id` = '" . $__userid . "'");
                 }
             }
         }
@@ -79,7 +79,7 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST" && isset($_POST["avatars"])
                 $foo->function_47($AvatarPath);
                 if ($foo->processed && unlink($AvatarPath . $_avatar_)) {
                     $Newavatar = $BASEURL . "/include/avatars/" . $new_name . "." . $File_Ext;
-                    mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET $avatar = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $Newavatar) . "' WHERE $id = '" . $__userid . "'");
+                    mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET $avatar = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $Newavatar) . "' WHERE `id` = '" . $__userid . "'");
                 }
             }
         }
@@ -101,7 +101,7 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST" && isset($_POST["avatars"])
                 $foo->function_47($AvatarPath);
                 if ($foo->processed && unlink($AvatarPath . $_avatar_)) {
                     $Newavatar = $BASEURL . "/include/avatars/" . $new_name . "." . $File_Ext;
-                    mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET $avatar = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $Newavatar) . "' WHERE $id = '" . $__userid . "'");
+                    mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET $avatar = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $Newavatar) . "' WHERE `id` = '" . $__userid . "'");
                 }
             }
         }
@@ -116,7 +116,7 @@ if ($handle = scandir($AvatarPath)) {
     }
 }
 $users = [];
-$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT u.username, u.id, g.namestyle FROM users u LEFT JOIN usergroups g ON (u.$usergroup = g.gid) WHERE u.avatar REGEXP '^" . $BASEURL . "/include/avatars/.*\\.(gif|jpg|png|bmp|jpeg)'");
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT u.username, u.id, g.namestyle FROM users u LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) WHERE u.avatar REGEXP '^" . $BASEURL . "/include/avatars/.*\\.(gif|jpg|png|bmp|jpeg)'");
 while ($user = mysqli_fetch_assoc($query)) {
     $users[$user["id"]] = "<a $href = \"" . $BASEURL . "/userdetails.php?$id = " . $user["id"] . "\">" . applyUsernameStyle($user["username"], $user["namestyle"]) . "</a>";
 }

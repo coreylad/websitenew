@@ -41,7 +41,7 @@ if (isset($_GET["logout"]) && $_GET["logout"] == "true") {
     exit;
 }
 require REALPATH . "admin_login.php";
-$Result = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = \"MAIN\"");
+$Result = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = \"MAIN\"");
 $Row = mysqli_fetch_assoc($Result);
 $MAIN = @unserialize($Row["content"]);
 if ($MAIN["site_online"] != "yes" && $_SESSION["ADMIN_CANSETTINGSPANEL"] != "yes") {
@@ -216,12 +216,12 @@ function function_25($forceLicenseCheck = false)
         $var_49 = TIMENOW + $var_48 . "|" . SCRIPT_VERSION . "|" . $var_44;
         $var_50 = @new Class_1("TSSE8.02020httpstemplateshares.net!");
         $var_49 = @$var_50->function_17($var_49);
-        mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE ts_config SET $content = \"" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $var_49) . "\" WHERE $configname = \"PEER\"");
+        mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE ts_config SET $content = \"" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $var_49) . "\" WHERE `configname` = \"PEER\"");
     }
 }
 function function_26()
 {
-    $var_49 = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT content FROM ts_config WHERE $configname = \"PEER\"");
+    $var_49 = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT content FROM ts_config WHERE `configname` = \"PEER\"");
     if (!mysqli_num_rows($var_49)) {
         mysqli_query($GLOBALS["DatabaseConnect"], "INSERT INTO `ts_config` (`configname` ,`content`) VALUES ('PEER', '')");
         $var_49 = "";
@@ -256,7 +256,7 @@ function function_26()
 }
 function function_27()
 {
-    $Result = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = \"MAIN\"");
+    $Result = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = \"MAIN\"");
     $Row = mysqli_fetch_assoc($Result);
     $MAIN = @unserialize($Row["content"]);
     $var_54 = ROOTPATH . $MAIN["cache"] . "/systemcache.dat";
@@ -290,12 +290,12 @@ function buildDashboard()
     global $Language543543;
     global $var_55;
     global $DO;
-    $Result = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = \"ANNOUNCE\"");
+    $Result = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = \"ANNOUNCE\"");
     $Row = mysqli_fetch_assoc($Result);
     $var_56 = @unserialize($Row["content"]);
     $var_57 = number_format(mysqli_num_rows(mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id FROM users")));
     $var_58 = number_format(mysqli_num_rows(mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id FROM users WHERE UNIX_TIMESTAMP(added) > " . (time() - 86400))));
-    $var_59 = number_format(mysqli_num_rows(mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id FROM users WHERE $status = \"pending\"")));
+    $var_59 = number_format(mysqli_num_rows(mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id FROM users WHERE `status` = \"pending\"")));
     $var_60 = number_format(mysqli_num_rows(mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id FROM comments WHERE UNIX_TIMESTAMP(added) > " . (time() - 86400))));
     $var_61 = number_format(mysqli_num_rows(mysqli_query($GLOBALS["DatabaseConnect"], "SELECT pid FROM tsf_posts WHERE dateline > " . (time() - 86400))));
     if ($var_56["xbt_active"] == "yes") {
@@ -310,7 +310,7 @@ function buildDashboard()
     $var_63 = number_format($var_63);
     $var_65 = number_format(mysqli_num_rows(mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id FROM users WHERE UNIX_TIMESTAMP(last_access) > " . (time() - 86400))));
     $var_66 = "";
-    $var_67 = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT s.userid, s.location, u.username, g.title, g.namestyle FROM ts_sessions s LEFT JOIN users u ON (s.$userid = u.id) LEFT JOIN usergroups g ON (u.$usergroup = g.gid) WHERE s.userid <> \"0\" AND s.$inforum = \"0\" AND (g.$cansettingspanel = \"yes\" OR g.$canstaffpanel = \"yes\" OR g.$issupermod = \"yes\") AND s.lastactivity > " . (time() - 900) . " ORDER BY u.username ASC");
+    $var_67 = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT s.userid, s.location, u.username, g.title, g.namestyle FROM ts_sessions s LEFT JOIN users u ON (s.`userid` = u.id) LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) WHERE s.userid <> \"0\" AND s.$inforum = \"0\" AND (g.$cansettingspanel = \"yes\" OR g.$canstaffpanel = \"yes\" OR g.$issupermod = \"yes\") AND s.lastactivity > " . (time() - 900) . " ORDER BY u.username ASC");
     if (0 < ($var_68 = mysqli_num_rows($var_67))) {
         $var_69 = [];
         $var_66 = [];
@@ -363,7 +363,7 @@ function outputHTMLHeader()
     global $Language543543;
     global $loadYAHOO;
     global $loadPrototype;
-    $Result = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = \"THEME\"");
+    $Result = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = \"THEME\"");
     $Row = mysqli_fetch_assoc($Result);
     $var_28 = @unserialize($Row["content"]);
     return "\r\n\t<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\r\n\t<html $xmlns = \"https://www.w3.org/1999/xhtml\" $dir = \"ltr\" $lang = \"en\">\r\n\t\t<head>\r\n\t\t\t<title>" . $Language543543[3] . "</title>\r\n\t\t\t<meta http-$equiv = \"Content-Type\" $content = \"text/html; $charset = " . $var_28["charset"] . "\" />\r\n\t\t\t\r\n\t\t\t<link $rel = \"stylesheet\" $type = \"text/css\" $href = \"" . ADMINCPURL . "style/style.css?$v = 2\" />\r\n\t\t\t<link $rel = \"stylesheet\" $type = \"text/css\" $href = \"" . WEBSITEURL . "scripts/jquery-ui-1.10.4.custom/css/flick/jquery-ui-1.10.4.custom.min.css\" />\r\n\t\t\t\r\n\t\t\t<script $type = \"text/javascript\" $src = \"" . WEBSITEURL . "scripts/jquery-1.11.2.min.js\"></script>\r\n\t\t\t<script $type = \"text/javascript\" $src = \"" . WEBSITEURL . "scripts/jquery-ui-1.10.4.custom/js/jquery-ui-1.10.4.custom.min.js\" /></script>\r\n\t\t\t<script $type = \"text/javascript\" $src = \"" . WEBSITEURL . "scripts/jquery.easing.1.3.js\" /></script>\r\n\r\n\t\t\t" . ($loadYAHOO ? "\r\n\t\t\t<!-- Sam Skin CSS for TabView -->\r\n\t\t\t<link $rel = \"stylesheet\" $type = \"text/css\" $href = \"" . ADMINCPURL . "yui/tabview.css\">\r\n\r\n\t\t\t<!-- JavaScript Dependencies for Tabview: -->\r\n\t\t\t<script $src = \"" . ADMINCPURL . "yui/yahoo-dom-event.js\"></script>\r\n\t\t\t<script $src = \"" . ADMINCPURL . "yui/element-min.js\"></script>\r\n\r\n\t\t\t<!-- OPTIONAL: Connection (required for dynamic loading of data) -->\r\n\t\t\t<script $src = \"" . ADMINCPURL . "yui/connection-min.js\"></script>\r\n\r\n\t\t\t<!-- Source file for TabView -->\r\n\t\t\t<script $src = \"" . ADMINCPURL . "yui/tabview-min.js\"></script>\r\n\t\t\t\r\n\t\t\t<script $type = \"text/javascript\">\r\n\t\t\t\tjQuery(document).ready(function()\r\n\t\t\t\t{\r\n\t\t\t\t\tvar $tabView = new YAHOO.widget.TabView(\"manage_settings\");\r\n\t\t\t\t\tvar $tabView = new YAHOO.widget.TabView(\"general_settings\");\r\n\t\t\t\t});\r\n\t\t\t</script>" : "") . "\r\n\r\n\t\t\t" . ($loadPrototype ? "\r\n\t\t\t<script $type = \"text/javascript\" $src = \"scripts/assets/js/prototype.js\"></script>\r\n\t\t\t<script $type = \"text/javascript\" $src = \"scripts/assets/js/scriptaculous.js\"></script>\r\n\t\t\t<script $type = \"text/javascript\" $src = \"scripts/assets/js/portal.js\"></script>\r\n\r\n\t\t\t<link $rel = \"stylesheet\" $href = \"scripts/assets/css/style.css\"  $type = \"text/css\" $media = \"screen\" />\r\n\t\t\t<link $rel = \"stylesheet\" $href = \"scripts/assets/css/portal.css\"  $type = \"text/css\" $media = \"screen\" />" : "") . "\r\n\r\n\t\t\t<script $type = \"text/javascript\">\r\n\t\t\t\tfunction TSJump(url)\r\n\t\t\t\t{\r\n\t\t\t\t\twindow.$location = url;\r\n\t\t\t\t}\r\n\t\t\t\tfunction TSGetID(IDName)\r\n\t\t\t\t{\r\n\t\t\t\t\tif(document.getElementById)\r\n\t\t\t\t\t{\r\n\t\t\t\t\t\treturn document.getElementById(IDName);\r\n\t\t\t\t\t}\r\n\t\t\t\t\telse if(document.all)\r\n\t\t\t\t\t{\r\n\t\t\t\t\t\treturn document.all[IDName];\r\n\t\t\t\t\t}\r\n\t\t\t\t\telse if(document.layers)\r\n\t\t\t\t\t{\r\n\t\t\t\t\t\treturn document.layers[IDName];\r\n\t\t\t\t\t}\r\n\t\t\t\t\telse\r\n\t\t\t\t\t{\r\n\t\t\t\t\t\treturn null;\r\n\t\t\t\t\t}\r\n\t\t\t\t}\r\n\r\n\t\t\t\tjQuery(document).ready(function()\r\n\t\t\t\t{\r\n\t\t\t\t\tjQuery('input[$type = \"text\"],input[$type = \"password\"]').each(function()\r\n\t\t\t\t\t{\r\n\t\t\t\t\t\t\$(this).attr(\"autocomplete\", \"new-password\");\r\n\t\t\t\t\t});\r\n\t\t\t\t});\r\n\r\n\t\t\t\tjQuery(document).ajaxStart(function(){jQuery(\"#ajaxLoader\").fadeIn(\"fast\")}).ajaxStop(function(){jQuery(\"#ajaxLoader\").fadeOut(\"fast\")});\r\n\t\t\t</script>\r\n\t\t</head>\r\n\t\t<body" . ($loadYAHOO ? " class=\"yui-skin-sam\"" : "") . ">\r\n\t\t\t<div $id = \"ajaxLoader\"><div><img $src = \"./images/ajax_loading.gif\" $alt = \"\" $title = \"\" /> Loading...</div></div>";

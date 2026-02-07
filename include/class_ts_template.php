@@ -18,8 +18,8 @@ class TS_Template
     public function CacheTemplates($TemplateList)
     {
         global $TSDatabase;
-        $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT name, content FROM ts_templates WHERE name IN (" . implode(",", $TemplateList) . ")");
-        while ($Template = mysqli_fetch_assoc($Query)) {
+        $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT name, content FROM ts_templates WHERE name IN (" . implode(",", $TemplateList) . ")");
+        while ($Template = mysqli_fetch_assoc($query)) {
             $this->Cache[$Template["name"]] = $Template["content"];
         }
     }

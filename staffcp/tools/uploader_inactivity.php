@@ -20,8 +20,8 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
     logStaffAction($Message);
     $Message = showAlertError($Message);
 }
-$Q = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'UI'");
-$Result = mysqli_fetch_assoc($Q);
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'UI'");
+$Result = mysqli_fetch_assoc($query);
 $UI = unserialize($Result["content"]);
 $UploaderGroups = $UI["UploaderGroups"] ? explode(",", $UI["UploaderGroups"]) : [];
 $squery = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT gid, title, namestyle FROM usergroups");

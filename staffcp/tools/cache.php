@@ -11,8 +11,8 @@ $Language = file("languages/" . getStaffLanguage() . "/cache.lang");
 $Act = isset($_GET["act"]) ? trim($_GET["act"]) : (isset($_POST["act"]) ? trim($_POST["act"]) : "");
 $Message = "";
 if (isset($_GET["cache"])) {
-    $Q = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'MAIN'");
-    $Result = mysqli_fetch_assoc($Q);
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'MAIN'");
+    $Result = mysqli_fetch_assoc($query);
     $MAIN = unserialize($Result["content"]);
     $cache_arrays = ["categories", "ipban", "plugin", "usergroup", "indexstats", "smilies"];
     echo function_322("Categories");
@@ -51,8 +51,8 @@ if (isset($_GET["cache"])) {
         echo var_633();
     }
     echo function_322("Index Stats");
-    $Q = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'ANNOUNCE'");
-    $Result = mysqli_fetch_assoc($Q);
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'ANNOUNCE'");
+    $Result = mysqli_fetch_assoc($query);
     $ANNOUNCE = unserialize($Result["content"]);
     $torrents = function_324("id", "torrents");
     if ($ANNOUNCE["xbt_active"] == "yes") {
@@ -75,7 +75,7 @@ if (isset($_GET["cache"])) {
     $totaldownloaded = $row["totaldl"];
     $totaluploaded = $row["totalul"];
     $registered = $row["totaluser"];
-    $latestuser = mysqli_fetch_assoc(mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id,username FROM users WHERE $status = 'confirmed' ORDER BY id DESC LIMIT 1"));
+    $latestuser = mysqli_fetch_assoc(mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id,username FROM users WHERE `status` = 'confirmed' ORDER BY id DESC LIMIT 1"));
     $latestuser = "<a $href = \"" . $MAIN["BASEURL"] . "/userdetails.php?$id = " . $latestuser["id"] . "\">" . $latestuser["username"] . "</a>";
     $getfstats = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT SUM(posts) AS totalposts, SUM(threads) AS totalthreads FROM tsf_forums");
     $fstats = mysqli_fetch_assoc($getfstats);
@@ -151,8 +151,8 @@ function formatBytes($bytes = 0)
 }
 function function_324($C, $T, $E = "")
 {
-    $Q = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT COUNT(" . $C . ") FROM " . $T . ($E ? " WHERE " . $E : ""));
-    $var_634 = mysqli_fetch_row($Q);
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT COUNT(" . $C . ") FROM " . $T . ($E ? " WHERE " . $E : ""));
+    $var_634 = mysqli_fetch_row($query);
     return $var_634[0];
 }
 function function_149($file)

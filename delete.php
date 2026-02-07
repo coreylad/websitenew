@@ -16,7 +16,7 @@ $TSSEConfig->TSLoadConfig("KPS");
 $lang->load("delete");
 $id = intval(TS_Global("id"));
 int_check($id);
-$res = sql_query("SELECT name,owner,moderate FROM torrents WHERE $id = " . sqlesc($id));
+$res = sql_query("SELECT name,owner,moderate FROM torrents WHERE `id` = " . sqlesc($id));
 $row = mysqli_fetch_assoc($res);
 if (!$row) {
     stderr($lang->global["error"], $lang->global["notorrentid"]);

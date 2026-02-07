@@ -22,7 +22,7 @@ if (!isset($_POST["tid"]) || !is_valid_id($_POST["tid"])) {
     show_msg($lang->global["notorrentid"], true);
 }
 $id = intval($_POST["tid"]);
-$Query = sql_query("SELECT t_link FROM torrents WHERE $id = '" . $id . "'");
+$Query = sql_query("SELECT t_link FROM torrents WHERE `id` = '" . $id . "'");
 if (mysqli_num_rows($Query) == 0) {
     show_msg($lang->global["notorrentid"], true);
 }
@@ -37,7 +37,7 @@ if ($t_link) {
     include_once INC_PATH . "/ts_imdb.php";
 }
 if ($t_link) {
-    sql_query("UPDATE torrents SET $t_link = " . sqlesc($t_link) . " WHERE $id = '" . $id . "'");
+    sql_query("UPDATE torrents SET $t_link = " . sqlesc($t_link) . " WHERE `id` = '" . $id . "'");
     require_once INC_PATH . "/functions_imdb_rating.php";
     if ($IMDBRating = TSSEGetIMDBRatingImage($t_link)) {
         $t_link = str_replace("<b>User Rating:</b>", "<b>User Rating:</b> " . $IMDBRating["image"], $t_link);

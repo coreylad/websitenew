@@ -13,10 +13,10 @@ $Cid = isset($_GET["id"]) ? intval($_GET["id"]) : (isset($_POST["id"]) ? intval(
 $Language = file("languages/" . getStaffLanguage() . "/manage_torrent_categories.lang");
 $Message = "";
 if ($Act == "delete" && $Cid) {
-    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT name, type FROM categories WHERE $id = '" . $Cid . "'");
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT name, type FROM categories WHERE `id` = '" . $Cid . "'");
     if (mysqli_num_rows($query)) {
         $Category = mysqli_fetch_assoc($query);
-        mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM categories WHERE $id = '" . $Cid . "'");
+        mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM categories WHERE `id` = '" . $Cid . "'");
         if (mysqli_affected_rows($GLOBALS["DatabaseConnect"])) {
             if ($Category["type"] == "c") {
                 mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM categories WHERE $pid = '" . $Cid . "'");
@@ -28,7 +28,7 @@ if ($Act == "delete" && $Cid) {
     }
 }
 if ($Act == "edit" && $Cid) {
-    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM categories WHERE $id = '" . $Cid . "'");
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM categories WHERE `id` = '" . $Cid . "'");
     if (mysqli_num_rows($query)) {
         $Category = mysqli_fetch_assoc($query);
         if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
@@ -52,7 +52,7 @@ if ($Act == "edit" && $Cid) {
             foreach ($_POST as $name => $value) {
                 $Changes[] = "`" . $name . "` = '" . (!empty($value) ? mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $value) : $value) . "'";
             }
-            mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE categories SET " . implode(", ", $Changes) . " WHERE $id = '" . $Cid . "'");
+            mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE categories SET " . implode(", ", $Changes) . " WHERE `id` = '" . $Cid . "'");
             if (mysqli_affected_rows($GLOBALS["DatabaseConnect"])) {
                 function_153();
                 $Message = str_replace(["{1}", "{2}"], [$Category["name"], $_SESSION["ADMIN_USERNAME"]], $Language[11]);
@@ -65,8 +65,8 @@ if ($Act == "edit" && $Cid) {
             $Extra = "";
             if ($Category["type"] == "s") {
                 $Selectbox = "<select $name = \"pid\">";
-                $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id, name FROM categories WHERE $type = 'c' ORDER BY name ASC");
-                while ($Cats = mysqli_fetch_assoc($Query)) {
+                $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id, name FROM categories WHERE $type = 'c' ORDER BY name ASC");
+                while ($Cats = mysqli_fetch_assoc($query)) {
                     $Selectbox .= "<option $value = \"" . $Cats["id"] . "\"" . ($Cats["id"] == $Category["pid"] ? " $selected = \"selected\"" : "") . ">" . htmlspecialchars($Cats["name"]) . "</option>";
                 }
                 $Selectbox .= "</select >";
@@ -137,8 +137,8 @@ if ($Act == "new") {
         if ($id) {
             $Head = $Language[26];
             $Selectbox = "<select $name = \"pid\"><option $value = \"0\"></option>";
-            $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id, name FROM categories WHERE $type = 'c' ORDER BY name ASC");
-            while ($Cats = mysqli_fetch_assoc($Query)) {
+            $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id, name FROM categories WHERE $type = 'c' ORDER BY name ASC");
+            while ($Cats = mysqli_fetch_assoc($query)) {
                 $Selectbox .= "<option $value = \"" . $Cats["id"] . "\"" . ($Cats["id"] == $id ? " $selected = \"selected\"" : "") . ">" . htmlspecialchars($Cats["name"]) . "</option>";
             }
             $Selectbox .= "</select >";
@@ -170,13 +170,13 @@ if ($Act == "new") {
     }
 }
 $SubCategories = [];
-$Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM categories WHERE $type = 's' ORDER by name ASC");
-while ($SC = mysqli_fetch_assoc($Query)) {
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM categories WHERE $type = 's' ORDER by name ASC");
+while ($SC = mysqli_fetch_assoc($query)) {
     $SubCategories[$SC["pid"]][] = "\r\n\t<!-- Sub Category -->\r\n\t<table>\r\n\t\t<tr>\r\n\t\t\t<td $width = \"1%\">\r\n\t\t\t\t<a $href = \"index.php?do=manage_torrent_categories&amp;$act = edit&amp;$id = " . $SC["id"] . "\"><img $src = \"images/tool_edit.png\" $alt = \"" . trim($Language[3]) . "\" $title = \"" . trim($Language[3]) . "\" $border = \"0\" $style = \"vertical-align: middle;\" /></a>\r\n\t\t\t</td>\r\n\t\t\t<td $width = \"1%\">\r\n\t\t\t\t<a $href = \"index.php?do=manage_torrent_categories&amp;$act = delete&amp;$id = " . $SC["id"] . "\" $onclick = \"return confirm('" . trim($Language[4]) . ": " . trim($SC["name"]) . "\\n\\n" . trim($Language[5]) . "');\"><img $src = \"images/tool_delete.png\" $alt = \"" . trim($Language[4]) . "\" $title = \"" . trim($Language[4]) . "\" $border = \"0\" $style = \"vertical-align: middle;\" /></a>\r\n\t\t\t</td>\r\n\t\t\t<td $width = \"88%\">\r\n\t\t\t\t" . trim($SC["name"]) . "\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t</table>\r\n\t<!-- Sub Category -->\r\n\t";
 }
 $Output = [];
-$Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM categories WHERE $type = 'c' ORDER by name ASC");
-while ($ST = mysqli_fetch_assoc($Query)) {
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM categories WHERE $type = 'c' ORDER by name ASC");
+while ($ST = mysqli_fetch_assoc($query)) {
     $Output[] = "\r\n\t<!-- Category -->\r\n\t<table $cellpadding = \"4\" $cellspacing = \"0\" $border = \"0\" $align = \"center\" $width = \"400\" $style = \"border-collapse:separate\" class=\"tborder\">\r\n\t\t<tr>\r\n\t\t\t<td class=\"tcat\">\r\n\t\t\t\t<span $style = \"float: right;\">\r\n\t\t\t\t\t<a $href = \"index.php?do=manage_torrent_categories&amp;$act = new&amp;$id = " . $ST["id"] . "\"><img $src = \"images/tool_new.png\" $alt = \"" . trim($Language[18]) . "\" $title = \"" . trim($Language[18]) . "\" $border = \"0\" $style = \"vertical-align: middle;\" /></a> <a $href = \"index.php?do=manage_torrent_categories&amp;$act = edit&amp;$id = " . $ST["id"] . "\"><img $src = \"images/tool_edit.png\" $alt = \"" . trim($Language[6]) . "\" $title = \"" . trim($Language[6]) . "\" $border = \"0\" $style = \"vertical-align: middle;\" /></a> <a $href = \"index.php?do=manage_torrent_categories&amp;$act = delete&amp;$id = " . $ST["id"] . "\" $onclick = \"return confirm('" . trim($Language[7]) . ": " . trim($ST["name"]) . "\\n\\n" . trim($Language[8]) . "');\"><img $src = \"images/tool_delete.png\" $alt = \"" . trim($Language[7]) . "\" $title = \"" . trim($Language[7]) . "\" $border = \"0\" $style = \"vertical-align: middle;\" /></a>\r\n\t\t\t\t</span>" . $ST["name"] . "\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t" . (isset($SubCategories[$ST["id"]]) ? implode(" ", $SubCategories[$ST["id"]]) : "&nbsp;" . $Language[9]) . "\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t</table>\r\n\t<!-- Category -->\r\n\t";
 }
 $List = "";
@@ -228,7 +228,7 @@ function function_154($file)
 }
 function function_153()
 {
-    $var_281 = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'MAIN'");
+    $var_281 = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'MAIN'");
     $var_20 = mysqli_fetch_assoc($var_281);
     $var_27 = unserialize($var_20["content"]);
     $var_436 = [];
@@ -253,7 +253,7 @@ function function_153()
 }
 function function_155($selected = "")
 {
-    $var_281 = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'MAIN'");
+    $var_281 = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'MAIN'");
     $var_20 = mysqli_fetch_assoc($var_281);
     $var_27 = unserialize($var_20["content"]);
     if (is_dir("../images")) {

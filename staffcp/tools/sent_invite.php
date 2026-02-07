@@ -10,14 +10,14 @@ var_235();
 $Language = file("languages/" . getStaffLanguage() . "/sent_invite.lang");
 $Message = "";
 $Act = isset($_GET["act"]) ? trim($_GET["act"]) : (isset($_POST["act"]) ? trim($_POST["act"]) : "");
-$Q = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = \"MAIN\"");
-$Result = mysqli_fetch_assoc($Q);
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = \"MAIN\"");
+$Result = mysqli_fetch_assoc($query);
 $MAIN = unserialize($Result["content"]);
-$Q = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = \"THEME\"");
-$Result = mysqli_fetch_assoc($Q);
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = \"THEME\"");
+$Result = mysqli_fetch_assoc($query);
 $THEME = unserialize($Result["content"]);
-$Q = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = \"SMTP\"");
-$Result = mysqli_fetch_assoc($Q);
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = \"SMTP\"");
+$Result = mysqli_fetch_assoc($query);
 $SMTP = unserialize($Result["content"]);
 $subject = "";
 $invitemessage = str_replace(["{1}", "{2}"], [$MAIN["SITENAME"], $MAIN["BASEURL"]], $Language[16]);
@@ -33,7 +33,7 @@ if ($Act == "post_invites") {
             $Output = "\r\n\t\t\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">";
             foreach ($SEmails as $email) {
                 $FAUIT = false;
-                $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM users WHERE $email = \"" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $email) . "\"");
+                $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM users WHERE `email` = \"" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $email) . "\"");
                 if (mysqli_num_rows($query)) {
                     $FAUIT = true;
                 } else {
@@ -47,7 +47,7 @@ if ($Act == "post_invites") {
                     if (var_283($email, $subject, nl2br($invitemessage))) {
                         $Output .= "<font $color = \"green\">" . $Language[12] . "</font>";
                     } else {
-                        mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM invites WHERE $id = " . $inviteid);
+                        mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM invites WHERE `id` = " . $inviteid);
                         $Output .= "<font $color = \"red\">" . $Language[13] . "</font>";
                     }
                 } else {

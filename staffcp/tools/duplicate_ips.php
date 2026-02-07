@@ -13,13 +13,13 @@ $ids = [];
 if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
     $userids = isset($_POST["ids"]) ? $_POST["ids"] : "";
     if ($userids && is_array($userids) && 0 < count($userids) && $userids[0] != "") {
-        $Uquery = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT gid FROM usergroups WHERE $isbanned = 'yes'");
-        $Result = mysqli_fetch_assoc($Uquery);
+        $userQuery = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT gid FROM usergroups WHERE `isbanned` = 'yes'");
+        $Result = mysqli_fetch_assoc($userQuery);
         $usergroupid = $Result["gid"];
         $userids = implode(",", $userids);
         $SysMsg = str_replace("{1}", $_SESSION["ADMIN_USERNAME"], $Language[15]);
         $modcomment = gmdate("Y-m-d") . " - " . trim($SysMsg) . "\n";
-        mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET $enabled = 'no', $usergroup = '" . $usergroupid . "', $notifs = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $SysMsg) . "', $modcomment = CONCAT('" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $modcomment) . "', modcomment) WHERE id IN (" . $userids . ")");
+        mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET `enabled` = 'no', $usergroup = '" . $usergroupid . "', $notifs = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $SysMsg) . "', $modcomment = CONCAT('" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $modcomment) . "', modcomment) WHERE id IN (" . $userids . ")");
         if (mysqli_affected_rows($GLOBALS["DatabaseConnect"])) {
             $SysMsg = str_replace(["{1}", "{2}"], [$userids, $_SESSION["ADMIN_USERNAME"]], $Language[14]);
             logStaffAction($SysMsg);
@@ -30,7 +30,7 @@ $counter = mysqli_query($GLOBALS["DatabaseConnect"], "\r\n\t\tSELECT ip, count(*
 if (!mysqli_num_rows($counter)) {
     echo "\r\n\t\r\n\t" . showAlertError($Language[1]);
 } else {
-    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT u.id, g.cansettingspanel, g.canstaffpanel, g.issupermod FROM users u LEFT JOIN usergroups g ON (u.$usergroup = g.gid) WHERE u.$id = '" . $_SESSION["ADMIN_ID"] . "' LIMIT 1");
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT u.id, g.cansettingspanel, g.canstaffpanel, g.issupermod FROM users u LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) WHERE u.$id = '" . $_SESSION["ADMIN_ID"] . "' LIMIT 1");
     $LoggedAdminDetails = mysqli_fetch_assoc($query);
     $perpage = isset($_GET["perpage"]) ? intval($_GET["perpage"]) : (isset($_POST["perpage"]) ? intval($_POST["perpage"]) : 0);
     $page = isset($_GET["page"]) ? intval($_GET["page"]) : (isset($_POST["page"]) ? intval($_POST["page"]) : 0);
@@ -51,7 +51,7 @@ if (!mysqli_num_rows($counter)) {
     $x .= "'XXX'";
     $max = mysqli_query($GLOBALS["DatabaseConnect"], "\r\n\t\tSELECT ip\r\n\t\tFROM users \r\n\t\tWHERE ip IN (" . $x . ") \r\n\t\tORDER BY ip");
     $total = ceil(mysqli_num_rows($max) / $perpage);
-    $info = mysqli_query($GLOBALS["DatabaseConnect"], "\r\n\t\tSELECT u.id, u.ip, u.username, u.email, u.added, u.last_access, u.uploaded, u.downloaded, u.invites, u.seedbonus, g.title, g.namestyle, g.cansettingspanel, g.canstaffpanel, g.issupermod\r\n\t\tFROM users u \r\n\t\tLEFT JOIN usergroups g ON (u.$usergroup = g.gid)\r\n\t\tWHERE u.ip IN (" . $x . ") \r\n\t\tORDER BY u.ip\r\n\t\tLIMIT " . $start . ", " . $perpage);
+    $info = mysqli_query($GLOBALS["DatabaseConnect"], "\r\n\t\tSELECT u.id, u.ip, u.username, u.email, u.added, u.last_access, u.uploaded, u.downloaded, u.invites, u.seedbonus, g.title, g.namestyle, g.cansettingspanel, g.canstaffpanel, g.issupermod\r\n\t\tFROM users u \r\n\t\tLEFT JOIN usergroups g ON (u.`usergroup` = g.gid)\r\n\t\tWHERE u.ip IN (" . $x . ") \r\n\t\tORDER BY u.ip\r\n\t\tLIMIT " . $start . ", " . $perpage);
     if ($page != 1) {
         $prv = $page - 1;
         $firstpage = "<input $type = \"button\" class=\"button\" $tabindex = \"1\" $value = \"&laquo; \" $onclick = \"window.$location = 'index.php?do=duplicate_ips&$perpage = " . $perpage . "&$page = 1'\">";

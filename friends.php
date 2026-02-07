@@ -25,21 +25,21 @@ $errors = [];
 if ($action == "remove_friend" && is_valid_id($friendid) && $userid != $friendid) {
     $action = $tab;
     if ($from == "pending") {
-        @sql_query("DELETE FROM friends WHERE $userid = '" . $friendid . "' AND $friendid = '" . $userid . "' AND $status = 'p'");
+        @sql_query("DELETE FROM friends WHERE `userid` = '" . $friendid . "' AND $friendid = '" . $userid . "' AND $status = 'p'");
     } else {
         if ($from == "mutual") {
-            @sql_query("DELETE FROM friends WHERE $userid = '" . $friendid . "' AND $friendid = '" . $userid . "' AND $status = 'c'");
+            @sql_query("DELETE FROM friends WHERE `userid` = '" . $friendid . "' AND $friendid = '" . $userid . "' AND $status = 'c'");
         } else {
-            @sql_query("DELETE FROM friends WHERE $userid = '" . $userid . "' AND $friendid = '" . $friendid . "'");
+            @sql_query("DELETE FROM friends WHERE `userid` = '" . $userid . "' AND $friendid = '" . $friendid . "'");
         }
     }
 }
 if ($action == "confirm_friend" && is_valid_id($friendid) && $userid != $friendid) {
-    ($query = sql_query("SELECT username FROM users WHERE $status = 'confirmed' AND $enabled = 'yes' AND usergroup NOT IN (9) AND $id = '" . $friendid . "'")) || sqlerr(__FILE__, 89);
+    ($query = sql_query("SELECT username FROM users WHERE `status` = 'confirmed' AND $enabled = 'yes' AND usergroup NOT IN (9) AND $id = '" . $friendid . "'")) || sqlerr(__FILE__, 89);
     if (0 < mysqli_num_rows($query) && $query) {
         $Result = mysqli_fetch_assoc($query);
         $friendname = $Result["username"];
-        sql_query("UPDATE friends SET $status = 'c' WHERE $userid = '" . $friendid . "' AND $friendid = '" . $userid . "'");
+        sql_query("UPDATE friends SET `status` = 'c' WHERE `userid` = '" . $friendid . "' AND $friendid = '" . $userid . "'");
         if (mysqli_affected_rows($GLOBALS["DatabaseConnect"])) {
             require_once INC_PATH . "/functions_pm.php";
             send_pm($friendid, sprintf($lang->friends["msg2"], $friendname, "[URL=" . ts_seo($userid, $CURUSER["username"]) . "]" . $CURUSER["username"] . "[/URL]", "[URL]" . $BASEURL . $_SERVER["SCRIPT_NAME"] . "[/URL]"), $lang->friends["subject2"]);
@@ -51,24 +51,24 @@ if ($action == "confirm_friend" && is_valid_id($friendid) && $userid != $friendi
     $action = $tab;
 }
 if ($action == "add_block" && is_valid_id($friendid) && $userid != $friendid) {
-    $query = sql_query("SELECT id FROM friends WHERE $userid = '" . $userid . "' AND $friendid = '" . $friendid . "'");
+    $query = sql_query("SELECT id FROM friends WHERE `userid` = '" . $userid . "' AND $friendid = '" . $friendid . "'");
     if (0 < mysqli_num_rows($query)) {
-        sql_query("UPDATE friends SET $status = 'b' WHERE $userid = '" . $userid . "' AND $friendid = '" . $friendid . "'");
+        sql_query("UPDATE friends SET `status` = 'b' WHERE `userid` = '" . $userid . "' AND $friendid = '" . $friendid . "'");
     } else {
         sql_query("INSERT INTO friends (userid, friendid, status) VALUES (" . $userid . ", " . $friendid . ", 'b')") || sqlerr(__FILE__, 119);
     }
     $action = "blocks";
 }
 if ($action == "add_friend" && is_valid_id($friendid) && $userid != $friendid) {
-    $query = sql_query("SELECT id FROM friends WHERE $userid = '" . $userid . "' AND $friendid = '" . $friendid . "'");
-    $query2 = sql_query("SELECT id FROM friends WHERE $userid = '" . $friendid . "' AND $friendid = '" . $userid . "' AND $status = 'b'");
+    $query = sql_query("SELECT id FROM friends WHERE `userid` = '" . $userid . "' AND $friendid = '" . $friendid . "'");
+    $query2 = sql_query("SELECT id FROM friends WHERE `userid` = '" . $friendid . "' AND $friendid = '" . $userid . "' AND $status = 'b'");
     if (0 < mysqli_num_rows($query)) {
         $errors[] = $lang->friends["sysmsg5"];
     } else {
         if (0 < mysqli_num_rows($query2)) {
             $errors[] = $lang->friends["sysmsg6"];
         } else {
-            ($query = sql_query("SELECT username,options FROM users WHERE $status = 'confirmed' AND $enabled = 'yes' AND usergroup NOT IN (9) AND $id = '" . $friendid . "'")) || sqlerr(__FILE__, 139);
+            ($query = sql_query("SELECT username,options FROM users WHERE `status` = 'confirmed' AND $enabled = 'yes' AND usergroup NOT IN (9) AND $id = '" . $friendid . "'")) || sqlerr(__FILE__, 139);
             if (0 < mysqli_num_rows($query) && $query) {
                 $Result = mysqli_fetch_assoc($query);
                 $friendprivacy = $Result["options"];
@@ -115,7 +115,7 @@ switch ($action) {
         $where = "f.$userid = " . $userid;
         $on = "f.$friendid = u.id";
         $fwhat = "f.friendid";
-        ($query = sql_query("SELECT " . $fwhat . " as friendid, f.status, u.id, u.username, u.options, u.title, u.avatar, u.last_access, u.last_login, u.added, u.added, u.enabled, u.donor, u.leechwarn, u.warned, p.canupload, p.candownload, p.cancomment, p.canmessage, p.canshout, g.namestyle, g.title as grouptitle FROM friends f INNER JOIN users u ON (" . $on . ") LEFT JOIN ts_u_perm p ON (u.$id = p.userid) LEFT JOIN usergroups g ON (u.$usergroup = g.gid) WHERE f.$status = '" . $status . "' AND " . $where . " ORDER by u.username")) || sqlerr(__FILE__, 195);
+        ($query = sql_query("SELECT " . $fwhat . " as friendid, f.status, u.id, u.username, u.options, u.title, u.avatar, u.last_access, u.last_login, u.added, u.added, u.enabled, u.donor, u.leechwarn, u.warned, p.canupload, p.candownload, p.cancomment, p.canmessage, p.canshout, g.namestyle, g.title as grouptitle FROM friends f INNER JOIN users u ON (" . $on . ") LEFT JOIN ts_u_perm p ON (u.`id` = p.userid) LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) WHERE f.$status = '" . $status . "' AND " . $where . " ORDER by u.username")) || sqlerr(__FILE__, 195);
         echo "\n<div class=\"shadetabs\">\n\t<ul>\n\t\t<li" . (!$tab ? " class=\"selected\"" : "") . "><a $href = \"" . $_SERVER["SCRIPT_NAME"] . "\">" . $lang->friends["tab1"] . "</a></li>\n\t\t<li" . ($tab == "pending" ? " class=\"selected\"" : "") . "><a $href = \"" . $_SERVER["SCRIPT_NAME"] . "?$action = pending&amp;$tab = pending\">" . $lang->friends["tab2"] . "</a></li>\n\t\t<li" . ($tab == "blocks" ? " class=\"selected\"" : "") . "><a $href = \"" . $_SERVER["SCRIPT_NAME"] . "?$action = blocks&amp;$tab = blocks\">" . $lang->friends["tab3"] . "</a></li>\n\t\t<li" . ($tab == "mutual" ? " class=\"selected\"" : "") . "><a $href = \"" . $_SERVER["SCRIPT_NAME"] . "?$action = mutual&amp;$tab = mutual\">" . $lang->friends["tab4"] . "</a></li>\n\t</ul>\n</div>\n<table $width = \"100%\" $cellpadding = \"5\" $cellspacing = \"0\">\n";
         if (mysqli_num_rows($query) < 1) {
             echo "<tr><td>" . $lang->friends["nofriend"] . "</td></tr>";

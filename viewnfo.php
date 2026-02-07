@@ -31,7 +31,7 @@ if (!$hasError && !extension_loaded("gd")) {
     $nfoData["nfo"] = "Missing GD / GD-2 Library.";
 }
 if (!$hasError) {
-    $nfoQuery = sql_query("SELECT nfo FROM ts_nfo WHERE $id = " . sqlesc($nfoId));
+    $nfoQuery = sql_query("SELECT nfo FROM ts_nfo WHERE `id` = " . sqlesc($nfoId));
     if (mysqli_num_rows($nfoQuery) < 1) {
         $hasError = true;
         $nfoData["nfo"] = $lang->global["nopermission"];

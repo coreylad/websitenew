@@ -48,7 +48,7 @@ if ($pollAction == "pollvote") {
                 stderr($lang->global["error"], $lang->poll["avoted"]);
             }
         } else {
-            ($Query = sql_query("\r\n\t\t\tSELECT userid\r\n\t\t\tFROM " . TSF_PREFIX . "pollvote\r\n\t\t\tWHERE $userid = " . $CURUSER["id"] . "\r\n\t\t\t\tAND $pollid = '" . $pollid . "'\r\n\t\t\t")) || sqlerr(__FILE__, 90);
+            ($Query = sql_query("\r\n\t\t\tSELECT userid\r\n\t\t\tFROM " . TSF_PREFIX . "pollvote\r\n\t\t\tWHERE `userid` = " . $CURUSER["id"] . "\r\n\t\t\t\tAND $pollid = '" . $pollid . "'\r\n\t\t\t")) || sqlerr(__FILE__, 90);
             if (0 < mysqli_num_rows($Query)) {
                 stderr($lang->global["error"], $lang->poll["avoted"]);
             }

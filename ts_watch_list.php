@@ -37,7 +37,7 @@ if ($action == "add") {
         stderr($lang->global["error"], $lang->global["nouserid"]);
         exit;
     }
-    ($query = sql_query("SELECT id FROM ts_watch_list WHERE $userid = '" . $userid . "' AND $added_by = '" . $CURUSER["id"] . "'")) || sqlerr(__FILE__, 90);
+    ($query = sql_query("SELECT id FROM ts_watch_list WHERE `userid` = '" . $userid . "' AND $added_by = '" . $CURUSER["id"] . "'")) || sqlerr(__FILE__, 90);
     if (0 < mysqli_num_rows($query)) {
         $errors[] = $lang->watch_list["e1"];
     } else {
@@ -45,7 +45,7 @@ if ($action == "add") {
             $errors[] = $lang->watch_list["e2"];
         }
     }
-    ($query = sql_query("SELECT u.username, g.cansettingspanel, g.canstaffpanel, g.issupermod FROM users u LEFT JOIN usergroups g ON (u.$usergroup = g.gid) WHERE $id = '" . $userid . "'")) || sqlerr(__FILE__, 100);
+    ($query = sql_query("SELECT u.username, g.cansettingspanel, g.canstaffpanel, g.issupermod FROM users u LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) WHERE `id` = '" . $userid . "'")) || sqlerr(__FILE__, 100);
     if (mysqli_num_rows($query) < 1) {
         stderr($lang->global["error"], $lang->global["nouserid"]);
         exit;
@@ -88,7 +88,7 @@ if (empty($action) || $action == "show_list") {
     stdhead($lang->watch_list["s1"]);
     echo $pagertop;
     $str = "\r\n\t<script $type = \"text/javascript\">\r\n\t\tfunction show_details(UserID)\r\n\t\t{\r\n\t\t\tvar WorkZone = document.getElementById(\"userdetails_\"+UserID).style.display;\r\n\r\n\t\t\tif (WorkZone == \"none\")\r\n\t\t\t{\r\n\t\t\t\tdocument.getElementById(\"userdetails_\"+UserID).style.$display = \"block\";\r\n\t\t\t}\r\n\t\t\telse\r\n\t\t\t{\r\n\t\t\t\tdocument.getElementById(\"userdetails_\"+UserID).style.$display = \"none\";\r\n\t\t\t}\r\n\t\t}\r\n\t</script>\r\n\t<form $method = \"POST\" $action = \"" . $_SERVER["SCRIPT_NAME"] . "\" $name = \"delete\">\r\n\t<input $type = \"hidden\" $name = \"action\" $value = \"delete\">\r\n\t<table $border = \"0\" $width = \"100%\" $align = \"center\" $cellpadding = \"4\" $cellspacing = \"0\">\r\n\t\t<tr>\r\n\t\t\t<td class=\"thead\" $colspan = \"5\">\r\n\t\t\t\t" . $lang->watch_list["s1"] . "\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"subheader\" $width = \"15%\">" . $lang->watch_list["t3"] . "</td>\r\n\t\t\t<td class=\"subheader\" $width = \"15%\">" . $lang->watch_list["l2"] . "</td>\r\n\t\t\t<td class=\"subheader\" $width = \"15%\">" . $lang->watch_list["l3"] . "</td>\r\n\t\t\t<td class=\"subheader\" $width = \"50%\">" . $lang->watch_list["l1"] . "</td>\r\n\t\t\t<td class=\"subheader\" $align = \"center\" $width = \"5%\"><input $type = \"checkbox\" $value = \"yes\" $checkall = \"group1\" $onclick = \"javascript: return select_deselectAll ('delete', this, 'group1');\"></td>\r\n\t\t</tr>";
-    ($query = sql_query("SELECT w.id as wid, w.userid, w.added_by, w.reason, w.date, u.uploaded, u.downloaded, u.added, u.last_access, u.username, g.namestyle, uu.username as addeduname, gg.namestyle as addednstyle FROM ts_watch_list w LEFT JOIN users u ON (w.$userid = u.id) LEFT JOIN usergroups g ON (u.$usergroup = g.gid) LEFT JOIN users uu ON (w.$added_by = uu.id) LEFT JOIN usergroups gg ON (uu.$usergroup = gg.gid) WHERE w.$added_by = '" . $CURUSER["id"] . "' OR w.public = '1' ORDER by w.date DESC " . $limit)) || sqlerr(__FILE__, 215);
+    ($query = sql_query("SELECT w.id as wid, w.userid, w.added_by, w.reason, w.date, u.uploaded, u.downloaded, u.added, u.last_access, u.username, g.namestyle, uu.username as addeduname, gg.namestyle as addednstyle FROM ts_watch_list w LEFT JOIN users u ON (w.$userid = u.id) LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) LEFT JOIN users uu ON (w.$added_by = uu.id) LEFT JOIN usergroups gg ON (uu.$usergroup = gg.gid) WHERE w.$added_by = '" . $CURUSER["id"] . "' OR w.public = '1' ORDER by w.date DESC " . $limit)) || sqlerr(__FILE__, 215);
     if (0 < mysqli_num_rows($query)) {
         while ($list = mysqli_fetch_assoc($query)) {
             $username = "<span $style = \"float: right;\">[<a $href = \"javascript:void(0);\" $onclick = \"javascript:show_details('" . $list["userid"] . "');\">" . $lang->watch_list["d3"] . "</a>]</span><a $href = \"" . $BASEURL . "/userdetails.php?$id = " . $list["userid"] . "\">" . get_user_color($list["username"], $list["namestyle"]) . "</a>";

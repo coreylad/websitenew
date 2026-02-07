@@ -21,9 +21,9 @@ $TotalQueryCount++;
 echo $Language[2];
 echo $Language[4];
 $TotalReplies = [];
-$Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT tid FROM " . TSF_PREFIX . "posts");
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT tid FROM " . TSF_PREFIX . "posts");
 $TotalQueryCount++;
-while ($Posts = mysqli_fetch_assoc($Query)) {
+while ($Posts = mysqli_fetch_assoc($query)) {
     if (isset($Posts["tid"]) && $Posts["tid"]) {
         if (isset($TotalReplies[$Posts["tid"]])) {
             $TotalReplies[$Posts["tid"]]++;
@@ -40,9 +40,9 @@ foreach ($TotalReplies as $Tid => $ReplyCount) {
 echo $Language[2];
 echo $Language[5];
 $TotalThreads = [];
-$Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT fid FROM " . TSF_PREFIX . "threads");
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT fid FROM " . TSF_PREFIX . "threads");
 $TotalQueryCount++;
-while ($Threads = mysqli_fetch_assoc($Query)) {
+while ($Threads = mysqli_fetch_assoc($query)) {
     if (isset($Threads["fid"]) && $Threads["fid"]) {
         if (isset($TotalThreads[$Threads["fid"]])) {
             $TotalThreads[$Threads["fid"]]++;
@@ -58,9 +58,9 @@ foreach ($TotalThreads as $Fid => $ThreadCount) {
 echo $Language[2];
 echo $Language[6];
 $TotalPosts = [];
-$Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT fid FROM " . TSF_PREFIX . "posts");
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT fid FROM " . TSF_PREFIX . "posts");
 $TotalQueryCount++;
-while ($Posts = mysqli_fetch_assoc($Query)) {
+while ($Posts = mysqli_fetch_assoc($query)) {
     if (isset($Posts["fid"]) && $Posts["fid"]) {
         if (isset($TotalPosts[$Posts["fid"]])) {
             $TotalPosts[$Posts["fid"]]++;

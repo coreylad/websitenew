@@ -12,12 +12,12 @@ $Message = "";
 $value = "";
 if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
     $value = trim($_POST["value"]);
-    mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE bannedemails SET $value = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $value) . "' WHERE $id = 1");
+    mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE bannedemails SET $value = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $value) . "' WHERE `id` = 1");
     $Message = str_replace("{1}", $_SESSION["ADMIN_USERNAME"], $Language[5]);
     logStaffAction($Message);
     $Message = showAlertError($Message);
 }
-$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT value FROM bannedemails WHERE $id = 1");
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT value FROM bannedemails WHERE `id` = 1");
 $BANNEDEMAILS = mysqli_fetch_assoc($query);
 echo "\r\n" . $Message . "\r\n<form $method = \"post\" $action = \"index.php?do=email_bans\">\r\n<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t<tr>\r\n\t\t<td class=\"tcat\" $align = \"center\">\r\n\t\t\t" . $Language[2] . "\r\n\t\t</td>\r\n\t</tr>\r\n\t\t<td class=\"alt1\">\r\n\t\t\t<textarea $style = \"width: 99%; height: 100px;\" $name = \"value\">" . $BANNEDEMAILS["value"] . "</textarea>\r\n\t\t\t<div>" . $Language[8] . "</div>\r\n\t\t</td>\r\n\t</tr>\r\n\t<tr>\r\n\t\t<td class=\"tcat2\"><input $type = \"submit\" $value = \"" . $Language[6] . "\" /> <input $type = \"reset\" $value = \"" . $Language[7] . "\" /></td>\r\n\t</tr>\r\n</table>\r\n</form>";
 function getStaffLanguage()

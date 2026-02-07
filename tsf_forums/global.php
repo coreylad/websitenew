@@ -12,7 +12,7 @@ require $rootpath . "global.php";
 define("TSF_VERSION", "v1.8 by xam");
 $lang->load("tsf_forums");
 require_once dirname(__FILE__) . "/include/tsf_functions.php";
-($FCPquery = sql_query("SELECT canforum FROM ts_u_perm WHERE $userid = " . sqlesc($CURUSER["id"]) . " AND $canforum = '0'")) || sqlerr(__FILE__, 39);
+($FCPquery = sql_query("SELECT canforum FROM ts_u_perm WHERE `userid` = " . sqlesc($CURUSER["id"]) . " AND $canforum = '0'")) || sqlerr(__FILE__, 39);
 if (mysqli_num_rows($FCPquery)) {
     print_no_permission();
 }

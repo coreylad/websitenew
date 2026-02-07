@@ -11,7 +11,7 @@ $Act = isset($_GET["act"]) ? trim($_GET["act"]) : (isset($_POST["act"]) ? trim($
 $Cid = isset($_GET["cid"]) ? intval($_GET["cid"]) : (isset($_POST["cid"]) ? intval($_POST["cid"]) : 0);
 $Language = file("languages/" . getStaffLanguage() . "/manage_category.lang");
 $Message = "";
-$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT name, sort FROM ts_staffcp WHERE $cid = '" . $Cid . "'");
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT name, sort FROM ts_staffcp WHERE `cid` = '" . $Cid . "'");
 if (mysqli_num_rows($query) == 0) {
     echo "\r\n\t" . showAlertError($Language[11]);
     exit;
@@ -20,8 +20,8 @@ $Category = mysqli_fetch_assoc($query);
 $name = $Category["name"];
 $sort = intval($Category["sort"]);
 if ($Act == "delete" && $Cid) {
-    mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM ts_staffcp_tools WHERE $cid = '" . $Cid . "'");
-    mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM ts_staffcp WHERE $cid = '" . $Cid . "'");
+    mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM ts_staffcp_tools WHERE `cid` = '" . $Cid . "'");
+    mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM ts_staffcp WHERE `cid` = '" . $Cid . "'");
     if (mysqli_affected_rows($GLOBALS["DatabaseConnect"])) {
         $SysMsg = str_replace(["{1}", "{2}"], [$Category["name"], $_SESSION["ADMIN_USERNAME"]], $Language[4]);
         logStaffAction($SysMsg);
@@ -32,7 +32,7 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
     $name = trim($_POST["name"]);
     $sort = intval($_POST["sort"]);
     if ($name) {
-        mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE ts_staffcp SET $name = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $name) . "', $sort = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $sort) . "' WHERE $cid = '" . $Cid . "'");
+        mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE ts_staffcp SET $name = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $name) . "', $sort = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $sort) . "' WHERE `cid` = '" . $Cid . "'");
         $SysMsg = str_replace(["{1}", "{2}"], [$name, $_SESSION["ADMIN_USERNAME"]], $Language[3]);
         logStaffAction($SysMsg);
         redirectTo("index.php?do=manage_tools");

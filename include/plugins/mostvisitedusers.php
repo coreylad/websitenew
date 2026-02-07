@@ -18,7 +18,7 @@ if (!defined("SKIP_CACHE_MESSAGE")) {
 require_once INC_PATH . "/functions_cache2.php";
 if (!($mostvisitedusers = cache_check2("mostvisitedusers"))) {
     $mostvisitedusers = "<!-- begin mostvisitedusers -->";
-    ($query = sql_query("SELECT u.id, u.username, u.visitorcount, g.namestyle FROM users u LEFT JOIN usergroups g ON (u.$usergroup = g.gid) WHERE u.visitorcount > 0 ORDER BY u.visitorcount DESC LIMIT 5")) || sqlerr(__FILE__, 37);
+    ($query = sql_query("SELECT u.id, u.username, u.visitorcount, g.namestyle FROM users u LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) WHERE u.visitorcount > 0 ORDER BY u.visitorcount DESC LIMIT 5")) || sqlerr(__FILE__, 37);
     if (!mysqli_num_rows($query)) {
         $mostvisitedusers = "";
         return $mostvisitedusers;

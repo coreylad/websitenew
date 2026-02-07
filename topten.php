@@ -41,7 +41,7 @@ if ($type == 1) {
     }
     $cachefile = "topten-type-" . $type . "-limit-" . $limit . "-poweruser-" . $pu . "-subtype-" . $subtype;
     cache_check($cachefile);
-    $mainquery = "SELECT u.id as userid, u.username, u.usergroup, u.options, u.added, u.uploaded, u.downloaded, u.uploaded / (UNIX_TIMESTAMP(NOW()) - UNIX_TIMESTAMP(u.added)) AS upspeed, u.downloaded / (UNIX_TIMESTAMP(NOW()) - UNIX_TIMESTAMP(u.added)) AS downspeed, g.namestyle, g.canstaffpanel, g.issupermod, g.cansettingspanel FROM users u LEFT JOIN usergroups g ON (u.$usergroup = g.gid) WHERE u.$enabled = 'yes' AND u.usergroup NOT IN (" . $notin . ")";
+    $mainquery = "SELECT u.id as userid, u.username, u.usergroup, u.options, u.added, u.uploaded, u.downloaded, u.uploaded / (UNIX_TIMESTAMP(NOW()) - UNIX_TIMESTAMP(u.added)) AS upspeed, u.downloaded / (UNIX_TIMESTAMP(NOW()) - UNIX_TIMESTAMP(u.added)) AS downspeed, g.namestyle, g.canstaffpanel, g.issupermod, g.cansettingspanel FROM users u LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) WHERE u.$enabled = 'yes' AND u.usergroup NOT IN (" . $notin . ")";
     if ($limit == 10 || $subtype == "ul") {
         $order = "uploaded DESC";
         ($r = sql_query($mainquery . " ORDER BY " . $order . " " . " LIMIT " . $limit)) || sqlerr(__FILE__, 233);

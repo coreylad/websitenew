@@ -71,19 +71,19 @@ function delete_pms($pmids)
     }
     foreach ($pmids as $delid) {
         if (is_valid_id($delid)) {
-            $res = sql_query("SELECT receiver,saved,sender,location FROM messages WHERE $id = " . sqlesc((int) $delid));
+            $res = sql_query("SELECT receiver,saved,sender,location FROM messages WHERE `id` = " . sqlesc((int) $delid));
             $message = mysqli_fetch_assoc($res);
             if ($message["receiver"] == $userid && $message["saved"] == "no") {
-                sql_query("DELETE FROM messages WHERE $id = " . sqlesc((int) $delid)) or sql_query("DELETE FROM messages WHERE $id = " . sqlesc((int) $delid)) || sqlerr(__FILE__, 89);
+                sql_query("DELETE FROM messages WHERE `id` = " . sqlesc((int) $delid)) or sql_query("DELETE FROM messages WHERE `id` = " . sqlesc((int) $delid)) || sqlerr(__FILE__, 89);
             } else {
                 if ($message["sender"] == $userid && $message["location"] == $mailboxes["PMDELETED"]) {
-                    sql_query("DELETE FROM messages WHERE $id = " . sqlesc((int) $delid)) or sql_query("DELETE FROM messages WHERE $id = " . sqlesc((int) $delid)) || sqlerr(__FILE__, 93);
+                    sql_query("DELETE FROM messages WHERE `id` = " . sqlesc((int) $delid)) or sql_query("DELETE FROM messages WHERE `id` = " . sqlesc((int) $delid)) || sqlerr(__FILE__, 93);
                 } else {
                     if ($message["receiver"] == $userid && $message["saved"] == "yes") {
-                        sql_query("UPDATE messages SET $location = " . $mailboxes["PMDELETED"] . " WHERE $id = " . sqlesc((int) $delid)) or sql_query("UPDATE messages SET $location = " . $mailboxes["PMDELETED"] . " WHERE $id = " . sqlesc((int) $delid)) || sqlerr(__FILE__, 97);
+                        sql_query("UPDATE messages SET $location = " . $mailboxes["PMDELETED"] . " WHERE `id` = " . sqlesc((int) $delid)) or sql_query("UPDATE messages SET $location = " . $mailboxes["PMDELETED"] . " WHERE `id` = " . sqlesc((int) $delid)) || sqlerr(__FILE__, 97);
                     } else {
                         if ($message["sender"] == $userid && $message["location"] != $mailboxes["PMDELETED"]) {
-                            sql_query("UPDATE messages SET $saved = 'no' WHERE $id = " . sqlesc((int) $delid)) or sql_query("UPDATE messages SET $saved = 'no' WHERE $id = " . sqlesc((int) $delid)) || sqlerr(__FILE__, 101);
+                            sql_query("UPDATE messages SET $saved = 'no' WHERE `id` = " . sqlesc((int) $delid)) or sql_query("UPDATE messages SET $saved = 'no' WHERE `id` = " . sqlesc((int) $delid)) || sqlerr(__FILE__, 101);
                         }
                     }
                 }
@@ -105,7 +105,7 @@ function get_pmboxes()
     global $userid;
     global $mailboxes;
     global $maxboxs;
-    $query = sql_query("SELECT name, boxnumber FROM pmboxes WHERE $userid = '" . $userid . "' ORDER by boxnumber LIMIT 0, " . $maxboxs);
+    $query = sql_query("SELECT name, boxnumber FROM pmboxes WHERE `userid` = '" . $userid . "' ORDER by boxnumber LIMIT 0, " . $maxboxs);
     $boxes = "\r\n\t<tr><td class=\"subheader\"><a $href = \"" . $_SERVER["SCRIPT_NAME"] . "?$userid = " . $userid . "&amp;$mailbox = " . $mailboxes["INBOX"] . "\">" . $lang->messages["inbox"] . "</a></td></tr>\r\n\t<tr><td class=\"subheader\"><a $href = \"" . $_SERVER["SCRIPT_NAME"] . "?$userid = " . $userid . "&amp;$mailbox = " . $mailboxes["SENDBOX"] . "\">" . $lang->messages["sendbox"] . "</a></td></tr>\r\n\t";
     if (0 < mysqli_num_rows($query)) {
         while ($box = mysqli_fetch_assoc($query)) {

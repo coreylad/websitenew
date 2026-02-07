@@ -24,7 +24,7 @@ if ($bonus == "disable" && !$is_mod || $bonus == "disablesave" && !$is_mod || $u
 }
 if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST" && isset($_POST["BonusHash"]) && strlen($_POST["BonusHash"]) == 20) {
     $ID = isset($_POST["id"]) ? intval($_POST["id"]) : 0;
-    $Query = sql_query("SELECT id, bonusname, points, art, menge FROM bonus WHERE $id = " . sqlesc($ID));
+    $Query = sql_query("SELECT id, bonusname, points, art, menge FROM bonus WHERE `id` = " . sqlesc($ID));
     if (mysqli_num_rows($Query) == 0) {
         $errors[] = $lang->mybonus["error1"];
     } else {
@@ -36,7 +36,7 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST" && isset($_POST["BonusHash"
             $DONTCALC = false;
             switch ($Result["art"]) {
                 case "traffic":
-                    sql_query("UPDATE users SET $uploaded = uploaded + " . $Result["menge"] . ", $seedbonus = IF(seedbonus < " . $Result["points"] . ", 0, seedbonus - " . $Result["points"] . ") WHERE $id = " . sqlesc($Userid)) || sqlerr(__FILE__, 63);
+                    sql_query("UPDATE users SET $uploaded = uploaded + " . $Result["menge"] . ", $seedbonus = IF(seedbonus < " . $Result["points"] . ", 0, seedbonus - " . $Result["points"] . ") WHERE `id` = " . sqlesc($Userid)) || sqlerr(__FILE__, 63);
                     if (mysqli_affected_rows($GLOBALS["DatabaseConnect"])) {
                         update_user($Userid, "Purchased item: " . $Result["bonusname"] . " for " . $Result["points"] . " points.");
                         $KPSUSED = true;
@@ -46,7 +46,7 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST" && isset($_POST["BonusHash"
                     if ($kpsinvite != "yes") {
                         $errors[] = $lang->mybonus["error3"];
                     } else {
-                        sql_query("UPDATE users SET $invites = invites + " . $Result["menge"] . ", $seedbonus = IF(seedbonus < " . $Result["points"] . ", 0, seedbonus - " . $Result["points"] . ") WHERE $id = " . sqlesc($Userid)) || sqlerr(__FILE__, 77);
+                        sql_query("UPDATE users SET $invites = invites + " . $Result["menge"] . ", $seedbonus = IF(seedbonus < " . $Result["points"] . ", 0, seedbonus - " . $Result["points"] . ") WHERE `id` = " . sqlesc($Userid)) || sqlerr(__FILE__, 77);
                         if (mysqli_affected_rows($GLOBALS["DatabaseConnect"])) {
                             update_user($Userid, "Purchased item: " . $Result["bonusname"] . " for " . $Result["points"] . " points.");
                             $KPSUSED = true;
@@ -69,7 +69,7 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST" && isset($_POST["BonusHash"
                                     if ($title == $CURUSER["title"]) {
                                         $errors[] = $lang->mybonus["error6"];
                                     } else {
-                                        sql_query("UPDATE users SET $title = " . sqlesc(htmlspecialchars_uni($title)) . ", $seedbonus = IF(seedbonus < " . $Result["points"] . ", 0, seedbonus - " . $Result["points"] . ") WHERE $id = " . sqlesc($Userid)) || sqlerr(__FILE__, 110);
+                                        sql_query("UPDATE users SET $title = " . sqlesc(htmlspecialchars_uni($title)) . ", $seedbonus = IF(seedbonus < " . $Result["points"] . ", 0, seedbonus - " . $Result["points"] . ") WHERE `id` = " . sqlesc($Userid)) || sqlerr(__FILE__, 110);
                                         if (mysqli_affected_rows($GLOBALS["DatabaseConnect"])) {
                                             update_user($Userid, "Purchased item: " . $Result["bonusname"] . " for " . $Result["points"] . " points.");
                                             $KPSUSED = true;
@@ -104,7 +104,7 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST" && isset($_POST["BonusHash"
                             sql_query("REPLACE INTO ts_auto_vip (userid, vip_until, old_gid) VALUES ('" . $Userid . "', '" . $vip_until . "', '" . $CURUSER["usergroup"] . "')") || sqlerr(__FILE__, 167);
                             if (mysqli_affected_rows($GLOBALS["DatabaseConnect"])) {
                                 $KPSUSED = true;
-                                sql_query("UPDATE users SET $usergroup = 3, $oldusergroup = '" . $CURUSER["usergroup"] . "', $seedbonus = IF(seedbonus < " . $Result["points"] . ", 0, seedbonus - " . $Result["points"] . ") WHERE $id = " . sqlesc($Userid)) || sqlerr(__FILE__, 171);
+                                sql_query("UPDATE users SET `usergroup` = 3, $oldusergroup = '" . $CURUSER["usergroup"] . "', $seedbonus = IF(seedbonus < " . $Result["points"] . ", 0, seedbonus - " . $Result["points"] . ") WHERE `id` = " . sqlesc($Userid)) || sqlerr(__FILE__, 171);
                                 update_user($Userid, "Purchased item: " . $Result["bonusname"] . " for " . $Result["points"] . " points.");
                             } else {
                                 $errors[] = $lang->global["dberror"];
@@ -133,17 +133,17 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST" && isset($_POST["BonusHash"
                                     if ($USERNAME == $CURUSER["username"]) {
                                         $errors[] = $lang->mybonus["error10"];
                                     } else {
-                                        ($Query = sql_query("SELECT id FROM users WHERE $username = " . sqlesc($USERNAME) . " AND $enabled = 'yes' AND $status = 'confirmed'")) || sqlerr(__FILE__, 212);
+                                        ($Query = sql_query("SELECT id FROM users WHERE `username` = " . sqlesc($USERNAME) . " AND $enabled = 'yes' AND $status = 'confirmed'")) || sqlerr(__FILE__, 212);
                                         if (mysqli_num_rows($Query) == 0) {
                                             $errors[] = $lang->mybonus["error9"];
                                         } else {
                                             $qResult = mysqli_fetch_assoc($Query);
                                             $SUSERID = $qResult["id"];
-                                            sql_query("UPDATE users SET $seedbonus = seedbonus + " . $GIFT . " WHERE $id = " . sqlesc($SUSERID)) || sqlerr(__FILE__, 222);
+                                            sql_query("UPDATE users SET $seedbonus = seedbonus + " . $GIFT . " WHERE `id` = " . sqlesc($SUSERID)) || sqlerr(__FILE__, 222);
                                             if (mysqli_affected_rows($GLOBALS["DatabaseConnect"])) {
                                                 update_user($SUSERID, "Gift: " . $GIFT . " points from " . $CURUSER["username"]);
                                                 send_pm($SUSERID, sprintf($lang->mybonus["giftmsg"], "[b]" . $USERNAME . "[/b]", "[URL=" . $BASEURL . "/userdetails.php?$id = " . $Userid . "][b]" . $CURUSER["username"] . "[/b][/URL]", $GIFT), $lang->mybonus["giftsubject"]);
-                                                sql_query("UPDATE users SET $seedbonus = IF(seedbonus < " . ($Result["points"] + $GIFT) . ", 0, seedbonus - " . ($Result["points"] + $GIFT) . ") WHERE $id = " . sqlesc($Userid)) || sqlerr(__FILE__, 227);
+                                                sql_query("UPDATE users SET $seedbonus = IF(seedbonus < " . ($Result["points"] + $GIFT) . ", 0, seedbonus - " . ($Result["points"] + $GIFT) . ") WHERE `id` = " . sqlesc($Userid)) || sqlerr(__FILE__, 227);
                                                 if (mysqli_affected_rows($GLOBALS["DatabaseConnect"])) {
                                                     update_user($Userid, "Purchased item: " . $Result["bonusname"] . " for " . $Result["points"] . " points. (" . $GIFT . " Points to " . $USERNAME . ")");
                                                     $KPSUSED = true;
@@ -177,7 +177,7 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST" && isset($_POST["BonusHash"
                         if ($CURUSER["timeswarned"] < 1) {
                             $errors[] = $lang->mybonus["error15"];
                         } else {
-                            sql_query("UPDATE users SET $timeswarned = IF(timeswarned < 1, 0, timeswarned - " . $Result["menge"] . "), $seedbonus = IF(seedbonus < " . $Result["points"] . ", 0, seedbonus - " . $Result["points"] . ") WHERE $id = " . sqlesc($Userid)) || sqlerr(__FILE__, 302);
+                            sql_query("UPDATE users SET `timeswarned` = IF(timeswarned < 1, 0, timeswarned - " . $Result["menge"] . "), $seedbonus = IF(seedbonus < " . $Result["points"] . ", 0, seedbonus - " . $Result["points"] . ") WHERE `id` = " . sqlesc($Userid)) || sqlerr(__FILE__, 302);
                             if (mysqli_affected_rows($GLOBALS["DatabaseConnect"])) {
                                 update_user($Userid, "Purchased item: " . $Result["bonusname"] . " for " . $Result["points"] . " points.");
                                 $KPSUSED = true;
@@ -194,7 +194,7 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST" && isset($_POST["BonusHash"
                             if (!is_valid_id($TID)) {
                                 $errors[] = $lang->mybonus["error12"];
                             } else {
-                                ($Query = sql_query("SELECT uploaded, downloaded, seedtime FROM snatched WHERE $torrentid = '" . $TID . "' AND $finished = 'yes' AND $userid = '" . $Userid . "'")) || sqlerr(__FILE__, 325);
+                                ($Query = sql_query("SELECT uploaded, downloaded, seedtime FROM snatched WHERE `torrentid` = '" . $TID . "' AND $finished = 'yes' AND $userid = '" . $Userid . "'")) || sqlerr(__FILE__, 325);
                                 if (mysqli_num_rows($Query) == 0) {
                                     $errors[] = $lang->mybonus["error13"];
                                 } else {
@@ -205,9 +205,9 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST" && isset($_POST["BonusHash"
                                     if ($SDetails["downloaded"] <= $SDetails["uploaded"] && $MinSeedTime <= $SDetails["seedtime"]) {
                                         $errors[] = $lang->mybonus["error14"];
                                     } else {
-                                        sql_query("UPDATE snatched SET $uploaded = IF(uploaded < downloaded, downloaded, uploaded), $seedtime = IF(seedtime < " . $MinSeedTime . ", " . $MinSeedTime . ", seedtime) WHERE $torrentid = '" . $TID . "' AND $finished = 'yes' AND $userid = '" . $Userid . "'") || sqlerr(__FILE__, 342);
+                                        sql_query("UPDATE snatched SET $uploaded = IF(uploaded < downloaded, downloaded, uploaded), $seedtime = IF(seedtime < " . $MinSeedTime . ", " . $MinSeedTime . ", seedtime) WHERE `torrentid` = '" . $TID . "' AND $finished = 'yes' AND $userid = '" . $Userid . "'") || sqlerr(__FILE__, 342);
                                         if (mysqli_affected_rows($GLOBALS["DatabaseConnect"])) {
-                                            sql_query("UPDATE users SET $seedbonus = IF(seedbonus < " . $Result["points"] . ", 0, seedbonus - " . $Result["points"] . ") WHERE $id = " . sqlesc($Userid)) || sqlerr(__FILE__, 345);
+                                            sql_query("UPDATE users SET $seedbonus = IF(seedbonus < " . $Result["points"] . ", 0, seedbonus - " . $Result["points"] . ") WHERE `id` = " . sqlesc($Userid)) || sqlerr(__FILE__, 345);
                                             update_user($Userid, "Purchased item: " . $Result["bonusname"] . " for " . $Result["points"] . " points.");
                                             $KPSUSED = true;
                                         } else {
@@ -292,7 +292,7 @@ function show_mybonus_messages()
 function update_user($userid, $message)
 {
     $bonuscomment = sqlesc(get_date_time() . " - " . $message . "\n");
-    sql_query("UPDATE users SET $modcomment = CONCAT(" . $bonuscomment . ", modcomment) WHERE $id = " . sqlesc($userid));
+    sql_query("UPDATE users SET `modcomment` = CONCAT(" . $bonuscomment . ", modcomment) WHERE `id` = " . sqlesc($userid));
 }
 
 ?>

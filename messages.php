@@ -95,12 +95,12 @@ switch ($mailbox) {
                     }
                 }
                 if (isset($newfolders) && ($newfolderscount = count($newfolders)) && 0 < $newfolderscount) {
-                    $query = sql_query("SELECT boxnumber FROM pmboxes WHERE $userid = '" . $userid . "'");
+                    $query = sql_query("SELECT boxnumber FROM pmboxes WHERE `userid` = '" . $userid . "'");
                     $usedboxes = mysqli_num_rows($query);
                     if ($maxboxs < $usedboxes || $maxboxs < $usedboxes + $newfolderscount) {
                         $_errors[] = sprintf($lang->messages["newtitle32"], $maxboxs, $usedboxes);
                     } else {
-                        $query = sql_query("SELECT MAX(boxnumber) as lastboxnumber FROM pmboxes WHERE $userid = '" . $userid . "'");
+                        $query = sql_query("SELECT MAX(boxnumber) as lastboxnumber FROM pmboxes WHERE `userid` = '" . $userid . "'");
                         $Result = mysqli_fetch_assoc($query);
                         $lastboxnumber = $Result["lastboxnumber"];
                         if (!$lastboxnumber || $lastboxnumber < 2 || $lastboxnumber == 0 || !is_valid_id($lastboxnumber)) {
@@ -116,7 +116,7 @@ switch ($mailbox) {
             $standartfolders = "\r\n\t<FIELDSET>\r\n\t\t<legend>" . $lang->messages["newtitle21"] . "</legend>\r\n\t\t<a $href = \"" . $_SERVER["SCRIPT_NAME"] . "?$userid = " . $userid . "&amp;$mailbox = " . $mailboxes["INBOX"] . "\">" . $lang->messages["inbox"] . "</a><br />\r\n\t\t<a $href = \"" . $_SERVER["SCRIPT_NAME"] . "?$userid = " . $userid . "&amp;$mailbox = " . $mailboxes["SENDBOX"] . "\">" . $lang->messages["sendbox"] . "</a>\r\n\t</FIELDSET>\r\n\t";
             $customfolderscount = 0;
             $customfolders = "";
-            $query = sql_query("SELECT id,name,boxnumber FROM pmboxes WHERE $userid = '" . $userid . "' ORDER by boxnumber LIMIT 0, " . $maxboxs);
+            $query = sql_query("SELECT id,name,boxnumber FROM pmboxes WHERE `userid` = '" . $userid . "' ORDER by boxnumber LIMIT 0, " . $maxboxs);
             if (0 < mysqli_num_rows($query)) {
                 $customfolders = "\r\n\t\t<FIELDSET>\r\n\t\t\t\t<legend>" . $lang->messages["newtitle22"] . "</legend>";
                 while ($cf = mysqli_fetch_assoc($query)) {
@@ -142,7 +142,7 @@ switch ($mailbox) {
             if ($do == "move") {
                 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["destination"])) {
                     $newfolder = intval($_POST["destination"]);
-                    $query = sql_query("SELECT name FROM pmboxes WHERE $userid = '" . $userid . "' AND $boxnumber = '" . $newfolder . "'");
+                    $query = sql_query("SELECT name FROM pmboxes WHERE `userid` = '" . $userid . "' AND $boxnumber = '" . $newfolder . "'");
                     if ((mysqli_num_rows($query) == 0 || empty($newfolder)) && $newfolder != $mailboxes["INBOX"]) {
                         $_errors[] = sprintf($lang->messages["newtitle14"], $_SERVER["SCRIPT_NAME"] . "?$userid = " . $userid . "&amp;do=editfolders&amp;$mailbox = " . $mailbox . "&amp;$page = " . intval($_GET["page"]));
                     } else {
@@ -150,7 +150,7 @@ switch ($mailbox) {
                         $mailbox = $newfolder;
                     }
                 } else {
-                    $query = sql_query("SELECT boxnumber, name FROM pmboxes WHERE $userid = '" . $userid . "' ORDER by boxnumber LIMIT 0, " . $maxboxs);
+                    $query = sql_query("SELECT boxnumber, name FROM pmboxes WHERE `userid` = '" . $userid . "' ORDER by boxnumber LIMIT 0, " . $maxboxs);
                     if (mysqli_num_rows($query) == 0) {
                         $_errors[] = sprintf($lang->messages["newtitle14"], $_SERVER["SCRIPT_NAME"] . "?$userid = " . $userid . "&amp;do=editfolders&amp;$mailbox = " . $mailbox . "&amp;$page = " . intval($_GET["page"]));
                     } else {
@@ -168,12 +168,12 @@ switch ($mailbox) {
                             }
                         }
                         $showbox .= "</select>";
-                        $hiddenvalues = "";
+                        $hiddenFields = "";
                         foreach ($pmids as $pmid) {
-                            $hiddenvalues .= "<input $type = \"hidden\" $name = \"pmid[]\" $value = \"" . intval($pmid) . "\">";
+                            $hiddenFields .= "<input $type = \"hidden\" $name = \"pmid[]\" $value = \"" . intval($pmid) . "\">";
                         }
                         stdhead($lang->messages["newtitle18"]);
-                        echo "\r\n\t\t\t<form $method = \"post\" $action = \"" . $_SERVER["SCRIPT_NAME"] . "?$userid = " . $userid . "&amp;$mailbox = " . $mailbox . "&amp;$page = " . intval($_GET["page"]) . "\" $name = \"messageform\">\r\n\t\t\t<input $type = \"hidden\" $name = \"do\" $value = \"move\">\r\n\t\t\t" . $hiddenvalues . "\r\n\t\t\t<table $align = \"center\" $border = \"0\" $cellpadding = \"6\" $cellspacing = \"0\" $width = \"100%\">\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td class=\"thead\" $align = \"left\">" . $lang->messages["newtitle18"] . "\r\n\t\t\t\t</tr>\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td>" . $lang->messages["newtitle15"] . "<br />" . $lang->messages["newtitle10"] . "<br />" . $showbox . "</td>\r\n\t\t\t\t</tr>\r\n\t\t\t\t<tr><td $align = \"center\"><input $type = \"submit\" $value = \"" . $lang->messages["newtitle16"] . "\"> <input $type = \"button\" $value = \"" . $lang->messages["newtitle17"] . "\" $onclick = \"jumpto('" . $_SERVER["SCRIPT_NAME"] . "?$userid = " . $userid . "&amp;$mailbox = " . $mailbox . "&amp;$page = " . intval($_GET["page"]) . "')\"></td></tr>\r\n\t\t\t\t</table>\r\n\t\t\t\t</form>\r\n\t\t\t";
+                        echo "\r\n\t\t\t<form $method = \"post\" $action = \"" . $_SERVER["SCRIPT_NAME"] . "?$userid = " . $userid . "&amp;$mailbox = " . $mailbox . "&amp;$page = " . intval($_GET["page"]) . "\" $name = \"messageform\">\r\n\t\t\t<input $type = \"hidden\" $name = \"do\" $value = \"move\">\r\n\t\t\t" . $hiddenFields . "\r\n\t\t\t<table $align = \"center\" $border = \"0\" $cellpadding = \"6\" $cellspacing = \"0\" $width = \"100%\">\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td class=\"thead\" $align = \"left\">" . $lang->messages["newtitle18"] . "\r\n\t\t\t\t</tr>\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td>" . $lang->messages["newtitle15"] . "<br />" . $lang->messages["newtitle10"] . "<br />" . $showbox . "</td>\r\n\t\t\t\t</tr>\r\n\t\t\t\t<tr><td $align = \"center\"><input $type = \"submit\" $value = \"" . $lang->messages["newtitle16"] . "\"> <input $type = \"button\" $value = \"" . $lang->messages["newtitle17"] . "\" $onclick = \"jumpto('" . $_SERVER["SCRIPT_NAME"] . "?$userid = " . $userid . "&amp;$mailbox = " . $mailbox . "&amp;$page = " . intval($_GET["page"]) . "')\"></td></tr>\r\n\t\t\t\t</table>\r\n\t\t\t\t</form>\r\n\t\t\t";
                         stdfoot();
                         exit;
                     }
@@ -263,7 +263,7 @@ switch ($mailbox) {
                 if (empty($pmid)) {
                     $_errors[] = $lang->messages["newtitle11"];
                 }
-                $res = sql_query("SELECT * FROM messages WHERE $id = " . sqlesc($pmid) . " AND ($receiver = " . sqlesc($userid) . " OR ($sender = " . sqlesc($userid) . " AND $saved = 'yes')) LIMIT 1");
+                $res = sql_query("SELECT * FROM messages WHERE `id` = " . sqlesc($pmid) . " AND ($receiver = " . sqlesc($userid) . " OR ($sender = " . sqlesc($userid) . " AND $saved = 'yes')) LIMIT 1");
                 if (mysqli_num_rows($res) == 0) {
                     $_errors[] = $lang->messages["newtitle11"];
                 }
@@ -273,7 +273,7 @@ switch ($mailbox) {
                     $text = format_comment($message["msg"]);
                     $reply = "";
                     if ($message["sender"] == $CURUSER["id"]) {
-                        ($res2 = sql_query("SELECT u.*, p.canupload, p.candownload, p.cancomment, p.canmessage, p.canshout, g.namestyle, g.title FROM users u LEFT JOIN ts_u_perm p ON (u.$id = p.userid) LEFT JOIN usergroups g ON (u.$usergroup = g.gid) WHERE u.$id = " . sqlesc($message["receiver"]))) || sqlerr(__FILE__, 437);
+                        ($res2 = sql_query("SELECT u.*, p.canupload, p.candownload, p.cancomment, p.canmessage, p.canshout, g.namestyle, g.title FROM users u LEFT JOIN ts_u_perm p ON (u.`id` = p.userid) LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) WHERE u.$id = " . sqlesc($message["receiver"]))) || sqlerr(__FILE__, 437);
                         $sender = $arraysender = mysqli_fetch_assoc($res2);
                         $username = $sender["username"];
                         $joindate = $sender["added"];
@@ -289,7 +289,7 @@ switch ($mailbox) {
                         if ($message["sender"] == 0) {
                             $sender = $lang->messages["system"];
                         } else {
-                            ($res2 = sql_query("SELECT u.*, p.canupload, p.candownload, p.cancomment, p.canmessage, p.canshout, g.namestyle, g.title, g.cansettingspanel, g.canstaffpanel, g.issupermod FROM users u LEFT JOIN ts_u_perm p ON (u.$id = p.userid) LEFT JOIN usergroups g ON (u.$usergroup = g.gid) WHERE u.$id = " . sqlesc($message["sender"]))) || sqlerr(__FILE__, 459);
+                            ($res2 = sql_query("SELECT u.*, p.canupload, p.candownload, p.cancomment, p.canmessage, p.canshout, g.namestyle, g.title, g.cansettingspanel, g.canstaffpanel, g.issupermod FROM users u LEFT JOIN ts_u_perm p ON (u.`id` = p.userid) LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) WHERE u.$id = " . sqlesc($message["sender"]))) || sqlerr(__FILE__, 459);
                             $sender = $arraysender = mysqli_fetch_assoc($res2);
                             $username = $sender["username"];
                             $joindate = $sender["added"];
@@ -313,9 +313,9 @@ switch ($mailbox) {
                         $quickmenu .= "\r\n\t\t\t<div $id = \"quickmenu" . $pmid . "_menu\" class=\"menu_popup\" $style = \"display:none;\">\r\n\t\t\t\t<table $border = \"1\" $cellspacing = \"0\" $cellpadding = \"2\">\r\n\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t<td $align = \"center\" class=\"thead\"><b>" . $lang->global["quickmenu"] . " " . (isset($username) ? $username : "") . "</b></td>\r\n\t\t\t\t\t</tr>\r\n\r\n\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t<td class=\"subheader\"><a $href = \"" . ts_seo(isset($sender2) ? $sender2 : "", $username) . "\">" . $lang->global["qinfo1"] . "</a></td>\r\n\t\t\t\t\t</tr>\r\n\r\n\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t<td class=\"subheader\"><a $href = \"" . $BASEURL . "/sendmessage.php?$receiver = " . (isset($sender2) ? $sender2 : "") . "\">" . sprintf($lang->global["qinfo2"], $username) . "</td>\r\n\t\t\t\t\t</tr>\r\n\r\n\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t<td class=\"subheader\"><a $href = \"" . $BASEURL . "/friends.php?$action = add_friend&$friendid = " . (isset($sender2) ? $sender2 : "") . "\">" . sprintf($lang->global["qinfo5"], $username) . "</td>\r\n\t\t\t\t\t</tr>\r\n\r\n\t\t\t\t\t" . ($moderator ? "<tr><td class=\"subheader\"><a $href = \"" . $BASEURL . "/" . $staffcp_path . "/index.php?do=edit_user&amp;$username = " . $username . "\">" . $lang->global["qinfo6"] . "</a></td></tr><tr><td class=\"subheader\"><a $href = \"" . $BASEURL . "/" . $staffcp_path . "/index.php?do=warn_user&amp;$username = " . $username . "\">" . $lang->global["qinfo7"] . "</td></tr>" : "") . "\r\n\t\t\t\t</table>\r\n\t\t\t\t</div>";
                     }
                     if ($mailbox != $mailboxes["SENDBOX"]) {
-                        sql_query("UPDATE messages SET $unread = 'no' WHERE $id = " . sqlesc($pmid)) || sqlerr(__FILE__, 516);
+                        sql_query("UPDATE messages SET $unread = 'no' WHERE `id` = " . sqlesc($pmid)) || sqlerr(__FILE__, 516);
                         if ($message["unread"] == "yes") {
-                            sql_query("UPDATE users SET $pmunread = IF(pmunread > 0, pmunread - 1, 0) WHERE $id = '" . $userid . "'") || sqlerr(__FILE__, 519);
+                            sql_query("UPDATE users SET $pmunread = IF(pmunread > 0, pmunread - 1, 0) WHERE `id` = '" . $userid . "'") || sqlerr(__FILE__, 519);
                         }
                     }
                     $verified = "";
@@ -359,11 +359,11 @@ switch ($mailbox) {
                 echo $pagertop . "\r\n\t<form $method = \"post\" $action = \"" . $_SERVER["SCRIPT_NAME"] . "?$userid = " . $userid . "&amp;$mailbox = " . $mailbox . "&amp;$page = " . intval(isset($_GET["page"]) ? $_GET["page"] : 0) . "\" $name = \"messageform\">\r\n\t<table $align = \"center\" $border = \"0\" $cellpadding = \"5\" $cellspacing = \"0\" $width = \"100%\">\r\n\t\t<tr>\r\n\t\t\t<td $colspan = \"2\" $align = \"left\" class=\"thead\">" . ts_collapse("messages") . "\r\n\t\t\t" . sprintf($lang->messages["newtitle1"], "<a $href = \"javascript:void(0);\" $id = \"quickmenu1\" />" . $foldername . "</a>") . "</td>\r\n\t\t\t<td class=\"thead\" $align = \"center\" $width = \"1%\"><input $type = \"checkbox\" $checkall = \"group\" $onclick = \"javascript: return select_deselectAll ('messageform', this, 'group');\"></td>\r\n\t\t</tr>\r\n\t\t" . ts_collapse("messages", 2) . "\r\n\t";
             }
             $str = "";
-            ($query = sql_query("SELECT m.*, u.username, u.id as senderid, u.enabled, u.donor, u.leechwarn, u.warned, p.canupload, p.candownload, p.cancomment, p.canmessage, p.canshout, g.namestyle FROM messages m LEFT JOIN users u ON (u.$id = " . $eq[0] . ") LEFT JOIN ts_u_perm p ON (u.$id = p.userid) LEFT JOIN usergroups g ON (u.$usergroup = g.gid) WHERE " . $eq[1] . "=" . $userid . " " . ($folderid ? "AND m.$location = " . $folderid : "") . $eq[2] . $WhereQuery . " ORDER by m.added DESC " . $limit)) || sqlerr(__FILE__, 682);
+            ($query = sql_query("SELECT m.*, u.username, u.id as senderid, u.enabled, u.donor, u.leechwarn, u.warned, p.canupload, p.candownload, p.cancomment, p.canmessage, p.canshout, g.namestyle FROM messages m LEFT JOIN users u ON (u.`id` = " . $eq[0] . ") LEFT JOIN ts_u_perm p ON (u.`id` = p.userid) LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) WHERE " . $eq[1] . "=" . $userid . " " . ($folderid ? "AND m.$location = " . $folderid : "") . $eq[2] . $WhereQuery . " ORDER by m.added DESC " . $limit)) || sqlerr(__FILE__, 682);
             if (0 < mysqli_num_rows($query)) {
                 if ($mailbox != $mailboxes["SENDBOX"]) {
                     ($QueryF = sql_query("SELECT m.id FROM messages m WHERE m.$unread = 'yes' AND " . $eq[1] . "=" . $userid . " " . ($folderid ? "AND m.$location = " . $folderid : "") . (string) $eq[2])) || sqlerr(__FILE__, 687);
-                    sql_query("UPDATE users SET $pmunread = '" . mysqli_num_rows($QueryF) . "' WHERE $id = '" . $userid . "'") || sqlerr(__FILE__, 688);
+                    sql_query("UPDATE users SET $pmunread = '" . mysqli_num_rows($QueryF) . "' WHERE `id` = '" . $userid . "'") || sqlerr(__FILE__, 688);
                 }
                 $defaulttheme = ts_template();
                 while ($message = mysqli_fetch_assoc($query)) {

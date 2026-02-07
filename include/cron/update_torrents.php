@@ -39,7 +39,7 @@ while ($torrent = mysqli_fetch_assoc($query)) {
     }
     if (count($Update)) {
         $Update[] = "visible = 'yes'";
-        mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE torrents SET " . implode(",", $Update) . " WHERE $id = " . sqlesc($torrent["id"]));
+        mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE torrents SET " . implode(",", $Update) . " WHERE `id` = " . sqlesc($torrent["id"]));
         $CQueryCount++;
     }
 }

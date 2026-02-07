@@ -10,11 +10,11 @@ if (!defined("IN_CRON")) {
     exit;
 }
 if ($xbt_active == "yes" && 0 < $kpsseed && ($bonus == "enable" || $bonus == "disablesave")) {
-    $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT uid FROM xbt_files_users WHERE $active = '1' AND `left` = '0'");
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT uid FROM xbt_files_users WHERE $active = '1' AND `left` = '0'");
     $CQueryCount++;
-    if (mysqli_num_rows($Query)) {
+    if (mysqli_num_rows($query)) {
         $UsersEarnedPoints = [];
-        while ($ActivePeers = mysqli_fetch_assoc($Query)) {
+        while ($ActivePeers = mysqli_fetch_assoc($query)) {
             $UsersEarnedPoints[] = 0 + $ActivePeers["uid"];
         }
         if (count($UsersEarnedPoints)) {
@@ -34,7 +34,7 @@ if (intval($delete_old_login_attempts)) {
     $CQueryCount++;
 }
 if (intval($delete_old_unconfirmed_users)) {
-    mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM users WHERE $status = 'pending' AND UNIX_TIMESTAMP(added) < '" . (TIMENOW - $delete_old_unconfirmed_users * 86400) . "'");
+    mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM users WHERE `status` = 'pending' AND UNIX_TIMESTAMP(added) < '" . (TIMENOW - $delete_old_unconfirmed_users * 86400) . "'");
     $CQueryCount++;
 }
 mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM ts_sessions WHERE lastactivity < '" . (TIMENOW - 86400) . "'");

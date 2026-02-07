@@ -16,7 +16,7 @@ $contactUserId = isset($_GET["userid"]) ? intval($_GET["userid"]) : "";
 if (!$contactUserId || !$contactType || !in_array($contactType, ["icq", "aim", "msn", "skype", "yahoo"]) || $CURUSER["id"] == 0) {
     error_($lang->global["nopermission"]);
 }
-$userQuery = sql_query("SELECT id, username, email, contact, options, g.namestyle FROM users  LEFT JOIN usergroups g ON (users.$usergroup = g.gid) WHERE $id = " . sqlesc($contactUserId));
+$userQuery = sql_query("SELECT id, username, email, contact, options, g.namestyle FROM users  LEFT JOIN usergroups g ON (users.$usergroup = g.gid) WHERE `id` = " . sqlesc($contactUserId));
 if (mysqli_num_rows($userQuery) == 0) {
     error_($lang->global["nopermission"]);
 }

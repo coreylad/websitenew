@@ -26,7 +26,7 @@ $subtitleAction = isset($_GET["do"]) ? htmlspecialchars_uni($_GET["do"]) : (isse
 $subtitleId = isset($_GET["id"]) ? intval($_GET["id"]) : (isset($_POST["id"]) ? intval($_POST["id"]) : "");
 $defaulttemplate = ts_template();
 if ($action == "delete" && $is_mod && is_valid_id($subtitleId)) {
-    $subtitleQuery = sql_query("SELECT title,filename FROM ts_subtitles WHERE $id = " . sqlesc($subtitleId));
+    $subtitleQuery = sql_query("SELECT title,filename FROM ts_subtitles WHERE `id` = " . sqlesc($subtitleId));
     if (0 < mysqli_num_rows($subtitleQuery)) {
         $subtitleResult = mysqli_fetch_assoc($subtitleQuery);
         $subtitleFilename = $subtitleResult["filename"];
@@ -34,12 +34,12 @@ if ($action == "delete" && $is_mod && is_valid_id($subtitleId)) {
         if (file_exists($torrent_dir . "/" . $subtitleFilename)) {
             @unlink($torrent_dir . "/" . $subtitleFilename);
         }
-        sql_query("DELETE FROM ts_subtitles WHERE $id = " . sqlesc($subtitleId));
+        sql_query("DELETE FROM ts_subtitles WHERE `id` = " . sqlesc($subtitleId));
         write_log("Subtitle: " . $subtitleTitle . " deleted by " . $username);
     }
 }
 if ($action == "edit" && is_valid_id($subtitleId)) {
-    $subtitleQuery = sql_query("SELECT * FROM ts_subtitles WHERE $id = " . sqlesc($subtitleId));
+    $subtitleQuery = sql_query("SELECT * FROM ts_subtitles WHERE `id` = " . sqlesc($subtitleId));
     $subtitleData = mysqli_fetch_assoc($subtitleQuery);
     $canEditSubtitle = $subtitleData["uid"] === $CURUSER["id"] ? true : false;
     if (mysqli_num_rows($subtitleQuery) == 0 || !$canEditSubtitle && !$is_mod) {
@@ -55,13 +55,13 @@ if ($action == "edit" && is_valid_id($subtitleId)) {
             $errormessage = $lang->global["dontleavefieldsblank"];
         } else {
             if ($subtitleTorrentId) {
-                $torrentQuery = sql_query("SELECT id FROM torrents WHERE $id = " . $subtitleTorrentId);
+                $torrentQuery = sql_query("SELECT id FROM torrents WHERE `id` = " . $subtitleTorrentId);
                 if (mysqli_num_rows($torrentQuery) < 1) {
                     $errormessage = $lang->global["notorrentid"];
                 }
             }
             if (!$errormessage) {
-                sql_query("UPDATE ts_subtitles SET $title = " . sqlesc($subtitleTitle) . ", $language = " . sqlesc($subtitleLanguage) . ", $cds = " . sqlesc($subtitleCDs) . ", $fps = " . sqlesc($subtitleFPS) . ", $tid = " . $subtitleTorrentId . " WHERE $id = " . sqlesc($subtitleId));
+                sql_query("UPDATE ts_subtitles SET $title = " . sqlesc($subtitleTitle) . ", $language = " . sqlesc($subtitleLanguage) . ", $cds = " . sqlesc($subtitleCDs) . ", $fps = " . sqlesc($subtitleFPS) . ", $tid = " . $subtitleTorrentId . " WHERE `id` = " . sqlesc($subtitleId));
                 header("Location: " . $BASEURL . $_SERVER["SCRIPT_NAME"] . "?$id = " . $subtitleId);
                 exit;
             }
@@ -103,7 +103,7 @@ if ($action == "upload" && ($canupload || $is_mod)) {
             }
         }
         if ($subtitleTorrentId) {
-            $torrentQuery = sql_query("SELECT id FROM torrents WHERE $id = " . $subtitleTorrentId);
+            $torrentQuery = sql_query("SELECT id FROM torrents WHERE `id` = " . $subtitleTorrentId);
             if (mysqli_num_rows($torrentQuery) < 1) {
                 $errormessage = $lang->global["notorrentid"];
             }
@@ -184,7 +184,7 @@ if ($action == "download" && is_valid_id($id) && ($candownload || $is_mod)) {
         }
         return $status;
     }
-    $subtitleFileQuery = sql_query("SELECT filename FROM ts_subtitles WHERE $id = " . sqlesc($subtitleId));
+    $subtitleFileQuery = sql_query("SELECT filename FROM ts_subtitles WHERE `id` = " . sqlesc($subtitleId));
     if (0 < mysqli_num_rows($subtitleFileQuery)) {
         $subtitleFileResult = mysqli_fetch_assoc($subtitleFileQuery);
         $subtitleFilename = $subtitleFileResult["filename"];
@@ -192,7 +192,7 @@ if ($action == "download" && is_valid_id($id) && ($candownload || $is_mod)) {
         if (!file_exists($subtitleFilePath)) {
             $errormessage = $lang->ts_subtitles["filenotexists"];
         } else {
-            sql_query("UPDATE ts_subtitles SET $dlcount = dlcount + 1 WHERE $id = " . sqlesc($subtitleId));
+            sql_query("UPDATE ts_subtitles SET $dlcount = dlcount + 1 WHERE `id` = " . sqlesc($subtitleId));
             download($subtitleFilePath);
             exit;
         }
@@ -223,7 +223,7 @@ list($pagertop, $pagerbottom, $limit) = pager($torrentsperpage, $count, $_SERVER
 stdhead($SITENAME . " " . $lang->ts_subtitles["head"]);
 show_error();
 echo "\r\n\t<form $method = \"post\" $action = \"" . $_SERVER["SCRIPT_NAME"] . "\">\r\n\t<input $type = \"hidden\" $name = \"action\" $value = \"search\" />\r\n\t<table class=\"main\" $border = \"1\" $cellspacing = \"0\" $cellpadding = \"5\" $width = \"100%\">\r\n\t\t<tr>\r\n\t\t\t<td class=\"thead\">\r\n\t\t\t\t" . ts_collapse("search") . "\r\n\t\t\t\t" . $lang->ts_subtitles["search"] . "\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t" . ts_collapse("search", 2) . "\r\n\t\t<tr>\r\n\t\t\t<td>\r\n\t\t\t\t" . $lang->ts_subtitles["skey"] . " <input $type = \"text\" $name = \"keywords\" $size = \"75\" $value = \"" . (!empty($keywords) ? htmlspecialchars_uni($keywords) : "") . "\"> <input $type = \"submit\" $value = \"" . $lang->ts_subtitles["search2"] . "\">\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t</table>\r\n\t</form>\r\n\t<br>\r\n\t" . $pagertop . "\r\n\t<table $width = \"100%\" $border = \"0\" class=\"none\" $style = \"clear: both;\" $cellpadding = \"4\" $cellspacing = \"1\">\r\n\t\t<tr>\r\n\t\t\t<td class=\"thead\" $colspan = \"8\">\r\n\t\t\t\t" . ts_collapse("ts_subtitles") . "\r\n\t\t\t\t" . $SITENAME . " " . $lang->ts_subtitles["head"] . " [<b>" . $uploadlink . "</b>]\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t" . ts_collapse("ts_subtitles", 2) . "\r\n\t\t<tr>\r\n\t\t\t<td class=\"subheader\" $width = \"45%\" $align = \"left\">" . $lang->ts_subtitles[1] . "</td>\r\n\t\t\t<td class=\"subheader\" $width = \"5%\" $align = \"center\">" . $lang->ts_subtitles["dltitle"] . "</td>\r\n\t\t\t<td class=\"subheader\" $width = \"10%\" $align = \"center\">" . $lang->ts_subtitles[2] . "</td>\r\n\t\t\t<td class=\"subheader\" $width = \"5%\" $align = \"center\">" . $lang->ts_subtitles[3] . "</td>\r\n\t\t\t<td class=\"subheader\" $width = \"5%\" $align = \"center\">" . $lang->ts_subtitles[4] . "</td>\r\n\t\t\t<td class=\"subheader\" $width = \"5%\" $align = \"center\">" . $lang->ts_subtitles["dlcount"] . "</td>\r\n\t\t\t<td class=\"subheader\" $width = \"15%\" $align = \"center\">" . $lang->ts_subtitles[5] . "</td>\r\n\t\t\t<td class=\"subheader\" $width = \"10%\" $align = \"center\">" . $lang->ts_subtitles[6] . "</td>\r\n\t\t</tr>\r\n\t";
-    $subtitleListQuery = sql_query("SELECT s.*, t.name as torrentname, u.username, g.namestyle, c.name, c.flagpic FROM ts_subtitles s LEFT JOIN torrents t ON (s.$tid = t.id) LEFT JOIN users u ON (s.$uid = u.id) LEFT JOIN usergroups g ON (u.$usergroup = g.gid) LEFT JOIN countries c ON (s.$language = c.id)" . $extraquery2 . " ORDER by s.date DESC " . $limit);
+    $subtitleListQuery = sql_query("SELECT s.*, t.name as torrentname, u.username, g.namestyle, c.name, c.flagpic FROM ts_subtitles s LEFT JOIN torrents t ON (s.$tid = t.id) LEFT JOIN users u ON (s.$uid = u.id) LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) LEFT JOIN countries c ON (s.$language = c.id)" . $extraquery2 . " ORDER by s.date DESC " . $limit);
 if (mysqli_num_rows($subtitleListQuery) == 0) {
     echo "<tr><td $colspan = \"8\">" . $lang->ts_subtitles["norecord"] . "</td></tr>";
 } else {

@@ -36,11 +36,11 @@ if (!empty($feeds)) {
         if (!empty($feed["xml"]->xml_string)) {
             if ($feed["xml"]->parse_xml() !== false) {
                 $items = [];
-                $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT uniquehash FROM ts_rsslog WHERE $rssfeedid = " . $rssfeedid);
+                $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT uniquehash FROM ts_rsslog WHERE $rssfeedid = " . $rssfeedid);
                 $CQueryCount++;
                 $AllFeeds = [];
-                if (mysqli_num_rows($Query)) {
-                    while ($AF = mysqli_fetch_assoc($Query)) {
+                if (mysqli_num_rows($query)) {
+                    while ($AF = mysqli_fetch_assoc($query)) {
                         $AllFeeds[$AF["uniquehash"]] = true;
                     }
                 }
@@ -129,7 +129,7 @@ if (!empty($feeds)) {
                                 mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE tsf_forums SET $lastpost = " . $Queries["dateline"] . ", $lastposter = " . $Queries["username"] . ", $lastposteruid = " . $Queries["uid"] . ", $lastposttid = " . $Queries["tid"] . ", $lastpostsubject = " . $Queries["subject"] . " WHERE $fid = " . $realforumid);
                                 $CQueryCount++;
                             }
-                            mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET $totalposts = totalposts + 1 WHERE $id = " . $Queries["uid"]);
+                            mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET $totalposts = totalposts + 1 WHERE `id` = " . $Queries["uid"]);
                             $CQueryCount++;
                             mysqli_query($GLOBALS["DatabaseConnect"], "REPLACE INTO ts_rsslog VALUES (" . $item["rssfeedid"] . ", " . $Queries["tid"] . ", '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $uniquehash) . "', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $item["contenthash"]) . "', " . $Queries["dateline"] . ")");
                             $CQueryCount++;

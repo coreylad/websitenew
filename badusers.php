@@ -22,7 +22,7 @@ if ($act == "delete") {
     }
     $id = intval($_GET["id"]);
     int_check($id);
-    sql_query("DELETE FROM badusers WHERE $id = " . sqlesc($id));
+    sql_query("DELETE FROM badusers WHERE `id` = " . sqlesc($id));
     write_log("BAD USER (id: " . $id . ") deleted by " . htmlspecialchars_uni($CURUSER["username"]));
     redirect("badusers.php", $lang->badusers["deleted"]);
 } else {
@@ -42,13 +42,13 @@ if ($act == "delete") {
                 stderr($lang->global["error"], $lang->global["dontleavefieldsblank"]);
                 exit;
             }
-            sql_query("UPDATE badusers SET $username = " . sqlesc($username) . ", $email = " . sqlesc($email) . ", $ipaddress = " . sqlesc($ipaddress) . ", $comment = " . sqlesc($comment) . " WHERE $id = " . sqlesc($id));
+            sql_query("UPDATE badusers SET $username = " . sqlesc($username) . ", $email = " . sqlesc($email) . ", $ipaddress = " . sqlesc($ipaddress) . ", $comment = " . sqlesc($comment) . " WHERE `id` = " . sqlesc($id));
             write_log("BAD USER (id: " . $id . ") edited by " . htmlspecialchars_uni($CURUSER["username"]));
             redirect("badusers.php", $lang->badusers["edited"]);
         } else {
             $id = intval($_GET["id"]);
             int_check($id);
-            $query = sql_query("SELECT username,email,ipaddress,comment FROM badusers WHERE $id = " . sqlesc($id));
+            $query = sql_query("SELECT username,email,ipaddress,comment FROM badusers WHERE `id` = " . sqlesc($id));
             if (mysqli_num_rows($query) == 0) {
                 stderr($lang->global["error"], $lang->global["nothingfound"]);
                 exit;
@@ -76,7 +76,7 @@ if ($act == "delete") {
                     stderr($lang->global["error"], $lang->global["dontleavefieldsblank"]);
                     exit;
                 }
-                $query = sql_query("SELECT * FROM badusers WHERE $username = " . sqlesc($username) . " LIMIT 0 , 1");
+                $query = sql_query("SELECT * FROM badusers WHERE `username` = " . sqlesc($username) . " LIMIT 0 , 1");
                 if (mysqli_num_rows($query) != 0) {
                     stderr($lang->global["error"], $lang->badusers["alreadyexists"], false);
                 }

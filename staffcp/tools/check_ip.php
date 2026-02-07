@@ -13,7 +13,7 @@ $ip = "";
 if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
     $ip = preg_replace("/[^A-Za-z0-9.]/", "", trim($_POST["ip"]));
     if ($ip) {
-        $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT value FROM ipbans WHERE $id = 1");
+        $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT value FROM ipbans WHERE `id` = 1");
         $result = mysqli_fetch_assoc($query);
         $iplist = explode(" ", $result["value"]);
         if (in_array($ip, $iplist)) {

@@ -14,9 +14,9 @@ if (!defined("IN_PLUGIN_SYSTEM")) {
 }
 require_once INC_PATH . "/functions_icons.php";
 $_dt = TIMENOW - 86400;
-$_qsquery = @sql_query("SELECT userid FROM ts_sessions WHERE $userid = '0' AND lastactivity > '" . $_dt . "'");
+$_qsquery = @sql_query("SELECT userid FROM ts_sessions WHERE `userid` = '0' AND lastactivity > '" . $_dt . "'");
 $_guests = ts_nf(@mysqli_num_rows($_qsquery));
-$_wgo_query = sql_query("SELECT distinct u.id, u.username, u.options, u.enabled, u.donor, u.leechwarn, u.warned, p.canupload, p.candownload, p.cancomment, p.canmessage, p.canshout, g.namestyle FROM users u LEFT JOIN ts_u_perm p ON (u.$id = p.userid) LEFT JOIN usergroups g ON (u.$usergroup = g.gid) WHERE UNIX_TIMESTAMP(u.last_access) > '" . $_dt . "' ORDER by u.username, u.last_access");
+$_wgo_query = sql_query("SELECT distinct u.id, u.username, u.options, u.enabled, u.donor, u.leechwarn, u.warned, p.canupload, p.candownload, p.cancomment, p.canmessage, p.canshout, g.namestyle FROM users u LEFT JOIN ts_u_perm p ON (u.`id` = p.userid) LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) WHERE UNIX_TIMESTAMP(u.last_access) > '" . $_dt . "' ORDER by u.username, u.last_access");
 $_most_ever = mysqli_num_rows($_wgo_query) + $_guests;
 if (file_exists(TSDIR . "/" . $cache . "/onlinestats.php")) {
     include_once TSDIR . "/" . $cache . "/onlinestats.php";

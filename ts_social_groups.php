@@ -85,7 +85,7 @@ if ($action == "manage" && is_valid_id($groupId)) {
                 if (!empty($_POST["username"]) && !empty($_POST["reason"])) {
                     $targetUsername = trim($_POST["username"]);
                     $removalReason = trim($_POST["reason"]);
-                    ($userQuery = sql_query("SELECT u.id, m.userid FROM users u LEFT JOIN ts_social_group_members m ON (u.$id = m.userid) WHERE m.$userid = u.id AND m.$groupid = " . sqlesc($groupId) . " AND m.$type = 'public' AND u.$username = " . sqlesc($targetUsername))) || sqlerr(__FILE__, 153);
+                    ($userQuery = sql_query("SELECT u.id, m.userid FROM users u LEFT JOIN ts_social_group_members m ON (u.`id` = m.userid) WHERE m.$userid = u.id AND m.$groupid = " . sqlesc($groupId) . " AND m.$type = 'public' AND u.$username = " . sqlesc($targetUsername))) || sqlerr(__FILE__, 153);
                     if (0 < mysqli_num_rows($userQuery)) {
                         $userResult = mysqli_fetch_assoc($userQuery);
                         if ($userResult["id"] == $groupOwnerId) {
@@ -110,7 +110,7 @@ if ($action == "manage" && is_valid_id($groupId)) {
             } else {
                 if (!empty($_GET["userid"]) && is_valid_id($_GET["userid"])) {
                     $targetUserId = intval($_GET["userid"]);
-                    ($userQuery = sql_query("SELECT u.id, m.userid FROM users u LEFT JOIN ts_social_group_members m ON (u.$id = m.userid) WHERE m.$userid = u.id AND m.$groupid = " . sqlesc($groupId) . " AND m.$type = 'inviteonly' AND u.$id = " . sqlesc($targetUserId))) || sqlerr(__FILE__, 188);
+                    ($userQuery = sql_query("SELECT u.id, m.userid FROM users u LEFT JOIN ts_social_group_members m ON (u.`id` = m.userid) WHERE m.$userid = u.id AND m.$groupid = " . sqlesc($groupId) . " AND m.$type = 'inviteonly' AND u.$id = " . sqlesc($targetUserId))) || sqlerr(__FILE__, 188);
                     if (0 < mysqli_num_rows($userQuery)) {
                         $userResult = mysqli_fetch_assoc($userQuery);
                         if ($userResult["id"] == $groupOwnerId) {
@@ -132,7 +132,7 @@ if ($action == "manage" && is_valid_id($groupId)) {
                     }
                 }
             }
-            $Query = sql_query("SELECT m.userid, m.type, u.username, u.avatar, g.namestyle FROM ts_social_group_members m LEFT JOIN users u ON (u.$id = m.userid) LEFT JOIN usergroups g ON (u.$usergroup = g.gid) WHERE m.$groupid = " . sqlesc($groupid) . " AND m.$type = 'public' ORDER by u.username ASC, m.joined DESC");
+            $Query = sql_query("SELECT m.userid, m.type, u.username, u.avatar, g.namestyle FROM ts_social_group_members m LEFT JOIN users u ON (u.`id` = m.userid) LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) WHERE m.$groupid = " . sqlesc($groupid) . " AND m.$type = 'public' ORDER by u.username ASC, m.joined DESC");
             $TotalMembers = mysqli_num_rows($Query);
             $ShowMembers = "";
             if (0 < $TotalMembers) {
@@ -149,7 +149,7 @@ if ($action == "manage" && is_valid_id($groupId)) {
             }
             $str .= "\r\n\t\t\t<table $width = \"100%\" $border = \"0\" $cellpadding = \"5\" $cellspacing = \"0\">\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td class=\"thead\">\r\n\t\t\t\t\t\t" . ts_collapse("managemembers") . "\r\n\t\t\t\t\t\t" . $lang->ts_social_groups["title1"] . " (" . ts_nf($TotalMembers) . ")\r\n\t\t\t\t\t</td>\r\n\t\t\t\t</tr>\r\n\t\t\t\t" . ts_collapse("managemembers", 2) . "\r\n\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t<td>\r\n\t\t\t\t\t\t\t" . $ShowMembers . "\r\n\t\t\t\t\t\t</td>\r\n\t\t\t\t\t</tr>\r\n\t\t\t\t</tbody>\r\n\t\t\t</table>\r\n\t\t\t<br />\r\n\t\t\t";
             $str .= "\r\n\t\t\t<form $method = \"post\" $action = \"" . $_SERVER["SCRIPT_NAME"] . "?do=manage&amp;$groupid = " . intval($groupid) . (isset($_GET["page"]) ? "&amp;$page = " . intval($_GET["page"]) : "") . "\">\r\n\t\t\t<input $type = \"hidden\" $name = \"do\" $value = \"manage\" />\r\n\t\t\t<input $type = \"hidden\" $name = \"groupid\" $value = \"" . intval($groupid) . "\" />\r\n\t\t\t<table $width = \"100%\" $border = \"0\" $cellpadding = \"5\" $cellspacing = \"0\">\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td class=\"thead\">\r\n\t\t\t\t\t\t" . ts_collapse("kickmember") . "\r\n\t\t\t\t\t\t" . $lang->ts_social_groups["kickm"] . "\r\n\t\t\t\t\t</td>\r\n\t\t\t\t</tr>\r\n\t\t\t\t" . ts_collapse("kickmember", 2) . "\r\n\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t<td>\r\n\t\t\t\t\t\t\t<fieldset>\r\n\t\t\t\t\t\t\t\t<legend>" . $lang->ts_social_groups["username"] . "</legend>\r\n\t\t\t\t\t\t\t\t<input $type = \"text\" $size = \"30\" $name = \"username\" $value = \"" . (isset($Username) ? htmlspecialchars_uni($Username) : "") . "\" />\r\n\t\t\t\t\t\t\t</fieldset>\r\n\t\t\t\t\t\t\t<fieldset>\r\n\t\t\t\t\t\t\t\t<legend>" . $lang->ts_social_groups["kickreason"] . "</legend>\r\n\t\t\t\t\t\t\t\t<textarea $name = \"reason\" $rows = \"6\" $cols = \"85\">" . (isset($Reason) ? htmlspecialchars_uni($Reason) : "") . "</textarea><br />\r\n\t\t\t\t\t\t\t\t<input $type = \"submit\" $value = \"" . $lang->ts_social_groups["kickm"] . "\" /> <input $type = \"reset\" $value = \"" . $lang->ts_social_groups["reset"] . "\" />\r\n\t\t\t\t\t\t\t</fieldset>\r\n\t\t\t\t\t\t</td>\r\n\t\t\t\t\t</tr>\r\n\t\t\t\t</tbody>\r\n\t\t\t</table>\r\n\t\t\t<br />\r\n\t\t\t";
-            $Query = sql_query("SELECT m.userid, m.type, u.username, u.avatar, g.namestyle FROM ts_social_group_members m LEFT JOIN users u ON (u.$id = m.userid) LEFT JOIN usergroups g ON (u.$usergroup = g.gid) WHERE m.$groupid = " . sqlesc($groupid) . " AND m.$type = 'inviteonly' ORDER by u.username ASC, m.joined DESC");
+            $Query = sql_query("SELECT m.userid, m.type, u.username, u.avatar, g.namestyle FROM ts_social_group_members m LEFT JOIN users u ON (u.`id` = m.userid) LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) WHERE m.$groupid = " . sqlesc($groupid) . " AND m.$type = 'inviteonly' ORDER by u.username ASC, m.joined DESC");
             $TotalMembers = mysqli_num_rows($Query);
             $ShowMembers = "";
             if (0 < $TotalMembers) {
@@ -296,7 +296,7 @@ if ($action == "deny_invite" && is_valid_id($groupId)) {
         if (!$inviteResult["name"] || $inviteResult["owner"] == $CURUSER["id"]) {
             stderr($lang->global["error"], $lang->ts_social_groups["invalid"]);
         } else {
-            sql_query("DELETE FROM ts_social_group_members WHERE $userid = " . sqlesc($CURUSER["id"]) . " AND $groupid = " . sqlesc($groupId) . " AND $type = 'inviteonly'") || sqlerr(__FILE__, 578);
+            sql_query("DELETE FROM ts_social_group_members WHERE `userid` = " . sqlesc($CURUSER["id"]) . " AND $groupid = " . sqlesc($groupId) . " AND $type = 'inviteonly'") || sqlerr(__FILE__, 578);
             redirect("ts_social_groups.php?do=showgroup&amp;$groupid = " . intval($groupId));
             exit;
         }
@@ -311,7 +311,7 @@ if ($action == "accept_invite" && is_valid_id($groupId) && SGPermission("canjoin
         if (!$inviteResult["name"] || $inviteResult["owner"] == $CURUSER["id"]) {
             stderr($lang->global["error"], $lang->ts_social_groups["invalid"]);
         } else {
-            sql_query("UPDATE ts_social_group_members SET $type = 'public' WHERE $userid = " . sqlesc($CURUSER["id"]) . " AND $groupid = " . sqlesc($groupId) . " AND $type = 'inviteonly'") || sqlerr(__FILE__, 601);
+            sql_query("UPDATE ts_social_group_members SET $type = 'public' WHERE `userid` = " . sqlesc($CURUSER["id"]) . " AND $groupid = " . sqlesc($groupId) . " AND $type = 'inviteonly'") || sqlerr(__FILE__, 601);
             sql_query("UPDATE ts_social_groups SET $members = members + 1 WHERE $groupid = " . sqlesc($groupId)) || sqlerr(__FILE__, 602);
             redirect("ts_social_groups.php?do=showgroup&amp;$groupid = " . intval($groupId));
             exit;
@@ -329,7 +329,7 @@ if ($action == "invite" && is_valid_id($groupId)) {
         } else {
             if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
                 $targetUsername = trim($_POST["username"]);
-                $userQuery = sql_query("SELECT u.id, g.sgperms FROM users u LEFT JOIN usergroups g ON (u.$usergroup = g.gid) WHERE u.$username = " . sqlesc($targetUsername) . " AND u.$status = 'confirmed' AND u.$enabled = 'yes' AND u.usergroup != 9");
+                $userQuery = sql_query("SELECT u.id, g.sgperms FROM users u LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) WHERE u.$username = " . sqlesc($targetUsername) . " AND u.$status = 'confirmed' AND u.$enabled = 'yes' AND u.usergroup != 9");
                 if (mysqli_num_rows($userQuery) == 0) {
                     $errors[] = $lang->ts_social_groups["error8"];
                 } else {
@@ -340,7 +340,7 @@ if ($action == "invite" && is_valid_id($groupId)) {
                         if (!SGPermission("canjoin", $userResult["sgperms"])) {
                             $errors[] = $lang->ts_social_groups["error11"];
                         } else {
-                            $membershipQuery = sql_query("SELECT userid FROM ts_social_group_members WHERE $userid = " . sqlesc($userResult["id"]) . " AND $groupid = " . sqlesc($groupId));
+                            $membershipQuery = sql_query("SELECT userid FROM ts_social_group_members WHERE `userid` = " . sqlesc($userResult["id"]) . " AND $groupid = " . sqlesc($groupId));
                             if (0 < mysqli_num_rows($membershipQuery)) {
                                 $errors[] = $lang->ts_social_groups["error9"];
                             } else {
@@ -415,7 +415,7 @@ if ($action == "leave" && is_valid_id($groupId)) {
         if ($groupOwnerId == $CURUSER["id"]) {
             $errors[] = $lang->ts_social_groups["error5"];
         } else {
-            sql_query("DELETE FROM ts_social_group_members WHERE $userid = " . sqlesc($CURUSER["id"]) . " AND $groupid = " . sqlesc($groupId));
+            sql_query("DELETE FROM ts_social_group_members WHERE `userid` = " . sqlesc($CURUSER["id"]) . " AND $groupid = " . sqlesc($groupId));
             if (mysqli_affected_rows($GLOBALS["DatabaseConnect"])) {
                 sql_query("UPDATE ts_social_groups SET $members = IF(members > 0, members - 1, 0) WHERE $groupid = " . sqlesc($groupId));
             } else {
@@ -427,7 +427,7 @@ if ($action == "leave" && is_valid_id($groupId)) {
     }
 }
 if ($action == "join" && is_valid_id($groupId) && SGPermission("canjoin")) {
-    $membershipQuery = sql_query("SELECT userid FROM ts_social_group_members WHERE $userid = " . sqlesc($CURUSER["id"]) . " AND $groupid = " . sqlesc($groupId));
+    $membershipQuery = sql_query("SELECT userid FROM ts_social_group_members WHERE `userid` = " . sqlesc($CURUSER["id"]) . " AND $groupid = " . sqlesc($groupId));
     if (mysqli_num_rows($membershipQuery) == 0) {
         $groupTypeQuery = sql_query("SELECT type FROM ts_social_groups WHERE $groupid = " . sqlesc($groupId));
         if (0 < mysqli_num_rows($groupTypeQuery)) {
@@ -528,11 +528,11 @@ if ($action == "create" && SGPermission("cancreate") && SGPermission("canjoin"))
     exit;
 }
 if ($action == "showgroup" && is_valid_id($groupId)) {
-    ($groupQuery = sql_query("SELECT sg.name, sg.description, sg.owner, sg.type, u.username, g.namestyle, s.uid as issubs FROM ts_social_groups sg LEFT JOIN users u ON (u.$id = sg.owner) LEFT JOIN usergroups g ON (g.$gid = u.usergroup) LEFT JOIN ts_social_groups_subscribe s ON (s.$groupid = sg.groupid AND s.$uid = " . $CURUSER["id"] . ") WHERE sg.$groupid = " . sqlesc($groupId))) || sqlerr(__FILE__, 999);
+    ($groupQuery = sql_query("SELECT sg.name, sg.description, sg.owner, sg.type, u.username, g.namestyle, s.uid as issubs FROM ts_social_groups sg LEFT JOIN users u ON (u.`id` = sg.owner) LEFT JOIN usergroups g ON (g.$gid = u.usergroup) LEFT JOIN ts_social_groups_subscribe s ON (s.$groupid = sg.groupid AND s.$uid = " . $CURUSER["id"] . ") WHERE sg.$groupid = " . sqlesc($groupId))) || sqlerr(__FILE__, 999);
     if (0 < mysqli_num_rows($groupQuery)) {
         $groupData = mysqli_fetch_assoc($groupQuery);
         if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST" && SGPermission("canpost")) {
-            $membershipQuery = sql_query("SELECT userid FROM ts_social_group_members WHERE $userid = " . sqlesc($CURUSER["id"]) . " AND $type = 'public'");
+            $membershipQuery = sql_query("SELECT userid FROM ts_social_group_members WHERE `userid` = " . sqlesc($CURUSER["id"]) . " AND $type = 'public'");
             if (mysqli_num_rows($membershipQuery) == 0) {
                 $errors[] = $lang->ts_social_groups["error7"];
             } else {
@@ -564,7 +564,7 @@ if ($action == "showgroup" && is_valid_id($groupId)) {
         $InviteButton = $SG["type"] == "inviteonly" && $SG["owner"] == $CURUSER["id"] || $SG["type"] == "inviteonly" && $is_mod ? "<input $type = \"button\" $value = \"" . $lang->ts_social_groups["invitemem"] . "\" $onclick = \"jumpto('" . $_SERVER["SCRIPT_NAME"] . "?do=invite&amp;$groupid = " . $groupid . (isset($_GET["page"]) ? "&amp;$page = " . intval($_GET["page"]) : "") . "'); return false;\" />" : "";
         $ManageButton = $is_mod && SGPermission("canmanagegroup") || $SG["owner"] == $CURUSER["id"] && SGPermission("canmanagegroup") ? "<input $type = \"button\" $value = \"" . $lang->ts_social_groups["masspm"] . "\" $onclick = \"jumpto('" . $_SERVER["SCRIPT_NAME"] . "?do=masspm&amp;$groupid = " . $groupid . (isset($_GET["page"]) ? "&amp;$page = " . intval($_GET["page"]) : "") . "'); return false;\" /> <input $type = \"button\" $value = \"" . $lang->ts_social_groups["managem"] . "\" $onclick = \"jumpto('" . $_SERVER["SCRIPT_NAME"] . "?do=manage&amp;$groupid = " . $groupid . (isset($_GET["page"]) ? "&amp;$page = " . intval($_GET["page"]) : "") . "'); return false;\" />" : "";
         $str .= (!empty($ManageButton) || !empty($InviteButton) ? "<p $style = \"float: right;\">" . $ManageButton . " " . $InviteButton . "</p>" : "") . "\r\n\t\t<p $style = \"float: left;\">\r\n\t\t\t<input $type = \"button\" $value = \"" . ($SG["issubs"] == $CURUSER["id"] ? $lang->ts_social_groups["s2"] : $lang->ts_social_groups["s1"]) . "\" $onclick = \"jumpto('" . $_SERVER["SCRIPT_NAME"] . "?do=subscribe&amp;$groupid = " . $groupid . (isset($_GET["page"]) ? "&amp;$page = " . intval($_GET["page"]) : "") . "'); return false;\" />\r\n\t\t</p>\r\n\t\t<table $width = \"100%\" $border = \"0\" $cellpadding = \"5\" $cellspacing = \"0\">\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"thead\">\r\n\t\t\t\t\t" . ts_collapse("groupss") . "\r\n\t\t\t\t\t" . $lang->ts_social_groups["head2"] . "\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t\t" . ts_collapse("groupss", 2) . "\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td>\r\n\t\t\t\t\t\t<span $style = \"float: right;\">" . sprintf($SG["type"] == "public" ? $lang->ts_social_groups["type1"] : $lang->ts_social_groups["type2"], "<a $href = \"" . ts_seo($SG["owner"], $SG["username"]) . "\">" . get_user_color($SG["username"], $SG["namestyle"]) . "</a>") . "</span>\r\n\t\t\t\t\t\t<h1>" . htmlspecialchars_uni($SG["name"]) . "</h1>\r\n\t\t\t\t\t\t" . htmlspecialchars_uni($SG["description"]) . "\r\n\t\t\t\t\t</td>\r\n\t\t\t\t</tr>\r\n\t\t\t</tbody>\r\n\t\t</table>\r\n\t\t<br />\r\n\t\t";
-        $Query = sql_query("SELECT m.userid, m.type, u.username, u.avatar, g.namestyle FROM ts_social_group_members m LEFT JOIN users u ON (u.$id = m.userid) LEFT JOIN usergroups g ON (u.$usergroup = g.gid) WHERE m.$groupid = " . sqlesc($groupid) . " ORDER by u.username ASC, m.joined DESC");
+        $Query = sql_query("SELECT m.userid, m.type, u.username, u.avatar, g.namestyle FROM ts_social_group_members m LEFT JOIN users u ON (u.`id` = m.userid) LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) WHERE m.$groupid = " . sqlesc($groupid) . " ORDER by u.username ASC, m.joined DESC");
         $TotalMembers = mysqli_num_rows($Query);
         $ShowMembers = "";
         if (0 < $TotalMembers) {
@@ -589,7 +589,7 @@ if ($action == "showgroup" && is_valid_id($groupId)) {
         $str .= "\r\n\t\t<table $width = \"100%\" $border = \"0\" $cellpadding = \"5\" $cellspacing = \"0\">\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"thead\">\r\n\t\t\t\t\t" . ts_collapse("memberss") . "\r\n\t\t\t\t\t" . $lang->ts_social_groups["title1"] . " (" . ts_nf($TotalMembers) . ")\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t\t" . ts_collapse("memberss", 2) . "\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td>\r\n\t\t\t\t\t\t" . $ShowMembers . "\r\n\t\t\t\t\t</td>\r\n\t\t\t\t</tr>\r\n\t\t\t</tbody>\r\n\t\t</table>\r\n\t\t<br />\r\n\t\t";
         $ShowReports = "";
         if ($SG["owner"] == $CURUSER["id"] && SGPermission("canmanagegroup") || SGPermission("canmanagegroup") && $is_mod) {
-            $Query = sql_query("SELECT r.*, u.username, g.namestyle FROM ts_social_group_reports r LEFT JOIN users u ON (r.$userid = u.id) LEFT JOIN usergroups g ON (u.$usergroup = g.gid) WHERE r.$groupid = " . sqlesc($groupid));
+            $Query = sql_query("SELECT r.*, u.username, g.namestyle FROM ts_social_group_reports r LEFT JOIN users u ON (r.$userid = u.id) LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) WHERE r.$groupid = " . sqlesc($groupid));
             if (0 < mysqli_num_rows($Query)) {
                 $ShowReports .= "\r\n\t\t\t\t<table $width = \"100%\" $border = \"0\" $cellpadding = \"5\" $cellspacing = \"0\">\r\n\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t<td class=\"thead\" $colspan = \"4\">\r\n\t\t\t\t\t\t\t" . ts_collapse("shwreports") . "\r\n\t\t\t\t\t\t\t" . $lang->ts_social_groups["shwreports"] . "\r\n\t\t\t\t\t\t</td>\r\n\t\t\t\t\t</tr>\r\n\t\t\t\t\t" . ts_collapse("shwreports", 2) . "\r\n\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t<td class=\"subheader\" $width = \"15%\">" . $lang->ts_social_groups["reportby"] . "</td>\r\n\t\t\t\t\t\t<td class=\"subheader\" $width = \"15%\" $align = \"center\">" . $lang->ts_social_groups["created"] . "</td>\r\n\t\t\t\t\t\t<td class=\"subheader\" $width = \"45%\">" . $lang->ts_social_groups["reason"] . "</td>\r\n\t\t\t\t\t\t<td class=\"subheader\" $width = \"25%\" $align = \"center\">" . $lang->ts_social_groups["options"] . "</td>\r\n\t\t\t\t\t</tr>\r\n\t\t\t\t";
                 while ($Reports = mysqli_fetch_assoc($Query)) {
@@ -622,7 +622,7 @@ if ($action == "showgroup" && is_valid_id($groupId)) {
             $SGMessageForm = "\r\n\t\t\t" . $QuickEditor->GenerateJavascript() . "\r\n\t\t\t" . ($useajax == "yes" ? "<script $type = \"text/javascript\" $src = \"" . $BASEURL . "/scripts/quick_sgm.js\"></script>" : "") . "\r\n\t\t\t<form $method = \"POST\" $action = \"" . $_SERVER["SCRIPT_NAME"] . "?do=showgroup&amp;$groupid = " . $groupid . "\" $name = \"quickreply\" $id = \"quickreply\">\r\n\t\t\t<input $type = \"hidden\" $name = \"groupid\" $value = \"" . $groupid . "\" />\r\n\t\t\t<input $type = \"hidden\" $name = \"do\" $value = \"showgroup\" />\r\n\t\t\t<br />\r\n\t\t\t<table $width = \"100%\" $border = \"0\" $cellpadding = \"5\" $cellspacing = \"0\">\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td class=\"thead\">\r\n\t\t\t\t\t\t" . ts_collapse("postmsg") . "\r\n\t\t\t\t\t\t" . $lang->ts_social_groups["postmsg"] . "\r\n\t\t\t\t\t</td>\r\n\t\t\t\t</tr>\r\n\t\t\t\t" . ts_collapse("postmsg", 2) . "\r\n\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t<td>\r\n\t\t\t\t\t\t\t" . $QuickEditor->GenerateBBCode() . "\r\n\t\t\t\t\t\t\t<br />\r\n\t\t\t\t\t\t\t<textarea $name = \"message\" $style = \"width:670px;height:100px;\" $id = \"message\"></textarea><br />\r\n\t\t\t\t\t\t\t<span $id = \"loading-layer\" $style = \"display:none;\"><img $src = \"" . $dimagedir . "loading.gif\" $border = \"0\" $alt = \"\" $title = \"\" class=\"inlineimg\"></span>\r\n\t\t\t\t\t\t\t" . ($useajax == "yes" ? "<input $type = \"button\" class=\"button\" $value = \"" . $lang->ts_social_groups["postmsg"] . "\" $name = \"submitsgm\" $id = \"submitsgm\" $onclick = \"javascript:TSajaxquicksgm('" . $groupid . "');\" />" : "<input $type = \"submit\" $name = \"submit\" $value = \"" . $lang->ts_social_groups["postmsg"] . "\" class=\"button\" />") . "\r\n\t\t\t\t\t\t\t<input $type = \"reset\" $value = \"" . $lang->ts_social_groups["reset"] . "\" class=button />\r\n\t\t\t\t\t\t</td>\r\n\t\t\t\t\t</tr>\r\n\t\t\t\t</tbody>\r\n\t\t\t</table>\r\n\t\t\t</form>\r\n\t\t\t";
         }
         $str .= $ShowReports . $pagertop . "\r\n\t\t<table $width = \"100%\" $border = \"0\" $cellpadding = \"5\" $cellspacing = \"0\">\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"thead\">\r\n\t\t\t\t\t" . ts_collapse("messagess") . "\r\n\t\t\t\t\t" . $lang->ts_social_groups["title2"] . " (" . ts_nf($TotalMessages) . ")\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t\t" . ts_collapse("messagess", 2) . "\r\n\t\t\t<tr>\r\n\t\t\t\t<td $id = \"PostedQuickMessage\" $name = \"PostedQuickMessage\" $style = \"display: none;\">\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t";
-        $Query = sql_query("SELECT m.*, sg.owner, u.username, u.avatar, g.namestyle FROM ts_social_group_messages m LEFT JOIN ts_social_groups sg ON (m.$groupid = sg.groupid) LEFT JOIN users u ON (u.$id = m.userid) LEFT JOIN usergroups g ON (u.$usergroup = g.gid) WHERE m.$groupid = " . sqlesc($groupid) . " ORDER BY m.posted DESC " . $limit);
+        $Query = sql_query("SELECT m.*, sg.owner, u.username, u.avatar, g.namestyle FROM ts_social_group_messages m LEFT JOIN ts_social_groups sg ON (m.$groupid = sg.groupid) LEFT JOIN users u ON (u.`id` = m.userid) LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) WHERE m.$groupid = " . sqlesc($groupid) . " ORDER BY m.posted DESC " . $limit);
         if (0 < mysqli_num_rows($Query)) {
             while ($Msg = mysqli_fetch_assoc($Query)) {
                 $ManageLinks = "[<a $href = \"" . $_SERVER["SCRIPT_NAME"] . "?do=report_msg&amp;$mid = " . $Msg["mid"] . "&amp;$groupid = " . $Msg["groupid"] . (isset($_GET["page"]) ? "&amp;$page = " . intval($_GET["page"]) : "") . "\">" . $lang->ts_social_groups["reportpost"] . "</a>] ";
@@ -662,14 +662,14 @@ if (0 < mysqli_num_rows($memberQuery)) {
     $pageHtml .= "\r\n\t\t</tbody>\r\n\t</table>";
 }
 $memberOfGroups = [];
-$memberOfQuery = sql_query("SELECT groupid FROM ts_social_group_members WHERE $userid = " . sqlesc($CURUSER["id"]));
+$memberOfQuery = sql_query("SELECT groupid FROM ts_social_group_members WHERE `userid` = " . sqlesc($CURUSER["id"]));
 if (0 < mysqli_num_rows($memberOfQuery)) {
     while ($memberOfRow = mysqli_fetch_assoc($memberOfQuery)) {
         $memberOfGroups[$memberOfRow["groupid"]] = "1";
     }
 }
 $createGroupButton = SGPermission("cancreate") && SGPermission("canjoin") ? "<p $style = \"float: right;\"><input $type = \"button\" $value = \"" . $lang->ts_social_groups["create"] . "\" $onclick = \"jumpto('" . $_SERVER["SCRIPT_NAME"] . "?do=create'); return false;\" /></p>" : "";
-($allGroupsQuery = sql_query("SELECT sg.*, u.username, g.namestyle FROM ts_social_groups sg LEFT JOIN users u ON (sg.$lastposter = u.id) LEFT JOIN usergroups g ON (u.$usergroup = g.gid) ORDER BY sg.name")) || sqlerr(__FILE__, 1382);
+($allGroupsQuery = sql_query("SELECT sg.*, u.username, g.namestyle FROM ts_social_groups sg LEFT JOIN users u ON (sg.$lastposter = u.id) LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) ORDER BY sg.name")) || sqlerr(__FILE__, 1382);
 stdhead($lang->ts_social_groups["head"]);
 add_breadcrumb($lang->ts_social_groups["head"], $_SERVER["SCRIPT_NAME"]);
 build_breadcrumb();

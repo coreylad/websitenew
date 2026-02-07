@@ -12,9 +12,9 @@ class TSSECache
     public function __construct()
     {
         global $TSDatabase;
-        $Q = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM `ts_cache`");
-        if (mysqli_num_rows($Q)) {
-            while ($C = mysqli_fetch_assoc($Q)) {
+        $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM `ts_cache`");
+        if (mysqli_num_rows($query)) {
+            while ($C = mysqli_fetch_assoc($query)) {
                 $this->Cache[$C["cachename"]] = ["content" => $C["content"], "lastupdate" => $C["lastupdate"]];
             }
         }

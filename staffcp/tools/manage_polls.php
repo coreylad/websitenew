@@ -14,8 +14,8 @@ define("TSF_PREFIX", "tsf_");
 if ($action == "updatepoll" && var_560($_POST["pollid"])) {
     $_queries = [];
     $pollid = intval($_POST["pollid"]);
-    $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM " . TSF_PREFIX . "poll WHERE $pollid = '" . $pollid . "'");
-    $pollinfo = mysqli_fetch_assoc($Query);
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM " . TSF_PREFIX . "poll WHERE $pollid = '" . $pollid . "'");
+    $pollinfo = mysqli_fetch_assoc($query);
     if (!$pollinfo["pollid"]) {
         $Message = showAlertError($Language[17]);
     }
@@ -75,8 +75,8 @@ if ($action == "updatepoll" && var_560($_POST["pollid"])) {
 }
 if ($action == "polledit" && var_560($_GET["pollid"])) {
     $pollid = intval($_GET["pollid"]);
-    $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM " . TSF_PREFIX . "poll WHERE $pollid = '" . $pollid . "'");
-    $pollinfo = mysqli_fetch_assoc($Query);
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM " . TSF_PREFIX . "poll WHERE $pollid = '" . $pollid . "'");
+    $pollinfo = mysqli_fetch_assoc($query);
     if (!$pollinfo["pollid"]) {
         $Message = showAlertError($Language[17]);
     }
@@ -152,12 +152,12 @@ if ($action == "createpoll") {
                 $action = "showlist";
                 $SysMsg = str_replace(["{1}", "{2}"], [$question, $_SESSION["ADMIN_USERNAME"]], $Language[16]);
                 logStaffAction($SysMsg);
-                $Q = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'SHOUTBOX'");
-                $Result = mysqli_fetch_assoc($Q);
+                $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'SHOUTBOX'");
+                $Result = mysqli_fetch_assoc($query);
                 $SHOUTBOX = unserialize($Result["content"]);
                 if ($SHOUTBOX["tsshoutbot"] == "yes" && preg_match("#poll#", $SHOUTBOX["tsshoutboxoptions"])) {
-                    $Q = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'MAIN'");
-                    $Result = mysqli_fetch_assoc($Q);
+                    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'MAIN'");
+                    $Result = mysqli_fetch_assoc($query);
                     $MAIN = unserialize($Result["content"]);
                     $shoutbOT = str_replace(["{1}", "{2}"], ["[URL=" . $MAIN["BASEURL"] . "/index.php#showtspoll]" . $question . "[/URL]", "[URL=userdetails.php?$id = " . $_SESSION["ADMIN_ID"] . "]" . $_SESSION["ADMIN_USERNAME"] . "[/URL]"], $Language[34]);
                     $shout_result = mysqli_query($GLOBALS["DatabaseConnect"], "INSERT INTO ts_shoutbox (date, shout, notice) VALUES ('" . time() . "', " . function_257($shoutbOT) . ", '1')");
@@ -175,8 +175,8 @@ if ($action == "createpoll") {
 }
 if ($action == "deletepoll" && var_560($_GET["pollid"])) {
     $pollid = intval($_GET["pollid"]);
-    $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT pollid, question FROM " . TSF_PREFIX . "poll WHERE $pollid = '" . $pollid . "'");
-    $pollinfo = mysqli_fetch_assoc($Query);
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT pollid, question FROM " . TSF_PREFIX . "poll WHERE $pollid = '" . $pollid . "'");
+    $pollinfo = mysqli_fetch_assoc($query);
     if (!$pollinfo["pollid"]) {
         $Message = showAlertError($Language[17]);
     }
@@ -193,10 +193,10 @@ if ($action == "showlist") {
     $results = mysqli_num_rows(mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM " . TSF_PREFIX . "poll"));
     list($pagertop, $limit) = buildPaginationLinks(25, $results, $_SERVER["SCRIPT_NAME"] . "?do=manage_polls&amp;");
     $Print = "";
-    $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM " . TSF_PREFIX . "poll ORDER BY dateline DESC " . $limit);
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM " . TSF_PREFIX . "poll ORDER BY dateline DESC " . $limit);
     $Print .= "\r\n\t<tr>\r\n\t\t<td class=\"alt2\" $width = \"45%\" $align = \"left\">" . $Language[4] . "</td>\r\n\t\t<td class=\"alt2\" $width = \"10%\" $align = \"left\">" . $Language[38] . "</td>\r\n\t\t<td class=\"alt2\" $width = \"15%\" $align = \"center\">" . $Language[5] . "</td>\r\n\t\t<td class=\"alt2\" $width = \"5%\" $align = \"center\">" . $Language[6] . "</td>\r\n\t\t<td class=\"alt2\" $width = \"10%\" $align = \"center\">" . $Language[7] . "</td>\r\n\t\t<td class=\"alt2\" $width = \"15%\" $align = \"center\">" . $Language[8] . "</td>\r\n\t</tr>\r\n\t";
-    if (0 < mysqli_num_rows($Query)) {
-        while ($Poll = mysqli_fetch_assoc($Query)) {
+    if (0 < mysqli_num_rows($query)) {
+        while ($Poll = mysqli_fetch_assoc($query)) {
             if ($Poll["dateline"] + $Poll["timeout"] * 86400 < time() && $Poll["timeout"] != 0) {
                 $Poll["active"] = 0;
             }

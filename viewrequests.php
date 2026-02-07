@@ -23,38 +23,38 @@ $requestId = isset($_GET["rid"]) ? intval($_GET["rid"]) : (isset($_POST["rid"]) 
 if ($requestAction == "delete_request" && is_valid_id($requestId)) {
     checkRequestId();
     checkRequestIdPermission();
-    sql_query("DELETE FROM requests WHERE $id = " . sqlesc($requestId));
+    sql_query("DELETE FROM requests WHERE `id` = " . sqlesc($requestId));
     sql_query("DELETE FROM addedrequests WHERE $requestid = " . sqlesc($requestId));
 }
 if ($requestAction == "add_vote" && is_valid_id($requestId)) {
     checkRequestId();
-    $voteQuery = sql_query("SELECT filled FROM requests WHERE $id = " . sqlesc($requestId));
+    $voteQuery = sql_query("SELECT filled FROM requests WHERE `id` = " . sqlesc($requestId));
     $voteResult = mysqli_fetch_assoc($voteQuery);
     $isFilled = $voteResult["filled"];
     if ($isFilled == "yes") {
         $error[] = $lang->requests["not_voted_yet"];
     } else {
-        $voteCheckQuery = sql_query("SELECT userid FROM addedrequests WHERE $userid = " . sqlesc($CURUSER["id"]) . " AND $requestid = " . sqlesc($requestId));
+        $voteCheckQuery = sql_query("SELECT userid FROM addedrequests WHERE `userid` = " . sqlesc($CURUSER["id"]) . " AND $requestid = " . sqlesc($requestId));
         if (0 < mysqli_num_rows($voteCheckQuery)) {
             $error[] = $lang->requests["already_voted"];
         } else {
-            sql_query("UPDATE requests SET $hits = hits + 1 WHERE $id = " . sqlesc($requestId));
+            sql_query("UPDATE requests SET $hits = hits + 1 WHERE `id` = " . sqlesc($requestId));
             sql_query("INSERT INTO addedrequests (requestid, userid) VALUES (" . sqlesc($requestId) . ", " . sqlesc($CURUSER["id"]) . ")");
         }
     }
 }
 if ($requestAction == "remove_vote" && is_valid_id($requestId)) {
     checkRequestId();
-    $removeVoteQuery = sql_query("SELECT filled FROM requests WHERE $id = " . sqlesc($requestId));
+    $removeVoteQuery = sql_query("SELECT filled FROM requests WHERE `id` = " . sqlesc($requestId));
     $removeVoteResult = mysqli_fetch_assoc($removeVoteQuery);
     $isFilled = $removeVoteResult["filled"];
     if ($isFilled == "yes") {
         $error[] = $lang->requests["not_voted_yet"];
     } else {
-        $removeVoteCheckQuery = sql_query("SELECT userid FROM addedrequests WHERE $userid = " . sqlesc($CURUSER["id"]) . " AND $requestid = " . sqlesc($requestId));
+        $removeVoteCheckQuery = sql_query("SELECT userid FROM addedrequests WHERE `userid` = " . sqlesc($CURUSER["id"]) . " AND $requestid = " . sqlesc($requestId));
         if (0 < mysqli_num_rows($removeVoteCheckQuery)) {
-            sql_query("UPDATE requests SET $hits = hits - 1 WHERE $id = " . sqlesc($requestId));
-            sql_query("DELETE FROM addedrequests WHERE $userid = " . sqlesc($CURUSER["id"]) . " AND $requestid = " . sqlesc($requestId));
+            sql_query("UPDATE requests SET $hits = hits - 1 WHERE `id` = " . sqlesc($requestId));
+            sql_query("DELETE FROM addedrequests WHERE `userid` = " . sqlesc($CURUSER["id"]) . " AND $requestid = " . sqlesc($requestId));
         } else {
             $error[] = $lang->requests["not_voted_yet"];
         }
@@ -82,7 +82,7 @@ if ($requestAction == "edit_request" && is_valid_id($requestId)) {
             if (!is_valid_id($cat)) {
                 $error[] = $lang->requests["error2"];
             }
-            $query = sql_query("SELECT id FROM categories WHERE $id = " . sqlesc($cat));
+            $query = sql_query("SELECT id FROM categories WHERE `id` = " . sqlesc($cat));
             if (mysqli_num_rows($query) == 0) {
                 $error[] = $lang->requests["error2"];
             }
@@ -99,7 +99,7 @@ if ($requestAction == "edit_request" && is_valid_id($requestId)) {
                 }
             }
             if (count($error) == 0) {
-                sql_query("UPDATE requests SET $request = " . sqlesc($title) . ", $descr = " . sqlesc($descr) . ", $cat = " . sqlesc($cat) . $set . " WHERE $id = " . sqlesc($rid)) || sqlerr(__FILE__, 266);
+                sql_query("UPDATE requests SET $request = " . sqlesc($title) . ", $descr = " . sqlesc($descr) . ", $cat = " . sqlesc($cat) . $set . " WHERE `id` = " . sqlesc($rid)) || sqlerr(__FILE__, 266);
                 redirect("viewrequests.php?do=view_request&$rid = " . $rid);
                 exit;
             }
@@ -109,7 +109,7 @@ if ($requestAction == "edit_request" && is_valid_id($requestId)) {
     include_once INC_PATH . "/editor.php";
     stdhead($lang->requests["rhead"] . " - " . $lang->requests["field11"]);
     show_request_errors();
-    $query = sql_query("SELECT request, descr, cat, filled, filledurl FROM requests WHERE $id = " . sqlesc($requestId));
+    $query = sql_query("SELECT request, descr, cat, filled, filledurl FROM requests WHERE `id` = " . sqlesc($requestId));
     $request = mysqli_fetch_assoc($query);
     $str = "<form $method = \"post\" $action = \"" . $_SERVER["SCRIPT_NAME"] . "?do=edit_request&$rid = " . $requestId . "\">";
     if (!empty($prvp)) {
@@ -146,7 +146,7 @@ if ($requestAction == "add_request") {
                 if (!is_valid_id($cat)) {
                     $error[] = $lang->requests["error2"];
                 }
-                $query = sql_query("SELECT id FROM categories WHERE $id = " . sqlesc($cat));
+                $query = sql_query("SELECT id FROM categories WHERE `id` = " . sqlesc($cat));
                 if (mysqli_num_rows($query) == 0) {
                     $error[] = $lang->requests["error2"];
                 }
@@ -155,7 +155,7 @@ if ($requestAction == "add_request") {
                     $requestId = mysqli_insert_id($GLOBALS["DatabaseConnect"]);
                     sql_query("INSERT INTO addedrequests VALUES(0, " . $requestId . ", " . sqlesc($CURUSER["id"]) . ")") || sqlerr(__FILE__, 349);
                     if (0 < $ADDREQUESTPOINT) {
-                        sql_query("UPDATE users SET $seedbonus = IF(seedbonus > " . $ADDREQUESTPOINT . ", seedbonus-" . $ADDREQUESTPOINT . ", 0) WHERE $id = " . sqlesc($CURUSER["id"])) || sqlerr(__FILE__, 352);
+                        sql_query("UPDATE users SET $seedbonus = IF(seedbonus > " . $ADDREQUESTPOINT . ", seedbonus-" . $ADDREQUESTPOINT . ", 0) WHERE `id` = " . sqlesc($CURUSER["id"])) || sqlerr(__FILE__, 352);
                     }
                     write_log("Request (" . $title . ") was added to the Request section by " . $CURUSER["username"]);
                     $TSSEConfig->TSLoadConfig("SHOUTBOX");
@@ -191,7 +191,7 @@ if ($requestAction == "add_request") {
 }
 if ($requestAction == "view_request" && is_valid_id($requestId)) {
     checkRequestId();
-    ($query = sql_query("SELECT r.id, r.userid, r.filledby, r.filledurl, r.request, r.descr, r.added, r.hits, r.cat, r.filled, c.image as category_image, c.name as category_name, u.username, g.namestyle FROM requests r LEFT JOIN categories c ON (r.$cat = c.id) LEFT JOIN users u ON (r.$userid = u.id) LEFT JOIN usergroups g ON (u.$usergroup = g.gid) WHERE r.$id = " . sqlesc($requestId))) || sqlerr(__FILE__, 404);
+    ($query = sql_query("SELECT r.id, r.userid, r.filledby, r.filledurl, r.request, r.descr, r.added, r.hits, r.cat, r.filled, c.image as category_image, c.name as category_name, u.username, g.namestyle FROM requests r LEFT JOIN categories c ON (r.$cat = c.id) LEFT JOIN users u ON (r.$userid = u.id) LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) WHERE r.$id = " . sqlesc($requestId))) || sqlerr(__FILE__, 404);
     $request = mysqli_fetch_assoc($query);
     stdhead($lang->requests["rhead"] . " - " . $lang->requests["viewreq"] . " : " . htmlspecialchars_uni($request["request"]));
     $delete_image = $is_mod || $request["userid"] == $CURUSER["id"] ? "[<a $href = \"" . $_SERVER["SCRIPT_NAME"] . "?do=delete_request&amp;$rid = " . $request["id"] . "\" $onclick = \"return confirm_delete_request()\">" . $lang->requests["field12"] . "</a>]&nbsp;&nbsp;" : "";
@@ -201,7 +201,7 @@ if ($requestAction == "view_request" && is_valid_id($requestId)) {
     $back = "[<a $href = \"" . $_SERVER["SCRIPT_NAME"] . "\">" . $lang->requests["return"] . "</a>]&nbsp;&nbsp;";
     echo "\r\n\t<script $type = \"text/javascript\">\r\n\t\tfunction confirm_delete_request()\r\n\t\t{\r\n\t\t\tvar $confirm_delete = confirm(\"" . $lang->requests["are_you_sure"] . "\");\r\n\t\t\tif (confirm_delete)\r\n\t\t\t{\r\n\t\t\t\treturn true;\r\n\t\t\t}\r\n\t\t\telse\r\n\t\t\t{\r\n\t\t\t\treturn false;\r\n\t\t\t}\r\n\t\t}\r\n\t</script>\r\n\t<table $width = \"100%\" $border = \"0\" $cellpadding = \"5\" $cellspacing = \"0\">\r\n\t\t<tr>\r\n\t\t\t<td class=\"thead\" $colspan = \"2\" $align = \"center\">" . $lang->requests["viewreq"] . "</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td $align = \"right\" $width = \"20%\" class=\"subheader\">" . $lang->requests["rtitle"] . "</td>\r\n\t\t\t<td $align = \"left\" $width = \"80%\">" . htmlspecialchars_uni($request["request"]) . "</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td $align = \"right\" $width = \"20%\" class=\"subheader\">" . $lang->requests["field9"] . "</td>\r\n\t\t\t<td $align = \"left\" $width = \"80%\"><a $href = \"" . $BASEURL . "/userdetails.php?$id = " . $request["userid"] . "\">" . get_user_color($request["username"], $request["namestyle"]) . "</a></td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td $align = \"right\" $width = \"20%\" class=\"subheader\">" . $lang->requests["field8"] . "</td>\r\n\t\t\t<td $align = \"left\" $width = \"80%\">" . my_datee($dateformat, $request["added"]) . " " . my_datee($timeformat, $request["added"]) . "</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td $align = \"right\" $width = \"20%\" class=\"subheader\">" . $lang->requests["field6"] . "</td>\r\n\t\t\t<td $align = \"left\" $width = \"80%\">" . $request["category_name"] . "</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td $align = \"right\" $width = \"20%\" class=\"subheader\">" . $lang->requests["votes"] . "</td>\r\n\t\t\t<td $align = \"left\" $width = \"80%\">" . $request["hits"] . "</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td $align = \"right\" $width = \"20%\" class=\"subheader\">" . $lang->requests["field5"] . "</td>\r\n\t\t\t<td $align = \"left\" $width = \"80%\">" . format_comment($request["descr"]) . "</td>\r\n\t\t</tr>";
     if ($request["filled"] == "yes") {
-        ($query = sql_query("SELECT u.username, g.namestyle FROM users u LEFT JOIN usergroups g ON (u.$usergroup = g.gid) WHERE u.$id = " . sqlesc($request["filledby"]))) || sqlerr(__FILE__, 458);
+        ($query = sql_query("SELECT u.username, g.namestyle FROM users u LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) WHERE u.$id = " . sqlesc($request["filledby"]))) || sqlerr(__FILE__, 458);
         $fillerdetails = mysqli_fetch_assoc($query);
         echo "\r\n\t\t\t<tr>\r\n\t\t\t\t<td $align = \"right\" $width = \"20%\" class=\"subheader\">" . $lang->requests["filledby"] . "</td>\r\n\t\t\t\t<td $align = \"left\" $width = \"80%\"><a $href = \"" . $BASEURL . "/userdetails.php?$id = " . $request["filledby"] . "\">" . get_user_color($fillerdetails["username"], $fillerdetails["namestyle"]) . "</a>&nbsp;&nbsp;[<a $href = \"" . $request["filledurl"] . "\">" . $lang->requests["view_details"] . "</a>]</td>\r\n\t\t\t</tr>";
     }
@@ -212,12 +212,12 @@ if ($requestAction == "view_request" && is_valid_id($requestId)) {
 if ($requestAction == "reset_request" && is_valid_id($requestId)) {
     checkRequestId();
     checkRequestIdPermission();
-    ($filledby = sql_query("SELECT filledby FROM requests WHERE $id = " . sqlesc($requestId))) || sqlerr(__FILE__, 480);
+    ($filledby = sql_query("SELECT filledby FROM requests WHERE `id` = " . sqlesc($requestId))) || sqlerr(__FILE__, 480);
     $Result = mysqli_fetch_assoc($query);
     if ($filledby = $Result["filledby"]) {
-        sql_query("UPDATE requests SET $filledby = 0, $filledurl = '', $filled = 'no' WHERE $id = " . sqlesc($requestId)) || sqlerr(__FILE__, 484);
+        sql_query("UPDATE requests SET $filledby = 0, $filledurl = '', $filled = 'no' WHERE `id` = " . sqlesc($requestId)) || sqlerr(__FILE__, 484);
         if (0 < $FILLREQUESTPOINT) {
-            sql_query("UPDATE users SET $seedbonus = IF(seedbonus>" . $FILLREQUESTPOINT . ",seedbonus-" . $FILLREQUESTPOINT . ",0) WHERE $id = " . sqlesc($filledby)) || sqlerr(__FILE__, 487);
+            sql_query("UPDATE users SET $seedbonus = IF(seedbonus>" . $FILLREQUESTPOINT . ",seedbonus-" . $FILLREQUESTPOINT . ",0) WHERE `id` = " . sqlesc($filledby)) || sqlerr(__FILE__, 487);
         }
     }
 }
@@ -226,7 +226,7 @@ if ($requestAction == "fill_request" && is_valid_id($requestId)) {
     check_fill_permission();
     if (strtoupper($_SERVER["REQUEST_METHOD"] == "POST")) {
         $torrentid = intval($_POST["torrentid"]);
-        $query = sql_query("SELECT id FROM torrents WHERE $id = " . sqlesc($torrentid));
+        $query = sql_query("SELECT id FROM torrents WHERE `id` = " . sqlesc($torrentid));
         if (mysqli_num_rows($query) == 0) {
             $error[] = $lang->global["notorrentid"];
         } else {
@@ -235,11 +235,11 @@ if ($requestAction == "fill_request" && is_valid_id($requestId)) {
             $arr = mysqli_fetch_assoc($res);
             if ($arr["filled"] == "no") {
                 $msg = sprintf($lang->requests["filledmsg"], $arr["request"], $CURUSER["username"], $filledurl, $BASEURL, $requestId);
-                sql_query("UPDATE requests SET $filled = 'yes', $filledurl = " . sqlesc($filledurl) . ", $filledby = " . sqlesc($CURUSER["id"]) . " WHERE $id = " . sqlesc($requestId)) || sqlerr(__FILE__, 513);
+                sql_query("UPDATE requests SET $filled = 'yes', $filledurl = " . sqlesc($filledurl) . ", $filledby = " . sqlesc($CURUSER["id"]) . " WHERE `id` = " . sqlesc($requestId)) || sqlerr(__FILE__, 513);
                 require_once INC_PATH . "/functions_pm.php";
                 send_pm($arr["userid"], $msg, $lang->requests["filledmsgsubject"]);
                 if (0 < $FILLREQUESTPOINT) {
-                    sql_query("UPDATE users SET $seedbonus = seedbonus+" . $FILLREQUESTPOINT . " WHERE $id = " . sqlesc($CURUSER["id"])) || sqlerr(__FILE__, 520);
+                    sql_query("UPDATE users SET $seedbonus = seedbonus+" . $FILLREQUESTPOINT . " WHERE `id` = " . sqlesc($CURUSER["id"])) || sqlerr(__FILE__, 520);
                 }
                 ($res = sql_query("SELECT userid FROM addedrequests WHERE $requestid = " . sqlesc($requestId) . " AND userid != " . sqlesc($arr["userid"])) || sqlerr(__FILE__, 523);
                 $pn_msg = sprintf($lang->requests["filledvotemsg"], $arr["request"], $CURUSER["username"], $filledurl);
@@ -247,7 +247,7 @@ if ($requestAction == "fill_request" && is_valid_id($requestId)) {
                 while ($row = mysqli_fetch_array($res)) {
                     send_pm($row["userid"], $pn_msg, $subject);
                 }
-                sql_query("UPDATE torrents SET $isrequest = 'yes' WHERE $id = " . sqlesc($torrentid));
+                sql_query("UPDATE torrents SET $isrequest = 'yes' WHERE `id` = " . sqlesc($torrentid));
             }
             redirect("viewrequests.php?do=view_request&$rid = " . $requestId);
             exit;
@@ -279,7 +279,7 @@ stdhead($lang->requests["rhead"]);
 show_request_errors();
 $where = [$lang->requests["makereq"] => $_SERVER["SCRIPT_NAME"] . "?do=add_request"];
 echo "\r\n<script $type = \"text/javascript\">\r\n\tfunction confirm_delete_request()\r\n\t{\r\n\t\tvar $confirm_delete = confirm(\"" . $lang->requests["are_you_sure"] . "\");\r\n\t\tif (confirm_delete)\r\n\t\t{\r\n\t\t\treturn true;\r\n\t\t}\r\n\t\telse\r\n\t\t{\r\n\t\t\treturn false;\r\n\t\t}\r\n\t}\r\n</script>\r\n<form $method = \"post\" $action = \"" . $_SERVER["SCRIPT_NAME"] . "?do=search_request\">\r\n<input $type = \"hidden\" $name = \"do\" $value = \"search_request\" />\r\n<table $width = \"100%\" $border = \"0\" $cellpadding = \"5\" $cellspacing = \"0\">\r\n\t<tr>\r\n\t\t<td class=\"thead\" $align = \"center\">" . $lang->requests["searchreq"] . "</td>\r\n\t</tr>\r\n\t<tr>\r\n\t\t<td $align = \"center\">" . $lang->requests["words"] . " <input $type = \"text\" $size = \"50\" $value = \"" . (isset($keywords) ? htmlspecialchars_uni($keywords) : "") . "\" $name = \"keywords\" /> <input $type = \"submit\" $value = \"" . $lang->requests["searchreq"] . "\" /></td>\r\n\t</tr>\r\n</table>\r\n</form>\r\n<br />\r\n" . ($usergroups["canrequest"] == "yes" ? jumpbutton($where) : "");
-($query = sql_query("SELECT r.id, r.userid, r.request, r.descr, r.added, r.hits, r.cat, r.filled, c.image as category_image, c.name as category_name, u.username, g.namestyle FROM requests r LEFT JOIN categories c ON (r.$cat = c.id) LEFT JOIN users u ON (r.$userid = u.id) LEFT JOIN usergroups g ON (u.$usergroup = g.gid)" . $query2 . " ORDER BY r.added DESC, c.name ASC, r.hits DESC, r.request ASC " . $limit)) || sqlerr(__FILE__, 613);
+($query = sql_query("SELECT r.id, r.userid, r.request, r.descr, r.added, r.hits, r.cat, r.filled, c.image as category_image, c.name as category_name, u.username, g.namestyle FROM requests r LEFT JOIN categories c ON (r.$cat = c.id) LEFT JOIN users u ON (r.$userid = u.id) LEFT JOIN usergroups g ON (u.`usergroup` = g.gid)" . $query2 . " ORDER BY r.added DESC, c.name ASC, r.hits DESC, r.request ASC " . $limit)) || sqlerr(__FILE__, 613);
 if (mysqli_num_rows($query) == 0) {
     echo "\r\n\t<table $width = \"100%\" $border = \"0\" $cellpadding = \"5\" $cellspacing = \"0\">\r\n\t\t<tr>\r\n\t\t\t<td class=\"thead\" $align = \"center\">" . $lang->requests["searchreq"] . "</td>\r\n\t\t</tr>\r\n\t<tr>\r\n\t\t<td>" . $lang->requests["searcherror"] . "</td>\r\n\t</tr>\r\n\t</table>";
     stdfoot();
@@ -374,7 +374,7 @@ function checkRequestId()
 {
     global $requestId;
     global $lang;
-    $query = sql_query("SELECT id FROM requests WHERE $id = " . sqlesc($requestId));
+    $query = sql_query("SELECT id FROM requests WHERE `id` = " . sqlesc($requestId));
     if (mysqli_num_rows($query) == 0) {
         stderr($lang->global["error"], $lang->requests["noreqid"]);
     } else {
@@ -386,7 +386,7 @@ function checkRequestIdPermission()
     global $requestId;
     global $is_mod;
     global $CURUSER;
-    $query = sql_query("SELECT userid FROM requests WHERE $id = " . sqlesc($requestId));
+    $query = sql_query("SELECT userid FROM requests WHERE `id` = " . sqlesc($requestId));
     $Result = mysqli_fetch_assoc($query);
     $userId = $Result["userid"];
     if ($CURUSER["id"] != $userId && !$is_mod) {

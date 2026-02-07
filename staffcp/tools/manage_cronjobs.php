@@ -28,8 +28,8 @@ if ($Act == "run" && ($cronid = intval($_GET["cronid"]))) {
     $STATUS = "<tr><td class=\"alt2\" $align = \"center\" $colspan = \"7\"><div class=\"icon-ok\">" . $Language[43] . "</div></td></tr>";
 }
 if ($Act == "edit" && ($cronid = intval($_GET["cronid"]))) {
-    $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM ts_cron WHERE $cronid = " . $cronid);
-    if (mysqli_num_rows($Query)) {
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM ts_cron WHERE $cronid = " . $cronid);
+    if (mysqli_num_rows($query)) {
         if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
             $filename = trim($_POST["filename"]);
             $description = trim($_POST["description"]);
@@ -69,7 +69,7 @@ if ($Act == "edit" && ($cronid = intval($_GET["cronid"]))) {
                 $Error[] = $Language[45];
             }
         } else {
-            $Res = mysqli_fetch_assoc($Query);
+            $Res = mysqli_fetch_assoc($query);
             $filename = trim(htmlspecialchars($Res["filename"]));
             $description = trim(htmlspecialchars($Res["description"]));
             $active = $Res["active"];
@@ -180,13 +180,13 @@ if ($Act == "new") {
 if (!isset($List)) {
     $Count = 0;
     $List = "";
-    for ($Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM ts_cron ORDER by active DESC, minutes"); $Cron = mysqli_fetch_assoc($Query); $Count++) {
+    for ($query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM ts_cron ORDER by active DESC, minutes"); $Cron = mysqli_fetch_assoc($query); $Count++) {
         $class = $Count % 2 == 1 ? "alt2" : "alt1";
         $List .= "\r\n\t\t<tr>\r\n\t\t\t<td class=\"" . $class . "\">" . htmlspecialchars($Cron["filename"]) . "</td>\r\n\t\t\t<td class=\"" . $class . "\">" . htmlspecialchars($Cron["description"]) . "</td>\r\n\t\t\t<td class=\"" . $class . "\">" . ($Cron["minutes"] ? var_239($Cron["minutes"]) : "---") . "</td>\r\n\t\t\t<td class=\"" . $class . "\">" . ($Cron["nextrun"] ? formatTimestamp($Cron["nextrun"]) : "---") . "</td>\r\n\t\t\t<td class=\"" . $class . "\" $align = \"center\">" . ($Cron["loglevel"] == 1 ? $Language[15] : $Language[16]) . "</td>\r\n\t\t\t<td class=\"" . $class . "\"><font $color = \"" . ($Cron["active"] == 1 ? "green\">" . $Language[17] : "red\">" . $Language[18]) . "</font></td>\r\n\t\t\t<td class=\"" . $class . "\" $align = \"center\">\r\n\t\t\t\t<a $href = \"index.php?do=manage_cronjobs&amp;$act = set_status&amp;$cronid = " . $Cron["cronid"] . "\"><img $src = \"images/" . ($Cron["active"] == 1 ? "alert" : "accept") . ".png\" $alt = \"" . trim($Language[$Cron["active"] == 1 ? "6" : "7"]) . "\" $title = \"" . trim($Language[$Cron["active"] == 1 ? "6" : "7"]) . "\" $border = \"0\" /></a>\r\n\t\t\t\t<a $href = \"index.php?do=manage_cronjobs&amp;$act = run&amp;$cronid = " . $Cron["cronid"] . "\"><img $src = \"images/tool_refresh.png\" $alt = \"" . trim($Language[5]) . "\" $title = \"" . trim($Language[5]) . "\" $border = \"0\" /></a>\r\n\t\t\t\t<a $href = \"index.php?do=manage_cronjobs&amp;$act = edit&amp;$cronid = " . $Cron["cronid"] . "\"><img $src = \"images/tool_edit.png\" $alt = \"" . trim($Language[4]) . "\" $title = \"" . trim($Language[4]) . "\" $border = \"0\" /></a>\r\n\t\t\t\t<a $href = \"#\" $onclick = \"ConfirmDelete(" . $Cron["cronid"] . ");\"><img $src = \"images/tool_delete.png\" $alt = \"" . trim($Language[3]) . "\" $title = \"" . trim($Language[3]) . "\" $border = \"0\" /></a>\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t";
     }
     $ListLogs = "\r\n\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t<tr>\r\n\t\t\t<td class=\"tcat\" $align = \"center\" $colspan = \"4\">\r\n\t\t\t\t" . $Language[19] . "\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt2\">\r\n\t\t\t\t<b>" . $Language[8] . "</b>\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt2\">\r\n\t\t\t\t<b>" . $Language[20] . "</b>\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt2\">\r\n\t\t\t\t<b>" . $Language[21] . "</b>\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt2\">\r\n\t\t\t\t<b>" . $Language[22] . "</b>\r\n\t\t\t</td>\r\n\t\t</tr>";
     $Count = 0;
-    for ($Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM ts_cron_log ORDER by runtime DESC, querycount"); $Logs = mysqli_fetch_assoc($Query); $Count++) {
+    for ($query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM ts_cron_log ORDER by runtime DESC, querycount"); $Logs = mysqli_fetch_assoc($query); $Count++) {
         $class = $Count % 2 == 1 ? "alt2" : "alt1";
         $ListLogs .= "\r\n\t\t<tr>\r\n\t\t\t<td class=\"" . $class . "\">" . htmlspecialchars($Logs["filename"]) . "</td>\r\n\t\t\t<td class=\"" . $class . "\">" . number_format($Logs["querycount"]) . "</td>\r\n\t\t\t<td class=\"" . $class . "\">" . htmlspecialchars($Logs["executetime"]) . "</td>\r\n\t\t\t<td class=\"" . $class . "\">" . ($Logs["runtime"] ? formatTimestamp($Logs["runtime"]) : "---") . "</td>\r\n\t\t</tr>\r\n\t\t";
     }

@@ -21,11 +21,11 @@ if ($Act == "delete_all") {
 }
 $results = mysqli_num_rows(mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM ts_staffcp_logs"));
 list($pagertop, $limit) = buildPaginationLinks(25, $results, $_SERVER["SCRIPT_NAME"] . "?do=show_logs&amp;");
-$Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT l.*, u.username FROM ts_staffcp_logs l LEFT JOIN users u ON (l.$uid = u.id) ORDER by date DESC " . $limit);
-if (mysqli_num_rows($Query) == 0) {
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT l.*, u.username FROM ts_staffcp_logs l LEFT JOIN users u ON (l.$uid = u.id) ORDER by date DESC " . $limit);
+if (mysqli_num_rows($query) == 0) {
     $Message = showAlertError($Language[1]);
 } else {
-    for ($Count = 0; $Log = mysqli_fetch_assoc($Query); $Count++) {
+    for ($Count = 0; $Log = mysqli_fetch_assoc($query); $Count++) {
         $class = $Count % 2 == 1 ? "alt2" : "alt1";
         $Found .= "\r\n\t\t<tr>\r\n\t\t\t<td class=\"" . $class . "\">" . ($Log["uid"] ? "<a $href = \"../userdetails.php?$id = " . $Log["uid"] . "\">" . htmlspecialchars($Log["username"]) . "</a>" : $Language[9]) . "</td>\r\n\t\t\t<td class=\"" . $class . "\">" . formatTimestamp($Log["date"]) . "</td>\r\n\t\t\t<td class=\"" . $class . "\">" . htmlspecialchars($Log["log"]) . "</td>\r\n\t\t\t<td class=\"" . $class . "\" $align = \"center\"><input $type = \"checkbox\" $name = \"lid[]\" $value = \"" . $Log["lid"] . "\" $checkme = \"group\" /></td>\r\n\t\t</td>\r\n\t\t";
     }

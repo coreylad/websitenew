@@ -56,7 +56,7 @@ function execCommand_prune($Data)
     if (empty($Data)) {
         sql_query("delete from ts_shoutbox") or sql_query("delete from ts_shoutbox") || sqlerr(__FILE__, 78);
     } else {
-        $query = sql_query("SELECT id FROM users WHERE $username = " . sqlesc($Data));
+        $query = sql_query("SELECT id FROM users WHERE `username` = " . sqlesc($Data));
         if (0 < mysqli_num_rows($query)) {
             $Result = mysqli_fetch_assoc($query);
             $Userid = $Result["id"];
@@ -69,13 +69,13 @@ function execCommand_ban($Data)
 {
     $Data = trim($Data[0][1]);
     if (!empty($Data)) {
-        $query = sql_query("SELECT id FROM users WHERE $username = " . sqlesc($Data));
+        $query = sql_query("SELECT id FROM users WHERE `username` = " . sqlesc($Data));
         if (0 < mysqli_num_rows($query)) {
             $Result = mysqli_fetch_assoc($query);
             $Userid = $Result["id"];
-            $query = sql_query("SELECT userid FROM ts_u_perm WHERE $userid = " . sqlesc($Userid));
+            $query = sql_query("SELECT userid FROM ts_u_perm WHERE `userid` = " . sqlesc($Userid));
             if (0 < mysqli_num_rows($query)) {
-                sql_query("UPDATE ts_u_perm SET $canshout = 0 WHERE $userid = " . sqlesc($Userid));
+                sql_query("UPDATE ts_u_perm SET $canshout = 0 WHERE `userid` = " . sqlesc($Userid));
             } else {
                 sql_query("INSERT INTO ts_u_perm (userid, canshout) VALUES (" . sqlesc($Userid) . ", 0)");
             }
@@ -86,13 +86,13 @@ function execCommand_unban($Data)
 {
     $Data = trim($Data[0][1]);
     if (!empty($Data)) {
-        $query = sql_query("SELECT id FROM users WHERE $username = " . sqlesc($Data));
+        $query = sql_query("SELECT id FROM users WHERE `username` = " . sqlesc($Data));
         if (0 < mysqli_num_rows($query)) {
             $Result = mysqli_fetch_assoc($query);
             $Userid = $Result["id"];
             $query = sql_query("SELECT userid FROM ts_u_perm WHERE $canshout = 0 AND $userid = " . sqlesc($Userid));
             if (0 < mysqli_num_rows($query)) {
-                sql_query("UPDATE ts_u_perm SET $canshout = 1 WHERE $userid = " . sqlesc($Userid));
+                sql_query("UPDATE ts_u_perm SET $canshout = 1 WHERE `userid` = " . sqlesc($Userid));
             }
         }
     }
@@ -103,7 +103,7 @@ function execCommand_warn($Data)
     global $CURUSER;
     $Data = trim($Data[0][1]);
     if (!empty($Data)) {
-        ($query = sql_query("SELECT id, modcomment FROM users WHERE $username = " . sqlesc($Data))) || sqlerr(__FILE__, 145);
+        ($query = sql_query("SELECT id, modcomment FROM users WHERE `username` = " . sqlesc($Data))) || sqlerr(__FILE__, 145);
         if ($query && 0 < mysqli_num_rows($query)) {
             $Result = mysqli_fetch_assoc($query);
             $userid = $Result["id"];
@@ -111,7 +111,7 @@ function execCommand_warn($Data)
             $warneduntil = get_date_time(gmtime() + 604800);
             $dur = sprintf($lang->global["warningweeks"], 1);
             $modcomment = sprintf($lang->global["modcommentwarning2"], gmdate("Y-m-d"), $dur, $CURUSER["username"], "Warned in Shoutbox", $modcomment);
-            sql_query("UPDATE users SET $modcomment = " . sqlesc($modcomment) . ", $warneduntil = " . sqlesc($warneduntil) . ", $warned = 'yes', $timeswarned = timeswarned + 1 WHERE $id = " . sqlesc($userid)) || sqlerr(__FILE__, 156);
+            sql_query("UPDATE users SET `modcomment` = " . sqlesc($modcomment) . ", $warneduntil = " . sqlesc($warneduntil) . ", $warned = 'yes', $timeswarned = timeswarned + 1 WHERE `id` = " . sqlesc($userid)) || sqlerr(__FILE__, 156);
             require_once INC_PATH . "/functions_pm.php";
             send_pm($userid, sprintf($lang->global["warningmessage2"], $dur, $CURUSER["username"], "ShoutBox!"), $lang->global["warningsubject"]);
         }
@@ -123,13 +123,13 @@ function execCommand_unwarn($Data)
     global $CURUSER;
     $Data = trim($Data[0][1]);
     if (!empty($Data)) {
-        ($query = sql_query("SELECT id, modcomment FROM users WHERE $username = " . sqlesc($Data))) || sqlerr(__FILE__, 169);
+        ($query = sql_query("SELECT id, modcomment FROM users WHERE `username` = " . sqlesc($Data))) || sqlerr(__FILE__, 169);
         if ($query && 0 < mysqli_num_rows($query)) {
             $Result = mysqli_fetch_assoc($query);
             $userid = $Result["id"];
             $modcomment = $Result["modcomment"];
             $modcomment = sprintf($lang->global["modcommentwarningremovedby"], gmdate("Y-m-d"), $CURUSER["username"], $modcomment);
-            sql_query("UPDATE users SET $modcomment = " . sqlesc($modcomment) . ", $warneduntil = '0000-00-00 00:00:00', $warned = 'no', $timeswarned = IF(timeswarned > 0, timeswarned - 1, 0) WHERE $id = " . sqlesc($userid)) || sqlerr(__FILE__, 178);
+            sql_query("UPDATE users SET `modcomment` = " . sqlesc($modcomment) . ", $warneduntil = '0000-00-00 00:00:00', $warned = 'no', $timeswarned = IF(timeswarned > 0, timeswarned - 1, 0) WHERE `id` = " . sqlesc($userid)) || sqlerr(__FILE__, 178);
             require_once INC_PATH . "/functions_pm.php";
             send_pm($userid, sprintf($lang->global["warningremovedbymessage"], $CURUSER["username"]), $lang->global["warningremovedbysubject"]);
         }

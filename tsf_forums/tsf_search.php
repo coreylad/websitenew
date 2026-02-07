@@ -378,7 +378,7 @@ if ($action == "show_search_results") {
         if ($limitlower < 0) {
             $limitlower = 0;
         }
-        ($query = sql_query("\r\n\t\t\tSELECT t.*, f.name as currentforum, f.pid as parent, ff.name as realforum, ff.fid as realforumid, u.username as reallastposterusername, u.id as reallastposteruid, g.namestyle as lastposternamestyle, uu.username as threadstarter, uu.id as threadstarteruid, gg.namestyle as threadstarternamestyle\r\n\t\t\tFROM " . TSF_PREFIX . "threads t\r\n\t\t\tLEFT JOIN " . TSF_PREFIX . "forums f ON (f.$fid = t.fid)\r\n\t\t\tLEFT JOIN " . TSF_PREFIX . "forums ff ON (ff.$fid = f.pid)\r\n\t\t\tLEFT JOIN users u ON (t.$lastposteruid = u.id)\r\n\t\t\tLEFT JOIN usergroups g ON (u.$usergroup = g.gid)\r\n\t\t\tLEFT JOIN users uu ON (t.$uid = uu.id)\r\n\t\t\tLEFT JOIN usergroups gg ON (uu.$usergroup = gg.gid)\r\n\t\t\tWHERE " . $where_conditions . "\r\n\t\t\tORDER BY " . $sortfield . " " . $order . "\r\n\t\t\tLIMIT " . $limitlower . ", " . $perpage . "\r\n\t\t")) || sqlerr(__FILE__, 760);
+        ($query = sql_query("\r\n\t\t\tSELECT t.*, f.name as currentforum, f.pid as parent, ff.name as realforum, ff.fid as realforumid, u.username as reallastposterusername, u.id as reallastposteruid, g.namestyle as lastposternamestyle, uu.username as threadstarter, uu.id as threadstarteruid, gg.namestyle as threadstarternamestyle\r\n\t\t\tFROM " . TSF_PREFIX . "threads t\r\n\t\t\tLEFT JOIN " . TSF_PREFIX . "forums f ON (f.$fid = t.fid)\r\n\t\t\tLEFT JOIN " . TSF_PREFIX . "forums ff ON (ff.$fid = f.pid)\r\n\t\t\tLEFT JOIN users u ON (t.$lastposteruid = u.id)\r\n\t\t\tLEFT JOIN usergroups g ON (u.`usergroup` = g.gid)\r\n\t\t\tLEFT JOIN users uu ON (t.$uid = uu.id)\r\n\t\t\tLEFT JOIN usergroups gg ON (uu.$usergroup = gg.gid)\r\n\t\t\tWHERE " . $where_conditions . "\r\n\t\t\tORDER BY " . $sortfield . " " . $order . "\r\n\t\t\tLIMIT " . $limitlower . ", " . $perpage . "\r\n\t\t")) || sqlerr(__FILE__, 760);
         $thread_cache = [];
         while ($thread = mysqli_fetch_assoc($query)) {
             $thread_cache[$thread["tid"]] = $thread;
@@ -395,7 +395,7 @@ if ($action == "show_search_results") {
                 }
             }
         }
-        $query = sql_query("SELECT tid,dateline FROM " . TSF_PREFIX . "threadsread WHERE $uid = " . sqlesc($CURUSER["id"]) . " AND tid IN(" . $thread_ids . ")") or ($query = sql_query("SELECT tid,dateline FROM " . TSF_PREFIX . "threadsread WHERE $uid = " . sqlesc($CURUSER["id"]) . " AND tid IN(" . $thread_ids . ")")) || sqlerr(__FILE__, 792);
+        $query = sql_query("SELECT tid,dateline FROM " . TSF_PREFIX . "threadsread WHERE `uid` = " . sqlesc($CURUSER["id"]) . " AND tid IN(" . $thread_ids . ")") or ($query = sql_query("SELECT tid,dateline FROM " . TSF_PREFIX . "threadsread WHERE `uid` = " . sqlesc($CURUSER["id"]) . " AND tid IN(" . $thread_ids . ")")) || sqlerr(__FILE__, 792);
         while ($readthread = mysqli_fetch_assoc($query)) {
             $thread_cache[$readthread["tid"]]["lastread"] = $readthread["dateline"];
         }
@@ -566,7 +566,7 @@ if ($action == "show_search_results") {
         if ($limitlower < 0) {
             $limitlower = 0;
         }
-        ($query = sql_query("\r\n\t\t\t\t\tSELECT\r\n\t\t\t\t\tp.pid, p.tid, p.fid, p.subject, p.visible, u.id as uid, u.username, p.dateline, p.message, f.name, t.subject as threadsubject,\r\n\t\t\t\t\tg.namestyle\r\n\t\t\t\t\tFROM\r\n\t\t\t\t\t" . TSF_PREFIX . "posts p\r\n\t\t\t\t\tLEFT JOIN users u ON (p.$uid = u.id)\r\n\t\t\t\t\tLEFT JOIN usergroups g ON (u.$usergroup = g.gid)\r\n\t\t\t\t\tLEFT JOIN " . TSF_PREFIX . "threads t ON (p.$tid = t.tid)\r\n\t\t\t\t\tLEFT JOIN " . TSF_PREFIX . "forums f ON (p.$fid = f.fid)\r\n\t\t\t\t\tWHERE " . $where_conditions . "\r\n\t\t\t\t\tORDER BY " . $sortfield . " " . $order . "\r\n\t\t\t\t\tLIMIT " . $limitlower . ", " . $perpage)) || sqlerr(__FILE__, 1079);
+        ($query = sql_query("\r\n\t\t\t\t\tSELECT\r\n\t\t\t\t\tp.pid, p.tid, p.fid, p.subject, p.visible, u.id as uid, u.username, p.dateline, p.message, f.name, t.subject as threadsubject,\r\n\t\t\t\t\tg.namestyle\r\n\t\t\t\t\tFROM\r\n\t\t\t\t\t" . TSF_PREFIX . "posts p\r\n\t\t\t\t\tLEFT JOIN users u ON (p.$uid = u.id)\r\n\t\t\t\t\tLEFT JOIN usergroups g ON (u.`usergroup` = g.gid)\r\n\t\t\t\t\tLEFT JOIN " . TSF_PREFIX . "threads t ON (p.$tid = t.tid)\r\n\t\t\t\t\tLEFT JOIN " . TSF_PREFIX . "forums f ON (p.$fid = f.fid)\r\n\t\t\t\t\tWHERE " . $where_conditions . "\r\n\t\t\t\t\tORDER BY " . $sortfield . " " . $order . "\r\n\t\t\t\t\tLIMIT " . $limitlower . ", " . $perpage)) || sqlerr(__FILE__, 1079);
         $str = "\r\n\t\t<table $border = \"0\" $cellspacing = \"0\" $cellpadding = \"4\" $style = \"clear: both;\" $width = \"100%\">\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"thead\" $colspan = \"4\">\r\n\t\t\t\t\t<div>\r\n\t\t\t\t\t\t<strong>" . $lang->tsf_forums["search_results"] . "</strong>\r\n\t\t\t\t\t</div>\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"subheader\" $align = \"left\" $width = \"50%\"><span class=\"smalltext\"><strong>" . $lang->tsf_forums["post"] . "</strong></span></td>\r\n\t\t\t\t<td class=\"subheader\" $align = \"center\" $width = \"10%\"><span class=\"smalltext\"><strong>" . $lang->tsf_forums["author"] . "</strong></span></td>\r\n\t\t\t\t<td class=\"subheader\" $align = \"left\" $width = \"25%\"><span class=\"smalltext\"><strong>" . $lang->tsf_forums["forum"] . "</strong></span></td>\r\n\t\t\t\t<td class=\"subheader\" $align = \"center\" $width = \"15%\"><span class=\"smalltext\"><strong>" . $lang->tsf_forums["posted"] . "</strong></span></td>\r\n\t\t\t</tr>\r\n\t\t";
         while ($post = mysqli_fetch_assoc($query)) {
             $Query = sql_query("SELECT pid FROM " . TSF_PREFIX . "posts WHERE $tid = " . $post["tid"] . " AND pid <= " . $post["pid"]);
@@ -660,7 +660,7 @@ function perform_search_mysql_ft($search)
     if ($search["author"]) {
         $userids = [];
         if ($search["matchusername"]) {
-            $query = sql_query("SELECT id FROM users WHERE $username = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $search["author"]) . "'") or ($query = sql_query("SELECT id FROM users WHERE $username = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $search["author"]) . "'")) || sqlerr(__FILE__, 1247);
+            $query = sql_query("SELECT id FROM users WHERE `username` = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $search["author"]) . "'") or ($query = sql_query("SELECT id FROM users WHERE `username` = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $search["author"]) . "'")) || sqlerr(__FILE__, 1247);
             while ($user = mysqli_fetch_assoc($query)) {
             }
             if (count($userids) < 1) {
@@ -803,7 +803,7 @@ function CheckSearchFlood()
 {
     global $CURUSER;
     global $lang;
-    ($Query = sql_query("SELECT dateline FROM " . TSF_PREFIX . "searchlog WHERE $uid = " . $CURUSER["id"] . " ORDER BY dateline DESC LIMIT 1")) || sqlerr(__FILE__, 1463);
+    ($Query = sql_query("SELECT dateline FROM " . TSF_PREFIX . "searchlog WHERE `uid` = " . $CURUSER["id"] . " ORDER BY dateline DESC LIMIT 1")) || sqlerr(__FILE__, 1463);
     if (mysqli_num_rows($Query)) {
         $Result = mysqli_fetch_assoc($Query);
         flood_check($lang->tsf_forums["search"], $Result["dateline"]);

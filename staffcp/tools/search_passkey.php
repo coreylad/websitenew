@@ -19,7 +19,7 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
             $User["ip"] = htmlspecialchars($User["ip"]);
             $userips = [];
             $userips[] = "<a $href = \"index.php?do=search_ip&amp;$ip = " . $User["ip"] . "\">" . $User["ip"] . "</a>";
-            $findips = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT ip FROM iplog WHERE $userid = '" . $User["id"] . "' ORDER by ip DESC");
+            $findips = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT ip FROM iplog WHERE `userid` = '" . $User["id"] . "' ORDER by ip DESC");
             while ($uip = mysqli_fetch_assoc($findips)) {
                 $uip["ip"] = htmlspecialchars($uip["ip"]);
                 if (!in_array("<a $href = \"index.php?do=search_ip&amp;$ip = " . $uip["ip"] . "\">" . $uip["ip"] . "</a>", $userips)) {

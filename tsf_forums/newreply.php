@@ -99,7 +99,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["submit"])) {
     }
     $subject = sqlesc($subject);
     $message = sqlesc($message);
-    ($query = sql_query("SELECT dateline FROM " . TSF_PREFIX . "posts WHERE $uid = " . sqlesc($CURUSER["id"]) . " ORDER by dateline DESC LIMIT 1")) || sqlerr(__FILE__, 165);
+    ($query = sql_query("SELECT dateline FROM " . TSF_PREFIX . "posts WHERE `uid` = " . sqlesc($CURUSER["id"]) . " ORDER by dateline DESC LIMIT 1")) || sqlerr(__FILE__, 165);
     if (0 < mysqli_num_rows($query)) {
         $Result = mysqli_fetch_assoc($query);
         $last_post = $Result["dateline"];
@@ -125,7 +125,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["submit"])) {
         $TSSEConfig->TSLoadConfig("KPS");
         KPS("+", $kpscomment, $uid);
         send_sub_mails();
-        sql_query("UPDATE users SET $totalposts = totalposts + 1 WHERE $id = " . $uid) || sqlerr(__FILE__, 203);
+        sql_query("UPDATE users SET $totalposts = totalposts + 1 WHERE `id` = " . $uid) || sqlerr(__FILE__, 203);
         if ($canpostattachments && $pid && $tid) {
             $error = [];
             for ($i = 0; $i < 3; $i++) {
