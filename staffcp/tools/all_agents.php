@@ -8,8 +8,8 @@
 
 var_235();
 $Language = file("languages/" . getStaffLanguage() . "/all_agents.lang");
-$Q = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'ANNOUNCE'");
-$Result = mysqli_fetch_assoc($Q);
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'ANNOUNCE'");
+$Result = mysqli_fetch_assoc($query);
 $ANNOUNCE = unserialize($Result["content"]);
 $Message = "";
 if ($ANNOUNCE["xbt_active"] == "yes") {
@@ -22,11 +22,11 @@ if (!isset($STOP)) {
         mysqli_query($GLOBALS["DatabaseConnect"], "REPLACE INTO `ts_config` VALUES ('ANNOUNCE', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], serialize($ANNOUNCE)) . "')");
     }
     $Found = "";
-    $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT agent, peer_id FROM peers GROUP BY agent DESC");
-    if (0 < mysqli_num_rows($Query)) {
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT agent, peer_id FROM peers GROUP BY agent DESC");
+    if (0 < mysqli_num_rows($query)) {
         $allowed_clients = explode(",", $ANNOUNCE["allowed_clients"]);
         $DONE = [];
-        while ($R = mysqli_fetch_assoc($Query)) {
+        while ($R = mysqli_fetch_assoc($query)) {
             $Peer_ID = substr(htmlspecialchars($R["peer_id"]), 0, 8);
             if (!in_array($Peer_ID, $DONE)) {
                 $DONE[] = $Peer_ID;

@@ -22,8 +22,8 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
             if (isset($_POST["repair"])) {
                 $Message = "\r\n\t\t\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td $colspan = \"2\" class=\"tcat\" $align = \"center\">\r\n\t\t\t\t\t\t" . $Language[8] . "\r\n\t\t\t\t\t</td>\r\n\t\t\t\t</tr>\r\n\t\t\t";
                 foreach ($table_names as $Table) {
-                    $Query = mysqli_query($GLOBALS["DatabaseConnect"], "REPAIR TABLE `" . $Table . "`");
-                    $Res = mysqli_fetch_array($Query);
+                    $query = mysqli_query($GLOBALS["DatabaseConnect"], "REPAIR TABLE `" . $Table . "`");
+                    $Res = mysqli_fetch_array($query);
                     $Message .= "\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t\t" . $Table . "\r\n\t\t\t\t\t</td>\r\n\t\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t\t" . $Res["Msg_text"] . "\r\n\t\t\t\t\t</td>\r\n\t\t\t\t</tr>\r\n\t\t\t\t";
                 }
                 $Message .= "\r\n\t\t\t</table>";
@@ -31,8 +31,8 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
                 if (isset($_POST["optimize"])) {
                     $Message = "\r\n\t\t\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td $colspan = \"2\" class=\"tcat\" $align = \"center\">\r\n\t\t\t\t\t\t" . $Language[15] . "\r\n\t\t\t\t\t</td>\r\n\t\t\t\t</tr>\r\n\t\t\t";
                     foreach ($table_names as $Table) {
-                        $Query = mysqli_query($GLOBALS["DatabaseConnect"], "OPTIMIZE TABLE `" . $Table . "`");
-                        $Res = mysqli_fetch_array($Query);
+                        $query = mysqli_query($GLOBALS["DatabaseConnect"], "OPTIMIZE TABLE `" . $Table . "`");
+                        $Res = mysqli_fetch_array($query);
                         $Message .= "\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t\t" . $Table . "\r\n\t\t\t\t\t</td>\r\n\t\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t\t" . $Res["Msg_text"] . "\r\n\t\t\t\t\t</td>\r\n\t\t\t\t</tr>\r\n\t\t\t\t";
                     }
                     $Message .= "\r\n\t\t\t</table>";
@@ -40,8 +40,8 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
                     if (isset($_POST["check"])) {
                         $Message = "\r\n\t\t\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td $colspan = \"2\" class=\"tcat\" $align = \"center\">\r\n\t\t\t\t\t\t" . $Language[16] . "\r\n\t\t\t\t\t</td>\r\n\t\t\t\t</tr>\r\n\t\t\t";
                         foreach ($table_names as $Table) {
-                            $Query = mysqli_query($GLOBALS["DatabaseConnect"], "CHECK TABLE `" . $Table . "`");
-                            $Res = mysqli_fetch_array($Query);
+                            $query = mysqli_query($GLOBALS["DatabaseConnect"], "CHECK TABLE `" . $Table . "`");
+                            $Res = mysqli_fetch_array($query);
                             $Message .= "\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t\t" . $Table . "\r\n\t\t\t\t\t</td>\r\n\t\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t\t" . $Res["Msg_text"] . "\r\n\t\t\t\t\t</td>\r\n\t\t\t\t</tr>\r\n\t\t\t\t";
                         }
                         $Message .= "\r\n\t\t\t</table>";
@@ -59,8 +59,8 @@ while ($mysql = mysqli_fetch_row($query)) {
 }
 $totalrows = $totaldsize = $totalisize = 0;
 foreach ($DBTables as $Table) {
-    $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SHOW TABLE STATUS LIKE '" . $Table . "'");
-    $Res = mysqli_fetch_assoc($Query);
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SHOW TABLE STATUS LIKE '" . $Table . "'");
+    $Res = mysqli_fetch_assoc($query);
     echo "\r\n\t<tr>\r\n\t\t<td class=\"alt1\">" . $Res["Name"] . "</td>\r\n\t\t<td class=\"alt1\">" . $Res["Engine"] . "</td>\r\n\t\t<td class=\"alt1\">" . number_format($Res["Rows"]) . "</td>\r\n\t\t<td class=\"alt1\">" . var_238($Res["Data_length"]) . "</td>\r\n\t\t<td class=\"alt1\">" . var_238($Res["Index_length"]) . "</td>\r\n\t\t<td class=\"alt1\">" . (0 < $Res["Data_free"] ? "<font $color = \"red\"><b>" . var_238($Res["Data_free"]) . "</b></font>" : var_238($Res["Data_free"])) . "</td>\r\n\t\t<td class=\"alt1\">" . formatTimestamp($Res["Create_time"]) . "</td>\r\n\t\t<td class=\"alt1\">" . formatTimestamp($Res["Update_time"]) . "</td>\r\n\t\t<td class=\"alt1\">" . formatTimestamp($Res["Check_time"]) . "</td>\r\n\t\t<td class=\"alt1\">" . $Res["Collation"] . "</td>\r\n\t\t<td class=\"alt1\" $align = \"center\"><input $type = \"checkbox\" $name = \"table_names[]\" $value = \"" . $Res["Name"] . "\" $checkme = \"group\" /></td>\r\n\t</tr>\r\n\t";
     $totalrows += $Res["Rows"];
     $totaldsize += $Res["Data_length"];

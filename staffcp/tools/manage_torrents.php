@@ -21,8 +21,8 @@ $order = urldecode(isset($_GET["order"]) ? $_GET["order"] : (isset($_POST["order
 $extraquery1 = "";
 $extraquery2 = "";
 $extralink = "";
-$Q = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'ANNOUNCE'");
-$Result = mysqli_fetch_assoc($Q);
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'ANNOUNCE'");
+$Result = mysqli_fetch_assoc($query);
 $ANNOUNCE = unserialize($Result["content"]);
 $xbt_active = $ANNOUNCE["xbt_active"];
 if ($browsecategory) {
@@ -483,16 +483,16 @@ function buildPaginationLinks($perpage, $results, $address)
 function function_163($torrents)
 {
     global $Language;
-    $Q = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'MAIN'");
-    $Result = mysqli_fetch_assoc($Q);
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'MAIN'");
+    $Result = mysqli_fetch_assoc($query);
     $var_27 = unserialize($Result["content"]);
-    $Q = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'THEME'");
-    $Result = mysqli_fetch_assoc($Q);
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'THEME'");
+    $Result = mysqli_fetch_assoc($query);
     $var_28 = unserialize($Result["content"]);
     $var_282 = $var_27["BASEURL"] . "/include/templates/" . $var_28["defaulttemplate"] . "/images/torrent_flags/";
     $var_461 = $var_27["pic_base_url"];
-    $Q = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'ANNOUNCE'");
-    $Result = mysqli_fetch_assoc($Q);
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'ANNOUNCE'");
+    $Result = mysqli_fetch_assoc($query);
     $ANNOUNCE = unserialize($Result["content"]);
     $xbt_active = $ANNOUNCE["xbt_active"];
     $var_462 = $xbt_active != "yes" && $torrents["free"] == "yes" || $xbt_active == "yes" && $torrents["download_multiplier"] == "0" ? "<img $src = \"" . $var_282 . "freedownload.gif\" class=\"inlineimg\" $alt = \"" . $Language[15] . "\" $title = \"" . $Language[15] . "\" />" : "";
@@ -537,8 +537,8 @@ function function_164($selectname = "type", $selected = 0, $extra = "", $style =
 }
 function function_151($id)
 {
-    $Q = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'MAIN'");
-    $Result = mysqli_fetch_assoc($Q);
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'MAIN'");
+    $Result = mysqli_fetch_assoc($query);
     $var_27 = unserialize($Result["content"]);
     $var_427 = "../" . $var_27["torrent_dir"];
     $id = intval($id);

@@ -18,8 +18,8 @@ if (isset($_GET["sender"]) && ($SENDER = intval($_GET["sender"]))) {
     $WHERE = " WHERE c.$user = " . $SENDER;
     $LINK = "sender=" . $SENDER . "&amp;";
 }
-$Q = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'TWEAK'");
-$Result = mysqli_fetch_assoc($Q);
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'TWEAK'");
+$Result = mysqli_fetch_assoc($query);
 $TWEAK = unserialize($Result["content"]);
 $ts_perpage = !empty($TWEAK["ts_perpage"]) ? $TWEAK["ts_perpage"] : "20";
 $perpage = $ts_perpage;
@@ -27,9 +27,9 @@ unset($TWEAK);
 $results = mysqli_num_rows(mysqli_query($GLOBALS["DatabaseConnect"], "SELECT c.id FROM comments c" . $WHERE));
 list($pagertop, $limit) = buildPaginationLinks($perpage, $results, $_SERVER["SCRIPT_NAME"] . "?do=manage_comments&amp;");
 $Found = "";
-$Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT c.id, c.user, c.torrent, c.added, c.text, t.name, u.username, g.namestyle FROM comments c LEFT JOIN torrents t ON (t.$id = c.torrent) LEFT JOIN users u ON (u.$id = c.user) LEFT JOIN usergroups g ON (u.$usergroup = g.gid)" . $WHERE . " ORDER by c.added DESC " . $limit);
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT c.id, c.user, c.torrent, c.added, c.text, t.name, u.username, g.namestyle FROM comments c LEFT JOIN torrents t ON (t.$id = c.torrent) LEFT JOIN users u ON (u.$id = c.user) LEFT JOIN usergroups g ON (u.$usergroup = g.gid)" . $WHERE . " ORDER by c.added DESC " . $limit);
 if ($results) {
-    while ($R = mysqli_fetch_assoc($Query)) {
+    while ($R = mysqli_fetch_assoc($query)) {
         $QueryP = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id FROM comments WHERE $torrent = " . $R["torrent"] . " AND id <= " . $R["id"]);
         $Count = mysqli_num_rows($QueryP);
         if ($Count <= $perpage) {
@@ -67,8 +67,8 @@ class Class_6
     }
     public function function_115()
     {
-        $Q = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'MAIN'");
-        $Result = mysqli_fetch_assoc($Q);
+        $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'MAIN'");
+        $Result = mysqli_fetch_assoc($query);
         $this->Settings = unserialize($Result["content"]);
     }
     public function function_118($text, $entities = true)

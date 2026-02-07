@@ -21,16 +21,16 @@ if ($Act == "save_disporder") {
     $Message = showAlertError($Message);
 }
 if ($Act == "delete" && ($gid = intval($_GET["gid"]))) {
-    $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT title, type FROM usergroups WHERE $gid = " . $gid);
-    if (mysqli_num_rows($Query)) {
-        $Ug = mysqli_fetch_assoc($Query);
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT title, type FROM usergroups WHERE $gid = " . $gid);
+    if (mysqli_num_rows($query)) {
+        $Ug = mysqli_fetch_assoc($query);
         if (isset($_POST["newgid"]) && ($newgid = intval($_POST["newgid"]))) {
             if ($Ug["type"] == 1) {
                 $Message = showAlertError($Language[11]);
             } else {
-                $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT title FROM usergroups WHERE $gid = " . $newgid);
-                if (mysqli_num_rows($Query)) {
-                    $Result = mysqli_fetch_assoc($Query);
+                $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT title FROM usergroups WHERE $gid = " . $newgid);
+                if (mysqli_num_rows($query)) {
+                    $Result = mysqli_fetch_assoc($query);
                     $Newgroupname = $Result["title"];
                     mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET $usergroup = " . $newgid . " WHERE $usergroup = " . $gid);
                     mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM usergroups WHERE $gid = " . $gid);
@@ -41,8 +41,8 @@ if ($Act == "delete" && ($gid = intval($_GET["gid"]))) {
             }
         } else {
             $Selectbox = "<select $name = \"newgid\">";
-            $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT gid, title FROM usergroups WHERE gid != " . $gid);
-            while ($usergroup = mysqli_fetch_assoc($Query)) {
+            $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT gid, title FROM usergroups WHERE gid != " . $gid);
+            while ($usergroup = mysqli_fetch_assoc($query)) {
                 $Selectbox .= "<option $value = \"" . $usergroup["gid"] . "\">" . $usergroup["title"] . "</option>";
             }
             $Selectbox .= "</select>";
@@ -56,11 +56,11 @@ if ($Act == "new" || $Act == "edit" && ($gid = intval($_GET["gid"]))) {
     $description = "";
     $namestyle = "{username}";
     if ($Act == "edit") {
-        $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM usergroups WHERE $gid = " . $gid);
-        if (mysqli_num_rows($Query) == 0) {
+        $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM usergroups WHERE $gid = " . $gid);
+        if (mysqli_num_rows($query) == 0) {
             $STOP = true;
         } else {
-            $EditUG = mysqli_fetch_assoc($Query);
+            $EditUG = mysqli_fetch_assoc($query);
             $usergroupcache = $EditUG;
             $title = $EditUG["title"];
             $description = $EditUG["description"];
@@ -115,9 +115,9 @@ if ($Act == "new" || $Act == "edit" && ($gid = intval($_GET["gid"]))) {
         if (!isset($STOP)) {
             if ($Act == "new") {
                 if ($clonegid) {
-                    $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM usergroups WHERE $gid = " . $clonegid);
-                    if (mysqli_num_rows($Query)) {
-                        $EditUG = mysqli_fetch_assoc($Query);
+                    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM usergroups WHERE $gid = " . $clonegid);
+                    if (mysqli_num_rows($query)) {
+                        $EditUG = mysqli_fetch_assoc($query);
                     }
                 }
                 if (!isset($EditUG)) {
@@ -181,8 +181,8 @@ if ($Act == "new" || $Act == "edit" && ($gid = intval($_GET["gid"]))) {
 }
 if (!isset($Output)) {
     $Uarray = [];
-    $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT usergroup FROM users");
-    while ($U = mysqli_fetch_assoc($Query)) {
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT usergroup FROM users");
+    while ($U = mysqli_fetch_assoc($query)) {
         if (isset($Uarray[$U["usergroup"]])) {
             $Uarray[$U["usergroup"]]++;
         } else {
@@ -190,13 +190,13 @@ if (!isset($Output)) {
         }
     }
     $Output = "\r\n\t\t<form $method = \"post\" $action = \"index.php?do=usergroups&$act = save_disporder\">\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt2\" $align = \"center\"><b>" . $Language[5] . "</b></td>\r\n\t\t\t<td class=\"alt2\"><b>" . $Language[6] . "</b></td>\r\n\t\t\t<td class=\"alt2\"><b>" . $Language[7] . "</b></td>\r\n\t\t\t<td class=\"alt2\"><b>" . $Language[8] . "</b></td>\r\n\t\t\t<td class=\"alt2\" $align = \"center\"><b>" . $Language[160] . "</b></td>\r\n\t\t\t<td class=\"alt2\" $align = \"center\"><b>" . $Language[9] . "</b></td>\r\n\t\t</tr>";
-    $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT gid, disporder, type, title, description, namestyle FROM usergroups WHERE $type = 1 ORDER BY gid");
-    while ($ug = mysqli_fetch_assoc($Query)) {
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT gid, disporder, type, title, description, namestyle FROM usergroups WHERE $type = 1 ORDER BY gid");
+    while ($ug = mysqli_fetch_assoc($query)) {
         $Output .= "\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\" $align = \"center\">" . $ug["gid"] . "</td>\r\n\t\t\t<td class=\"alt1\">" . str_replace("{username}", $ug["title"], $ug["namestyle"]) . "</td>\r\n\t\t\t<td class=\"alt1\">" . $ug["description"] . "</td>\r\n\t\t\t<td class=\"alt1\">" . (isset($Uarray[$ug["gid"]]) ? number_format($Uarray[$ug["gid"]]) : "0") . "</td>\r\n\t\t\t<td class=\"alt1\" $align = \"center\"><input $type = \"text\" $name = \"disporder[" . $ug["gid"] . "]\" $value = \"" . $ug["disporder"] . "\" $size = \"5\" /></td>\r\n\t\t\t<td class=\"alt1\" $align = \"center\"><a $href = \"index.php?do=usergroups&amp;$act = edit&amp;$gid = " . $ug["gid"] . "\"><img $src = \"images/tool_edit.png\" $alt = \"" . $Language[3] . "\" $title = \"" . $Language[3] . "\" $border = \"0\" /></a> <a $href = \"index.php?do=usergroups&amp;$act = new&amp;$clonegid = " . $ug["gid"] . "\"><img $src = \"images/add.png\" $alt = \"" . $Language[201] . "\" $title = \"" . $Language[201] . "\" $border = \"0\" /></a> " . ($ug["type"] == 1 ? "" : " <a $href = \"index.php?do=usergroups&amp;$act = delete&amp;$gid = " . $ug["gid"] . "\" $onclick = \"" . ($ug["type"] == 1 ? "alert('" . trim($Language[11]) . "'); return false;" : "return confirm('" . str_replace("{1}", $ug["title"], trim($Language[10])) . "');") . "\"><img $src = \"images/tool_delete.png\" $alt = \"" . $Language[4] . "\" $title = \"" . $Language[4] . "\" $border = \"0\" /></a>") . "</td>\r\n\t\t</tr>\r\n\t\t";
     }
     $Output .= "\r\n\t\t<tr>\r\n\t\t\t<td class=\"tcat\" $colspan = \"6\">\r\n\t\t\t\t" . $Language[159] . "\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt2\" $align = \"center\"><b>" . $Language[5] . "</b></td>\r\n\t\t\t<td class=\"alt2\"><b>" . $Language[6] . "</b></td>\r\n\t\t\t<td class=\"alt2\"><b>" . $Language[7] . "</b></td>\r\n\t\t\t<td class=\"alt2\"><b>" . $Language[8] . "</b></td>\r\n\t\t\t<td class=\"alt2\" $align = \"center\"><b>" . $Language[160] . "</b></td>\r\n\t\t\t<td class=\"alt2\" $align = \"center\"><b>" . $Language[9] . "</b></td>\r\n\t\t</tr>";
-    $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT gid, disporder, type, title, description, namestyle FROM usergroups WHERE $type = 2 ORDER BY gid");
-    while ($ug = mysqli_fetch_assoc($Query)) {
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT gid, disporder, type, title, description, namestyle FROM usergroups WHERE $type = 2 ORDER BY gid");
+    while ($ug = mysqli_fetch_assoc($query)) {
         $Output .= "\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\" $align = \"center\">" . $ug["gid"] . "</td>\r\n\t\t\t<td class=\"alt1\">" . str_replace("{username}", $ug["title"], $ug["namestyle"]) . "</td>\r\n\t\t\t<td class=\"alt1\">" . $ug["description"] . "</td>\r\n\t\t\t<td class=\"alt1\">" . (isset($Uarray[$ug["gid"]]) ? number_format($Uarray[$ug["gid"]]) : "0") . "</td>\r\n\t\t\t<td class=\"alt1\" $align = \"center\"><input $type = \"text\" $name = \"disporder[" . $ug["gid"] . "]\" $value = \"" . $ug["disporder"] . "\" $size = \"5\" /></td>\r\n\t\t\t<td class=\"alt1\" $align = \"center\"><a $href = \"index.php?do=usergroups&amp;$act = edit&amp;$gid = " . $ug["gid"] . "\"><img $src = \"images/tool_edit.png\" $alt = \"" . $Language[3] . "\" $title = \"" . $Language[3] . "\" $border = \"0\" /></a> <a $href = \"index.php?do=usergroups&amp;$act = new&amp;$clonegid = " . $ug["gid"] . "\"><img $src = \"images/add.png\" $alt = \"" . $Language[201] . "\" $title = \"" . $Language[201] . "\" $border = \"0\" /></a> " . ($ug["type"] == 1 ? "" : " <a $href = \"index.php?do=usergroups&amp;$act = delete&amp;$gid = " . $ug["gid"] . "\" $onclick = \"" . ($ug["type"] == 1 ? "alert('" . trim($Language[11]) . "'); return false;" : "return confirm('" . str_replace("{1}", $ug["title"], trim($Language[10])) . "');") . "\"><img $src = \"images/tool_delete.png\" $alt = \"" . $Language[4] . "\" $title = \"" . $Language[4] . "\" $border = \"0\" /></a>") . "</td>\r\n\t\t</tr>\r\n\t\t";
     }
     $Output .= "\r\n\t<tr>\r\n\t\t<td class=\"tcat2\" $colspan = \"4\">&nbsp;</td>\r\n\t\t<td class=\"tcat2\" $align = \"center\">\r\n\t\t\t<input $type = \"submit\" $value = \"" . $Language[161] . "\" /> <input $type = \"reset\" $value = \"" . $Language[162] . "\" />\r\n\t\t</td>\r\n\t\t<td class=\"tcat2\">&nbsp;</td>\r\n\t</tr>\r\n\t</form>";

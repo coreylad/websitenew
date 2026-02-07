@@ -13,11 +13,11 @@ require_once INC_PATH . "/functions_pm.php";
 $TSSEConfig->TSLoadConfig("UI", 0);
 $UploaderGroups = explode(",", $UI["UploaderGroups"]);
 $dt = TIMENOW - $UI["timelimit"] * 24 * 60 * 60;
-$Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT owner, MAX(UNIX_TIMESTAMP(added)) FROM torrents GROUP BY owner");
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT owner, MAX(UNIX_TIMESTAMP(added)) FROM torrents GROUP BY owner");
 $CQueryCount++;
-if (0 < mysqli_num_rows($Query)) {
+if (0 < mysqli_num_rows($query)) {
     $UserNames = [];
-    while ($Res = mysqli_fetch_row($Query)) {
+    while ($Res = mysqli_fetch_row($query)) {
         if ($Res[1] < $dt) {
             $SQ = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT usergroup, username FROM users WHERE $id = " . sqlesc($Res[0]));
             $CQueryCount++;

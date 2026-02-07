@@ -16,14 +16,14 @@ $deleteafter = 15;
 $maxmails = 500;
 $waitlimit = 5;
 $usergroups = [];
-$Q = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'MAIN'");
-$Result = mysqli_fetch_assoc($Q);
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'MAIN'");
+$Result = mysqli_fetch_assoc($query);
 $MAIN = unserialize($Result["content"]);
-$Q = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'THEME'");
-$Result = mysqli_fetch_assoc($Q);
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'THEME'");
+$Result = mysqli_fetch_assoc($query);
 $THEME = unserialize($Result["content"]);
-$Q = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'SMTP'");
-$Result = mysqli_fetch_assoc($Q);
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'SMTP'");
+$Result = mysqli_fetch_assoc($query);
 $SMTP = unserialize($Result["content"]);
 if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST" && $Act == "save_config") {
     $show_per_page = intval($_POST["show_per_page"]);
@@ -33,7 +33,7 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST" && $Act == "save_config") {
     $waitlimit = intval($_POST["waitlimit"]);
     $usergroups = isset($_POST["usergroups"]) ? $_POST["usergroups"] : [];
     if ($show_per_page && $maxdays && $deleteafter && $maxmails && $waitlimit && isset($usergroups[0]) && $usergroups[0] != "") {
-        $ShowList = true;
+        $shouldShowList = true;
     }
 } else {
     if (isset($_GET["show_per_page"]) && isset($_GET["maxdays"]) && isset($_GET["deleteafter"]) && isset($_GET["maxmails"]) && isset($_GET["waitlimit"]) && isset($_GET["usergroups"])) {
@@ -44,11 +44,11 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST" && $Act == "save_config") {
         $waitlimit = intval($_GET["waitlimit"]);
         $usergroups = explode(",", $_GET["usergroups"]);
         if ($show_per_page && $maxdays && $deleteafter && $maxmails && $waitlimit && isset($usergroups[0]) && $usergroups[0] != "") {
-            $ShowList = true;
+            $shouldShowList = true;
         }
     }
 }
-if (isset($ShowList) && $ShowList) {
+if (isset($shouldShowList) && $shouldShowList) {
     $usergroups = implode(",", $usergroups);
     $count_query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT COUNT(id) as count FROM users WHERE $enabled = 'yes' AND $status = 'confirmed' AND UNIX_TIMESTAMP(last_access) < UNIX_TIMESTAMP(DATE_ADD(NOW(), INTERVAL - " . $maxdays . " DAY)) AND usergroup IN (" . $usergroups . ")");
     $Result = mysqli_fetch_assoc($count_query);

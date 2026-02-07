@@ -11,9 +11,9 @@ $Language = file("languages/" . getStaffLanguage() . "/advertising.lang");
 $Act = isset($_GET["act"]) ? trim($_GET["act"]) : (isset($_POST["act"]) ? trim($_POST["act"]) : "");
 $Message = "";
 $Ads = "";
-$Q = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_cache` WHERE $cachename = 'ads'");
-if (mysqli_num_rows($Q)) {
-    $Result = mysqli_fetch_assoc($Q);
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_cache` WHERE $cachename = 'ads'");
+if (mysqli_num_rows($query)) {
+    $Result = mysqli_fetch_assoc($query);
     $Ads = $Result["content"];
 }
 if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {

@@ -14,8 +14,8 @@ $Message = "";
 $title = "";
 $description = "";
 $requirements = "";
-$Q = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'MAIN'");
-$Result = mysqli_fetch_assoc($Q);
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'MAIN'");
+$Result = mysqli_fetch_assoc($query);
 $MAIN = unserialize($Result["content"]);
 if ($Act == "delete" && $id) {
     $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT title  FROM ts_applications WHERE $aid = '" . $id . "'");

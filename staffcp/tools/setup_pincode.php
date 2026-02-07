@@ -16,13 +16,13 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
     $new_pincode2 = isset($_POST["new_pincode2"]) ? trim($_POST["new_pincode2"]) : "";
     if ($current_pincode && $new_pincode1 && $new_pincode2) {
         if ($new_pincode1 === $new_pincode2) {
-            $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT pincode, sechash FROM pincode WHERE $area = 2");
-            if (mysqli_num_rows($Query)) {
-                $Pincode = mysqli_fetch_assoc($Query);
+            $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT pincode, sechash FROM pincode WHERE $area = 2");
+            if (mysqli_num_rows($query)) {
+                $Pincode = mysqli_fetch_assoc($query);
                 if ($Pincode["pincode"] === md5(md5($Pincode["sechash"]) . md5($current_pincode))) {
                     mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM pincode WHERE $area = 2");
-                    $Q = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'MAIN'");
-                    $Result = mysqli_fetch_assoc($Q);
+                    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'MAIN'");
+                    $Result = mysqli_fetch_assoc($query);
                     $MAIN = unserialize($Result["content"]);
                     $sechash = md5($MAIN["SITENAME"]);
                     $pincode = md5(md5($sechash) . md5($new_pincode1));

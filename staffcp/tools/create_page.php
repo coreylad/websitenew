@@ -72,8 +72,8 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
                     if (@ftp_login($conn_id, $ftp_user, $ftp_pass)) {
                         ftp_pasv($conn_id, true);
                         ftp_chdir($conn_id, $ftp_path);
-                        $Q = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'MAIN'");
-                        $Result = mysqli_fetch_assoc($Q);
+                        $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'MAIN'");
+                        $Result = mysqli_fetch_assoc($query);
                         $MAIN = unserialize($Result["content"]);
                         file_put_contents("./../" . $MAIN["cache"] . "/" . $filename, $Content);
                         if (ftp_put($conn_id, $filename, "./../" . $MAIN["cache"] . "/" . $filename, FTP_ASCII)) {

@@ -10,8 +10,8 @@ var_235();
 $Language = file("languages/" . getStaffLanguage() . "/manage_awards.lang");
 $Act = isset($_GET["act"]) ? trim($_GET["act"]) : (isset($_POST["act"]) ? trim($_POST["act"]) : "");
 $Message = "";
-$Q = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'MAIN'");
-$Result = mysqli_fetch_assoc($Q);
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'MAIN'");
+$Result = mysqli_fetch_assoc($query);
 $MAIN = unserialize($Result["content"]);
 if (is_dir("../images")) {
     $AwardImageDir = "../images/awardmedals/";
@@ -33,8 +33,8 @@ if ($Act == "delete" && ($award_id = intval($_GET["award_id"]))) {
     $Message = showAlertError($Message);
 }
 if ($Act == "edit" && ($award_id = intval($_GET["award_id"]))) {
-    $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT award_image FROM ts_awards WHERE $award_id = " . $award_id);
-    if (0 < mysqli_num_rows($Query)) {
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT award_image FROM ts_awards WHERE $award_id = " . $award_id);
+    if (0 < mysqli_num_rows($query)) {
         if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
             $award_name = trim($_POST["award_name"]);
             $award_image = trim($_POST["award_image"]);
@@ -46,7 +46,7 @@ if ($Act == "edit" && ($award_id = intval($_GET["award_id"]))) {
             $award_id = "";
         }
         if ($Message == "") {
-            $EditAward = mysqli_fetch_assoc($Query);
+            $EditAward = mysqli_fetch_assoc($query);
             $Images = scandir($AwardImageDir);
             $ShowAwardImages = "<select $name = \"award_image\" $onchange = \"update_award_image(this.value);\">";
             foreach ($Images as $Image) {
@@ -96,18 +96,18 @@ if ($Act == "remove_award" && ($award_id = intval($_GET["award_id"])) && ($useri
     $Message = showAlertError($Message);
 }
 if ($Act == "give_award" && ($award_id = intval($_GET["award_id"]))) {
-    $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT award_name FROM ts_awards WHERE $award_id = " . $award_id);
-    if (0 < mysqli_num_rows($Query)) {
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT award_name FROM ts_awards WHERE $award_id = " . $award_id);
+    if (0 < mysqli_num_rows($query)) {
         if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
-            $Result = mysqli_fetch_assoc($Query);
+            $Result = mysqli_fetch_assoc($query);
             $Awarname = $Result["award_name"];
             $Username = trim($_POST["username"]);
             $reason = trim($_POST["reason"]);
             $givenby = $_SESSION["ADMIN_ID"];
             $date = time();
-            $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id FROM users WHERE $username = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $Username) . "'");
-            if (mysqli_num_rows($Query)) {
-                $Result = mysqli_fetch_assoc($Query);
+            $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id FROM users WHERE $username = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $Username) . "'");
+            if (mysqli_num_rows($query)) {
+                $Result = mysqli_fetch_assoc($query);
                 $userid = $Result["id"];
                 mysqli_query($GLOBALS["DatabaseConnect"], "INSERT INTO ts_awards_users (award_id, userid, reason, givenby, date) VALUES (" . $award_id . ", " . $userid . ", '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $reason) . "', " . $givenby . ", " . $date . ")");
                 mysqli_query($GLOBALS["DatabaseConnect"], "INSERT INTO messages (sender, receiver, added, subject, msg) VALUES (" . $_SESSION["ADMIN_ID"] . ", " . $userid . ", NOW(), '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $Language[22]) . "', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], str_replace("\\n", "\r\n\t\t\t\t", str_replace(["{0}", "{1}", "{2}", "{3}"], [$Username, $MAIN["SITENAME"], $Awarname, $reason], $Language[23]))) . "')");
@@ -126,18 +126,18 @@ if ($Act == "give_award" && ($award_id = intval($_GET["award_id"]))) {
 }
 if ($Act == "give_award" && isset($_GET["username"]) && $_GET["username"]) {
     $Username = trim($_GET["username"]);
-    $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id FROM users WHERE $username = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $Username) . "'");
-    if (0 < mysqli_num_rows($Query)) {
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id FROM users WHERE $username = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $Username) . "'");
+    if (0 < mysqli_num_rows($query)) {
         if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
             $award_id = trim($_POST["award_id"]);
             $reason = trim($_POST["reason"]);
             $givenby = $_SESSION["ADMIN_ID"];
             $date = time();
-            $Result = mysqli_fetch_assoc($Query);
+            $Result = mysqli_fetch_assoc($query);
             $userid = $Result["id"];
-            $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT award_name FROM ts_awards WHERE $award_id = " . $award_id);
-            if (mysqli_num_rows($Query)) {
-                $Result = mysqli_fetch_assoc($Query);
+            $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT award_name FROM ts_awards WHERE $award_id = " . $award_id);
+            if (mysqli_num_rows($query)) {
+                $Result = mysqli_fetch_assoc($query);
                 $Awarname = $Result["award_name"];
                 mysqli_query($GLOBALS["DatabaseConnect"], "INSERT INTO ts_awards_users (award_id, userid, reason, givenby, date) VALUES (" . $award_id . ", " . $userid . ", '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $reason) . "', " . $givenby . ", " . $date . ")");
                 mysqli_query($GLOBALS["DatabaseConnect"], "INSERT INTO messages (sender, receiver, added, subject, msg) VALUES (" . $_SESSION["ADMIN_ID"] . ", " . $userid . ", NOW(), '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $Language[22]) . "', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], str_replace("\\n", "\r\n\t\t\t\t", str_replace(["{0}", "{1}", "{2}", "{3}"], [$Username, $MAIN["SITENAME"], $Awarname, $reason], $Language[23]))) . "')");
@@ -149,9 +149,9 @@ if ($Act == "give_award" && isset($_GET["username"]) && $_GET["username"]) {
                 $award_id = "";
             }
         } else {
-            $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT award_id, award_name FROM ts_awards");
+            $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT award_id, award_name FROM ts_awards");
             $Selecbox = "<select $name = \"award_id\">";
-            while ($Sawards = mysqli_fetch_assoc($Query)) {
+            while ($Sawards = mysqli_fetch_assoc($query)) {
                 $Selecbox .= "<option $value = \"" . $Sawards["award_id"] . "\">" . $Sawards["award_name"] . "</option>";
             }
             $Selecbox .= "</select>";
@@ -173,8 +173,8 @@ while ($au = mysqli_fetch_assoc($query)) {
     }
     $AwardUserList[$au["award_id"]][] = ($FromUserdetailsUser == $au["username"] ? "<span class=\"highlight\">" : "") . str_replace("{username}", $au["username"], $au["namestyle"]) . ($FromUserdetailsUser == $au["username"] ? "</span>" : "") . " <a $href = \"index.php?do=manage_awards&amp;$act = remove_award&amp;$award_id = " . $au["award_id"] . "&amp;$userid = " . $au["userid"] . "\" $onclick = \"return confirm('" . trim($Language[17]) . "');\"><img $src = \"images/unconfirmed_users.png\" $alt = \"" . trim($Language[15]) . "\" $title = \"" . trim($Language[15]) . "\" $border = \"0\" $style = \"vertical-align: middle;\" /></a>";
 }
-$Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM ts_awards ORDER BY award_sort");
-while ($a = mysqli_fetch_assoc($Query)) {
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM ts_awards ORDER BY award_sort");
+while ($a = mysqli_fetch_assoc($query)) {
     $AwardImage = $MAIN["pic_base_url"] . "awardmedals/" . $a["award_image"];
     $AwardName = htmlspecialchars($a["award_name"]);
     $Output[] = "\r\n\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t<tr>\r\n\t\t\t<td class=\"tcat\">\r\n\t\t\t\t<span $style = \"float: right;\">\r\n\t\t\t\t\t\t<a $href = \"index.php?do=manage_awards&amp;$act = give_award&amp;$award_id = " . $a["award_id"] . "\"><img $src = \"images/accept.png\" $alt = \"" . trim($Language[18]) . "\" $title = \"" . trim($Language[18]) . "\" $border = \"0\" $style = \"vertical-align: middle;\" /></a> <a $href = \"index.php?do=manage_awards&amp;$act = edit&amp;$award_id = " . $a["award_id"] . "\"><img $src = \"images/tool_edit.png\" $alt = \"" . trim($Language[4]) . "\" $title = \"" . trim($Language[4]) . "\" $border = \"0\" $style = \"vertical-align: middle;\" /></a> <a $href = \"index.php?do=manage_awards&amp;$act = delete&amp;$award_id = " . $a["award_id"] . "\" $onclick = \"return confirm('" . trim($Language[6]) . "');\"><img $src = \"images/tool_delete.png\" $alt = \"" . trim($Language[5]) . "\" $title = \"" . trim($Language[5]) . "\" $border = \"0\" $style = \"vertical-align: middle;\" /></a>\r\n\t\t\t\t</span>\r\n\t\t\t\t" . $AwardName . "\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t" . ($Act == "edit" && $award_id == $a["award_id"] ? "\r\n\t\t\t<form $method = \"post\" $action = \"index.php?do=manage_awards&$act = edit&$award_id = " . $award_id . "\">\r\n\t\t\t<fieldset>\r\n\t\t\t\t<legend>" . $Language[12] . "</legend>\r\n\t\t\t\t<input $type = \"text\" $name = \"award_name\" $value = \"" . $AwardName . "\" $size = \"30\" />\r\n\t\t\t</fieldset>\r\n\t\t\t<fieldset>\r\n\t\t\t\t<legend>" . $Language[13] . "</legend>\r\n\t\t\t\t" . $ShowAwardImages . " <img $id = \"awardimagepreview\" $src = \"" . $AwardImage . "\" $border = \"0\" $alt = \"\" $title = \"\" $width = \"26\" $height = \"16\" />\r\n\t\t\t</fieldset>\r\n\t\t\t<fieldset>\r\n\t\t\t\t<legend>" . $Language[4] . "</legend>\r\n\t\t\t\t<input $type = \"submit\" $value = \"" . $Language[10] . "\" /> <input $type = \"reset\" $value = \"" . $Language[11] . "\" />\r\n\t\t\t</fieldset>\r\n\t\t\t</form>\r\n\t\t\t" : ($Act == "give_award" && $award_id == $a["award_id"] ? "\r\n\t\t\t<form $method = \"post\" $action = \"index.php?do=manage_awards&$act = give_award&$award_id = " . $award_id . "\">\r\n\t\t\t<fieldset>\r\n\t\t\t\t<legend>" . $Language[20] . "</legend>\r\n\t\t\t\t<input $type = \"text\" $name = \"username\" $value = \"\" $size = \"30\" />\r\n\t\t\t</fieldset>\r\n\t\t\t<fieldset>\r\n\t\t\t\t<legend>" . $Language[21] . "</legend>\r\n\t\t\t\t<input $type = \"text\" $name = \"reason\" $value = \"\" $size = \"30\" />\r\n\t\t\t</fieldset>\r\n\t\t\t<fieldset>\r\n\t\t\t\t<legend>" . $Language[18] . "</legend>\r\n\t\t\t\t<input $type = \"submit\" $value = \"" . $Language[10] . "\" /> <input $type = \"reset\" $value = \"" . $Language[11] . "\" />\r\n\t\t\t</fieldset>\r\n\t\t\t</form>\r\n\t\t\t" : "\r\n\t\t\t\t<table>\r\n\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t<td $rowspawn = \"2\" $valign = \"top\">\r\n\t\t\t\t\t\t\t<img $src = \"" . $AwardImage . "\" $alt = \"\" $title = \"\" $border = \"0\" />\r\n\t\t\t\t\t\t</td>\r\n\t\t\t\t\t\t<td $align = \"center\">\r\n\t\t\t\t\t\t\t" . (isset($AwardUsers[$a["award_id"]]) && count($AwardUsers[$a["award_id"]]) ? str_replace("{1}", number_format($AwardUsers[$a["award_id"]]), $Language[7]) . "<br />" . implode(" ", $AwardUserList[$a["award_id"]]) : $Language[8]) . "\r\n\t\t\t\t\t\t</td>\r\n\t\t\t\t\t</tr>\r\n\t\t\t\t</table>")) . "\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t</table>";

@@ -10,11 +10,11 @@ if (!defined("IN_CRON")) {
     exit;
 }
 if ($xbt_active == "yes" && 0 < $kpsseed && ($bonus == "enable" || $bonus == "disablesave")) {
-    $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT uid FROM xbt_files_users WHERE $active = '1' AND `left` = '0'");
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT uid FROM xbt_files_users WHERE $active = '1' AND `left` = '0'");
     $CQueryCount++;
-    if (mysqli_num_rows($Query)) {
+    if (mysqli_num_rows($query)) {
         $UsersEarnedPoints = [];
-        while ($ActivePeers = mysqli_fetch_assoc($Query)) {
+        while ($ActivePeers = mysqli_fetch_assoc($query)) {
             $UsersEarnedPoints[] = 0 + $ActivePeers["uid"];
         }
         if (count($UsersEarnedPoints)) {

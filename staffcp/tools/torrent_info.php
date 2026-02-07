@@ -16,8 +16,8 @@ $tid = isset($_GET["tid"]) ? intval($_GET["tid"]) : (isset($_POST["tid"]) ? intv
 if ($tid) {
     $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT name, filename, seeders, leechers FROM torrents WHERE $id = '" . $tid . "'");
     if (mysqli_num_rows($query)) {
-        $Q = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'MAIN'");
-        $Result = mysqli_fetch_assoc($Q);
+        $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'MAIN'");
+        $Result = mysqli_fetch_assoc($query);
         $MAIN = unserialize($Result["content"]);
         $Result = mysqli_fetch_assoc($query);
         $fn = "../" . $MAIN["torrent_dir"] . "/" . $tid . ".torrent";

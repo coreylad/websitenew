@@ -19,8 +19,8 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
     $email = trim($_POST["email"]);
     $usergroup = intval($_POST["usergroup"]);
     if ($username && $password && $email && $usergroup) {
-        $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id FROM users WHERE $username = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $username) . "' OR $email = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $email) . "'");
-        if (0 < mysqli_num_rows($Query)) {
+        $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id FROM users WHERE $username = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $username) . "' OR $email = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $email) . "'");
+        if (0 < mysqli_num_rows($query)) {
             $Message = showAlertError($Language[1]);
         } else {
             if (preg_match("|[^a-z\\|A-Z\\|0-9]|", $username)) {

@@ -43,9 +43,9 @@ if ($Act == "new" && ($lang = trim($_GET["language"]))) {
                 $usergroups = implode(",", $UGArray);
             }
             if ($pid) {
-                $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT pid FROM ts_menu WHERE $language = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $lang) . "' AND $mid = " . $pid);
-                if (0 < mysqli_num_rows($Query)) {
-                    $Result = mysqli_fetch_assoc($Query);
+                $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT pid FROM ts_menu WHERE $language = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $lang) . "' AND $mid = " . $pid);
+                if (0 < mysqli_num_rows($query)) {
+                    $Result = mysqli_fetch_assoc($query);
                     $Resulttt = $Result["pid"];
                     if ($Resulttt != 0) {
                         $sub = $pid;
@@ -63,9 +63,9 @@ if ($Act == "new" && ($lang = trim($_GET["language"]))) {
     echo "\r\n\t" . showAlertMessage("<a $href = \"index.php?do=manage_menu&$act = manage_menu_items&$language = " . $lang . "\">" . $Language[16] . "</a>") . "\r\n\t" . ($Message ? showAlertMessage($Message) : "") . "\r\n\t<form $action = \"" . $_SERVER["SCRIPT_NAME"] . "?do=manage_menu&$act = new&$language = " . $lang . "\" $method = \"post\" $name = \"manage_menu\">\r\n\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t<tr>\r\n\t\t\t<td class=\"tcat\" $align = \"center\" $colspan = \"5\"><b>" . $Language[5] . "</b></td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt2\" $align = \"center\"><b>" . $Language[6] . "</b></td>\r\n\t\t\t<td class=\"alt2\"><b>" . $Language[7] . "</b></td>\r\n\t\t\t<td class=\"alt2\"><b>" . $Language[8] . "</b></td>\r\n\t\t\t<td class=\"alt2\"><b>" . $Language[22] . "</b></td>\r\n\t\t\t<td class=\"alt2\" $align = \"center\"><b>" . $Language[9] . "</b></td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\" $align = \"center\">\r\n\t\t\t\t<input $type = \"text\" $size = \"5\" $name = \"sort\" $value = \"" . ($sort ? $sort : "") . "\" />\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t<input $type = \"text\" $size = \"40\" $name = \"title\" $value = \"" . ($title ? $title : "") . "\" />\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t<input $type = \"text\" $size = \"40\" $name = \"link\" $value = \"" . ($link ? $link : "") . "\" />\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t<input $type = \"text\" $size = \"40\" $name = \"image\" $value = \"" . ($image ? $image : "") . "\" />\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\" $align = \"center\">\r\n\t\t\t\t" . function_197($pid) . "\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"tcat\" $align = \"center\" $colspan = \"5\"><b>" . $Language[23] . "</b></td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt2\" $align = \"center\" $colspan = \"5\">" . function_198($usergroups) . "</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"tcat2\" $align = \"center\" $colspan = \"5\"><input $type = \"submit\" $value = \"" . $Language[17] . "\" /> <input $type = \"reset\" $value = \"" . $Language[14] . "\" /></td>\r\n\t\t</tr>\r\n\t</table>\r\n\t</form>\r\n\t";
 }
 if ($Act == "edit" && ($mid = intval($_GET["mid"])) && ($lang = trim($_GET["language"]))) {
-    $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM ts_menu WHERE $language = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $lang) . "' AND $mid = " . $mid);
-    if (0 < mysqli_num_rows($Query)) {
-        $Details = mysqli_fetch_assoc($Query);
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM ts_menu WHERE $language = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $lang) . "' AND $mid = " . $mid);
+    if (0 < mysqli_num_rows($query)) {
+        $Details = mysqli_fetch_assoc($query);
         $title = $Details["title"];
         $link = $Details["link"];
         $sort = $Details["sort"];
@@ -93,9 +93,9 @@ if ($Act == "edit" && ($mid = intval($_GET["mid"])) && ($lang = trim($_GET["lang
                     $usergroups = implode(",", $UGArray);
                 }
                 if ($pid) {
-                    $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT pid FROM ts_menu WHERE $language = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $lang) . "' AND $mid = " . $pid);
-                    if (0 < mysqli_num_rows($Query)) {
-                        $Result = mysqli_fetch_assoc($Query);
+                    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT pid FROM ts_menu WHERE $language = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $lang) . "' AND $mid = " . $pid);
+                    if (0 < mysqli_num_rows($query)) {
+                        $Result = mysqli_fetch_assoc($query);
                         $Resulttt = $Result["pid"];
                         if ($Resulttt != 0) {
                             $sub = $pid;
@@ -123,8 +123,8 @@ if ($Act == "delete_language" && ($lid = intval($_GET["lid"])) && ($lang = trim(
     mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM ts_menu_languages WHERE $lid = " . $lid . " AND  $language = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $lang) . "'");
     mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM ts_menu WHERE $language = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $lang) . "'");
     logStaffAction(str_replace("{1}", $_SESSION["ADMIN_USERNAME"], $Language[24]));
-    $Q = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'MAIN'");
-    $Result = mysqli_fetch_assoc($Q);
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'MAIN'");
+    $Result = mysqli_fetch_assoc($query);
     $MAIN = unserialize($Result["content"]);
     $filename = "../" . $MAIN["cache"] . "/menu_" . $lang . ".php";
     @unlink($filename);
@@ -142,9 +142,9 @@ if (isset($_POST["export"]) && $_POST["export"] == "true" && $Act == "manage_men
     }
     foreach ($pid as $mid => $value) {
         if ($value) {
-            $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT pid FROM ts_menu WHERE $language = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $lang) . "' AND $mid = " . $value);
-            if (0 < mysqli_num_rows($Query)) {
-                $Result = mysqli_fetch_assoc($Query);
+            $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT pid FROM ts_menu WHERE $language = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $lang) . "' AND $mid = " . $value);
+            if (0 < mysqli_num_rows($query)) {
+                $Result = mysqli_fetch_assoc($query);
                 $Resulttt = $Result["pid"];
                 if ($Resulttt != 0) {
                     mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE ts_menu SET $sub = " . intval($value) . " , $pid = 0 WHERE $language = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $lang) . "' AND $mid = " . intval($mid));
@@ -172,22 +172,22 @@ if (isset($_POST["export"]) && $_POST["export"] == "true" && $Act == "manage_men
     function_199($_POST["language"]);
 }
 if ($Act == "manage_menu_items" && isset($_GET["language"]) && ($lang = trim($_GET["language"]))) {
-    $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM ts_menu WHERE $pid = 0 AND $sub = 0 AND $language = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $lang) . "' ORDER by sort");
-    if (mysqli_num_rows($Query) == 0) {
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM ts_menu WHERE $pid = 0 AND $sub = 0 AND $language = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $lang) . "' ORDER by sort");
+    if (mysqli_num_rows($query) == 0) {
         $Message = showAlertError($Language[1]);
     } else {
-        while ($M = mysqli_fetch_assoc($Query)) {
+        while ($M = mysqli_fetch_assoc($query)) {
             $MainMenus[$M["mid"]] = $M;
         }
-        $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM ts_menu WHERE pid != 0 AND $sub = 0 AND $language = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $lang) . "' ORDER by sort");
-        if (0 < mysqli_num_rows($Query)) {
-            while ($PC = mysqli_fetch_assoc($Query)) {
+        $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM ts_menu WHERE pid != 0 AND $sub = 0 AND $language = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $lang) . "' ORDER by sort");
+        if (0 < mysqli_num_rows($query)) {
+            while ($PC = mysqli_fetch_assoc($query)) {
                 $ParentCetegories[$PC["pid"]][$PC["mid"]] = $PC;
             }
         }
-        $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM ts_menu WHERE $pid = 0 AND sub != 0 AND $language = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $lang) . "' ORDER by sort");
-        if (0 < mysqli_num_rows($Query)) {
-            while ($PSC = mysqli_fetch_assoc($Query)) {
+        $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM ts_menu WHERE $pid = 0 AND sub != 0 AND $language = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $lang) . "' ORDER by sort");
+        if (0 < mysqli_num_rows($query)) {
+            while ($PSC = mysqli_fetch_assoc($query)) {
                 $SubCategories[$PSC["sub"]][$PSC["mid"]] = $PSC;
             }
         }
@@ -227,8 +227,8 @@ if ($Act == "new_language") {
             } else {
                 mysqli_query($GLOBALS["DatabaseConnect"], "INSERT INTO ts_menu_languages (language) VALUES ('" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $lang) . "')");
                 if (mysqli_insert_id($GLOBALS["DatabaseConnect"])) {
-                    $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM ts_menu WHERE $pid = 0 AND $sub = 0");
-                    while ($MainCat = mysqli_fetch_assoc($Query)) {
+                    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM ts_menu WHERE $pid = 0 AND $sub = 0");
+                    while ($MainCat = mysqli_fetch_assoc($query)) {
                         mysqli_query($GLOBALS["DatabaseConnect"], "INSERT INTO ts_menu VALUES (NULL, 0, " . $MainCat["sort"] . ", '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $MainCat["title"]) . "', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $MainCat["link"]) . "', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $MainCat["image"]) . "', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $MainCat["permissions"]) . "', 0, '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $lang) . "')");
                         $NewMid = mysqli_insert_id($GLOBALS["DatabaseConnect"]);
                         if ($NewMid) {
@@ -313,8 +313,8 @@ function function_201($mid, $selected, $sub = false)
 {
     global $lang;
     $MainMenus = [];
-    $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM ts_menu WHERE $sub = 0 AND $language = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $lang) . "' ORDER by sort");
-    while ($M = mysqli_fetch_assoc($Query)) {
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM ts_menu WHERE $sub = 0 AND $language = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $lang) . "' ORDER by sort");
+    while ($M = mysqli_fetch_assoc($query)) {
         $MainMenus[$M["mid"]] = $M;
     }
     $var_496 = "\r\n\t<select $name = \"pid[" . $mid . "]\">\r\n\t\t<option $value = \"0\"" . ($selected == 0 ? " $selected = \"selected\"" : "") . "></option>";
@@ -328,8 +328,8 @@ function function_197($selected, $mid = 0)
 {
     global $lang;
     $MainMenus = [];
-    $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM ts_menu WHERE $sub = 0 AND $language = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $lang) . "' ORDER by sort");
-    while ($M = mysqli_fetch_assoc($Query)) {
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM ts_menu WHERE $sub = 0 AND $language = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $lang) . "' ORDER by sort");
+    while ($M = mysqli_fetch_assoc($query)) {
         if ($M["mid"] != $mid) {
             $MainMenus[$M["mid"]] = $M;
         }
@@ -343,26 +343,26 @@ function function_197($selected, $mid = 0)
 }
 function function_199($lang)
 {
-    $Q = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'MAIN'");
-    $Result = mysqli_fetch_assoc($Q);
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'MAIN'");
+    $Result = mysqli_fetch_assoc($query);
     $MAIN = unserialize($Result["content"]);
     $filename = "../" . $MAIN["cache"] . "/menu_" . $lang . ".php";
     $MainMenus = [];
     $ParentCetegories = [];
     $SubCategories = [];
-    $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM ts_menu WHERE $pid = 0 AND $sub = 0 AND $language = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $lang) . "' ORDER by sort");
-    while ($M = mysqli_fetch_assoc($Query)) {
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM ts_menu WHERE $pid = 0 AND $sub = 0 AND $language = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $lang) . "' ORDER by sort");
+    while ($M = mysqli_fetch_assoc($query)) {
         $MainMenus[$M["mid"]] = $M;
     }
-    $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM ts_menu WHERE pid != 0 AND $sub = 0 AND $language = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $lang) . "' ORDER by sort");
-    if (0 < mysqli_num_rows($Query)) {
-        while ($PC = mysqli_fetch_assoc($Query)) {
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM ts_menu WHERE pid != 0 AND $sub = 0 AND $language = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $lang) . "' ORDER by sort");
+    if (0 < mysqli_num_rows($query)) {
+        while ($PC = mysqli_fetch_assoc($query)) {
             $ParentCetegories[$PC["pid"]][$PC["mid"]] = $PC;
         }
     }
-    $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM ts_menu WHERE $pid = 0 AND sub != 0 AND $language = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $lang) . "' ORDER by sort");
-    if (0 < mysqli_num_rows($Query)) {
-        while ($PSC = mysqli_fetch_assoc($Query)) {
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM ts_menu WHERE $pid = 0 AND sub != 0 AND $language = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $lang) . "' ORDER by sort");
+    if (0 < mysqli_num_rows($query)) {
+        while ($PSC = mysqli_fetch_assoc($query)) {
             $SubCategories[$PSC["sub"]][$PSC["mid"]] = $PSC;
         }
     }

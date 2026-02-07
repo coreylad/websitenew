@@ -27,9 +27,9 @@ if ($Act == "delete" && isset($_GET["sid"]) && ($Sid = intval($_GET["sid"]))) {
     $Act = "";
 }
 if ($Act == "edit" && isset($_GET["sid"]) && ($Sid = intval($_GET["sid"]))) {
-    $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM ts_subscriptions WHERE $sid = '" . $Sid . "'");
-    if (0 < mysqli_num_rows($Query)) {
-        $Sub = mysqli_fetch_assoc($Query);
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM ts_subscriptions WHERE $sid = '" . $Sid . "'");
+    if (0 < mysqli_num_rows($query)) {
+        $Sub = mysqli_fetch_assoc($query);
         $title = $Sub["title"];
         $description = $Sub["description"];
         $active = $Sub["active"];
@@ -68,8 +68,8 @@ if ($Act == "edit" && isset($_GET["sid"]) && ($Sid = intval($_GET["sid"]))) {
             }
         }
         $ShowUsergroups = "\r\n\t\t<select $name = \"usergroup\">\r\n\t\t\t<option $value = \"0\">" . $Language[25] . "</option>";
-        $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT gid, title FROM usergroups WHERE $isbanned = 'no' AND gid > 0 ORDER by disporder");
-        while ($UG = mysqli_fetch_assoc($Query)) {
+        $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT gid, title FROM usergroups WHERE $isbanned = 'no' AND gid > 0 ORDER by disporder");
+        while ($UG = mysqli_fetch_assoc($query)) {
             $ShowUsergroups .= "\r\n\t\t\t<option $value = \"" . $UG["gid"] . "\"" . ($usergroup == $UG["gid"] ? " $selected = \"selected\"" : "") . ">" . $UG["title"] . "</option>";
         }
         $ShowUsergroups .= "\r\n\t\t</select>";
@@ -105,8 +105,8 @@ if ($Act == "new") {
         }
     }
     $ShowUsergroups = "\r\n\t<select $name = \"usergroup\">\r\n\t\t<option $value = \"0\">" . $Language[25] . "</option>";
-    $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT gid, title FROM usergroups WHERE $isbanned = 'no' AND gid > 0 ORDER by disporder");
-    while ($UG = mysqli_fetch_assoc($Query)) {
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT gid, title FROM usergroups WHERE $isbanned = 'no' AND gid > 0 ORDER by disporder");
+    while ($UG = mysqli_fetch_assoc($query)) {
         $ShowUsergroups .= "\r\n\t\t<option $value = \"" . $UG["gid"] . "\"" . ($usergroup == $UG["gid"] ? " $selected = \"selected\"" : "") . ">" . $UG["title"] . "</option>";
     }
     $ShowUsergroups .= "\r\n\t</select>";
@@ -114,9 +114,9 @@ if ($Act == "new") {
 }
 if (empty($Act)) {
     $List = "";
-    $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM ts_subscriptions ORDER BY disporder");
-    if (mysqli_num_rows($Query)) {
-        while ($Sub = mysqli_fetch_assoc($Query)) {
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM ts_subscriptions ORDER BY disporder");
+    if (mysqli_num_rows($query)) {
+        while ($Sub = mysqli_fetch_assoc($query)) {
             $List .= "\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . htmlspecialchars($Sub["title"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . ($Sub["active"] == "1" ? $Language[23] : $Language[24]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . htmlspecialchars($Sub["cost"]) . " " . htmlspecialchars($Sub["currency"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . htmlspecialchars($Sub["length"]) . " " . ($Sub["lengthtype"] == "days" ? $Language[19] : ($Sub["lengthtype"] == "weeks" ? $Language[20] : ($Sub["lengthtype"] == "months" ? $Language[21] : $Language[22]))) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . intval($Sub["disporder"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t<a $href = \"index.php?do=subscription_manager&amp;$act = edit&amp;$sid = " . $Sub["sid"] . "\">" . trim($Language[9]) . "</a> - <a $href = \"index.php?do=subscription_manager&amp;$act = delete&amp;$sid = " . $Sub["sid"] . "\">" . trim($Language[10]) . "</a>\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t\t";
         }
     }
@@ -159,8 +159,8 @@ function showAlertMessage($message = "")
 function function_101($selected = "")
 {
     $var_302 = [];
-    $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT currency FROM ts_subscriptions_api");
-    while ($var_303 = mysqli_fetch_assoc($Query)) {
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT currency FROM ts_subscriptions_api");
+    while ($var_303 = mysqli_fetch_assoc($query)) {
         $var_302[] = $var_303["currency"];
     }
     $var_304 = "<select $name = \"currency\">";

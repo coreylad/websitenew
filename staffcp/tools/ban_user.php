@@ -17,11 +17,11 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
     $usergroup = intval($_POST["usergroup"]);
     $reason = trim($_POST["reason"]);
     if ($username && $usergroup && $reason) {
-        $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT ip, g.cansettingspanel, g.canstaffpanel, g.issupermod FROM users LEFT JOIN usergroups g ON (users.$usergroup = g.gid) WHERE $username = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $username) . "'");
-        if (mysqli_num_rows($Query) == 0) {
+        $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT ip, g.cansettingspanel, g.canstaffpanel, g.issupermod FROM users LEFT JOIN usergroups g ON (users.$usergroup = g.gid) WHERE $username = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $username) . "'");
+        if (mysqli_num_rows($query) == 0) {
             $Message = showAlertError($Language[2]);
         } else {
-            $User = mysqli_fetch_assoc($Query);
+            $User = mysqli_fetch_assoc($query);
             $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT u.id, g.cansettingspanel, g.canstaffpanel, g.issupermod FROM users u LEFT JOIN usergroups g ON (u.$usergroup = g.gid) WHERE u.$id = '" . $_SESSION["ADMIN_ID"] . "' LIMIT 1");
             $LoggedAdminDetails = mysqli_fetch_assoc($query);
             if ($User["cansettingspanel"] == "yes" && $LoggedAdminDetails["cansettingspanel"] != "yes" || $User["canstaffpanel"] == "yes" && $LoggedAdminDetails["canstaffpanel"] != "yes" || $User["issupermod"] == "yes" && $LoggedAdminDetails["issupermod"] != "yes") {
@@ -46,8 +46,8 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
                             mysqli_query($GLOBALS["DatabaseConnect"], "INSERT INTO ipbans VALUES (1, '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], trim($User["ip"])) . "', NOW(), '" . $_SESSION["ADMIN_ID"] . "')");
                         }
                         $IP = ip2long(trim($User["ip"]));
-                        $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM xbt_deny_from_hosts WHERE $begin = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $IP) . "' OR $end = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $IP) . "'");
-                        if (!mysqli_num_rows($Query)) {
+                        $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM xbt_deny_from_hosts WHERE $begin = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $IP) . "' OR $end = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $IP) . "'");
+                        if (!mysqli_num_rows($query)) {
                             mysqli_query($GLOBALS["DatabaseConnect"], "INSERT INTO xbt_deny_from_hosts (begin,end) VALUES ('" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $IP) . "','" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $IP) . "')");
                         }
                     }

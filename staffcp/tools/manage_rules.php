@@ -11,8 +11,8 @@ $Act = isset($_GET["act"]) ? trim($_GET["act"]) : (isset($_POST["act"]) ? trim($
 $Cid = isset($_GET["id"]) ? intval($_GET["id"]) : (isset($_POST["id"]) ? intval($_POST["id"]) : 0);
 $Language = file("languages/" . getStaffLanguage() . "/manage_rules.lang");
 $Message = "";
-$Q = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'MAIN'");
-$Result = mysqli_fetch_assoc($Q);
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'MAIN'");
+$Result = mysqli_fetch_assoc($query);
 $MAIN = unserialize($Result["content"]);
 if ($Act == "delete" && $Cid) {
     $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT title FROM rules WHERE $id = '" . $Cid . "'");
@@ -80,9 +80,9 @@ if ($Act == "new") {
     }
 }
 $Found = "";
-$Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM rules");
-if (0 < mysqli_num_rows($Query)) {
-    while ($Rules = mysqli_fetch_assoc($Query)) {
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM rules");
+if (0 < mysqli_num_rows($query)) {
+    while ($Rules = mysqli_fetch_assoc($query)) {
         $Found .= "\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t" . $Rules["title"] . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t" . substr(strip_tags($Rules["text"]), 0, 150) . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t" . $Rules["usergroups"] . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\" $align = \"center\">\r\n\t\t\t\t<a $href = \"index.php?do=manage_rules&amp;$act = edit&amp;$id = " . $Rules["id"] . "\"><img $src = \"images/tool_edit.png\" $alt = \"" . $Language[11] . "\" $title = \"" . $Language[11] . "\" $border = \"0\" /></a> <a $href = \"index.php?do=manage_rules&amp;$act = delete&amp;$id = " . $Rules["id"] . "\"><img $src = \"images/tool_delete.png\" $alt = \"" . $Language[12] . "\" $title = \"" . $Language[12] . "\" $border = \"0\" /></a>\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t";
     }
 } else {

@@ -13,8 +13,8 @@ $Language = file("languages/" . getStaffLanguage() . "/manage_games_categories.l
 $Message = "";
 $List = "";
 if ($Act == "delete" && $Cid) {
-    $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT cname FROM ts_games_categories WHERE $cid = '" . $Cid . "'");
-    $Category = mysqli_fetch_assoc($Query);
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT cname FROM ts_games_categories WHERE $cid = '" . $Cid . "'");
+    $Category = mysqli_fetch_assoc($query);
     mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM ts_games_categories WHERE $cid = '" . $Cid . "'");
     if (mysqli_affected_rows($GLOBALS["DatabaseConnect"])) {
         $Message = str_replace(["{1}", "{2}"], [$Category["cname"], $_SESSION["ADMIN_USERNAME"]], $Language[1]);
@@ -23,9 +23,9 @@ if ($Act == "delete" && $Cid) {
     }
 }
 if ($Act == "edit" && $Cid) {
-    $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM ts_games_categories WHERE $cid = '" . $Cid . "'");
-    if (mysqli_num_rows($Query)) {
-        $Category = mysqli_fetch_assoc($Query);
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM ts_games_categories WHERE $cid = '" . $Cid . "'");
+    if (mysqli_num_rows($query)) {
+        $Category = mysqli_fetch_assoc($query);
         if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
             $Category = [];
             $Category["cname"] = isset($_POST["cname"]) ? trim($_POST["cname"]) : "";
@@ -71,8 +71,8 @@ if ($Act == "add") {
     }
 }
 $CategoryCount = [];
-$Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT cid FROM ts_games");
-while ($CategoryC = mysqli_fetch_assoc($Query)) {
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT cid FROM ts_games");
+while ($CategoryC = mysqli_fetch_assoc($query)) {
     if (isset($CategoryCount[$CategoryC["cid"]])) {
         $CategoryCount[$CategoryC["cid"]]++;
     } else {
@@ -80,16 +80,16 @@ while ($CategoryC = mysqli_fetch_assoc($Query)) {
     }
 }
 $ChampionCount = [];
-$Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT champ.gid, game.cid FROM ts_games_champions champ LEFT JOIN ts_games game ON (champ.$gid = game.gid)");
-while ($CategoryC = mysqli_fetch_assoc($Query)) {
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT champ.gid, game.cid FROM ts_games_champions champ LEFT JOIN ts_games game ON (champ.$gid = game.gid)");
+while ($CategoryC = mysqli_fetch_assoc($query)) {
     if (isset($ChampionCount[$CategoryC["cid"]])) {
         $ChampionCount[$CategoryC["cid"]]++;
     } else {
         $ChampionCount[$CategoryC["cid"]] = 1;
     }
 }
-$Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM `ts_games_categories`");
-while ($Category = mysqli_fetch_assoc($Query)) {
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM `ts_games_categories`");
+while ($Category = mysqli_fetch_assoc($query)) {
     $List .= "\r\n\t<tr>\r\n\t\t<td class=\"alt1\">\r\n\t\t\t" . htmlspecialchars($Category["cname"]) . "\r\n\t\t</td>\r\n\t\t<td class=\"alt1\">\r\n\t\t\t" . htmlspecialchars($Category["description"]) . "\r\n\t\t</td>\r\n\t\t<td class=\"alt1\" $align = \"center\">\r\n\t\t\t" . intval($Category["sort"]) . "\r\n\t\t</td>\r\n\t\t<td class=\"alt1\" $align = \"center\">\r\n\t\t\t" . (isset($CategoryCount[$Category["cid"]]) ? $CategoryCount[$Category["cid"]] : 0) . "\r\n\t\t</td>\r\n\t\t<td class=\"alt1\" $align = \"center\">\r\n\t\t\t" . (isset($ChampionCount[$Category["cid"]]) ? $ChampionCount[$Category["cid"]] : 0) . "\r\n\t\t</td>\r\n\t\t<td class=\"alt1\" $align = \"center\">\r\n\t\t\t<a $href = \"index.php?do=manage_games_categories&amp;$act = edit&amp;$cid = " . $Category["cid"] . "\"><img $src = \"./images/tool_edit.png\" $alt = \"" . $Language[7] . "\" $title = \"" . $Language[7] . "\" $border = \"0\" /></a> <a $href = \"index.php?do=manage_games_categories&amp;$act = delete&amp;$cid = " . $Category["cid"] . "\" $onclick = \"return ConfirmDelete();\"><img $src = \"./images/tool_delete.png\" $alt = \"" . $Language[8] . "\" $title = \"" . $Language[8] . "\" $border = \"0\" /></a>\r\n\t\t</td>\r\n\t</tr>";
 }
 echo "\r\n<script $type = \"text/javascript\">\r\n\tfunction ConfirmDelete()\r\n\t{\r\n\t\$tCheck = confirm(\"" . trim($Language[10]) . "\");\r\n\t\tif (Check)\r\n\t\t\treturn true;\r\n\t\telse\r\n\t\t\treturn false;\r\n\t}\r\n</script>\r\n" . showAlertMessage("<a $href = \"index.php?do=manage_games_categories&amp;$act = add\">" . $Language[9] . "</a>") . "\r\n" . $Message . "\r\n<table $cellpadding = \"5\" $cellspacing = \"0\" $border = \"0\" $align = \"center\" $width = \"90%\" $style = \"border-collapse:separate\" class=\"tborder\">\r\n\t<tr>\r\n\t\t<td class=\"tcat\" $colspan = \"6\" $align = \"center\">\r\n\t\t\t" . $Language[2] . "\r\n\t\t</td>\r\n\t</tr>\r\n\t<tr>\r\n\t\t<td class=\"alt2\">\r\n\t\t\t" . $Language[3] . "\r\n\t\t</td>\r\n\t\t<td class=\"alt2\">\r\n\t\t\t" . $Language[4] . "\r\n\t\t</td>\r\n\t\t<td class=\"alt2\" $align = \"center\">\r\n\t\t\t" . $Language[5] . "\r\n\t\t</td>\r\n\t\t<td class=\"alt2\" $align = \"center\">\r\n\t\t\t" . $Language[18] . "\r\n\t\t</td>\r\n\t\t<td class=\"alt2\" $align = \"center\">\r\n\t\t\t" . $Language[19] . "\r\n\t\t</td>\r\n\t\t<td class=\"alt2\" $align = \"center\">\r\n\t\t\t" . $Language[6] . "\r\n\t\t</td>\r\n\t</tr>\r\n\t" . $List . "\r\n</table>";

@@ -11,8 +11,8 @@ $Act = isset($_GET["act"]) ? trim($_GET["act"]) : (isset($_POST["act"]) ? trim($
 $Cid = isset($_GET["id"]) ? intval($_GET["id"]) : (isset($_POST["id"]) ? intval($_POST["id"]) : 0);
 $Language = file("languages/" . getStaffLanguage() . "/manage_news.lang");
 $Message = "";
-$Q = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'MAIN'");
-$Result = mysqli_fetch_assoc($Q);
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'MAIN'");
+$Result = mysqli_fetch_assoc($query);
 $MAIN = unserialize($Result["content"]);
 if ($Act == "delete" && $Cid) {
     $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT title FROM news WHERE $id = '" . $Cid . "'");
@@ -80,9 +80,9 @@ if ($Act == "new") {
     }
 }
 $Found = "";
-$Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT news.*,  u.username, g.namestyle FROM news LEFT JOIN users u ON (news.$userid = u.id) LEFT JOIN usergroups g ON (u.$usergroup = g.gid) ORDER by added DESC");
-if (0 < mysqli_num_rows($Query)) {
-    while ($News = mysqli_fetch_assoc($Query)) {
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT news.*,  u.username, g.namestyle FROM news LEFT JOIN users u ON (news.$userid = u.id) LEFT JOIN usergroups g ON (u.$usergroup = g.gid) ORDER by added DESC");
+if (0 < mysqli_num_rows($query)) {
+    while ($News = mysqli_fetch_assoc($query)) {
         $Found .= "\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t" . $News["title"] . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t<a $href = \"index.php?do=edit_user&amp;$username = " . $News["username"] . "\">" . applyUsernameStyle($News["username"], $News["namestyle"]) . "</a>\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t" . formatTimestamp($News["added"]) . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t" . substr(strip_tags($News["body"]), 0, 100) . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\" $align = \"center\">\r\n\t\t\t\t<a $href = \"index.php?do=manage_news&amp;$act = edit&amp;$id = " . $News["id"] . "\"><img $src = \"images/tool_edit.png\" $alt = \"" . $Language[11] . "\" $title = \"" . $Language[11] . "\" $border = \"0\" /></a> <a $href = \"index.php?do=manage_news&amp;$act = delete&amp;$id = " . $News["id"] . "\"><img $src = \"images/tool_delete.png\" $alt = \"" . $Language[12] . "\" $title = \"" . $Language[12] . "\" $border = \"0\" /></a>\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t";
     }
 } else {

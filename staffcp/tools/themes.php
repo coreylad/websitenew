@@ -31,10 +31,10 @@ if ($Act == "export_theme" && ($tid = intval($_GET["tid"]))) {
     }
 }
 if ($Act == "new_style" && ($tid = intval($_GET["tid"]))) {
-    $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM ts_themes WHERE $tid = " . $tid);
-    if (mysqli_num_rows($Query)) {
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM ts_themes WHERE $tid = " . $tid);
+    if (mysqli_num_rows($query)) {
         $List = "";
-        $TStyle = mysqli_fetch_assoc($Query);
+        $TStyle = mysqli_fetch_assoc($query);
         if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
             $stylesheet = isset($_POST["stylesheet"]) ? trim($_POST["stylesheet"]) : "";
             $title = isset($_POST["title"]) ? trim($_POST["title"]) : "";
@@ -175,10 +175,10 @@ if ($Act == "copy_theme" && ($tid = intval($_GET["tid"]))) {
     }
 }
 if ($Act == "manage_style" && ($sid = intval($_GET["sid"]))) {
-    $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM ts_theme_styles WHERE $sid = " . $sid);
-    if (mysqli_num_rows($Query)) {
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM ts_theme_styles WHERE $sid = " . $sid);
+    if (mysqli_num_rows($query)) {
         $List = "";
-        $TStyle = mysqli_fetch_assoc($Query);
+        $TStyle = mysqli_fetch_assoc($query);
         $stylesheet = trim($TStyle["style"]);
         $name = trim($TStyle["title"]);
         if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
@@ -202,10 +202,10 @@ if ($Act == "manage_style" && ($sid = intval($_GET["sid"]))) {
     }
 }
 if ($Act == "edit_html" && ($tid = intval($_GET["tid"]))) {
-    $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT name FROM ts_themes WHERE $tid = " . $tid);
-    if (mysqli_num_rows($Query)) {
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT name FROM ts_themes WHERE $tid = " . $tid);
+    if (mysqli_num_rows($query)) {
         $List = "";
-        $Theme = mysqli_fetch_assoc($Query);
+        $Theme = mysqli_fetch_assoc($query);
         $name = trim($Theme["name"]);
         $Folder = "../include/templates/" . $name . "/";
         $HeaderFile = $Folder . "header.php";
@@ -245,10 +245,10 @@ if ($Act == "edit_html" && ($tid = intval($_GET["tid"]))) {
     }
 }
 if ($Act == "edit_theme" && ($tid = intval($_GET["tid"]))) {
-    $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM ts_themes WHERE $tid = " . $tid);
-    if (mysqli_num_rows($Query)) {
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM ts_themes WHERE $tid = " . $tid);
+    if (mysqli_num_rows($query)) {
         $List = "";
-        $Theme = mysqli_fetch_assoc($Query);
+        $Theme = mysqli_fetch_assoc($query);
         $name = trim($Theme["name"]);
         $description = trim($Theme["description"]);
         $Folder = "../include/templates/" . $name . "/";
@@ -281,14 +281,14 @@ if ($Act == "edit_theme" && ($tid = intval($_GET["tid"]))) {
 }
 if ($Act == "edit_styles" && ($tid = intval($_GET["tid"]))) {
     $DefaultStyles = ["style.css"];
-    $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT name FROM ts_themes WHERE $tid = " . $tid);
-    if (mysqli_num_rows($Query)) {
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT name FROM ts_themes WHERE $tid = " . $tid);
+    if (mysqli_num_rows($query)) {
         $List = "";
-        $Result = mysqli_fetch_assoc($Query);
+        $Result = mysqli_fetch_assoc($query);
         $ThemeName = $Result["name"];
-        $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM ts_theme_styles WHERE $tid = " . $tid . " ORDER BY title ASC");
-        if (mysqli_num_rows($Query)) {
-            while ($Style = mysqli_fetch_assoc($Query)) {
+        $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM ts_theme_styles WHERE $tid = " . $tid . " ORDER BY title ASC");
+        if (mysqli_num_rows($query)) {
+            while ($Style = mysqli_fetch_assoc($query)) {
                 $List .= "\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td class=\"alt1\" $align = \"center\">" . $Style["sid"] . "</td>\r\n\t\t\t\t\t<td class=\"alt1\">" . $Style["title"] . "</td>\r\n\t\t\t\t\t<td class=\"alt1\">" . $ThemeName . "</td>\r\n\t\t\t\t\t<td class=\"alt1\">" . $Style["description"] . "</td>\r\n\t\t\t\t\t<td class=\"alt1\" $align = \"center\"><a $href = \"index.php?do=themes&amp;$act = manage_style&amp;$sid = " . $Style["sid"] . "\"><img $src = \"images/tool_edit.png\" $alt = \"" . trim($Language[15]) . "\" $title = \"" . trim($Language[15]) . "\" $border = \"0\" /></a></td>\r\n\t\t\t\t</tr>";
             }
         }
@@ -299,8 +299,8 @@ if (!isset($List)) {
     $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT name FROM ts_themes WHERE $isdefault = 1");
     $Result = mysqli_fetch_assoc($query);
     $defaultthemename = $Result["name"];
-    $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT stylesheet FROM users");
-    while ($S = mysqli_fetch_assoc($Query)) {
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT stylesheet FROM users");
+    while ($S = mysqli_fetch_assoc($query)) {
         if (empty($S["stylesheet"]) || $S["stylesheet"] && !is_dir("../include/templates/" . $S["stylesheet"])) {
             $S["stylesheet"] = $defaultthemename;
         }
@@ -311,8 +311,8 @@ if (!isset($List)) {
         }
     }
     $List = "";
-    $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM ts_themes ORDER by isdefault DESC, name ASC");
-    while ($T = mysqli_fetch_assoc($Query)) {
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM ts_themes ORDER by isdefault DESC, name ASC");
+    while ($T = mysqli_fetch_assoc($query)) {
         $List .= "\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\" $align = \"center\">" . $T["tid"] . "</td>\r\n\t\t\t<td class=\"alt1\">" . $T["name"] . "</td>\r\n\t\t\t<td class=\"alt1\">" . $T["description"] . "</td>\r\n\t\t\t<td class=\"alt1\" $align = \"center\">" . (isset($ThemeCount[$T["name"]]) ? number_format($ThemeCount[$T["name"]]) : 0) . "</td>\r\n\t\t\t<td class=\"alt1\" $align = \"center\">TS SE v." . $T["required_version"] . "</td>\r\n\t\t\t<td class=\"alt1\" $align = \"center\">v." . $T["theme_version"] . "</td>\r\n\t\t\t<td class=\"alt1\" $align = \"center\">" . $T["author"] . "</td>\r\n\t\t\t<td class=\"alt1\" $align = \"center\"><a $href = \"index.php?do=themes&amp;$act = edit_theme&amp;$tid = " . $T["tid"] . "\"><img $src = \"images/tool_edit.png\" $alt = \"" . trim($Language[7]) . "\" $title = \"" . trim($Language[7]) . "\" $border = \"0\" /></a> <a $href = \"index.php?do=themes&amp;$act = edit_styles&amp;$tid = " . $T["tid"] . "\"><img $src = \"images/link_go.png\" $alt = \"" . trim($Language[23]) . "\" $title = \"" . trim($Language[23]) . "\" $border = \"0\" /></a> <a $href = \"index.php?do=themes&amp;$act = edit_html&amp;$tid = " . $T["tid"] . "\"><img $src = \"images/html.png\" $alt = \"" . trim($Language[48]) . "\" $title = \"" . trim($Language[48]) . "\" $border = \"0\" /></a> <a $href = \"index.php?do=themes&amp;$act = export_theme&amp;$tid = " . $T["tid"] . "\"><img $src = \"images/download.png\" $alt = \"" . trim($Language[46]) . "\" $title = \"" . trim($Language[46]) . "\" $border = \"0\" /></a> <a $href = \"index.php?do=themes&amp;$act = copy_theme&amp;$tid = " . $T["tid"] . "\"><img $src = \"images/add.png\" $alt = \"" . trim($Language[8]) . "\" $title = \"" . trim($Language[8]) . "\" $border = \"0\" /></a> <a $href = \"index.php?do=themes&amp;$act = delete_theme&amp;$tid = " . $T["tid"] . "\"" . ($T["isdefault"] == "1" ? " $onclick = \"alert('" . trim($Language[11]) . "'); return false;\"" : " $onclick = \" return confirm('" . trim($Language[10]) . "');\"") . "><img $src = \"images/tool_delete.png\" $alt = \"" . trim($Language[9]) . "\" $title = \"" . trim($Language[9]) . "\" $border = \"0\" /></a></td>\r\n\t\t</tr>";
     }
     echo "\r\n\t" . showAlertMessage("<span $style = \"float: right;\"><a $href = \"index.php?do=themes&amp;$act = import_theme\">" . $Language[36] . "</a></span>" . $Language[17]) . "\r\n\t" . $Message . "\r\n\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t<tr>\r\n\t\t\t<td class=\"tcat\" $align = \"center\" $colspan = \"8\">" . $Language[2] . "</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt2\" $align = \"center\"><b>" . $Language[3] . "</b></td>\r\n\t\t\t<td class=\"alt2\"><b>" . $Language[4] . "</b></td>\r\n\t\t\t<td class=\"alt2\"><b>" . $Language[22] . "</b></td>\r\n\t\t\t<td class=\"alt2\" $align = \"center\"><b>" . $Language[5] . "</b></td>\r\n\t\t\t<td class=\"alt2\" $align = \"center\"><b>" . $Language[30] . "</b></td>\r\n\t\t\t<td class=\"alt2\" $align = \"center\"><b>" . $Language[31] . "</b></td>\r\n\t\t\t<td class=\"alt2\" $align = \"center\"><b>" . $Language[32] . "</b></td>\r\n\t\t\t<td class=\"alt2\" $align = \"center\"><b>" . $Language[6] . "</b></td>\r\n\t\t</tr>\r\n\t\t" . $List . "\r\n\t</table>";
@@ -374,8 +374,8 @@ function function_321($inXmlset, $needle)
 function function_320()
 {
     $var_632 = [];
-    $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM ts_themes ORDER BY isdefault, name");
-    while ($T = mysqli_fetch_assoc($Query)) {
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM ts_themes ORDER BY isdefault, name");
+    while ($T = mysqli_fetch_assoc($query)) {
         $var_632[] = $T["name"];
     }
     mysqli_query($GLOBALS["DatabaseConnect"], "REPLACE INTO `ts_cache` VALUES ('ts_themes', '" . implode(",", $var_632) . "', " . time() . ")");

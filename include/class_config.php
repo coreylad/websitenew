@@ -18,9 +18,9 @@ class TSConfig
         if (isset($GLOBALS["DatabaseConnect"])) {
             $GLOBALS["DatabaseConnect"] = $GLOBALS["DatabaseConnect"];
         }
-        $Q = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM `ts_config`");
-        if (mysqli_num_rows($Q)) {
-            while ($C = mysqli_fetch_row($Q)) {
+        $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM `ts_config`");
+        if (mysqli_num_rows($query)) {
+            while ($C = mysqli_fetch_row($query)) {
                 $this->Config[$C[0]] = $C[0] != "STAFFTEAM" && $C[0] != "PEER" ? unserialize($C[1]) : $C[1];
             }
         } else {

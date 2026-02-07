@@ -18,9 +18,9 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST" && $Act == "save_order") {
     }
 }
 if ($Act && $Tid) {
-    $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM ts_staffcp_tools WHERE $tid = \"" . $Tid . "\"");
-    if (mysqli_num_rows($Query)) {
-        $Tool = mysqli_fetch_assoc($Query);
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM ts_staffcp_tools WHERE $tid = \"" . $Tid . "\"");
+    if (mysqli_num_rows($query)) {
+        $Tool = mysqli_fetch_assoc($query);
         $AllowedUsergroups = explode(",", $Tool["usergroups"]);
         if ($_SESSION["ADMIN_GID"] && $AllowedUsergroups && in_array($_SESSION["ADMIN_GID"], $AllowedUsergroups)) {
             if ($Act == "delete") {
@@ -68,16 +68,16 @@ if ($Act && $Tid) {
 }
 if (!$HTMLOutput) {
     $StaffTools = [];
-    $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT tid, cid, toolname, filename, usergroups, sort FROM ts_staffcp_tools ORDER by sort, toolname ASC");
-    while ($Tools = mysqli_fetch_assoc($Query)) {
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT tid, cid, toolname, filename, usergroups, sort FROM ts_staffcp_tools ORDER by sort, toolname ASC");
+    while ($Tools = mysqli_fetch_assoc($query)) {
         $AllowedUsergroups = explode(",", $Tools["usergroups"]);
         if ($_SESSION["ADMIN_GID"] && in_array($_SESSION["ADMIN_GID"], $AllowedUsergroups)) {
             $StaffTools[$Tools["cid"]][] = "\r\n\t\t\t<table>\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td $width = \"1%\">\r\n\t\t\t\t\t\t<a $href = \"index.php?do=manage_tools&amp;$act = edit&amp;$tid = " . $Tools["tid"] . "\"><img $src = \"images/tool_edit.png\" $alt = \"" . trim($Language[4]) . "\" $title = \"" . trim($Language[4]) . "\" $border = \"0\" $style = \"vertical-align: middle;\" /></a>\r\n\t\t\t\t\t</td>\r\n\t\t\t\t\t<td $width = \"1%\">\r\n\t\t\t\t\t\t<a $href = \"index.php?do=manage_tools&amp;$act = delete&amp;$tid = " . $Tools["tid"] . "\" $onclick = \"return confirm('" . trim($Language[5]) . ": " . trim(str_replace("'", "`", $Tools["toolname"])) . "\\n\\n" . trim($Language[9]) . "');\"><img $src = \"images/tool_delete.png\" $alt = \"" . trim($Language[5]) . "\" $title = \"" . trim($Language[5]) . "\" $border = \"0\" $style = \"vertical-align: middle;\" /></a>\r\n\t\t\t\t\t</td>\r\n\t\t\t\t\t<td $width = \"88%\">\r\n\t\t\t\t\t\t" . trim($Tools["toolname"]) . "\r\n\t\t\t\t\t</td>\r\n\t\t\t\t\t<td $width = \"10%\" $align = \"right\">\r\n\t\t\t\t\t\t<input $type = \"text\" $size = \"5\" $value = \"" . $Tools["sort"] . "\" $name = \"order[" . $Tools["tid"] . "]\" />\r\n\t\t\t\t\t</td>\r\n\t\t\t\t</tr>\r\n\t\t\t</table>";
         }
     }
     $Output = [];
-    $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT cid, name FROM ts_staffcp ORDER by sort ASC");
-    while ($ST = mysqli_fetch_assoc($Query)) {
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT cid, name FROM ts_staffcp ORDER by sort ASC");
+    while ($ST = mysqli_fetch_assoc($query)) {
         $Output[] = "\r\n\t\t<form $method = \"post\" $action = \"index.php?do=manage_tools&$act = save_order\" $name = \"sort_order\">\r\n\t\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"tcat\">\r\n\t\t\t\t\t<span $style = \"float: right;\">\r\n\t\t\t\t\t\t<a $href = \"index.php?do=new_tool&amp;$cid = " . $ST["cid"] . "\"><img $src = \"images/tool_new.png\" $alt = \"" . trim($Language[24]) . "\" $title = \"" . trim($Language[24]) . "\" $border = \"0\" $style = \"vertical-align: middle;\" /></a> <a $href = \"index.php?do=manage_category&amp;$cid = " . $ST["cid"] . "\"><img $src = \"images/tool_edit.png\" $alt = \"" . trim($Language[20]) . "\" $title = \"" . trim($Language[20]) . "\" $border = \"0\" $style = \"vertical-align: middle;\" /></a> <a $href = \"index.php?do=manage_category&amp;$act = delete&amp;$cid = " . $ST["cid"] . "\" $onclick = \"return confirm('" . trim($Language[21]) . ": " . trim($ST["name"]) . "\\n\\n" . trim($Language[22]) . "');\"><img $src = \"images/tool_delete.png\" $alt = \"" . trim($Language[21]) . "\" $title = \"" . trim($Language[21]) . "\" $border = \"0\" $style = \"vertical-align: middle;\" /></a>\r\n\t\t\t\t\t</span>\r\n\t\t\t\t\t" . $ST["name"] . "\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt1\">" . (isset($StaffTools[$ST["cid"]]) ? implode(" ", $StaffTools[$ST["cid"]]) : "&nbsp;" . $Language[1]) . "</td>\r\n\t\t\t</tr>\r\n\t\t\t" . (isset($StaffTools[$ST["cid"]]) ? "\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"tcat2\" $align = \"right\"><input $type = \"submit\" $value = \"" . $Language[10] . "\" /> <input $type = \"reset\" $value = \"" . $Language[11] . "\" /></td>\r\n\t\t\t</tr>\r\n\t\t\t" : "") . "\r\n\t\t</table>\r\n\t\t</form>";
     }
     $HTMLOutput .= "\r\n\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t<tr>\r\n\t\t\t<td class=\"tcat\" $align = \"center\">" . $Language[3] . "</td>\r\n\t\t</tr>\r\n\t</table>";

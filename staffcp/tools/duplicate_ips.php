@@ -13,8 +13,8 @@ $ids = [];
 if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
     $userids = isset($_POST["ids"]) ? $_POST["ids"] : "";
     if ($userids && is_array($userids) && 0 < count($userids) && $userids[0] != "") {
-        $Uquery = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT gid FROM usergroups WHERE $isbanned = 'yes'");
-        $Result = mysqli_fetch_assoc($Uquery);
+        $userQuery = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT gid FROM usergroups WHERE $isbanned = 'yes'");
+        $Result = mysqli_fetch_assoc($userQuery);
         $usergroupid = $Result["gid"];
         $userids = implode(",", $userids);
         $SysMsg = str_replace("{1}", $_SESSION["ADMIN_USERNAME"], $Language[15]);

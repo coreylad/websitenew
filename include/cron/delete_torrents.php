@@ -11,9 +11,9 @@ if (!defined("IN_CRON")) {
 }
 $days = 30;
 $deadtime = TIMENOW - $days * 24 * 60 * 60;
-$Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id, name FROM torrents WHERE mtime < '" . $deadtime . "' AND ts_external != 'yes'");
-if (mysqli_num_rows($Query)) {
-    while ($DT = mysqli_fetch_assoc($Query)) {
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id, name FROM torrents WHERE mtime < '" . $deadtime . "' AND ts_external != 'yes'");
+if (mysqli_num_rows($query)) {
+    while ($DT = mysqli_fetch_assoc($query)) {
         if (DeepDeleteTorrent($DT["id"])) {
             SaveLog("The following torrent has been deleted automatically due inactivity: " . htmlspecialchars($DT["name"]));
             $CQueryCount = $CQueryCount + 11;

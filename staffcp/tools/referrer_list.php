@@ -21,14 +21,14 @@ if ($Act == "delete_all") {
 }
 $results = mysqli_num_rows(mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM referrer"));
 list($pagertop, $limit) = buildPaginationLinks(25, $results, $_SERVER["SCRIPT_NAME"] . "?do=referrer_list&amp;");
-$Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT referrer_url FROM referrer ORDER by referrer_url ASC " . $limit);
-if (mysqli_num_rows($Query) == 0) {
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT referrer_url FROM referrer ORDER by referrer_url ASC " . $limit);
+if (mysqli_num_rows($query) == 0) {
     $Message = showAlertError($Language[2]);
 } else {
     $Cache = [];
     $DeleteArray = [];
     $Count = 0;
-    while ($Url = mysqli_fetch_assoc($Query)) {
+    while ($Url = mysqli_fetch_assoc($query)) {
         $RUrl = htmlspecialchars($Url["referrer_url"]);
         if (!in_array($RUrl, $Cache)) {
             $class = $Count % 2 == 1 ? "alt2" : "alt1";

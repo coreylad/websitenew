@@ -22,9 +22,9 @@ if (isset($_GET["sender"]) && ($SENDER = intval($_GET["sender"]))) {
 $results = mysqli_num_rows(mysqli_query($GLOBALS["DatabaseConnect"], "SELECT a.cid FROM ts_album_comments a" . $WHERE));
 list($pagertop, $limit) = buildPaginationLinks($perpage, $results, $_SERVER["SCRIPT_NAME"] . "?do=manage_album_comments&amp;" . $LINK);
 $Found = "";
-$Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT a.*, u.username, g.namestyle FROM ts_album_comments a LEFT JOIN users u ON (u.$id = a.userid) LEFT JOIN usergroups g ON (u.$usergroup = g.gid) " . $WHERE . " ORDER by a.date DESC " . $limit);
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT a.*, u.username, g.namestyle FROM ts_album_comments a LEFT JOIN users u ON (u.$id = a.userid) LEFT JOIN usergroups g ON (u.$usergroup = g.gid) " . $WHERE . " ORDER by a.date DESC " . $limit);
 if ($results) {
-    while ($R = mysqli_fetch_assoc($Query)) {
+    while ($R = mysqli_fetch_assoc($query)) {
         $page_url = isset($_GET["page"]) ? "&amp;$page = " . intval($_GET["page"]) : "";
         $msgtext = function_114($R["descr"]);
         $Found .= "\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t<p class=\"alt2\">\r\n\t\t\t\t\t<span $style = \"float: right;\">\r\n\r\n\t\t\t\t\t</span>\r\n\t\t\t\t\t<a $href = \"" . $_SERVER["SCRIPT_NAME"] . "?do=manage_album_comments&amp;$delete = true&amp;$cid = " . $R["cid"] . (isset($_GET["page"]) ? "&amp;$page = " . intval($_GET["page"]) : "") . "\"><img $src = \"images/tool_delete.png\" $style = \"vertical-align: middle;\" $border = \"0\" /></a> <a $href = \"./../ts_albums.php?do=show_image&$albumid = " . $R["albumid"] . "&$imageid = " . $R["imageid"] . "#show_comments" . $R["cid"] . "\" $target = \"_blank\">#" . intval($R["cid"]) . "</a> " . formatTimestamp($R["date"]) . " " . $Language[3] . " <a $href = \"" . $_SERVER["SCRIPT_NAME"] . "?do=manage_album_comments&amp;$sender = " . $R["userid"] . "\">" . applyUsernameStyle($R["username"], $R["namestyle"]) . "</a>\r\n\t\t\t\t</p>\r\n\t\t\t\t<p>\r\n\t\t\t\t\t" . $msgtext . "\r\n\t\t\t\t</p>\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t";

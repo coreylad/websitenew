@@ -12,21 +12,21 @@ $Message = "";
 $username = isset($_GET["username"]) ? trim($_GET["username"]) : "";
 $usergroup = "";
 $reason = "";
-$Q = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'MAIN'");
-$Result = mysqli_fetch_assoc($Q);
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'MAIN'");
+$Result = mysqli_fetch_assoc($query);
 $MAIN = unserialize($Result["content"]);
-$Q = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'THEME'");
-$Result = mysqli_fetch_assoc($Q);
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'THEME'");
+$Result = mysqli_fetch_assoc($query);
 $THEME = unserialize($Result["content"]);
-$Q = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'SMTP'");
-$Result = mysqli_fetch_assoc($Q);
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'SMTP'");
+$Result = mysqli_fetch_assoc($query);
 $SMTP = unserialize($Result["content"]);
 if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
     $username = trim($_POST["username"]);
     $usergroup = intval($_POST["usergroup"]);
     $reason = trim($_POST["reason"]);
     if ($username && $usergroup && $reason) {
-        $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT u.id, u.email, u.username, u.ip, g.cansettingspanel, g.canstaffpanel, g.issupermod FROM users u LEFT JOIN usergroups g ON (u.$usergroup = g.gid) WHERE u.$username = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $username) . "'");
+        $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT u.id, u.email, u.username, u.ip, g.cansettingspanel, g.canstaffpanel, g.issupermod FROM users u LEFT JOIN usergroups g ON (u.$usergroup = g.gid) WHERE u.$username = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $username) . "'");
         exit(mysqli_error($GLOBALS["DatabaseConnect"]));
     }
     $Message = showAlertError($Language[1]);
@@ -404,9 +404,9 @@ function sendPrivateMessage($receiver = 0, $msg = "", $subject = "", $sender = 0
 function function_113($userid)
 {
     $var_335 = [];
-    $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT ip FROM iplog WHERE $userid = '" . $userid . "'");
-    if (mysqli_num_rows($Query)) {
-        while ($var_336 = mysqli_fetch_assoc($Query)) {
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT ip FROM iplog WHERE $userid = '" . $userid . "'");
+    if (mysqli_num_rows($query)) {
+        while ($var_336 = mysqli_fetch_assoc($query)) {
             if ($var_336["ip"]) {
                 $var_335[] = trim($var_336["ip"]);
             }

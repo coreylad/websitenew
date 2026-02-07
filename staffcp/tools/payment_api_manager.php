@@ -11,9 +11,9 @@ $Language = file("languages/" . getStaffLanguage() . "/payment_api_manager.lang"
 $Message = "";
 $Act = isset($_GET["act"]) ? trim($_GET["act"]) : (isset($_POST["act"]) ? trim($_POST["act"]) : "");
 if ($Act == "edit" && isset($_GET["aid"]) && ($Aid = intval($_GET["aid"]))) {
-    $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM ts_subscriptions_api WHERE $aid = '" . $Aid . "'");
-    if (mysqli_num_rows($Query)) {
-        $API = mysqli_fetch_assoc($Query);
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM ts_subscriptions_api WHERE $aid = '" . $Aid . "'");
+    if (mysqli_num_rows($query)) {
+        $API = mysqli_fetch_assoc($query);
         $active = $API["active"];
         $email = $API["email"];
         $secretkey = $API["secretkey"];
@@ -44,9 +44,9 @@ if ($Act == "edit" && isset($_GET["aid"]) && ($Aid = intval($_GET["aid"]))) {
 }
 if (empty($Act)) {
     $List = "";
-    $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM ts_subscriptions_api");
-    if (mysqli_num_rows($Query)) {
-        while ($API = mysqli_fetch_assoc($Query)) {
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM ts_subscriptions_api");
+    if (mysqli_num_rows($query)) {
+        while ($API = mysqli_fetch_assoc($query)) {
             $List .= "\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . htmlspecialchars($API["title"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . htmlspecialchars($API["currency"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . ($API["active"] == "1" ? $Language[7] : $Language[8]) . "\r\n\t\t\t\t</td>\t\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t<a $href = \"index.php?do=payment_api_manager&amp;$act = edit&amp;$aid = " . $API["aid"] . "\">" . trim($Language[9]) . "</a>\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t\t";
         }
     }

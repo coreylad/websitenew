@@ -9,8 +9,8 @@
 var_235();
 $Language = file("languages/" . getStaffLanguage() . "/cheat_attempts.lang");
 $Message = "";
-$Q = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'ANNOUNCE'");
-$Result = mysqli_fetch_assoc($Q);
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'ANNOUNCE'");
+$Result = mysqli_fetch_assoc($query);
 $ANNOUNCE = unserialize($Result["content"]);
 if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST" && isset($_POST["ids"]) && is_array($_POST["ids"]) && count($_POST["ids"])) {
     $Work = implode(",", $_POST["ids"]);
@@ -58,14 +58,14 @@ if ($ANNOUNCE["xbt_active"] == "yes") {
     $xbt_announce_interval = $Result["value"];
     $results = mysqli_num_rows(mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM xbt_files_users WHERE up_rate > " . $ANNOUNCE["max_rate"]));
     list($pagertop, $limit) = buildPaginationLinks(25, $results, $_SERVER["SCRIPT_NAME"] . "?do=cheat_attempts&amp;");
-    $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT t.announced, t.mtime as added, t.up_rate as transfer_rate, t.uploaded as upthis, t.ipa as ip, u.username, g.namestyle, tr.id as torrentid, tr.name as torrentname FROM xbt_files_users t LEFT JOIN users u ON (t.$uid = u.id) LEFT JOIN usergroups g ON (u.$usergroup = g.gid) LEFT JOIN torrents tr ON (t.$fid = tr.id) WHERE t.up_rate > " . $ANNOUNCE["max_rate"] . " ORDER by t.up_rate DESC " . $limit);
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT t.announced, t.mtime as added, t.up_rate as transfer_rate, t.uploaded as upthis, t.ipa as ip, u.username, g.namestyle, tr.id as torrentid, tr.name as torrentname FROM xbt_files_users t LEFT JOIN users u ON (t.$uid = u.id) LEFT JOIN usergroups g ON (u.$usergroup = g.gid) LEFT JOIN torrents tr ON (t.$fid = tr.id) WHERE t.up_rate > " . $ANNOUNCE["max_rate"] . " ORDER by t.up_rate DESC " . $limit);
 } else {
     $results = mysqli_num_rows(mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM cheat_attempts"));
     list($pagertop, $limit) = buildPaginationLinks(25, $results, $_SERVER["SCRIPT_NAME"] . "?do=cheat_attempts&amp;");
-    $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT t.*,  u.username, g.namestyle, tr.name as torrentname FROM cheat_attempts t LEFT JOIN users u ON (t.$uid = u.id) LEFT JOIN usergroups g ON (u.$usergroup = g.gid) LEFT JOIN torrents tr ON (t.$torrentid = tr.id) ORDER by t.added DESC " . $limit);
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT t.*,  u.username, g.namestyle, tr.name as torrentname FROM cheat_attempts t LEFT JOIN users u ON (t.$uid = u.id) LEFT JOIN usergroups g ON (u.$usergroup = g.gid) LEFT JOIN torrents tr ON (t.$torrentid = tr.id) ORDER by t.added DESC " . $limit);
 }
 if ($results) {
-    while ($R = mysqli_fetch_assoc($Query)) {
+    while ($R = mysqli_fetch_assoc($query)) {
         $Found .= "\r\n\t\t<tr>\t\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t<a $href = \"index.php?do=edit_user&amp;$username = " . $R["username"] . "\">" . applyUsernameStyle($R["username"], $R["namestyle"]) . "</a>\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t" . formatTimestamp($R["added"]) . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t<a $href = \"../details.php?$id = " . $R["torrentid"] . "\">" . $R["torrentname"] . "</a>\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t" . ($ANNOUNCE["xbt_active"] == "yes" ? "----" : htmlspecialchars($R["agent"])) . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t" . var_238($R["transfer_rate"]) . "/s\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t" . var_238($R["upthis"]) . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t" . ($ANNOUNCE["xbt_active"] == "yes" ? var_239($R["announced"] * $xbt_announce_interval) : function_85($R["timediff"])) . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t" . ($ANNOUNCE["xbt_active"] == "yes" ? long2ip($R["ip"]) : htmlspecialchars($R["ip"])) . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\" $align = \"center\">\r\n\t\t\t\t<input $type = \"checkbox\" $name = \"ids[]\" $value = \"" . $R["uid"] . "\" $checkme = \"group\" />\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t";
     }
 } else {

@@ -18,9 +18,9 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
         foreach ($STAFFTEAM as $StaffMember) {
             $StaffMember = trim($StaffMember);
             if ($StaffMember && !in_array($StaffMember, $NewStaffArray)) {
-                $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id FROM users WHERE $username = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $StaffMember) . "' AND $enabled = 'yes' AND $status = 'confirmed'");
-                if (0 < mysqli_num_rows($Query)) {
-                    $Result = mysqli_fetch_assoc($Query);
+                $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id FROM users WHERE $username = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $StaffMember) . "' AND $enabled = 'yes' AND $status = 'confirmed'");
+                if (0 < mysqli_num_rows($query)) {
+                    $Result = mysqli_fetch_assoc($query);
                     $NewStaffArray[] = $StaffMember . ":" . $Result["id"];
                 } else {
                     $ErrorArray[] = $StaffMember;
@@ -40,8 +40,8 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
         $Message = showAlertError($Language[8]);
     }
 }
-$Q = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'STAFFTEAM'");
-$Result = mysqli_fetch_assoc($Q);
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'STAFFTEAM'");
+$Result = mysqli_fetch_assoc($query);
 $STAFFTEAM = trim($Result["content"]);
 $STAFFTEAM = explode(",", $STAFFTEAM);
 $List = "";

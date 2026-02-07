@@ -36,11 +36,11 @@ if (!empty($feeds)) {
         if (!empty($feed["xml"]->xml_string)) {
             if ($feed["xml"]->parse_xml() !== false) {
                 $items = [];
-                $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT uniquehash FROM ts_rsslog WHERE $rssfeedid = " . $rssfeedid);
+                $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT uniquehash FROM ts_rsslog WHERE $rssfeedid = " . $rssfeedid);
                 $CQueryCount++;
                 $AllFeeds = [];
-                if (mysqli_num_rows($Query)) {
-                    while ($AF = mysqli_fetch_assoc($Query)) {
+                if (mysqli_num_rows($query)) {
+                    while ($AF = mysqli_fetch_assoc($query)) {
                         $AllFeeds[$AF["uniquehash"]] = true;
                     }
                 }

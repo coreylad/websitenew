@@ -147,8 +147,8 @@ while ($UG = mysqli_fetch_assoc($query)) {
     $showusergroups .= "\r\n\t<option $value = \"" . $UG["gid"] . "\"" . ($usergroup == $UG["gid"] ? " $selected = \"selected\"" : "") . ">" . $UG["title"] . "</option>";
 }
 $showusergroups .= "\r\n</select>";
-$Q = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'MAIN'");
-$Result = mysqli_fetch_assoc($Q);
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'MAIN'");
+$Result = mysqli_fetch_assoc($query);
 $MAIN = unserialize($Result["content"]);
 echo "<script $type = \"text/javascript\">\r\n\t\$(function()\r\n\t{\r\n\t\t\$('#joindateafter,#joindatebefore,#lastaccessafter,#lastaccessbefore').datepicker({dateFormat: \"yy-mm-dd\", changeMonth: true, changeYear: true, closeText: \"X\", showButtonPanel: true});\r\n\t\t\$('#bdayafter,#bdaybefore').datepicker({dateFormat: 'dd-mm-yy', changeMonth: true, changeYear: true, closeText: \"X\", showButtonPanel: true});\r\n\t});\r\n</script>\r\n<form $action = \"";
 echo $_SERVER["SCRIPT_NAME"];

@@ -33,9 +33,9 @@ $ListFeeds = "";
 if ($Act == "delete") {
     $rssfeedid = isset($_GET["rssfeedid"]) ? intval($_GET["rssfeedid"]) : (isset($_POST["rssfeedid"]) ? intval($_POST["rssfeedid"]) : "0");
     if ($rssfeedid) {
-        $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT title FROM ts_rssfeed WHERE $rssfeedid = '" . $rssfeedid . "'");
-        if (mysqli_num_rows($Query)) {
-            $Result = mysqli_fetch_assoc($Query);
+        $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT title FROM ts_rssfeed WHERE $rssfeedid = '" . $rssfeedid . "'");
+        if (mysqli_num_rows($query)) {
+            $Result = mysqli_fetch_assoc($query);
             $title = $Result["title"];
             mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM ts_rssfeed WHERE $rssfeedid = '" . $rssfeedid . "'");
             if (mysqli_affected_rows($GLOBALS["DatabaseConnect"])) {
@@ -47,15 +47,15 @@ if ($Act == "delete") {
     $Act = "";
 }
 if ($Act == "edit" && ($rssfeedid = intval($_GET["rssfeedid"]))) {
-    $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM ts_rssfeed WHERE $rssfeedid = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $rssfeedid) . "'");
-    if (!mysqli_num_rows($Query)) {
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM ts_rssfeed WHERE $rssfeedid = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $rssfeedid) . "'");
+    if (!mysqli_num_rows($query)) {
         redirectTo("index.php?do=rss_feed_manager");
         exit;
     }
-    $Feed = mysqli_fetch_assoc($Query);
-    $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT username FROM users WHERE $id = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $Feed["userid"]) . "'");
-    if (mysqli_num_rows($Query)) {
-        $Result = mysqli_fetch_assoc($Query);
+    $Feed = mysqli_fetch_assoc($query);
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT username FROM users WHERE $id = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $Feed["userid"]) . "'");
+    if (mysqli_num_rows($query)) {
+        $Result = mysqli_fetch_assoc($query);
         $Feed["username"] = $Result["username"];
     } else {
         $Feed["username"] = "";
@@ -82,19 +82,19 @@ if ($Act == "edit" && ($rssfeedid = intval($_GET["rssfeedid"]))) {
         if (!$username) {
             $Errors[] = $Language[35];
         } else {
-            $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id FROM users WHERE $username = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $username) . "'");
-            if (!mysqli_num_rows($Query)) {
+            $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id FROM users WHERE $username = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $username) . "'");
+            if (!mysqli_num_rows($query)) {
                 $Errors[] = $Language[37];
             } else {
-                $Result = mysqli_fetch_assoc($Query);
+                $Result = mysqli_fetch_assoc($query);
                 $userid = $Result["id"];
             }
         }
         if (!$fid) {
             $Errors[] = $Language[36];
         } else {
-            $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT fid FROM tsf_forums WHERE $fid = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $fid) . "'");
-            if (!mysqli_num_rows($Query)) {
+            $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT fid FROM tsf_forums WHERE $fid = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $fid) . "'");
+            if (!mysqli_num_rows($query)) {
                 $Errors[] = $Language[38];
             }
         }
@@ -144,13 +144,13 @@ if ($Act == "edit" && ($rssfeedid = intval($_GET["rssfeedid"]))) {
 }
 if ($Act == "run" && ($rssfeedid = intval($_GET["rssfeedid"]))) {
     $timenow = time();
-    $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT r.*, f.type, ff.fid as realforumid, u.username FROM ts_rssfeed r INNER JOIN tsf_forums f ON (f.$fid = r.fid) INNER JOIN tsf_forums ff ON (ff.$fid = f.pid) INNER JOIN users u ON (r.$userid = u.id) WHERE r.$rssfeedid = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $rssfeedid) . "'");
-    if (!mysqli_num_rows($Query)) {
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT r.*, f.type, ff.fid as realforumid, u.username FROM ts_rssfeed r INNER JOIN tsf_forums f ON (f.$fid = r.fid) INNER JOIN tsf_forums ff ON (ff.$fid = f.pid) INNER JOIN users u ON (r.$userid = u.id) WHERE r.$rssfeedid = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $rssfeedid) . "'");
+    if (!mysqli_num_rows($query)) {
         redirectTo("index.php?do=rss_feed_manager");
         exit;
     }
     mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE ts_rssfeed SET $lastrun = " . $timenow . " WHERE $rssfeedid = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $rssfeedid) . "'");
-    $feed = mysqli_fetch_assoc($Query);
+    $feed = mysqli_fetch_assoc($query);
     $feed["xml"] = new Class_28();
     $feed["xml"]->function_272($feed["url"]);
     $feed["counter"] = 0;
@@ -170,10 +170,10 @@ if ($Act == "run" && ($rssfeedid = intval($_GET["rssfeedid"]))) {
         return NULL;
     }
     $items = [];
-    $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT uniquehash FROM ts_rsslog WHERE $rssfeedid = " . $rssfeedid);
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT uniquehash FROM ts_rsslog WHERE $rssfeedid = " . $rssfeedid);
     $AllFeeds = [];
-    if (mysqli_num_rows($Query)) {
-        while ($AF = mysqli_fetch_assoc($Query)) {
+    if (mysqli_num_rows($query)) {
+        while ($AF = mysqli_fetch_assoc($query)) {
             $AllFeeds[$AF["uniquehash"]] = true;
         }
     }
@@ -292,19 +292,19 @@ if ($Act == "new") {
         if (!$username) {
             $Errors[] = $Language[35];
         } else {
-            $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id FROM users WHERE $username = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $username) . "'");
-            if (!mysqli_num_rows($Query)) {
+            $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id FROM users WHERE $username = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $username) . "'");
+            if (!mysqli_num_rows($query)) {
                 $Errors[] = $Language[37];
             } else {
-                $Result = mysqli_fetch_assoc($Query);
+                $Result = mysqli_fetch_assoc($query);
                 $userid = $Result["id"];
             }
         }
         if (!$fid) {
             $Errors[] = $Language[36];
         } else {
-            $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT fid FROM tsf_forums WHERE $fid = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $fid) . "'");
-            if (!mysqli_num_rows($Query)) {
+            $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT fid FROM tsf_forums WHERE $fid = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $fid) . "'");
+            if (!mysqli_num_rows($query)) {
                 $Errors[] = $Language[38];
             }
         }
@@ -331,9 +331,9 @@ if ($Act == "new") {
     echo "\r\n\t" . showAlertMessage("<a $href = \"index.php?do=rss_feed_manager\">" . $Language[27] . "</a>") . "\r\n\t" . $Message . "\r\n\t<form $method = \"post\">\r\n\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t<tr>\r\n\t\t\t<td class=\"tcat\" $colspan = \"2\" $align = \"center\">\r\n\t\t\t\t" . $Language[2] . "\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\"><b>" . $Language[12] . "</b></td>\r\n\t\t\t<td class=\"alt1\"><input $type = \"radio\" $name = \"active\" $value = \"1\"" . ($active == 1 ? " $checked = \"checked\"" : "") . " /> " . $Language[28] . " <input $type = \"radio\" $name = \"active\" $value = \"0\"" . ($active == 0 ? " $checked = \"checked\"" : "") . " /> " . $Language[29] . "</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\"><b>" . $Language[13] . "</b></td>\r\n\t\t\t<td class=\"alt1\"><input $type = \"text\" $name = \"title\" $value = \"" . $title . "\" $style = \"width: 400px;\" /></td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\"><b>" . $Language[14] . "</b></td>\r\n\t\t\t<td class=\"alt1\"><input $type = \"text\" $name = \"url\" $value = \"" . $url . "\" $style = \"width: 400px;\" /></td>\r\n\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t<td class=\"alt1\"><b>" . $Language[15] . "</b></td>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t<select $name = \"ttl\" $style = \"width: 100px;\">\r\n\t\t\t\t\t<option $value = \"600\"" . ($ttl == 600 ? " $selected = \"selected\"" : "") . ">10 " . $Language[30] . "</option>\r\n\t\t\t\t\t<option $value = \"1200\"" . ($ttl == 1200 ? " $selected = \"selected\"" : "") . ">20 " . $Language[30] . "</option>\r\n\t\t\t\t\t<option $value = \"1800\"" . ($ttl == 1800 ? " $selected = \"selected\"" : "") . ">30 " . $Language[30] . "</option>\r\n\t\t\t\t\t<option $value = \"3600\"" . ($ttl == 3600 ? " $selected = \"selected\"" : "") . ">60 " . $Language[30] . "</option>\r\n\t\t\t\t\t<option $value = \"7200\"" . ($ttl == 7200 ? " $selected = \"selected\"" : "") . ">2 " . $Language[31] . "</option>\r\n\t\t\t\t\t<option $value = \"14400\"" . ($ttl == 14400 ? " $selected = \"selected\"" : "") . ">4 " . $Language[31] . "</option>\r\n\t\t\t\t\t<option $value = \"21600\"" . ($ttl == 21600 ? " $selected = \"selected\"" : "") . ">6 " . $Language[31] . "</option>\r\n\t\t\t\t\t<option $value = \"28800\"" . ($ttl == 28800 ? " $selected = \"selected\"" : "") . ">8 " . $Language[31] . "</option>\r\n\t\t\t\t\t<option $value = \"36000\"" . ($ttl == 36000 ? " $selected = \"selected\"" : "") . ">10 " . $Language[31] . "</option>\r\n\t\t\t\t\t<option $value = \"43200\"" . ($ttl == 43200 ? " $selected = \"selected\"" : "") . ">12 " . $Language[31] . "</option>\r\n\t\t\t\t</select>\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\"><b>" . $Language[16] . "</b></td>\r\n\t\t\t<td class=\"alt1\"><input $type = \"text\" $name = \"maxresults\" $value = \"" . $maxresults . "\" $style = \"width: 100px;\" /></td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\"><b>" . $Language[5] . "</b></td>\r\n\t\t\t<td class=\"alt1\"><input $type = \"text\" $name = \"username\" $value = \"" . $username . "\" $style = \"width: 100px;\" /></td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\"><b>" . $Language[18] . "</b></td>\r\n\t\t\t<td class=\"alt1\">" . $ForumList . "</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\"><b>" . $Language[33] . "</b></td>\r\n\t\t\t<td class=\"alt1\"><input $type = \"radio\" $name = \"moderate\" $value = \"1\"" . ($moderate == 1 ? " $checked = \"checked\"" : "") . " /> " . $Language[28] . " <input $type = \"radio\" $name = \"moderate\" $value = \"0\"" . ($moderate == 0 ? " $checked = \"checked\"" : "") . " /> " . $Language[29] . "</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"tcat2\"></td>\r\n\t\t\t<td class=\"tcat2\">\r\n\t\t\t\t<input $type = \"submit\" $name = \"save\" $value = \"" . $Language[19] . "\" /> <input $type = \"reset\" $value = \"" . $Language[21] . "\" />\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t</table>\r\n\t</form>";
 }
 if (empty($Act)) {
-    $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT feed.*, forum.name as forumname, u.username, g.namestyle FROM ts_rssfeed feed LEFT JOIN tsf_forums forum ON (forum.$fid = feed.fid) LEFT JOIN users u ON (u.$id = feed.userid) LEFT JOIN usergroups g ON (u.$usergroup = g.gid) ORDER by title ASC");
-    if (mysqli_num_rows($Query)) {
-        for ($Count = 0; $Feed = mysqli_fetch_assoc($Query); $Count++) {
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT feed.*, forum.name as forumname, u.username, g.namestyle FROM ts_rssfeed feed LEFT JOIN tsf_forums forum ON (forum.$fid = feed.fid) LEFT JOIN users u ON (u.$id = feed.userid) LEFT JOIN usergroups g ON (u.$usergroup = g.gid) ORDER by title ASC");
+    if (mysqli_num_rows($query)) {
+        for ($Count = 0; $Feed = mysqli_fetch_assoc($query); $Count++) {
             $class = $Count % 2 == 1 ? "alt2" : "alt1";
             $URL = parse_url($Feed["url"]);
             $host = $URL["host"];

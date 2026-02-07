@@ -98,8 +98,8 @@ if (!isset($List)) {
     $List = "";
     $Promotions = [];
     $Demotions = [];
-    $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM ts_promotions");
-    while ($Promotion = mysqli_fetch_assoc($Query)) {
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM ts_promotions");
+    while ($Promotion = mysqli_fetch_assoc($query)) {
         if ($Promotion["type"] == "promote") {
             $Promotions[] = $Promotion;
         } else {

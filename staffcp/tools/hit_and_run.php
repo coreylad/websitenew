@@ -11,15 +11,15 @@ $Language = file("languages/" . getStaffLanguage() . "/hit_and_run.lang");
 $Act = isset($_GET["act"]) ? trim($_GET["act"]) : (isset($_POST["act"]) ? trim($_POST["act"]) : "");
 $torrentid = isset($_GET["torrentid"]) ? intval($_GET["torrentid"]) : (isset($_POST["torrentid"]) ? intval($_POST["torrentid"]) : 0);
 $alreadywarnedarrays = [];
-$Q = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'HITRUN'");
-$Result = mysqli_fetch_assoc($Q);
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'HITRUN'");
+$Result = mysqli_fetch_assoc($query);
 $HITRUN = unserialize($Result["content"]);
 $__Queries = [];
 $hiddenvalues = "";
 $link = "";
 $Message = "";
-$Q = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'ANNOUNCE'");
-$Result = mysqli_fetch_assoc($Q);
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'ANNOUNCE'");
+$Result = mysqli_fetch_assoc($query);
 $ANNOUNCE = unserialize($Result["content"]);
 if ($ANNOUNCE["xbt_active"] == "yes") {
     echo "\r\n\t\r\n\t" . showAlertError($Language[3]);
@@ -29,8 +29,8 @@ if ($Act == "manage_users" && isset($_POST["user_torrent_ids"]) && $_POST["user_
     $user_torrent_ids = $_POST["user_torrent_ids"];
     $timenow = time();
     if (isset($_POST["warn"])) {
-        $Q = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'MAIN'");
-        $Result = mysqli_fetch_assoc($Q);
+        $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'MAIN'");
+        $Result = mysqli_fetch_assoc($query);
         $MAIN = unserialize($Result["content"]);
         $msgsbj = $Language[11];
         foreach ($user_torrent_ids as $work) {
@@ -46,8 +46,8 @@ if ($Act == "manage_users" && isset($_POST["user_torrent_ids"]) && $_POST["user_
         logStaffAction($SysMsg);
     } else {
         if (isset($_POST["ban"])) {
-            $Uquery = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT gid FROM usergroups WHERE $isbanned = 'yes'");
-            $Result = mysqli_fetch_assoc($Uquery);
+            $userQuery = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT gid FROM usergroups WHERE $isbanned = 'yes'");
+            $Result = mysqli_fetch_assoc($userQuery);
             $usergroupid = $Result["gid"];
             foreach ($user_torrent_ids as $work) {
                 $arrays = explode("|", $work);
@@ -130,16 +130,16 @@ $FinishedQuery = "SELECT s.torrentid, s.userid, s.seedtime, t.name, u.username F
 $query = mysqli_query($GLOBALS["DatabaseConnect"], $FinishedQuery);
 $total_count = mysqli_num_rows($query);
 list($pagertop, $limit) = buildPaginationLinks(25, $total_count, "index.php?do=hit_and_run&amp;" . $link);
-$Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT s.torrentid, s.seedtime, s.leechtime, s.userid, s.downloaded, s.uploaded, t.name, t.seeders, t.leechers, u.timeswarned, u.username, u.enabled, u.donor, u.leechwarn, u.warned, p.canupload, p.candownload, p.cancomment, p.canmessage, p.canshout, g.namestyle FROM snatched s INNER JOIN users u ON (s.$userid = u.id) LEFT JOIN ts_u_perm p ON (u.$id = p.userid) LEFT JOIN torrents t ON (s.$torrentid = t.id) LEFT JOIN usergroups g ON (u.$usergroup = g.gid) WHERE " . implode(" AND ", $__Queries) . " ORDER by u.timeswarned DESC " . $limit);
-if (mysqli_num_rows($Query) == 0) {
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT s.torrentid, s.seedtime, s.leechtime, s.userid, s.downloaded, s.uploaded, t.name, t.seeders, t.leechers, u.timeswarned, u.username, u.enabled, u.donor, u.leechwarn, u.warned, p.canupload, p.candownload, p.cancomment, p.canmessage, p.canshout, g.namestyle FROM snatched s INNER JOIN users u ON (s.$userid = u.id) LEFT JOIN ts_u_perm p ON (u.$id = p.userid) LEFT JOIN torrents t ON (s.$torrentid = t.id) LEFT JOIN usergroups g ON (u.$usergroup = g.gid) WHERE " . implode(" AND ", $__Queries) . " ORDER by u.timeswarned DESC " . $limit);
+if (mysqli_num_rows($query) == 0) {
     $Message = showAlertError($Language[3]);
 } else {
-    $Q = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'CLEANUP'");
-    $Result = mysqli_fetch_assoc($Q);
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'CLEANUP'");
+    $Result = mysqli_fetch_assoc($query);
     $HRConfig = unserialize($Result["content"]);
     $criticallimit = $HRConfig["ban_user_limit"] - 1;
     $Found = "";
-    while ($user = mysqli_fetch_assoc($Query)) {
+    while ($user = mysqli_fetch_assoc($query)) {
         $totalwarns = "";
         if (isset($alreadywarnedarrays[$user["userid"]][$user["torrentid"]])) {
             $disabled = " disabled";

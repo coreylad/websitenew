@@ -44,13 +44,13 @@ if ($Act == "delete_all" && $LoggedAdminDetails["cansettingspanel"] == "yes") {
 }
 $results = mysqli_num_rows(mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM sitelog" . $WhereQuery));
 list($pagertop, $limit) = buildPaginationLinks(50, $results, $_SERVER["SCRIPT_NAME"] . "?do=tracker_logs&amp;" . $LinkQuery);
-$Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM sitelog" . $WhereQuery . " ORDER by added DESC " . $limit);
-if (mysqli_num_rows($Query) == 0) {
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM sitelog" . $WhereQuery . " ORDER by added DESC " . $limit);
+if (mysqli_num_rows($query) == 0) {
     $Message = showAlertError($Language[1]);
 } else {
     $PHPERRORS = [];
     $Count = 0;
-    while ($Log = mysqli_fetch_assoc($Query)) {
+    while ($Log = mysqli_fetch_assoc($query)) {
         if (substr($Log["txt"], 0, 4) === "PHP ") {
             $PHPERRORS[] = $Log;
         } else {

@@ -9,8 +9,8 @@
 var_235();
 $Language = file("languages/" . getStaffLanguage() . "/unconnectable_peers.lang");
 $Message = "";
-$Q = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'ANNOUNCE'");
-$Result = mysqli_fetch_assoc($Q);
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'ANNOUNCE'");
+$Result = mysqli_fetch_assoc($query);
 $ANNOUNCE = unserialize($Result["content"]);
 if ($ANNOUNCE["xbt_active"] == "yes") {
     echo "\r\n\t" . showAlertError($Language[1]);

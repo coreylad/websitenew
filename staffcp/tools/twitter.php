@@ -31,8 +31,8 @@ $Message = "";
 $username = "";
 $password = "";
 $message = isset($_GET["message"]) ? trim(urldecode($_GET["message"])) : "";
-$Q = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = \"SOCIAL\"");
-$Result = mysqli_fetch_assoc($Q);
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = \"SOCIAL\"");
+$Result = mysqli_fetch_assoc($query);
 $SOCIAL = unserialize($Result["content"]);
 if ($Act == "post") {
     $_message = isset($_POST["message"]) ? trim($_POST["message"]) : "";
