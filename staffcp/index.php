@@ -116,7 +116,7 @@ class Class_1
     {
         $this->AnahtarKelime = trim($AK);
     }
-    public function function_17($NEYI)
+    public function encrypt($NEYI)
     {
         $result = "";
         for ($i = 0; $i < strlen($NEYI); $i++) {
@@ -127,7 +127,7 @@ class Class_1
         }
         return urlencode(base64_encode($result));
     }
-    public function function_18($NEYI)
+    public function decrypt($NEYI)
     {
         $result = "";
         $NEYI = base64_decode(urldecode($NEYI));
@@ -216,7 +216,7 @@ function function_25($forceLicenseCheck = false)
         $var_48 = 604800;
         $var_49 = TIMENOW + $var_48 . "|" . SCRIPT_VERSION . "|" . $var_44;
         $var_50 = @new Class_1("TSSE8.02020httpstemplateshares.net!");
-        $var_49 = @$var_50->function_17($var_49);
+        $var_49 = @$var_50->encrypt($var_49);
         mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE ts_config SET $content = \"" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $var_49) . "\" WHERE `configname` = \"PEER\"");
     }
 }
@@ -234,7 +234,7 @@ function function_26()
         return true;
     }
     $var_50 = @new Class_1("TSSE8.02020httpstemplateshares.net!");
-    $var_49 = @$var_50->function_18($var_49);
+    $var_49 = @$var_50->decrypt($var_49);
     if (!$var_49) {
         return true;
     }
