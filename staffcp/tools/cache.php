@@ -152,8 +152,8 @@ function formatBytes($bytes = 0)
 function function_324($C, $T, $E = "")
 {
     $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT COUNT(" . $C . ") FROM " . $T . ($E ? " WHERE " . $E : ""));
-    $var_634 = mysqli_fetch_row($query);
-    return $var_634[0];
+    $countResult = mysqli_fetch_row($query);
+    return $countResult[0];
 }
 function function_149($file)
 {
