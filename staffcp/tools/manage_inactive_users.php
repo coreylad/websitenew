@@ -16,13 +16,13 @@ $deleteafter = 15;
 $maxmails = 500;
 $waitlimit = 5;
 $usergroups = [];
-$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'MAIN'");
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'MAIN'");
 $Result = mysqli_fetch_assoc($query);
 $MAIN = unserialize($Result["content"]);
-$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'THEME'");
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'THEME'");
 $Result = mysqli_fetch_assoc($query);
 $THEME = unserialize($Result["content"]);
-$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'SMTP'");
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'SMTP'");
 $Result = mysqli_fetch_assoc($query);
 $SMTP = unserialize($Result["content"]);
 if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST" && $Act == "save_config") {
@@ -50,11 +50,11 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST" && $Act == "save_config") {
 }
 if (isset($shouldShowList) && $shouldShowList) {
     $usergroups = implode(",", $usergroups);
-    $count_query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT COUNT(id) as count FROM users WHERE $enabled = 'yes' AND $status = 'confirmed' AND UNIX_TIMESTAMP(last_access) < UNIX_TIMESTAMP(DATE_ADD(NOW(), INTERVAL - " . $maxdays . " DAY)) AND usergroup IN (" . $usergroups . ")");
+    $count_query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT COUNT(id) as count FROM users WHERE `enabled` = 'yes' AND $status = 'confirmed' AND UNIX_TIMESTAMP(last_access) < UNIX_TIMESTAMP(DATE_ADD(NOW(), INTERVAL - " . $maxdays . " DAY)) AND usergroup IN (" . $usergroups . ")");
     $Result = mysqli_fetch_assoc($count_query);
     $total_count = $Result["count"];
     list($pagertop, $limit) = buildPaginationLinks($show_per_page, $total_count, "index.php?do=manage_inactive_users&amp;$show_per_page = " . $show_per_page . "&amp;$maxdays = " . $maxdays . "&amp;$deleteafter = " . $deleteafter . "&amp;$maxmails = " . $maxmails . "&amp;$waitlimit = " . $waitlimit . "&amp;$usergroups = " . $usergroups . "&amp;");
-    $query = ["inactive" => mysqli_query($GLOBALS["DatabaseConnect"], "SELECT u.id,u.username,u.email,u.uploaded,u.downloaded,u.last_access,u.added,i.inactivitytag,g.namestyle FROM users u LEFT JOIN ts_inactivity i ON (u.$id = i.userid) LEFT JOIN usergroups g ON (u.$usergroup = g.gid) WHERE u.$enabled = 'yes' AND u.$status = 'confirmed' AND UNIX_TIMESTAMP(u.last_access) < UNIX_TIMESTAMP(DATE_ADD(NOW(), INTERVAL - " . $maxdays . " DAY)) AND u.usergroup IN (" . $usergroups . ") ORDER BY i.inactivitytag DESC, u.last_access DESC " . $limit), "warn" => mysqli_query($GLOBALS["DatabaseConnect"], "SELECT u.id,u.username,u.email,u.uploaded,u.downloaded,u.last_access,u.added,i.inactivitytag,g.namestyle FROM users u LEFT JOIN ts_inactivity i ON (u.$id = i.userid) LEFT JOIN usergroups g ON (u.$usergroup = g.gid) WHERE u.$enabled = 'yes' AND u.$status = 'confirmed' AND IF (i.inactivitytag>0,i.$inactivitytag = 0,u.id>0) AND UNIX_TIMESTAMP(u.last_access) < UNIX_TIMESTAMP(DATE_ADD(NOW(), INTERVAL - " . $maxdays . " DAY)) AND u.usergroup IN (" . $usergroups . ") ORDER BY u.last_access")];
+    $query = ["inactive" => mysqli_query($GLOBALS["DatabaseConnect"], "SELECT u.id,u.username,u.email,u.uploaded,u.downloaded,u.last_access,u.added,i.inactivitytag,g.namestyle FROM users u LEFT JOIN ts_inactivity i ON (u.`id` = i.userid) LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) WHERE u.$enabled = 'yes' AND u.$status = 'confirmed' AND UNIX_TIMESTAMP(u.last_access) < UNIX_TIMESTAMP(DATE_ADD(NOW(), INTERVAL - " . $maxdays . " DAY)) AND u.usergroup IN (" . $usergroups . ") ORDER BY i.inactivitytag DESC, u.last_access DESC " . $limit), "warn" => mysqli_query($GLOBALS["DatabaseConnect"], "SELECT u.id,u.username,u.email,u.uploaded,u.downloaded,u.last_access,u.added,i.inactivitytag,g.namestyle FROM users u LEFT JOIN ts_inactivity i ON (u.`id` = i.userid) LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) WHERE u.$enabled = 'yes' AND u.$status = 'confirmed' AND IF (i.inactivitytag>0,i.$inactivitytag = 0,u.id>0) AND UNIX_TIMESTAMP(u.last_access) < UNIX_TIMESTAMP(DATE_ADD(NOW(), INTERVAL - " . $maxdays . " DAY)) AND u.usergroup IN (" . $usergroups . ") ORDER BY u.last_access")];
     if ($Act == "warn") {
         if (mysqli_num_rows($query["warn"])) {
             $subject = str_replace("{1}", $MAIN["SITENAME"], $Language[27]);
@@ -135,7 +135,7 @@ if (isset($shouldShowList) && $shouldShowList) {
         }
     }
 } else {
-    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT u.id, g.cansettingspanel, g.canstaffpanel, g.issupermod FROM users u LEFT JOIN usergroups g ON (u.$usergroup = g.gid) WHERE u.$id = '" . $_SESSION["ADMIN_ID"] . "' LIMIT 1");
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT u.id, g.cansettingspanel, g.canstaffpanel, g.issupermod FROM users u LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) WHERE u.$id = '" . $_SESSION["ADMIN_ID"] . "' LIMIT 1");
     $LoggedAdminDetails = mysqli_fetch_assoc($query);
     $count = 0;
     $showusergroups = "\r\n\t<table>\r\n\t\t<tr>\t";

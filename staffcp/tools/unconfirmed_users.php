@@ -9,19 +9,19 @@
 var_235();
 $Language = file("languages/" . getStaffLanguage() . "/unconfirmed_users.lang");
 $Message = "";
-$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'MAIN'");
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'MAIN'");
 $Result = mysqli_fetch_assoc($query);
 $MAIN = unserialize($Result["content"]);
-$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'THEME'");
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'THEME'");
 $Result = mysqli_fetch_assoc($query);
 $THEME = unserialize($Result["content"]);
-$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'SMTP'");
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'SMTP'");
 $Result = mysqli_fetch_assoc($query);
 $SMTP = unserialize($Result["content"]);
 if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST" && isset($_POST["id"]) && count($_POST["id"]) && is_array($_POST["id"])) {
     $ids = implode(",", $_POST["id"]);
     if (isset($_POST["confirm"])) {
-        mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET $status = 'confirmed' WHERE id IN (0, " . $ids . ") AND $status = 'pending'");
+        mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET `status` = 'confirmed' WHERE id IN (0, " . $ids . ") AND $status = 'pending'");
         if (mysqli_affected_rows($GLOBALS["DatabaseConnect"])) {
             $SysMsg = str_replace(["{1}", "{2}"], [$ids, $_SESSION["ADMIN_USERNAME"]], $Language[11]);
             logStaffAction($SysMsg);
@@ -52,9 +52,9 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST" && isset($_POST["id"]) && c
         }
     }
 }
-$results = mysqli_num_rows(mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id FROM users WHERE $status = 'pending'"));
+$results = mysqli_num_rows(mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id FROM users WHERE `status` = 'pending'"));
 list($pagertop, $limit) = buildPaginationLinks(25, $results, $_SERVER["SCRIPT_NAME"] . "?do=unconfirmed_users&amp;");
-$sql = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT u.id, u.username, u.added, u.email, u.ip, g.namestyle, c.name FROM users u LEFT JOIN usergroups g ON (u.$usergroup = g.gid) LEFT JOIN countries c ON (u.$country = c.id) WHERE u.$status = 'pending' ORDER BY added DESC " . $limit);
+$sql = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT u.id, u.username, u.added, u.email, u.ip, g.namestyle, c.name FROM users u LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) LEFT JOIN countries c ON (u.$country = c.id) WHERE u.$status = 'pending' ORDER BY added DESC " . $limit);
 if (mysqli_num_rows($sql) == 0) {
     echo "\r\n\t\r\n\t" . showAlertError($Language[1]);
 } else {

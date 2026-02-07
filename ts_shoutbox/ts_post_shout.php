@@ -34,7 +34,7 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST" && $uid && $shout && $CURUS
     $msg = "";
     if (!$is_mod) {
         if ($usergroups["floodlimit"] != "0") {
-            $query = sql_query("SELECT date FROM ts_shoutbox WHERE $uid = " . sqlesc($CURUSER["id"]) . " ORDER by date DESC LIMIT 1");
+            $query = sql_query("SELECT date FROM ts_shoutbox WHERE `uid` = " . sqlesc($CURUSER["id"]) . " ORDER by date DESC LIMIT 1");
             if (0 < mysqli_num_rows($query)) {
                 $Result = mysqli_fetch_assoc($query);
                 $last_shout = $Result["date"];
@@ -42,7 +42,7 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST" && $uid && $shout && $CURUS
                 $msg = flood_check($lang->shoutbox["floodcomment"], $last_shout, true);
             }
         }
-        $query = sql_query("SELECT canshout FROM ts_u_perm WHERE $userid = " . sqlesc($CURUSER["id"]));
+        $query = sql_query("SELECT canshout FROM ts_u_perm WHERE `userid` = " . sqlesc($CURUSER["id"]));
         if (0 < mysqli_num_rows($query)) {
             $shoutperm = mysqli_fetch_assoc($query);
             if ($shoutperm["canshout"] == "0") {
@@ -98,7 +98,7 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST" && $uid && $shout && $CURUS
                 if (!$text) {
                     show_message($lang->global["dontleavefieldsblank"]);
                 }
-                $query = sql_query("SELECT u.username, g.namestyle FROM users u LEFT JOIN usergroups g ON (u.$usergroup = g.gid) WHERE LOWER(u.username) = " . sqlesc(strtolower($SearchUserName[1])));
+                $query = sql_query("SELECT u.username, g.namestyle FROM users u LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) WHERE LOWER(u.username) = " . sqlesc(strtolower($SearchUserName[1])));
                 if (mysqli_num_rows($query)) {
                     $UserResult = mysqli_fetch_assoc($query);
                     $SearchUserName[1] = get_user_color($UserResult["username"], $UserResult["namestyle"]);

@@ -61,7 +61,7 @@ function update_cache($name = "indexstats", $ForceUpdate = false)
             $totaldownloaded = $row["totaldl"];
             $totaluploaded = $row["totalul"];
             $registered = $row["totaluser"];
-            $latestuser = mysqli_fetch_assoc(sql_query("SELECT id,username FROM users WHERE $status = 'confirmed' ORDER BY id DESC LIMIT 0,1"));
+            $latestuser = mysqli_fetch_assoc(sql_query("SELECT id,username FROM users WHERE `status` = 'confirmed' ORDER BY id DESC LIMIT 0,1"));
             $latestuser = "<a $href = \"" . ts_seo($latestuser["id"], $latestuser["username"]) . "\">" . $latestuser["username"] . "</a>";
             $getfstats = sql_query("SELECT SUM(posts) AS totalposts, SUM(threads) AS totalthreads FROM " . TSF_PREFIX . "forums");
             $fstats = mysqli_fetch_assoc($getfstats);

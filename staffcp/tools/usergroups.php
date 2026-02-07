@@ -32,7 +32,7 @@ if ($Act == "delete" && ($gid = intval($_GET["gid"]))) {
                 if (mysqli_num_rows($query)) {
                     $Result = mysqli_fetch_assoc($query);
                     $Newgroupname = $Result["title"];
-                    mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET $usergroup = " . $newgid . " WHERE $usergroup = " . $gid);
+                    mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET `usergroup` = " . $newgid . " WHERE `usergroup` = " . $gid);
                     mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM usergroups WHERE $gid = " . $gid);
                     $Message = str_replace(["{1}", "{2}", "{3}"], [$Ug["title"], $_SESSION["ADMIN_USERNAME"], $Newgroupname], $Language[13]);
                     logStaffAction($Message);

@@ -11,24 +11,24 @@ $Language = file("languages/" . getStaffLanguage() . "/unban_ip_requests.lang");
 $Message = "";
 $Act = isset($_GET["act"]) ? trim($_GET["act"]) : (isset($_POST["act"]) ? trim($_POST["act"]) : "");
 $Cid = isset($_GET["id"]) ? intval($_GET["id"]) : (isset($_POST["id"]) ? intval($_POST["id"]) : 0);
-$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'MAIN'");
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'MAIN'");
 $Result = mysqli_fetch_assoc($query);
 $MAIN = unserialize($Result["content"]);
-$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'THEME'");
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'THEME'");
 $Result = mysqli_fetch_assoc($query);
 $THEME = unserialize($Result["content"]);
-$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'SMTP'");
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'SMTP'");
 $Result = mysqli_fetch_assoc($query);
 $SMTP = unserialize($Result["content"]);
 if ($Act == "viewreply" && $Cid) {
-    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT reply FROM unbanrequests WHERE $id = '" . $Cid . "'");
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT reply FROM unbanrequests WHERE `id` = '" . $Cid . "'");
     if (mysqli_num_rows($query)) {
         $Res = mysqli_fetch_assoc($query);
         $Message = showAlertError(nl2br(htmlspecialchars($Res["reply"])));
     }
 } else {
     if ($Act == "reply" && $Cid) {
-        $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT email, comment FROM unbanrequests WHERE $id = '" . $Cid . "'");
+        $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT email, comment FROM unbanrequests WHERE `id` = '" . $Cid . "'");
         if (mysqli_num_rows($query)) {
             $Res = mysqli_fetch_assoc($query);
             $reply = "----------------------------------------------------------------------------\n" . htmlspecialchars($Res["comment"]) . "\n---------------------------------------------------------------------------------\n\n";
@@ -39,7 +39,7 @@ if ($Act == "viewreply" && $Cid) {
                     $subject = $Language[3];
                     var_283($to, $subject, nl2br($reply));
                     $Message = showAlertError($Language[14]);
-                    mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE unbanrequests SET $reply = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $reply) . "' WHERE $id = '" . $Cid . "'");
+                    mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE unbanrequests SET $reply = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $reply) . "' WHERE `id` = '" . $Cid . "'");
                     if (mysqli_affected_rows($GLOBALS["DatabaseConnect"])) {
                         $Message = str_replace(["{1}", "{2}"], [$Cid, $_SESSION["ADMIN_USERNAME"]], $Language[15]);
                         logStaffAction($Message);
@@ -57,7 +57,7 @@ if ($Act == "viewreply" && $Cid) {
     } else {
         if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST" && isset($_POST["id"]) && !empty($_POST["id"])) {
             foreach ($_POST["id"] as $id => $ip) {
-                mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM unbanrequests WHERE $id = '" . intval($id) . "'");
+                mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM unbanrequests WHERE `id` = '" . intval($id) . "'");
                 if (mysqli_affected_rows($GLOBALS["DatabaseConnect"])) {
                     $ips[] = $ip;
                     mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM loginattempts WHERE $ip = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $ip) . "'");

@@ -11,14 +11,14 @@ $Act = isset($_GET["act"]) ? trim($_GET["act"]) : (isset($_POST["act"]) ? trim($
 $Cid = isset($_GET["id"]) ? intval($_GET["id"]) : (isset($_POST["id"]) ? intval($_POST["id"]) : 0);
 $Language = file("languages/" . getStaffLanguage() . "/manage_rules.lang");
 $Message = "";
-$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'MAIN'");
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'MAIN'");
 $Result = mysqli_fetch_assoc($query);
 $MAIN = unserialize($Result["content"]);
 if ($Act == "delete" && $Cid) {
-    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT title FROM rules WHERE $id = '" . $Cid . "'");
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT title FROM rules WHERE `id` = '" . $Cid . "'");
     if (mysqli_num_rows($query)) {
         $Rules = mysqli_fetch_assoc($query);
-        mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM rules WHERE $id = '" . $Cid . "'");
+        mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM rules WHERE `id` = '" . $Cid . "'");
         if (mysqli_affected_rows($GLOBALS["DatabaseConnect"])) {
             $Message = str_replace(["{1}", "{2}"], [$Rules["title"], $_SESSION["ADMIN_USERNAME"]], $Language[4]);
             logStaffAction($Message);
@@ -27,7 +27,7 @@ if ($Act == "delete" && $Cid) {
     }
 }
 if ($Act == "edit" && $Cid) {
-    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM rules WHERE $id = '" . $Cid . "'");
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM rules WHERE `id` = '" . $Cid . "'");
     if (mysqli_num_rows($query)) {
         $Rules = mysqli_fetch_assoc($query);
         $title = $Rules["title"];
@@ -41,7 +41,7 @@ if ($Act == "edit" && $Cid) {
                 $Changes[] = "`title` = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $title) . "'";
                 $Changes[] = "`text` = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $text) . "'";
                 $Changes[] = "`usergroups` = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $usergroups) . "'";
-                mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE rules SET " . implode(", ", $Changes) . " WHERE $id = '" . $Cid . "'");
+                mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE rules SET " . implode(", ", $Changes) . " WHERE `id` = '" . $Cid . "'");
                 $Message = str_replace(["{1}", "{2}"], [$Rules["title"], $_SESSION["ADMIN_USERNAME"]], $Language[5]);
                 logStaffAction($Message);
                 $Message = showAlertMessage($Message);
@@ -141,11 +141,11 @@ function function_148($selected = "")
     if (!is_array($selected)) {
         $selected = explode(",", $selected);
     }
-    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT u.id, g.cansettingspanel, g.canstaffpanel, g.issupermod FROM users u LEFT JOIN usergroups g ON (u.$usergroup = g.gid) WHERE u.$id = '" . $_SESSION["ADMIN_ID"] . "' LIMIT 1");
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT u.id, g.cansettingspanel, g.canstaffpanel, g.issupermod FROM users u LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) WHERE u.$id = '" . $_SESSION["ADMIN_ID"] . "' LIMIT 1");
     $var_318 = mysqli_fetch_assoc($query);
     $count = 0;
     $var_423 = "\r\n\t<table>\r\n\t\t<tr>\t";
-    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT gid, title, cansettingspanel, canstaffpanel, issupermod, namestyle FROM usergroups WHERE $isbanned = 'no' ORDER by disporder ASC");
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT gid, title, cansettingspanel, canstaffpanel, issupermod, namestyle FROM usergroups WHERE `isbanned` = 'no' ORDER by disporder ASC");
     while ($var_424 = mysqli_fetch_assoc($query)) {
         if (!($var_424["cansettingspanel"] == "yes" && $var_318["cansettingspanel"] != "yes" || $var_424["canstaffpanel"] == "yes" && $var_318["canstaffpanel"] != "yes" || $var_424["issupermod"] == "yes" && $var_318["issupermod"] != "yes")) {
             if ($count && $count % 8 == 0) {

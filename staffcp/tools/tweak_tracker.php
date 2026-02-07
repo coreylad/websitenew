@@ -10,7 +10,7 @@ var_235();
 $Language = file("languages/" . getStaffLanguage() . "/tweak_tracker.lang");
 $Message = "";
 $Users = [];
-$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id FROM users WHERE $enabled = 'yes' AND $status = 'confirmed'");
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id FROM users WHERE `enabled` = 'yes' AND $status = 'confirmed'");
 while ($user = mysqli_fetch_assoc($query)) {
     $Users[] = $user["id"];
 }

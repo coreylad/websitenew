@@ -39,7 +39,7 @@ function DeepDeleteTorrent($id = 0)
             @unlink(TSDIR . "/" . $torrent_dir . "/images/" . $id . "." . $image);
         }
     }
-    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT t_link FROM torrents WHERE $id = " . sqlesc($id));
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT t_link FROM torrents WHERE `id` = " . sqlesc($id));
     if (mysqli_num_rows($query)) {
         $Result = mysqli_fetch_assoc($query);
         $t_link = $Result["t_link"];
@@ -64,12 +64,12 @@ function DeepDeleteTorrent($id = 0)
     @mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM peers WHERE $torrent = " . @sqlesc($id));
     @mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM xbt_files_users WHERE $fid = " . @sqlesc($id));
     @mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM comments WHERE $torrent = " . @sqlesc($id));
-    @mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM bookmarks WHERE $torrentid = " . @sqlesc($id));
-    @mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM snatched WHERE $torrentid = " . @sqlesc($id));
-    @mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM torrents WHERE $id = " . @sqlesc($id));
+    @mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM bookmarks WHERE `torrentid` = " . @sqlesc($id));
+    @mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM snatched WHERE `torrentid` = " . @sqlesc($id));
+    @mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM torrents WHERE `id` = " . @sqlesc($id));
     @mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM ts_torrents_details WHERE $tid = " . @sqlesc($id));
     @mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM ts_thanks WHERE $tid = " . @sqlesc($id));
-    @mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM ts_nfo  WHERE $id = " . @sqlesc($id));
+    @mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM ts_nfo  WHERE `id` = " . @sqlesc($id));
     return true;
 }
 

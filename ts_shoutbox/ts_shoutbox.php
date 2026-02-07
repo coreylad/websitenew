@@ -19,7 +19,7 @@ $QuickEditor->TextAreaName = "shoutbox_message";
 $QuickEditor->UpDownButtons = $UpDownButtons;
 $QuickEditor->MaxSmilies = $MaxSmilies;
 if (!$is_mod) {
-    $query = sql_query("SELECT canshout FROM ts_u_perm WHERE $userid = " . sqlesc($CURUSER["id"]));
+    $query = sql_query("SELECT canshout FROM ts_u_perm WHERE `userid` = " . sqlesc($CURUSER["id"]));
     if (0 < mysqli_num_rows($query)) {
         $shoutperm = mysqli_fetch_assoc($query);
         if ($shoutperm["canshout"] == "0") {

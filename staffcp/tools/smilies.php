@@ -10,7 +10,7 @@ var_235();
 $Language = file("languages/" . getStaffLanguage() . "/smilies.lang");
 $Act = isset($_GET["act"]) ? trim($_GET["act"]) : (isset($_POST["act"]) ? trim($_POST["act"]) : "");
 $Message = "";
-$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'MAIN'");
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'MAIN'");
 $Result = mysqli_fetch_assoc($query);
 $MAIN = unserialize($Result["content"]);
 $SmiliePath = $MAIN["pic_base_url"] . "smilies/";
@@ -126,7 +126,7 @@ function logStaffAction($log)
 }
 function function_161($array = [])
 {
-    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'MAIN'");
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'MAIN'");
     $Result = mysqli_fetch_assoc($query);
     $MAIN = unserialize($Result["content"]);
     $var_456 = "\$smilies = array (";

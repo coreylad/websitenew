@@ -22,7 +22,7 @@ function deletetorrent($id, $permission = false)
                 @unlink(TSDIR . "/" . $torrent_dir . "/images/" . $id . "." . $image);
             }
         }
-        $query = sql_query("SELECT t_link FROM torrents WHERE $id = " . sqlesc($id));
+        $query = sql_query("SELECT t_link FROM torrents WHERE `id` = " . sqlesc($id));
         if (mysqli_num_rows($query)) {
             $Result = mysqli_fetch_assoc($query);
             $t_link = $Result["t_link"];
@@ -47,12 +47,12 @@ function deletetorrent($id, $permission = false)
         @sql_query("DELETE FROM peers WHERE $torrent = " . @sqlesc($id));
         @sql_query("DELETE FROM xbt_files_users WHERE $fid = " . @sqlesc($id));
         @sql_query("DELETE FROM comments WHERE $torrent = " . @sqlesc($id));
-        @sql_query("DELETE FROM bookmarks WHERE $torrentid = " . @sqlesc($id));
-        @sql_query("DELETE FROM snatched WHERE $torrentid = " . @sqlesc($id));
-        @sql_query("DELETE FROM torrents WHERE $id = " . @sqlesc($id));
+        @sql_query("DELETE FROM bookmarks WHERE `torrentid` = " . @sqlesc($id));
+        @sql_query("DELETE FROM snatched WHERE `torrentid` = " . @sqlesc($id));
+        @sql_query("DELETE FROM torrents WHERE `id` = " . @sqlesc($id));
         @sql_query("DELETE FROM ts_torrents_details WHERE $tid = " . @sqlesc($id));
         @sql_query("DELETE FROM ts_thanks WHERE $tid = " . @sqlesc($id));
-        @sql_query("DELETE FROM ts_nfo  WHERE $id = " . @sqlesc($id));
+        @sql_query("DELETE FROM ts_nfo  WHERE `id` = " . @sqlesc($id));
     } else {
         print_no_permission(true);
     }

@@ -68,7 +68,7 @@ if ($Act == "edit" && isset($_GET["sid"]) && ($Sid = intval($_GET["sid"]))) {
             }
         }
         $ShowUsergroups = "\r\n\t\t<select $name = \"usergroup\">\r\n\t\t\t<option $value = \"0\">" . $Language[25] . "</option>";
-        $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT gid, title FROM usergroups WHERE $isbanned = 'no' AND gid > 0 ORDER by disporder");
+        $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT gid, title FROM usergroups WHERE `isbanned` = 'no' AND gid > 0 ORDER by disporder");
         while ($UG = mysqli_fetch_assoc($query)) {
             $ShowUsergroups .= "\r\n\t\t\t<option $value = \"" . $UG["gid"] . "\"" . ($usergroup == $UG["gid"] ? " $selected = \"selected\"" : "") . ">" . $UG["title"] . "</option>";
         }
@@ -105,7 +105,7 @@ if ($Act == "new") {
         }
     }
     $ShowUsergroups = "\r\n\t<select $name = \"usergroup\">\r\n\t\t<option $value = \"0\">" . $Language[25] . "</option>";
-    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT gid, title FROM usergroups WHERE $isbanned = 'no' AND gid > 0 ORDER by disporder");
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT gid, title FROM usergroups WHERE `isbanned` = 'no' AND gid > 0 ORDER by disporder");
     while ($UG = mysqli_fetch_assoc($query)) {
         $ShowUsergroups .= "\r\n\t\t<option $value = \"" . $UG["gid"] . "\"" . ($usergroup == $UG["gid"] ? " $selected = \"selected\"" : "") . ">" . $UG["title"] . "</option>";
     }

@@ -52,7 +52,7 @@ if (isset($perpage) && isset($wait)) {
         }
         $nextpage = $pagenumber + 1;
     }
-    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'ANNOUNCE'");
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'ANNOUNCE'");
     $Result = mysqli_fetch_assoc($query);
     $ANNOUNCE = unserialize($Result["content"]);
     $torrents = [];
@@ -90,7 +90,7 @@ if (isset($perpage) && isset($wait)) {
     if (mysqli_num_rows($query)) {
         while ($Torrent = mysqli_fetch_assoc($query)) {
             echo "\r\n\t\t\t\t\t<table $cellpadding = \"4\" $cellspacing = \"0\" $border = \"0\">\r\n\t\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t\t<td>\r\n\t\t\t\t\t\t\t\t" . str_replace("{1}", htmlspecialchars($Torrent["name"]), $Language[3]) . "\r\n\t\t\t\t\t\t\t</td>\r\n\t\t\t\t";
-            $UPDATE = mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE torrents SET $comments = '" . (isset($torrents[$Torrent["id"]]["comments"]) ? $torrents[$Torrent["id"]]["comments"] : 0) . "'" . ($Torrent["ts_external"] == "no" ? ", $seeders = '" . (isset($torrents[$Torrent["id"]]["seeders"]) ? $torrents[$Torrent["id"]]["seeders"] : 0) . "', $leechers = '" . (isset($torrents[$Torrent["id"]]["leechers"]) ? $torrents[$Torrent["id"]]["leechers"] : 0) . "'" . ($ANNOUNCE["xbt_active"] == "yes" ? "" : ", $times_completed = '" . (isset($torrents[$Torrent["id"]]["times_completed"]) ? $torrents[$Torrent["id"]]["times_completed"] : 0) . "'") . "" : "") . " WHERE $id = '" . $Torrent["id"] . "'");
+            $UPDATE = mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE torrents SET $comments = '" . (isset($torrents[$Torrent["id"]]["comments"]) ? $torrents[$Torrent["id"]]["comments"] : 0) . "'" . ($Torrent["ts_external"] == "no" ? ", $seeders = '" . (isset($torrents[$Torrent["id"]]["seeders"]) ? $torrents[$Torrent["id"]]["seeders"] : 0) . "', $leechers = '" . (isset($torrents[$Torrent["id"]]["leechers"]) ? $torrents[$Torrent["id"]]["leechers"] : 0) . "'" . ($ANNOUNCE["xbt_active"] == "yes" ? "" : ", $times_completed = '" . (isset($torrents[$Torrent["id"]]["times_completed"]) ? $torrents[$Torrent["id"]]["times_completed"] : 0) . "'") . "" : "") . " WHERE `id` = '" . $Torrent["id"] . "'");
             if ($UPDATE && mysqli_affected_rows($GLOBALS["DatabaseConnect"])) {
                 echo "<td><font $color = \"green\">" . $Language[6] . "</font> " . $Language[14] . " " . number_format(isset($torrents[$Torrent["id"]]["seeders"]) ? $torrents[$Torrent["id"]]["seeders"] : 0) . " / " . $Language[15] . " " . number_format(isset($torrents[$Torrent["id"]]["leechers"]) ? $torrents[$Torrent["id"]]["leechers"] : 0) . " / " . $Language[16] . " " . number_format(isset($torrents[$Torrent["id"]]["comments"]) ? $torrents[$Torrent["id"]]["comments"] : 0) . " " . ($ANNOUNCE["xbt_active"] == "yes" ? "" : "/ " . $Language[17] . " " . number_format(isset($torrents[$Torrent["id"]]["times_completed"]) ? $torrents[$Torrent["id"]]["times_completed"] : 0)) . "</td>";
             } else {

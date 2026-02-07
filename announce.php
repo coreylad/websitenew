@@ -130,7 +130,7 @@ if (!$GLOBALS["DatabaseConnect"]) {
     stop($l["cerror"]);
 }
 $_SERVER["REQUEST_TIME"] = time();
-$query = "\n\t\t\t\t\tSELECT u.id as userid, u.enabled, u.ip, u.uploaded, u.downloaded, u.birthday,\n\t\t\t\t\tg.isbanned, g.candownload, g.canfreeleech, g.waitlimit, g.slotlimit,\n\t\t\t\t\tsb.sb_port , sb.sb_ipaddress\n \t\t\t\t\tFROM users u\n\t\t\t\t\tINNER JOIN usergroups g ON (u.$usergroup = g.gid)\n\t\t\t\t\tLEFT JOIN ts_seedboxes sb ON (sb.$sb_userid = u.id)\n\t\t\t\t\tWHERE u.$torrent_pass = " . sqlesc($passkey) . "\n\t\t\t\t\tLIMIT 1";
+$query = "\n\t\t\t\t\tSELECT u.id as userid, u.enabled, u.ip, u.uploaded, u.downloaded, u.birthday,\n\t\t\t\t\tg.isbanned, g.candownload, g.canfreeleech, g.waitlimit, g.slotlimit,\n\t\t\t\t\tsb.sb_port , sb.sb_ipaddress\n \t\t\t\t\tFROM users u\n\t\t\t\t\tINNER JOIN usergroups g ON (u.`usergroup` = g.gid)\n\t\t\t\t\tLEFT JOIN ts_seedboxes sb ON (sb.$sb_userid = u.id)\n\t\t\t\t\tWHERE u.$torrent_pass = " . sqlesc($passkey) . "\n\t\t\t\t\tLIMIT 1";
 if ($UseMemcached) {
     if (!($UserResult = $TSMemcache->check($passkey))) {
         ($query = mysqli_query($GLOBALS["DatabaseConnect"], $query)) || stop($l["sqlerror"] . " U-Query: 1");
@@ -265,7 +265,7 @@ if (!isset($self)) {
             }
         }
         if (intval($Result["slotlimit"]) && $Result["owner"] != $Result["userid"]) {
-            ($res = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id FROM peers WHERE $userid = " . sqlesc($Result["userid"]) . " AND $seeder = 'no'")) || stop($l["sqlerror"] . " P1");
+            ($res = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id FROM peers WHERE `userid` = " . sqlesc($Result["userid"]) . " AND $seeder = 'no'")) || stop($l["sqlerror"] . " P1");
             if (($totalactivetorrents = mysqli_num_rows($res)) && $Result["slotlimit"] <= $totalactivetorrents) {
                 stop($l["merror"] . $Result["slotlimit"]);
             }
@@ -406,7 +406,7 @@ if ($event == "stopped") {
             stop($l["conerror"]);
         }
         if ($snatchmod == "yes") {
-            $res = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id FROM snatched WHERE $torrentid = " . sqlesc($Tid) . " AND $userid = " . sqlesc($Result["userid"]));
+            $res = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id FROM snatched WHERE `torrentid` = " . sqlesc($Tid) . " AND $userid = " . sqlesc($Result["userid"]));
             if (!mysqli_num_rows($res)) {
                 mysqli_query($GLOBALS["DatabaseConnect"], "INSERT INTO snatched (torrentid, userid, port, startdat, last_action, agent, ip) VALUES (" . $Tid . ", " . $Result["userid"] . ", " . $port . ", NOW(), NOW(), " . sqlesc($agent) . ", " . sqlesc($ip) . ")");
             }
@@ -434,15 +434,15 @@ if ($seeder == "yes") {
     $update_torrent[] = "`mtime` = '" . $_SERVER["REQUEST_TIME"] . "'";
 }
 if ($update_torrent && count($update_torrent)) {
-    mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE torrents SET " . implode(", ", $update_torrent) . " WHERE $id = '" . $Tid . "'");
+    mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE torrents SET " . implode(", ", $update_torrent) . " WHERE `id` = '" . $Tid . "'");
     unset($update_torrent);
 }
 if ($update_user && count($update_user) && isset($self)) {
-    mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET " . implode(",", $update_user) . " WHERE $id = " . sqlesc($Result["userid"]));
+    mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET " . implode(",", $update_user) . " WHERE `id` = " . sqlesc($Result["userid"]));
     unset($update_user);
 }
 if ($update_snatched && count($update_snatched)) {
-    mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE snatched SET " . implode(", ", $update_snatched) . " WHERE $torrentid = '" . $Tid . "' AND $userid = '" . $Result["userid"] . "'");
+    mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE snatched SET " . implode(", ", $update_snatched) . " WHERE `torrentid` = '" . $Tid . "' AND $userid = '" . $Result["userid"] . "'");
     unset($update_snatched);
 }
 header("Expires: Sat, 1 Jan 2000 01:00:00 GMT");

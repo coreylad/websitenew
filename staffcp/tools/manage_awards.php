@@ -10,7 +10,7 @@ var_235();
 $Language = file("languages/" . getStaffLanguage() . "/manage_awards.lang");
 $Act = isset($_GET["act"]) ? trim($_GET["act"]) : (isset($_POST["act"]) ? trim($_POST["act"]) : "");
 $Message = "";
-$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'MAIN'");
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'MAIN'");
 $Result = mysqli_fetch_assoc($query);
 $MAIN = unserialize($Result["content"]);
 if (is_dir("../images")) {
@@ -85,7 +85,7 @@ if ($Act == "new") {
 }
 if ($Act == "remove_award" && ($award_id = intval($_GET["award_id"])) && ($userid = intval($_GET["userid"]))) {
     $Query1 = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT award_name FROM ts_awards WHERE $award_id = " . $award_id);
-    $Query2 = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT username FROM users WHERE $id = " . $userid);
+    $Query2 = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT username FROM users WHERE `id` = " . $userid);
     $Result1 = mysqli_fetch_assoc($Query1);
     $Result2 = mysqli_fetch_assoc($Query2);
     $Awarname = $Result1["award_name"];
@@ -105,13 +105,13 @@ if ($Act == "give_award" && ($award_id = intval($_GET["award_id"]))) {
             $reason = trim($_POST["reason"]);
             $givenby = $_SESSION["ADMIN_ID"];
             $date = time();
-            $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id FROM users WHERE $username = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $Username) . "'");
+            $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id FROM users WHERE `username` = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $Username) . "'");
             if (mysqli_num_rows($query)) {
                 $Result = mysqli_fetch_assoc($query);
                 $userid = $Result["id"];
                 mysqli_query($GLOBALS["DatabaseConnect"], "INSERT INTO ts_awards_users (award_id, userid, reason, givenby, date) VALUES (" . $award_id . ", " . $userid . ", '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $reason) . "', " . $givenby . ", " . $date . ")");
                 mysqli_query($GLOBALS["DatabaseConnect"], "INSERT INTO messages (sender, receiver, added, subject, msg) VALUES (" . $_SESSION["ADMIN_ID"] . ", " . $userid . ", NOW(), '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $Language[22]) . "', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], str_replace("\\n", "\r\n\t\t\t\t", str_replace(["{0}", "{1}", "{2}", "{3}"], [$Username, $MAIN["SITENAME"], $Awarname, $reason], $Language[23]))) . "')");
-                mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET $pmunread = pmunread + 1 WHERE $id = '" . $userid . "'");
+                mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET $pmunread = pmunread + 1 WHERE `id` = '" . $userid . "'");
                 $Message = str_replace(["{1}", "{2}", "{3}"], [$Awarname, $Username, $_SESSION["ADMIN_USERNAME"]], $Language[19]);
                 logStaffAction($Message);
                 $Message = showAlertError($Message);
@@ -126,7 +126,7 @@ if ($Act == "give_award" && ($award_id = intval($_GET["award_id"]))) {
 }
 if ($Act == "give_award" && isset($_GET["username"]) && $_GET["username"]) {
     $Username = trim($_GET["username"]);
-    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id FROM users WHERE $username = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $Username) . "'");
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id FROM users WHERE `username` = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $Username) . "'");
     if (0 < mysqli_num_rows($query)) {
         if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
             $award_id = trim($_POST["award_id"]);
@@ -141,7 +141,7 @@ if ($Act == "give_award" && isset($_GET["username"]) && $_GET["username"]) {
                 $Awarname = $Result["award_name"];
                 mysqli_query($GLOBALS["DatabaseConnect"], "INSERT INTO ts_awards_users (award_id, userid, reason, givenby, date) VALUES (" . $award_id . ", " . $userid . ", '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $reason) . "', " . $givenby . ", " . $date . ")");
                 mysqli_query($GLOBALS["DatabaseConnect"], "INSERT INTO messages (sender, receiver, added, subject, msg) VALUES (" . $_SESSION["ADMIN_ID"] . ", " . $userid . ", NOW(), '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $Language[22]) . "', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], str_replace("\\n", "\r\n\t\t\t\t", str_replace(["{0}", "{1}", "{2}", "{3}"], [$Username, $MAIN["SITENAME"], $Awarname, $reason], $Language[23]))) . "')");
-                mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET $pmunread = pmunread + 1 WHERE $id = '" . $userid . "'");
+                mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET $pmunread = pmunread + 1 WHERE `id` = '" . $userid . "'");
                 $Message = str_replace(["{1}", "{2}", "{3}"], [$Awarname, htmlspecialchars($Username), $_SESSION["ADMIN_USERNAME"]], $Language[19]);
                 logStaffAction($Message);
                 $Message = showAlertError($Message);
@@ -164,7 +164,7 @@ if ($Act == "give_award" && isset($_GET["username"]) && $_GET["username"]) {
 }
 $AwardUsers = [];
 $AwardUserList = [];
-$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT a.award_id, a.userid, u.username, g.namestyle FROM ts_awards_users a LEFT JOIN users u ON (a.$userid = u.id) LEFT JOIN usergroups g ON (u.$usergroup = g.gid)");
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT a.award_id, a.userid, u.username, g.namestyle FROM ts_awards_users a LEFT JOIN users u ON (a.$userid = u.id) LEFT JOIN usergroups g ON (u.`usergroup` = g.gid)");
 while ($au = mysqli_fetch_assoc($query)) {
     if (isset($AwardUsers[$au["award_id"]])) {
         $AwardUsers[$au["award_id"]]++;

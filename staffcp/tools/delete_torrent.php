@@ -14,7 +14,7 @@ $reason = "";
 if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST" && $tid) {
     $reason = $_POST["reason"] ? trim($_POST["reason"]) : "";
     if ($reason) {
-        $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT name, owner FROM torrents WHERE $id = '" . $tid . "'");
+        $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT name, owner FROM torrents WHERE `id` = '" . $tid . "'");
         if (0 < mysqli_num_rows($query)) {
             $Torrent = mysqli_fetch_assoc($query);
             $SysMsg = str_replace(["{1}", "{2}"], [$Torrent["name"], $_SESSION["ADMIN_USERNAME"]], $Language[7]);
@@ -64,7 +64,7 @@ function logStaffAction($log)
 }
 function function_151($id)
 {
-    $var_281 = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'MAIN'");
+    $var_281 = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'MAIN'");
     $var_20 = mysqli_fetch_assoc($var_281);
     $var_27 = unserialize($var_20["content"]);
     $var_427 = "../" . $var_27["torrent_dir"];
@@ -82,7 +82,7 @@ function function_151($id)
             @unlink($var_427 . "/images/" . $id . "." . $var_361);
         }
     }
-    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT t_link FROM torrents WHERE $id = " . $id);
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT t_link FROM torrents WHERE `id` = " . $id);
     if (mysqli_num_rows($query)) {
         $var_20 = mysqli_fetch_assoc($query);
         $var_429 = $var_20["t_link"];
@@ -105,18 +105,18 @@ function function_151($id)
     mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM peers WHERE $torrent = " . $id);
     mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM xbt_files_users WHERE $fid = " . $id);
     mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM comments WHERE $torrent = " . $id);
-    mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM bookmarks WHERE $torrentid = " . $id);
-    mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM snatched WHERE $torrentid = " . $id);
-    mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM torrents WHERE $id = " . $id);
+    mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM bookmarks WHERE `torrentid` = " . $id);
+    mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM snatched WHERE `torrentid` = " . $id);
+    mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM torrents WHERE `id` = " . $id);
     mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM ts_torrents_details WHERE $tid = " . $id);
     mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM ts_thanks WHERE $tid = " . $id);
-    mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM ts_nfo  WHERE $id = " . $id);
+    mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM ts_nfo  WHERE `id` = " . $id);
 }
 function sendPrivateMessage($receiver = 0, $msg = "", $subject = "", $sender = 0, $saved = "no", $location = "1", $unread = "yes")
 {
     if (!($sender != 0 && !$sender || !$receiver || empty($msg))) {
         mysqli_query($GLOBALS["DatabaseConnect"], "\r\n\t\t\t\t\tINSERT INTO messages \r\n\t\t\t\t\t\t(sender, receiver, added, subject, msg, unread, saved, location)\r\n\t\t\t\t\t\tVALUES \r\n\t\t\t\t\t\t('" . $sender . "', '" . $receiver . "', NOW(), '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $subject) . "', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $msg) . "', '" . $unread . "', '" . $saved . "', '" . $location . "')\r\n\t\t\t\t\t");
-        mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET $pmunread = pmunread + 1 WHERE $id = '" . $receiver . "'");
+        mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET $pmunread = pmunread + 1 WHERE `id` = '" . $receiver . "'");
     }
 }
 

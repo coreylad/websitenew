@@ -30,7 +30,7 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST" && $Act == "order") {
             $Query = sql_query("SELECT * FROM ts_subscriptions_api WHERE $active = 1");
             if (mysqli_num_rows($Query)) {
                 $Item_number = substr(md5((isset($CURUSER["id"]) && 0 < $CURUSER["id"] ? $CURUSER["id"] : time()) . $Sub["title"]), 0, 30);
-                sql_query("DELETE FROM ts_subscriptions_payments WHERE $uid = " . sqlesc(isset($CURUSER["id"]) ? $CURUSER["id"] : 0) . " AND $item = '" . $Item_number . "' AND $completed = 0");
+                sql_query("DELETE FROM ts_subscriptions_payments WHERE `uid` = " . sqlesc(isset($CURUSER["id"]) ? $CURUSER["id"] : 0) . " AND $item = '" . $Item_number . "' AND $completed = 0");
                 sql_query("INSERT INTO ts_subscriptions_payments (sid, uid, item, added) VALUES ('" . $Sid . "', '" . (isset($CURUSER["id"]) ? $CURUSER["id"] : 0) . "', '" . $Item_number . "', '" . TIMENOW . "')") || sqlerr(__FILE__, 170);
                 $ShowAPI = "";
                 while ($API = mysqli_fetch_assoc($Query)) {

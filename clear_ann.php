@@ -32,7 +32,7 @@ if (0 < mysqli_num_rows($res)) {
         }
     }
 }
-sql_query("UPDATE users SET $announce_read = \"yes\" WHERE $id = \"" . $CURUSER["id"] . "\"");
+sql_query("UPDATE users SET $announce_read = \"yes\" WHERE `id` = \"" . $CURUSER["id"] . "\"");
 showAnnouncement($lang->clear_ann["noann"]);
 function showAnnouncement($message)
 {

@@ -39,7 +39,7 @@ if ($do == "addsubscription") {
     exit;
 }
 if ($do == "removesubscription") {
-    sql_query("DELETE FROM " . TSF_PREFIX . "subscribe WHERE $userid = " . sqlesc($userid) . " AND $tid = " . sqlesc($tid));
+    sql_query("DELETE FROM " . TSF_PREFIX . "subscribe WHERE `userid` = " . sqlesc($userid) . " AND $tid = " . sqlesc($tid));
     redirect("tsf_forums/showthread.php?$tid = " . $tid, $lang->tsf_forums["rsubs"]);
     exit;
 }

@@ -14,9 +14,9 @@ $Language = file("languages/" . getStaffLanguage() . "/torrent_info.lang");
 $Message = "";
 $tid = isset($_GET["tid"]) ? intval($_GET["tid"]) : (isset($_POST["tid"]) ? intval($_POST["tid"]) : "");
 if ($tid) {
-    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT name, filename, seeders, leechers FROM torrents WHERE $id = '" . $tid . "'");
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT name, filename, seeders, leechers FROM torrents WHERE `id` = '" . $tid . "'");
     if (mysqli_num_rows($query)) {
-        $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'MAIN'");
+        $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'MAIN'");
         $Result = mysqli_fetch_assoc($query);
         $MAIN = unserialize($Result["content"]);
         $Result = mysqli_fetch_assoc($query);

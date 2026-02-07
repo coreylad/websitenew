@@ -15,13 +15,13 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
     $username = trim($_POST["username"]);
     $ip = trim($_POST["ip"]);
     if ($username) {
-        $sql = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id, ip, username, last_access, email, uploaded, downloaded, invites, seedbonus, g.title, g.namestyle FROM users LEFT JOIN usergroups g ON (users.$usergroup = g.gid) WHERE $username = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $username) . "'");
+        $sql = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id, ip, username, last_access, email, uploaded, downloaded, invites, seedbonus, g.title, g.namestyle FROM users LEFT JOIN usergroups g ON (users.$usergroup = g.gid) WHERE `username` = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $username) . "'");
         if (0 < mysqli_num_rows($sql)) {
             $User = mysqli_fetch_assoc($sql);
             $User["ip"] = htmlspecialchars($User["ip"]);
             $userips = [];
             $userips[] = "<a $href = \"index.php?do=search_ip&amp;$ip = " . $User["ip"] . "\">" . $User["ip"] . "</a>";
-            $findips = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT ip FROM iplog WHERE $userid = '" . $User["id"] . "' ORDER by ip DESC");
+            $findips = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT ip FROM iplog WHERE `userid` = '" . $User["id"] . "' ORDER by ip DESC");
             while ($uip = mysqli_fetch_assoc($findips)) {
                 $uip["ip"] = htmlspecialchars($uip["ip"]);
                 if (!in_array("<a $href = \"index.php?do=search_ip&amp;$ip = " . $uip["ip"] . "\">" . $uip["ip"] . "</a>", $userips)) {
@@ -35,7 +35,7 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
         }
     } else {
         if ($ip) {
-            $sql = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT i.ip, u.id, u.username, u.last_access, u.email, u.uploaded, u.downloaded, u.invites, u.seedbonus, u.ip as ip2, g.title, g.namestyle FROM iplog i LEFT JOIN users u ON (i.$userid = u.id) LEFT JOIN usergroups g ON (u.$usergroup = g.gid) WHERE i.ip LIKE '%" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $ip) . "%'");
+            $sql = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT i.ip, u.id, u.username, u.last_access, u.email, u.uploaded, u.downloaded, u.invites, u.seedbonus, u.ip as ip2, g.title, g.namestyle FROM iplog i LEFT JOIN users u ON (i.$userid = u.id) LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) WHERE i.ip LIKE '%" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $ip) . "%'");
             if (0 < mysqli_num_rows($sql)) {
                 $Found = "";
                 while ($User = mysqli_fetch_assoc($sql)) {

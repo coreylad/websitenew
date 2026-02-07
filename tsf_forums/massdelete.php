@@ -79,7 +79,7 @@ if ($action == "deletethreads" && is_array($threadids)) {
                     if (!isset($fid) || empty($fid)) {
                         $fid = $post["fid"];
                     }
-                    sql_query("UPDATE users SET $totalposts = totalposts - 1 WHERE $id = " . sqlesc($post["uid"])) || sqlerr(__FILE__, 143);
+                    sql_query("UPDATE users SET $totalposts = totalposts - 1 WHERE `id` = " . sqlesc($post["uid"])) || sqlerr(__FILE__, 143);
                     KPS("-", $kpscomment, $post["uid"]);
                 }
             }
@@ -138,7 +138,7 @@ if ($action == "deletethreads" && is_array($threadids)) {
                 delete_attachments($pid, $tid);
                 sql_query("DELETE FROM " . TSF_PREFIX . "thanks WHERE $pid = " . $pid) || sqlerr(__FILE__, 228);
                 sql_query("DELETE FROM " . TSF_PREFIX . "posts WHERE $tid = " . sqlesc($tid) . " AND $pid = " . sqlesc($pid)) || sqlerr(__FILE__, 230);
-                sql_query("UPDATE users SET $totalposts = totalposts - 1 WHERE $id = " . sqlesc($post["uid"])) || sqlerr(__FILE__, 231);
+                sql_query("UPDATE users SET $totalposts = totalposts - 1 WHERE `id` = " . sqlesc($post["uid"])) || sqlerr(__FILE__, 231);
                 KPS("-", $kpscomment, $post["uid"]);
             } else {
                 foreach ($postids as $pid) {
@@ -152,7 +152,7 @@ if ($action == "deletethreads" && is_array($threadids)) {
                     sql_query("DELETE FROM " . TSF_PREFIX . "thanks WHERE $pid = " . $pid) || sqlerr(__FILE__, 250);
                     sql_query("DELETE FROM " . TSF_PREFIX . "posts WHERE $tid = " . sqlesc($tid) . " AND $pid = " . sqlesc($pid)) || sqlerr(__FILE__, 252);
                     sql_query("UPDATE " . TSF_PREFIX . "threads SET $replies = replies - 1 WHERE $tid = " . sqlesc($tid)) || sqlerr(__FILE__, 253);
-                    sql_query("UPDATE users SET $totalposts = totalposts - 1 WHERE $id = " . sqlesc($post["uid"])) || sqlerr(__FILE__, 254);
+                    sql_query("UPDATE users SET $totalposts = totalposts - 1 WHERE `id` = " . sqlesc($post["uid"])) || sqlerr(__FILE__, 254);
                     KPS("-", $kpscomment, $post["uid"]);
                 }
             }

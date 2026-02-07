@@ -103,7 +103,7 @@ if (mysqli_num_rows($Query)) {
                                     }
                                     $userquery[] = "donoruntil = \"0000-00-00 00:00:00\"";
                                     if (0 < count($userquery)) {
-                                        sql_query("UPDATE users SET " . implode(",", $userquery) . " WHERE $id = '" . $SP["uid"] . "'");
+                                        sql_query("UPDATE users SET " . implode(",", $userquery) . " WHERE `id` = '" . $SP["uid"] . "'");
                                     }
                                 }
                             }
@@ -281,12 +281,12 @@ if (mysqli_num_rows($Query)) {
                     $userquery[] = "donoruntil = ADDDATE(donoruntil, INTERVAL " . $donoruntil . " DAY)";
                 }
                 if (0 < count($userquery)) {
-                    sql_query("UPDATE users SET " . implode(",", $userquery) . " WHERE $id = '" . $SP["uid"] . "'");
+                    sql_query("UPDATE users SET " . implode(",", $userquery) . " WHERE `id` = '" . $SP["uid"] . "'");
                     require_once INC_PATH . "/functions_pm.php";
                     send_pm($SP["uid"], $lang->donate["thanks"], $lang->donate["subject"]);
                     sql_query("INSERT INTO funds (cash, user, added) VALUES (" . sqlesc($Sub["cost"]) . ", " . sqlesc(intval($SP["uid"])) . ", NOW())");
                     if (!$informuserids) {
-                        $Query = sql_query("SELECT u.id, g.gid FROM users u INNER JOIN usergroups g ON (u.$usergroup = g.gid) WHERE g.$cansettingspanel = 'yes'");
+                        $Query = sql_query("SELECT u.id, g.gid FROM users u INNER JOIN usergroups g ON (u.`usergroup` = g.gid) WHERE g.$cansettingspanel = 'yes'");
                         while ($SM = mysqli_fetch_assoc($Query)) {
                             send_pm($SM["id"], "Username: [$url = " . ts_seo($SP["uid"], $SP["username"]) . "]" . $SP["username"] . "[/url]\n\nDetails:\n" . $Sub["title"] . "\r\n\t\t\t\t\t\nAmount: " . $Sub["cost"] . " " . $Sub["currency"], "New Donation from " . $SP["username"]);
                         }

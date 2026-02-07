@@ -21,12 +21,12 @@ $order = urldecode(isset($_GET["order"]) ? $_GET["order"] : (isset($_POST["order
 $extraquery1 = "";
 $extraquery2 = "";
 $extralink = "";
-$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'ANNOUNCE'");
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'ANNOUNCE'");
 $Result = mysqli_fetch_assoc($query);
 $ANNOUNCE = unserialize($Result["content"]);
 $xbt_active = $ANNOUNCE["xbt_active"];
 if ($browsecategory) {
-    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT type FROM categories WHERE $id = '" . $browsecategory . "'");
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT type FROM categories WHERE `id` = '" . $browsecategory . "'");
     if (mysqli_num_rows($query)) {
         $Result = mysqli_fetch_assoc($query);
         $cate_type = $Result["type"];
@@ -300,7 +300,7 @@ foreach (["deadonly" => $Language[46], "internal" => $Language[47], "external" =
 }
 $searchtype_dropdown .= "\r\n</select>";
 $Found = "\r\n<form $action = \"" . $_SERVER["SCRIPT_NAME"] . "?do=manage_torrents&amp;$act = search" . (isset($_GET["page"]) ? "&amp;$page = " . intval($_GET["page"]) : "") . "\" $method = \"post\" $name = \"manage_torrents2\">\r\n<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t<tr>\r\n\t\t<td class=\"tcat\" $align = \"center\">\r\n\t\t\t" . $Language[40] . "\r\n\t\t</td>\r\n\t</tr>\r\n\t<tr>\r\n\t\t<td class=\"alt1\">\r\n\t\t " . $Language[41] . " <input $type = \"text\" $name = \"searchword\" $value = \"" . htmlspecialchars($searchword) . "\" $size = \"40\" $dir = \"ltr\" $tabindex = \"1\" /> " . $catdropdown2 . " " . $searchtype_dropdown . " <input $type = \"submit\" $value = \"" . $Language[12] . "\" />\r\n\t\t</td>\r\n\t</tr>\r\n</table>\r\n</form>\r\n";
-$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT t.*, u.username, g.namestyle, c.name as catname FROM torrents t LEFT JOIN users u ON (t.$owner = u.id) LEFT JOIN usergroups g ON (u.$usergroup = g.gid) LEFT JOIN categories c ON (t.$category = c.id)" . $extraquery2 . " ORDER BY " . $orderby . " " . $limit);
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT t.*, u.username, g.namestyle, c.name as catname FROM torrents t LEFT JOIN users u ON (t.$owner = u.id) LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) LEFT JOIN categories c ON (t.$category = c.id)" . $extraquery2 . " ORDER BY " . $orderby . " " . $limit);
 if (mysqli_num_rows($query)) {
     $Found .= "\r\n\t" . $pagertop . "\r\n\t<form $action = \"" . $_SERVER["SCRIPT_NAME"] . "?do=manage_torrents&amp;$act = update" . (isset($_GET["page"]) ? "&amp;$page = " . intval($_GET["page"]) : "") . "\" $method = \"post\" $name = \"manage_torrents\">\r\n\t<input $type = \"hidden\" $name = \"searchword\" $value = \"" . urlencode($searchword) . "\" />\r\n\t<input $type = \"hidden\" $name = \"browsecategory\" $value = \"" . urlencode($browsecategory) . "\" />\r\n\t<input $type = \"hidden\" $name = \"searchtype\" $value = \"" . urlencode($searchtype) . "\" />\r\n\t<input $type = \"hidden\" $name = \"sort\" $value = \"" . urlencode($sort) . "\" />\r\n\t<input $type = \"hidden\" $name = \"order\" $value = \"" . urlencode($order) . "\" />\r\n\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t<tr>\r\n\t\t\t<td class=\"tcat\" $colspan = \"9\" $align = \"center\">\r\n\t\t\t\t" . $Language[2] . "\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt2\">\r\n\t\t\t\t" . function_162("name", $Language[5]) . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt2\" $align = \"center\">\r\n\t\t\t\t" . $Language[14] . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt2\">\r\n\t\t\t\t" . function_162("category", $Language[6]) . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt2\">\r\n\t\t\t\t" . function_162("size", $Language[7]) . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt2\">\r\n\t\t\t\t" . function_162("added", $Language[8]) . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt2\">\r\n\t\t\t\t" . function_162("owner", $Language[9]) . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt2\">\r\n\t\t\t\t" . function_162("seeders", $Language[10]) . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt2\">\r\n\t\t\t\t" . function_162("leechers", $Language[11]) . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt2\" $align = \"center\"><input $type = \"checkbox\" $checkall = \"group\" $onclick = \"javascript: return select_deselectAll ('manage_torrents', this, 'group');\"></td>\r\n\t\t</tr>\r\n\t";
     while ($Torrent = mysqli_fetch_assoc($query)) {
@@ -483,15 +483,15 @@ function buildPaginationLinks($perpage, $results, $address)
 function function_163($torrents)
 {
     global $Language;
-    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'MAIN'");
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'MAIN'");
     $Result = mysqli_fetch_assoc($query);
     $var_27 = unserialize($Result["content"]);
-    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'THEME'");
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'THEME'");
     $Result = mysqli_fetch_assoc($query);
     $var_28 = unserialize($Result["content"]);
     $var_282 = $var_27["BASEURL"] . "/include/templates/" . $var_28["defaulttemplate"] . "/images/torrent_flags/";
     $var_461 = $var_27["pic_base_url"];
-    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'ANNOUNCE'");
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'ANNOUNCE'");
     $Result = mysqli_fetch_assoc($query);
     $ANNOUNCE = unserialize($Result["content"]);
     $xbt_active = $ANNOUNCE["xbt_active"];
@@ -537,7 +537,7 @@ function function_164($selectname = "type", $selected = 0, $extra = "", $style =
 }
 function function_151($id)
 {
-    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'MAIN'");
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'MAIN'");
     $Result = mysqli_fetch_assoc($query);
     $var_27 = unserialize($Result["content"]);
     $var_427 = "../" . $var_27["torrent_dir"];
@@ -555,7 +555,7 @@ function function_151($id)
             @unlink($var_427 . "/images/" . $id . "." . $var_361);
         }
     }
-    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT t_link FROM torrents WHERE $id = " . $id);
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT t_link FROM torrents WHERE `id` = " . $id);
     if (mysqli_num_rows($query)) {
         $Result = mysqli_fetch_assoc($query);
         $var_429 = $Result["t_link"];
@@ -578,12 +578,12 @@ function function_151($id)
     mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM peers WHERE $torrent = " . $id);
     mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM xbt_files_users WHERE $fid = " . $id);
     mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM comments WHERE $torrent = " . $id);
-    mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM bookmarks WHERE $torrentid = " . $id);
-    mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM snatched WHERE $torrentid = " . $id);
-    mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM torrents WHERE $id = " . $id);
+    mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM bookmarks WHERE `torrentid` = " . $id);
+    mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM snatched WHERE `torrentid` = " . $id);
+    mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM torrents WHERE `id` = " . $id);
     mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM ts_torrents_details WHERE $tid = " . $id);
     mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM ts_thanks WHERE $tid = " . $id);
-    mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM ts_nfo  WHERE $id = " . $id);
+    mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM ts_nfo  WHERE `id` = " . $id);
 }
 function logStaffAction($log)
 {

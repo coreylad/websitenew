@@ -114,7 +114,7 @@ function function_68()
 }
 function function_69()
 {
-    mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE ts_config SET $content = \"\" WHERE $configname = \"PEER\"");
+    mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE ts_config SET $content = \"\" WHERE `configname` = \"PEER\"");
 }
 function function_70()
 {

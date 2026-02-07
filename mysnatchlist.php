@@ -54,7 +54,7 @@ if (!isset($_GET["uid"]) && $is_mod) {
 ($Query = sql_query("SELECT x.uid, t.id as torrentid FROM `xbt_files_users` x INNER JOIN `torrents` t ON (x.$fid = t.id)" . $WHERE)) || sqlerr(__FILE__, 86);
 $Count = mysqli_num_rows($Query);
 list($pagertop, $pagerbottom, $limit) = pager($ts_perpage, $Count, "mysnatchlist.php?" . (0 < count($Links) ? implode("&amp", $Links) . "&amp;" : ""));
-($Query = sql_query("SELECT x.*, t.id as torrentid, t.name, t.size, u.username, u.ip, g.namestyle FROM `xbt_files_users` x INNER JOIN `torrents` t ON (x.$fid = t.id) LEFT JOIN `users` u ON (x.$uid = u.id) LEFT JOIN `usergroups` g ON (u.$usergroup = g.gid)" . $WHERE . " ORDER by `mtime` DESC " . $limit)) || sqlerr(__FILE__, 90);
+($Query = sql_query("SELECT x.*, t.id as torrentid, t.name, t.size, u.username, u.ip, g.namestyle FROM `xbt_files_users` x INNER JOIN `torrents` t ON (x.$fid = t.id) LEFT JOIN `users` u ON (x.$uid = u.id) LEFT JOIN `usergroups` g ON (u.`usergroup` = g.gid)" . $WHERE . " ORDER by `mtime` DESC " . $limit)) || sqlerr(__FILE__, 90);
 if (!mysqli_num_rows($Query)) {
     stderr($lang->global["error"], $lang->mysnatchlist["error"]);
 }

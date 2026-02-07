@@ -13,7 +13,7 @@ if (!$userid || !$is_mod) {
     print_no_permission(true);
 }
 $lang->load("userdetails");
-$User = sql_query("SELECT u.username, g.namestyle FROM users u LEFT JOIN usergroups g ON (u.$usergroup = g.gid) WHERE $id = " . sqlesc($userid));
+$User = sql_query("SELECT u.username, g.namestyle FROM users u LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) WHERE `id` = " . sqlesc($userid));
 if (!mysqli_num_rows($User)) {
     stderr($lang->global["error"], $lang->userdetails["invaliduser"], false);
 }

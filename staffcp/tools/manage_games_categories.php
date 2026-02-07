@@ -13,9 +13,9 @@ $Language = file("languages/" . getStaffLanguage() . "/manage_games_categories.l
 $Message = "";
 $List = "";
 if ($Act == "delete" && $Cid) {
-    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT cname FROM ts_games_categories WHERE $cid = '" . $Cid . "'");
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT cname FROM ts_games_categories WHERE `cid` = '" . $Cid . "'");
     $Category = mysqli_fetch_assoc($query);
-    mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM ts_games_categories WHERE $cid = '" . $Cid . "'");
+    mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM ts_games_categories WHERE `cid` = '" . $Cid . "'");
     if (mysqli_affected_rows($GLOBALS["DatabaseConnect"])) {
         $Message = str_replace(["{1}", "{2}"], [$Category["cname"], $_SESSION["ADMIN_USERNAME"]], $Language[1]);
         logStaffAction($Message);
@@ -23,7 +23,7 @@ if ($Act == "delete" && $Cid) {
     }
 }
 if ($Act == "edit" && $Cid) {
-    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM ts_games_categories WHERE $cid = '" . $Cid . "'");
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM ts_games_categories WHERE `cid` = '" . $Cid . "'");
     if (mysqli_num_rows($query)) {
         $Category = mysqli_fetch_assoc($query);
         if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
@@ -32,7 +32,7 @@ if ($Act == "edit" && $Cid) {
             $Category["description"] = isset($_POST["description"]) ? trim($_POST["description"]) : "";
             $Category["sort"] = isset($_POST["sort"]) ? intval($_POST["sort"]) : "";
             if ($Category["cname"]) {
-                mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE ts_games_categories SET $cname = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $Category["cname"]) . "', $description = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $Category["description"]) . "', $sort = '" . $Category["sort"] . "' WHERE $cid = '" . $Cid . "'");
+                mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE ts_games_categories SET $cname = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $Category["cname"]) . "', $description = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $Category["description"]) . "', $sort = '" . $Category["sort"] . "' WHERE `cid` = '" . $Cid . "'");
                 $Message = str_replace(["{1}", "{2}"], [$Category["cname"], $_SESSION["ADMIN_USERNAME"]], $Language[13]);
                 logStaffAction($Message);
                 $Done = true;

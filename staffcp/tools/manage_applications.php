@@ -14,7 +14,7 @@ $Message = "";
 $title = "";
 $description = "";
 $requirements = "";
-$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'MAIN'");
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'MAIN'");
 $Result = mysqli_fetch_assoc($query);
 $MAIN = unserialize($Result["content"]);
 if ($Act == "delete" && $id) {
@@ -75,7 +75,7 @@ if ($Act == "view" && $id) {
         if (is_array($rids) && $rids[0] != "") {
             $rids = implode(",", $rids);
             if (isset($_POST["approve"])) {
-                mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE ts_application_requests SET $status = '2' WHERE rid IN (" . $rids . ")");
+                mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE ts_application_requests SET `status` = '2' WHERE rid IN (" . $rids . ")");
                 if (mysqli_affected_rows($GLOBALS["DatabaseConnect"])) {
                     $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT uid FROM ts_application_requests WHERE rid IN (" . $rids . ")");
                     while ($User = mysqli_fetch_assoc($query)) {
@@ -87,7 +87,7 @@ if ($Act == "view" && $id) {
                 }
             } else {
                 if (isset($_POST["deny"])) {
-                    mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE ts_application_requests SET $status = '1' WHERE rid IN (" . $rids . ")");
+                    mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE ts_application_requests SET `status` = '1' WHERE rid IN (" . $rids . ")");
                     if (mysqli_affected_rows($GLOBALS["DatabaseConnect"])) {
                         $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT uid FROM ts_application_requests WHERE rid IN (" . $rids . ")");
                         while ($User = mysqli_fetch_assoc($query)) {
@@ -111,7 +111,7 @@ if ($Act == "view" && $id) {
         }
     }
     $Message = "\r\n\t<script $type = \"text/javascript\">\r\n\t\tfunction select_deselectAll(formname,elm,group)\r\n\t\t{\r\n\t\t\tvar $frm = document.forms[formname];\r\n\t\t\tfor($i = 0;i<frm.length;i++)\r\n\t\t\t{\r\n\t\t\t\tif(elm.attributes[\"checkall\"] != null && elm.attributes[\"checkall\"].$value = = group)\r\n\t\t\t\t{\r\n\t\t\t\t\tif(frm.elements[i].attributes[\"checkme\"] != null && frm.elements[i].attributes[\"checkme\"].$value = = group)\r\n\t\t\t\t\t{\r\n\t\t\t\t\t\tfrm.elements[i].$checked = elm.checked;\r\n\t\t\t\t\t}\r\n\t\t\t\t}\r\n\t\t\t\telse if(frm.elements[i].attributes[\"checkme\"] != null && frm.elements[i].attributes[\"checkme\"].$value = = group)\r\n\t\t\t\t{\r\n\t\t\t\t\tif(frm.elements[i].$checked = = false)\r\n\t\t\t\t\t{\r\n\t\t\t\t\t\tfrm.elements[1].$checked = false;\r\n\t\t\t\t\t}\r\n\t\t\t\t}\r\n\t\t\t}\r\n\t\t}\r\n\t</script>\r\n\t<form $action = \"" . $_SERVER["SCRIPT_NAME"] . "?do=manage_applications&$act = view&$id = " . $id . (isset($_GET["page"]) ? "&$page = " . intval($_GET["page"]) : "") . "\" $method = \"post\" $name = \"manage_applications\">\r\n\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t<tr>\r\n\t\t\t<td class=\"tcat\" $colspan = \"6\" $align = \"center\">\r\n\t\t\t\t" . $Language[2] . " - " . $Language[22] . "\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt2\">" . $Language[28] . "</td>\r\n\t\t\t<td class=\"alt2\">" . $Language[23] . "</td>\r\n\t\t\t<td class=\"alt2\">" . $Language[29] . "</td>\r\n\t\t\t<td class=\"alt2\">" . $Language[17] . "</td>\r\n\t\t\t<td class=\"alt2\">" . $Language[9] . "</td>\r\n\t\t\t<td class=\"alt2\" $align = \"center\"><input $type = \"checkbox\" $checkall = \"group\" $onclick = \"javascript: return select_deselectAll ('manage_applications', this, 'group');\"></td>\r\n\t\t</tr>\r\n\t";
-    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT r.*, u.username, g.namestyle FROM ts_application_requests r LEFT JOIN users u ON (r.$uid = u.id) LEFT JOIN usergroups g ON (u.$usergroup = g.gid) WHERE r.$aid = '" . $id . "' ORDER BY r.created DESC, r.status ASC");
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT r.*, u.username, g.namestyle FROM ts_application_requests r LEFT JOIN users u ON (r.$uid = u.id) LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) WHERE r.$aid = '" . $id . "' ORDER BY r.created DESC, r.status ASC");
     if (0 < mysqli_num_rows($query)) {
         while ($R = mysqli_fetch_assoc($query)) {
             $Message .= "\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt1\" $valign = \"top\">\r\n\t\t\t\t\t<a $href = \"index.php?do=edit_user&amp;$username = " . $R["username"] . "\">" . applyUsernameStyle($R["username"], $R["namestyle"]) . "</a>\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\" $valign = \"top\">\r\n\t\t\t\t\t" . htmlspecialchars($R["url"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\" $valign = \"top\">\r\n\t\t\t\t\t" . htmlspecialchars($R["info"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\" $valign = \"top\">\r\n\t\t\t\t\t" . formatTimestamp($R["created"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\" $valign = \"top\">\r\n\t\t\t\t\t" . ($R["status"] == "0" ? $Language[30] : ($R["status"] == "2" ? $Language[31] : $Language[32])) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\" $align = \"center\" $valign = \"top\">\r\n\t\t\t\t\t<input $type = \"checkbox\" $name = \"rids[]\" $value = \"" . $R["rid"] . "\" $checkme = \"group\" />\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t\t";
@@ -133,7 +133,7 @@ while ($req = mysqli_fetch_assoc($query)) {
 }
 $results = mysqli_num_rows(mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM ts_applications"));
 list($pagertop, $limit) = buildPaginationLinks(25, $results, $_SERVER["SCRIPT_NAME"] . "?do=manage_applications&amp;");
-$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT a.*, u.username, g.namestyle FROM ts_applications a LEFT JOIN users u ON (a.$by = u.id) LEFT JOIN usergroups g ON (u.$usergroup = g.gid) ORDER by a.created DESC " . $limit);
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT a.*, u.username, g.namestyle FROM ts_applications a LEFT JOIN users u ON (a.$by = u.id) LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) ORDER by a.created DESC " . $limit);
 if (0 < mysqli_num_rows($query)) {
     echo showAlertMessage("<a $href = \"index.php?do=manage_applications&amp;$act = new\">" . $Language[6] . "</a>") . "\r\n\t" . $Message . "\r\n\t" . $pagertop . "\r\n\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t<tr>\r\n\t\t\t<td class=\"tcat\" $colspan = \"7\" $align = \"center\">\r\n\t\t\t\t" . $Language[2] . " (" . $results . ")\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt2\">" . $Language[7] . "</td>\r\n\t\t\t<td class=\"alt2\">" . $Language[8] . "</td>\r\n\t\t\t<td class=\"alt2\">" . $Language[16] . "</td>\r\n\t\t\t<td class=\"alt2\">" . $Language[17] . "</td>\r\n\t\t\t<td class=\"alt2\">" . $Language[9] . "</td>\r\n\t\t\t<td class=\"alt2\">" . $Language[22] . "</td>\r\n\t\t\t<td class=\"alt2\" $align = \"center\">" . $Language[18] . "</td>\r\n\t\t</tr>\r\n\t\t";
     while ($Ann = mysqli_fetch_assoc($query)) {
@@ -195,11 +195,11 @@ function function_148($selected)
     if (!is_array($selected) && preg_match("@,@Uis", $selected)) {
         $selected = explode(",", $selected);
     }
-    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT u.id, g.cansettingspanel, g.canstaffpanel, g.issupermod FROM users u LEFT JOIN usergroups g ON (u.$usergroup = g.gid) WHERE u.$id = '" . $_SESSION["ADMIN_ID"] . "' LIMIT 1");
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT u.id, g.cansettingspanel, g.canstaffpanel, g.issupermod FROM users u LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) WHERE u.$id = '" . $_SESSION["ADMIN_ID"] . "' LIMIT 1");
     $var_318 = mysqli_fetch_assoc($query);
     $count = 0;
     $var_423 = "\r\n\t<table>\r\n\t\t<tr>\t";
-    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT gid, title, cansettingspanel, canstaffpanel, issupermod, namestyle FROM usergroups WHERE $isbanned = 'no' ORDER by disporder ASC");
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT gid, title, cansettingspanel, canstaffpanel, issupermod, namestyle FROM usergroups WHERE `isbanned` = 'no' ORDER by disporder ASC");
     while ($var_424 = mysqli_fetch_assoc($query)) {
         if (!($var_424["cansettingspanel"] == "yes" && $var_318["cansettingspanel"] != "yes" || $var_424["canstaffpanel"] == "yes" && $var_318["canstaffpanel"] != "yes" || $var_424["issupermod"] == "yes" && $var_318["issupermod"] != "yes")) {
             if ($count && $count % 8 == 0) {
@@ -346,7 +346,7 @@ function sendPrivateMessage($receiver = 0, $msg = "", $subject = "", $sender = 0
 {
     if (!($sender != 0 && !$sender || !$receiver || empty($msg))) {
         mysqli_query($GLOBALS["DatabaseConnect"], "\r\n\t\t\t\t\tINSERT INTO messages\r\n\t\t\t\t\t\t(sender, receiver, added, subject, msg, unread, saved, location)\r\n\t\t\t\t\t\tVALUES\r\n\t\t\t\t\t\t('" . $sender . "', '" . $receiver . "', NOW(), '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $subject) . "', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $msg) . "', '" . $unread . "', '" . $saved . "', '" . $location . "')\r\n\t\t\t\t\t");
-        mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET $pmunread = pmunread + 1 WHERE $id = '" . $receiver . "'");
+        mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET $pmunread = pmunread + 1 WHERE `id` = '" . $receiver . "'");
     }
 }
 

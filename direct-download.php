@@ -25,7 +25,7 @@ if (!$torrentId) {
 $torrentResult = sql_query("SELECT t.id, t.name, t.filename, t.anonymous, t.ts_external, t.size, t.owner, t.free, t.moderate, t.directdownloadlink, c.canview, c.candownload, u.username FROM torrents t LEFT JOIN categories c ON t.$category = c.id LEFT JOIN users u ON (t.$owner = u.id) WHERE t.$id = " . sqlesc($torrentId)) || sqlerr(__FILE__, 53);
 $torrentRow = mysqli_fetch_assoc($torrentResult);
 if ($torrentRow["owner"] != $CURUSER["id"]) {
-    ($userPermissionQuery = sql_query("SELECT candownload FROM ts_u_perm WHERE $userid = " . sqlesc($CURUSER["id"]))) || sqlerr(__FILE__, 58);
+    ($userPermissionQuery = sql_query("SELECT candownload FROM ts_u_perm WHERE `userid` = " . sqlesc($CURUSER["id"]))) || sqlerr(__FILE__, 58);
     if (0 < mysqli_num_rows($userPermissionQuery)) {
         $userDownloadPermission = mysqli_fetch_assoc($userPermissionQuery);
         if ($userDownloadPermission["candownload"] == "0") {
@@ -46,7 +46,7 @@ if (!$torrentRow) {
     print_download_error($lang->download["error1"]);
 }
 if ($thankbeforedl == "yes" && !$is_mod && $action_type != "rss" && $torrentRow["owner"] != $CURUSER["id"]) {
-    ($thanksQuery = sql_query("SELECT uid FROM ts_thanks WHERE $uid = " . sqlesc($CURUSER["id"]) . " AND $tid = " . sqlesc($torrentId))) || sqlerr(__FILE__, 89);
+    ($thanksQuery = sql_query("SELECT uid FROM ts_thanks WHERE `uid` = " . sqlesc($CURUSER["id"]) . " AND $tid = " . sqlesc($torrentId))) || sqlerr(__FILE__, 89);
     if (mysqli_num_rows($thanksQuery) == 0 && $torrentRow["owner"] != $CURUSER["id"]) {
         stderr($lang->global["error"], sprintf($lang->download["error4"], $BASEURL, $torrentId), false);
     }
@@ -54,7 +54,7 @@ if ($thankbeforedl == "yes" && !$is_mod && $action_type != "rss" && $torrentRow[
 if ($usergroups["candirectdownload"] != "yes" || !$torrentRow["directdownloadlink"]) {
     print_download_error();
 }
-sql_query("UPDATE torrents SET $hits = hits + 1 WHERE $id = " . sqlesc($torrentId)) || sqlerr(__FILE__, 99);
+sql_query("UPDATE torrents SET $hits = hits + 1 WHERE `id` = " . sqlesc($torrentId)) || sqlerr(__FILE__, 99);
 download($torrentRow["directdownloadlink"], 2000);
 function print_download_error($messsage = "")
 {

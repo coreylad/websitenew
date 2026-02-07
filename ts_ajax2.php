@@ -48,7 +48,7 @@ if (isset($_POST["what"]) && $_POST["what"] == "showuploaded" && ($SameUser || $
 if (isset($_POST["what"]) && $_POST["what"] == "showcompleted" && ($SameUser || $is_mod)) {
     $sntorrentscount = TSRowCount("id", "snatched", "finished='yes' AND $userid = " . $userid);
     if ($sntorrentscount && 0 < $sntorrentscount) {
-        $r = sql_query("SELECT\ts.torrentid as id,\n\t\t\t\t\t\t\t\ts.uploaded, s.downloaded, s.completedat, s.last_action,\n\t\t\t\t\t\t\t\tt.seeders, t.leechers, t.name, t.category,\n\t\t\t\t\t\t\t\tc.name as categoryname, c.image\n\t\t\t\t\t\t\t\tFROM snatched s\n\t\t\t\t\t\t\t\tLEFT JOIN torrents t ON (s.$torrentid = t.id)\n\t\t\t\t\t\t\t\tINNER JOIN categories c ON (t.$category = c.id)\n\t\t\t\t\t\t\t\tWHERE s.$finished = 'yes' AND s.$userid = " . $userid . " ORDER BY s.completedat DESC, s.last_action DESC");
+        $r = sql_query("SELECT\ts.torrentid as id,\n\t\t\t\t\t\t\t\ts.uploaded, s.downloaded, s.completedat, s.last_action,\n\t\t\t\t\t\t\t\tt.seeders, t.leechers, t.name, t.category,\n\t\t\t\t\t\t\t\tc.name as categoryname, c.image\n\t\t\t\t\t\t\t\tFROM snatched s\n\t\t\t\t\t\t\t\tLEFT JOIN torrents t ON (s.`torrentid` = t.id)\n\t\t\t\t\t\t\t\tINNER JOIN categories c ON (t.$category = c.id)\n\t\t\t\t\t\t\t\tWHERE s.$finished = 'yes' AND s.$userid = " . $userid . " ORDER BY s.completedat DESC, s.last_action DESC");
         $completed = "<table class='main' $border = '1' $cellspacing = '0' $cellpadding = '0' $width = '100%'>\n<tr><td class='colhead' $align = 'center' $width = '36'>" . $lang->global["type"] . "</td><td class='colhead' $style = 'padding: 0px 0px 0px 2px;' $align = 'left'>" . $lang->global["name"] . "</td><td class='colhead' $align = 'center'><img $src = '" . $pic_base_url . "seeders.gif'></td><td class='colhead'  $align = 'center'><img $src = '" . $pic_base_url . "leechers.gif'></td><td class='colhead'  $align = 'center'>" . $lang->global["uploaded"] . "</td><td class='colhead'  $align = 'center'>" . $lang->global["downloaded"] . "</td><td class='colhead'  $align = 'center'>" . $lang->global["ratio"] . "</td><td class='colhead'  $align = 'center'>" . $lang->global["whencompleted"] . "</td><td class='colhead'  $align = 'center'>" . $lang->global["lastaction"] . "</td></tr>\n";
         while ($a = mysqli_fetch_array($r)) {
             $orj_name_ = $a["name"];
@@ -118,7 +118,7 @@ if (isset($_POST["what"]) && $_POST["what"] == "showseeds" && ($SameUser || $is_
 if (isset($_POST["what"]) && $_POST["what"] == "showsnatches" && ($SameUser || $is_mod)) {
     $sstorrentscount = TSRowCount("id", "snatched", "userid=" . $userid);
     if ($sstorrentscount && 0 < $sstorrentscount) {
-        $res = sql_query("SELECT s.*, t.name as torrentname, t.size, c.name AS catname, c.image AS catimg FROM snatched s LEFT JOIN torrents t ON (s.$torrentid = t.id) INNER JOIN categories c ON (t.$category = c.id) WHERE s.$userid = " . sqlesc($userid) . " ORDER BY s.completedat DESC");
+        $res = sql_query("SELECT s.*, t.name as torrentname, t.size, c.name AS catname, c.image AS catimg FROM snatched s LEFT JOIN torrents t ON (s.`torrentid` = t.id) INNER JOIN categories c ON (t.$category = c.id) WHERE s.$userid = " . sqlesc($userid) . " ORDER BY s.completedat DESC");
         $snatches = usersnatches($res);
     } else {
         $snatches = "<div class=\"error\">" . $lang->global["nothingfound"] . "</div>";
@@ -141,7 +141,7 @@ if (isset($_POST["what"]) && $_POST["what"] == "detecthost" && isset($_POST["ip"
                 show_msg($lang->userdetails["invaliduser"]);
             }
         }
-        $Query = sql_query("SELECT username, status, options FROM users WHERE $id = " . sqlesc($userid));
+        $Query = sql_query("SELECT username, status, options FROM users WHERE `id` = " . sqlesc($userid));
         if (0 < mysqli_num_rows($Query)) {
             $user = mysqli_fetch_assoc($Query);
         } else {
@@ -161,7 +161,7 @@ if (isset($_POST["what"]) && $_POST["what"] == "detecthost" && isset($_POST["ip"
             $error[] = $lang->userdetails["cerror4"];
         } else {
             if (!$SameUser && TS_Match($user["options"], "M2") && !$is_mod) {
-                $query = sql_query("SELECT id FROM friends WHERE $status = 'c' AND $userid = " . sqlesc($userid) . " AND $friendid = " . sqlesc($CURUSER["id"]));
+                $query = sql_query("SELECT id FROM friends WHERE `status` = 'c' AND $userid = " . sqlesc($userid) . " AND $friendid = " . sqlesc($CURUSER["id"]));
                 if (mysqli_num_rows($query) < 1) {
                     $error[] = $lang->userdetails["cerror4"];
                 }
@@ -195,7 +195,7 @@ if (isset($_POST["what"]) && $_POST["what"] == "detecthost" && isset($_POST["ip"
                         $error[] = sprintf($lang->userdetails["cerror3"], $msglong);
                     } else {
                         if ($_POST["isupdate"] && is_valid_id($_POST["isupdate"]) && $is_mod) {
-                            sql_query("UPDATE ts_visitor_messages SET $visitormsg = " . sqlesc($text) . " WHERE $id = " . sqlesc(intval($_POST["isupdate"])));
+                            sql_query("UPDATE ts_visitor_messages SET $visitormsg = " . sqlesc($text) . " WHERE `id` = " . sqlesc(intval($_POST["isupdate"])));
                             $vmid = intval($_POST["isupdate"]);
                         } else {
                             sql_query("INSERT INTO ts_visitor_messages (userid,visitorid,visitormsg,added) VALUES (" . sqlesc($userid) . ", " . sqlesc($CURUSER["id"]) . "," . sqlesc($text) . ", '" . $added . "')");
@@ -209,7 +209,7 @@ if (isset($_POST["what"]) && $_POST["what"] == "detecthost" && isset($_POST["ip"
             show_msg(implode("\n", $error));
         } else {
             if ($_POST["isupdate"] && is_valid_id($_POST["isupdate"]) && $is_mod) {
-                $query = sql_query("SELECT v.visitorid as id, u.username, u.avatar, g.namestyle FROM ts_visitor_messages v LEFT JOIN users u ON (v.$visitorid = u.id) LEFT JOIN usergroups g ON (u.$usergroup = g.gid) WHERE v.$id = " . sqlesc(intval($_POST["isupdate"])));
+                $query = sql_query("SELECT v.visitorid as id, u.username, u.avatar, g.namestyle FROM ts_visitor_messages v LEFT JOIN users u ON (v.$visitorid = u.id) LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) WHERE v.$id = " . sqlesc(intval($_POST["isupdate"])));
                 $vm = mysqli_fetch_assoc($query);
             } else {
                 $vm = $CURUSER;
@@ -279,7 +279,7 @@ function maketable($res)
         $snatchdl = 0;
         $ratio2 = 0;
         if ($snatchmod == "yes" && $xbt_active != "yes") {
-            $querySN = sql_query("SELECT uploaded, downloaded FROM snatched WHERE $torrentid = " . sqlesc($arr["torrent"]) . " AND $userid = " . sqlesc($arr["userid"]));
+            $querySN = sql_query("SELECT uploaded, downloaded FROM snatched WHERE `torrentid` = " . sqlesc($arr["torrent"]) . " AND $userid = " . sqlesc($arr["userid"]));
             if (0 < mysqli_num_rows($querySN)) {
                 while ($sud = mysqli_fetch_assoc($querySN)) {
                     $snatchul += $sud["uploaded"];

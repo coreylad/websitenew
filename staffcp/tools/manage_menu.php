@@ -123,7 +123,7 @@ if ($Act == "delete_language" && ($lid = intval($_GET["lid"])) && ($lang = trim(
     mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM ts_menu_languages WHERE $lid = " . $lid . " AND  $language = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $lang) . "'");
     mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM ts_menu WHERE $language = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $lang) . "'");
     logStaffAction(str_replace("{1}", $_SESSION["ADMIN_USERNAME"], $Language[24]));
-    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'MAIN'");
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'MAIN'");
     $Result = mysqli_fetch_assoc($query);
     $MAIN = unserialize($Result["content"]);
     $filename = "../" . $MAIN["cache"] . "/menu_" . $lang . ".php";
@@ -343,7 +343,7 @@ function function_197($selected, $mid = 0)
 }
 function function_199($lang)
 {
-    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'MAIN'");
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'MAIN'");
     $Result = mysqli_fetch_assoc($query);
     $MAIN = unserialize($Result["content"]);
     $filename = "../" . $MAIN["cache"] . "/menu_" . $lang . ".php";
@@ -419,7 +419,7 @@ function function_200()
 }
 function function_198($usergroups)
 {
-    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT u.id, g.cansettingspanel, g.canstaffpanel, g.issupermod FROM users u LEFT JOIN usergroups g ON (u.$usergroup = g.gid) WHERE u.$id = '" . $_SESSION["ADMIN_ID"] . "' LIMIT 1");
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT u.id, g.cansettingspanel, g.canstaffpanel, g.issupermod FROM users u LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) WHERE u.$id = '" . $_SESSION["ADMIN_ID"] . "' LIMIT 1");
     $var_318 = mysqli_fetch_assoc($query);
     $count = 0;
     $var_423 = "\r\n\t<table>\r\n\t\t<tr>\t";

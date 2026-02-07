@@ -8,7 +8,7 @@
 
 var_235();
 $Language = file("languages/" . getStaffLanguage() . "/all_agents.lang");
-$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'ANNOUNCE'");
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'ANNOUNCE'");
 $Result = mysqli_fetch_assoc($query);
 $ANNOUNCE = unserialize($Result["content"]);
 $Message = "";

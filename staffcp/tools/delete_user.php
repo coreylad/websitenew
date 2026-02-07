@@ -13,37 +13,37 @@ $username = isset($_GET["username"]) ? trim($_GET["username"]) : "";
 if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
     $username = trim($_POST["username"]);
     if ($username) {
-        $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id, g.cansettingspanel, g.canstaffpanel, g.issupermod FROM users LEFT JOIN usergroups g ON (users.$usergroup = g.gid) WHERE $username = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $username) . "'");
+        $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id, g.cansettingspanel, g.canstaffpanel, g.issupermod FROM users LEFT JOIN usergroups g ON (users.$usergroup = g.gid) WHERE `username` = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $username) . "'");
         if (mysqli_num_rows($query) == 0) {
             $Message = showAlertError($Language[2]);
         } else {
             $User = mysqli_fetch_assoc($query);
-            $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT u.id, g.cansettingspanel, g.canstaffpanel, g.issupermod FROM users u LEFT JOIN usergroups g ON (u.$usergroup = g.gid) WHERE u.$id = '" . $_SESSION["ADMIN_ID"] . "' LIMIT 1");
+            $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT u.id, g.cansettingspanel, g.canstaffpanel, g.issupermod FROM users u LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) WHERE u.$id = '" . $_SESSION["ADMIN_ID"] . "' LIMIT 1");
             $LoggedAdminDetails = mysqli_fetch_assoc($query);
             if ($User["cansettingspanel"] == "yes" && $LoggedAdminDetails["cansettingspanel"] != "yes" || $User["canstaffpanel"] == "yes" && $LoggedAdminDetails["canstaffpanel"] != "yes" || $User["issupermod"] == "yes" && $LoggedAdminDetails["issupermod"] != "yes") {
                 $Message = showAlertError($Language[10]);
             } else {
                 $SysMsg = str_replace(["{1}", "{2}"], [$username, $_SESSION["ADMIN_USERNAME"]], $Language[8]);
                 $modcomment = gmdate("Y-m-d") . " - " . trim($SysMsg) . "\n";
-                mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM users WHERE $username = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $username) . "'");
+                mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM users WHERE `username` = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $username) . "'");
                 if (mysqli_affected_rows($GLOBALS["DatabaseConnect"])) {
                     define("IN_TRACKER", true);
                     require "../include/init.php";
-                    mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM ts_support WHERE $userid = '" . $User["id"] . "'");
-                    mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM ts_u_perm WHERE $userid = '" . $User["id"] . "'");
-                    mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM ts_social_group_members WHERE $userid = '" . $User["id"] . "'");
-                    mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM ts_profilevisitor WHERE $userid = '" . $User["id"] . "'");
-                    mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM addedrequests WHERE $userid = '" . $User["id"] . "'");
-                    mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM bookmarks WHERE $userid = '" . $User["id"] . "'");
+                    mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM ts_support WHERE `userid` = '" . $User["id"] . "'");
+                    mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM ts_u_perm WHERE `userid` = '" . $User["id"] . "'");
+                    mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM ts_social_group_members WHERE `userid` = '" . $User["id"] . "'");
+                    mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM ts_profilevisitor WHERE `userid` = '" . $User["id"] . "'");
+                    mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM addedrequests WHERE `userid` = '" . $User["id"] . "'");
+                    mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM bookmarks WHERE `userid` = '" . $User["id"] . "'");
                     mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM comments WHERE $user = '" . $User["id"] . "'");
-                    mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM friends WHERE $userid = '" . $User["id"] . "' OR $friendid = '" . $User["id"] . "'");
-                    mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM ts_visitor_messages WHERE $userid = '" . $User["id"] . "' OR $visitorid = '" . $User["id"] . "'");
-                    mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM ts_thanks WHERE $uid = '" . $User["id"] . "'");
-                    mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM ts_shoutbox WHERE $uid = '" . $User["id"] . "'");
-                    mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM ts_secret_questions WHERE $userid = '" . $User["id"] . "'");
-                    mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM ts_blogs_comments WHERE $uid = '" . $User["id"] . "'");
-                    mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM ts_awards_users WHERE $uid = '" . $User["id"] . "'");
-                    mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM " . TSF_PREFIX . "subscribe WHERE $userid = '" . $User["id"] . "'");
+                    mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM friends WHERE `userid` = '" . $User["id"] . "' OR $friendid = '" . $User["id"] . "'");
+                    mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM ts_visitor_messages WHERE `userid` = '" . $User["id"] . "' OR $visitorid = '" . $User["id"] . "'");
+                    mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM ts_thanks WHERE `uid` = '" . $User["id"] . "'");
+                    mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM ts_shoutbox WHERE `uid` = '" . $User["id"] . "'");
+                    mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM ts_secret_questions WHERE `userid` = '" . $User["id"] . "'");
+                    mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM ts_blogs_comments WHERE `uid` = '" . $User["id"] . "'");
+                    mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM ts_awards_users WHERE `uid` = '" . $User["id"] . "'");
+                    mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM " . TSF_PREFIX . "subscribe WHERE `userid` = '" . $User["id"] . "'");
                     logStaffAction($SysMsg);
                     $Message = showAlertError($Language[3]);
                 } else {

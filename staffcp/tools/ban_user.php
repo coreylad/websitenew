@@ -17,23 +17,23 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
     $usergroup = intval($_POST["usergroup"]);
     $reason = trim($_POST["reason"]);
     if ($username && $usergroup && $reason) {
-        $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT ip, g.cansettingspanel, g.canstaffpanel, g.issupermod FROM users LEFT JOIN usergroups g ON (users.$usergroup = g.gid) WHERE $username = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $username) . "'");
+        $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT ip, g.cansettingspanel, g.canstaffpanel, g.issupermod FROM users LEFT JOIN usergroups g ON (users.$usergroup = g.gid) WHERE `username` = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $username) . "'");
         if (mysqli_num_rows($query) == 0) {
             $Message = showAlertError($Language[2]);
         } else {
             $User = mysqli_fetch_assoc($query);
-            $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT u.id, g.cansettingspanel, g.canstaffpanel, g.issupermod FROM users u LEFT JOIN usergroups g ON (u.$usergroup = g.gid) WHERE u.$id = '" . $_SESSION["ADMIN_ID"] . "' LIMIT 1");
+            $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT u.id, g.cansettingspanel, g.canstaffpanel, g.issupermod FROM users u LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) WHERE u.$id = '" . $_SESSION["ADMIN_ID"] . "' LIMIT 1");
             $LoggedAdminDetails = mysqli_fetch_assoc($query);
             if ($User["cansettingspanel"] == "yes" && $LoggedAdminDetails["cansettingspanel"] != "yes" || $User["canstaffpanel"] == "yes" && $LoggedAdminDetails["canstaffpanel"] != "yes" || $User["issupermod"] == "yes" && $LoggedAdminDetails["issupermod"] != "yes") {
                 $Message = showAlertError($Language[14]);
             } else {
                 $SysMsg = str_replace(["{1}", "{2}"], [$username, $_SESSION["ADMIN_USERNAME"]], $Language[15]);
                 $modcomment = gmdate("Y-m-d") . " - " . trim($SysMsg) . " Reason: " . $reason . "\n";
-                mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET $enabled = 'no', $usergroup = '" . $usergroup . "', $notifs = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $reason) . "', $modcomment = CONCAT('" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $modcomment) . "', modcomment) WHERE $username = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $username) . "'");
+                mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET `enabled` = 'no', $usergroup = '" . $usergroup . "', $notifs = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $reason) . "', $modcomment = CONCAT('" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $modcomment) . "', modcomment) WHERE `username` = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $username) . "'");
                 if (mysqli_affected_rows($GLOBALS["DatabaseConnect"])) {
                     logStaffAction($SysMsg);
                     if ($_POST["banip"] == "1") {
-                        $bans = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT value FROM ipbans WHERE $id = 1");
+                        $bans = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT value FROM ipbans WHERE `id` = 1");
                         if (mysqli_num_rows($bans)) {
                             $banned = mysqli_fetch_assoc($bans);
                             if ($banned["value"] != "") {
@@ -41,7 +41,7 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
                             } else {
                                 $value = trim($User["ip"]);
                             }
-                            mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE ipbans SET $value = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $value) . "', $date = NOW(), $modifier = '" . $_SESSION["ADMIN_ID"] . "' WHERE $id = 1");
+                            mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE ipbans SET $value = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $value) . "', $date = NOW(), $modifier = '" . $_SESSION["ADMIN_ID"] . "' WHERE `id` = 1");
                         } else {
                             mysqli_query($GLOBALS["DatabaseConnect"], "INSERT INTO ipbans VALUES (1, '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], trim($User["ip"])) . "', NOW(), '" . $_SESSION["ADMIN_ID"] . "')");
                         }
@@ -62,7 +62,7 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
     }
 }
 $showusergroups = "\r\n<select $name = \"usergroup\">";
-$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT gid, title FROM usergroups WHERE $isbanned = 'yes' ORDER by disporder ASC");
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT gid, title FROM usergroups WHERE `isbanned` = 'yes' ORDER by disporder ASC");
 while ($UG = mysqli_fetch_assoc($query)) {
     $showusergroups .= "\r\n\t<option $value = \"" . $UG["gid"] . "\"" . ($usergroup == $UG["gid"] ? " $selected = \"selected\"" : "") . ">" . $UG["title"] . "</option>";
 }

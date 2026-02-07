@@ -16,7 +16,7 @@ if ($xbt_active == "yes" || !isset($CURUSER) || $CURUSER["id"] == 0) {
 }
 $reseedid = intval($_GET["reseedid"]);
 int_check($reseedid);
-($res = sql_query("SELECT s.uploaded, s.downloaded, s.userid, t.name, u.username, u.options FROM snatched s INNER JOIN torrents t ON (s.$torrentid = t.id) INNER JOIN users u ON (s.$userid = u.id) INNER JOIN usergroups g ON (u.$usergroup = g.gid) WHERE s.$finished = 'yes' AND s.$torrentid = '" . $reseedid . "' AND u.id != '" . $CURUSER["id"] . "' AND g.cansettingspanel != 'yes' AND g.canstaffpanel != 'yes' AND g.issupermod != 'yes' AND g.isvipgroup != 'yes'")) || sqlerr(__FILE__, 39);
+($res = sql_query("SELECT s.uploaded, s.downloaded, s.userid, t.name, u.username, u.options FROM snatched s INNER JOIN torrents t ON (s.`torrentid` = t.id) INNER JOIN users u ON (s.`userid` = u.id) INNER JOIN usergroups g ON (u.`usergroup` = g.gid) WHERE s.$finished = 'yes' AND s.$torrentid = '" . $reseedid . "' AND u.id != '" . $CURUSER["id"] . "' AND g.cansettingspanel != 'yes' AND g.canstaffpanel != 'yes' AND g.issupermod != 'yes' AND g.isvipgroup != 'yes'")) || sqlerr(__FILE__, 39);
 if (mysqli_num_rows($res) == 0) {
     stderr($lang->global["error"], $lang->takewhatever["takereseednouser"]);
 }

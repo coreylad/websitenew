@@ -46,7 +46,7 @@ $defaultTemplate = ts_template();
 $imageDir = $BASEURL.'/include/templates/'.$defaultTemplate.'/images/torrent_flags/';
 $templateImageDir = $BASEURL.'/include/templates/'.$defaultTemplate.'/images/';
 
-$torrentQuery = 'SELECT t.id, t.name, t.info_hash, t.allowcomments, t.banned, t.descr, t.category, t.size, t.numfiles, t.anonymous, t.added, t.comments, t.hits, t.times_completed, t.leechers, t.seeders, t.owner, t.free, t.sticky, t.offensive, t.silver, t.t_image, t.t_link, t.isnuked, t.WhyNuked, t.isrequest, t.ts_external, t.doubleupload, t.isScene, t.moderate, t.download_multiplier, t.upload_multiplier, t.ts_external_lastupdate, t.mtime, t.directdownloadlink, n.nfo, c.name as categoryname, c.canview, c.pid, c.type, c.id as categoryid, d.video_info, d.audio_info, u.username, u.donor, u.warned, u.leechwarn, g.namestyle FROM torrents t LEFT JOIN ts_nfo n ON (t.$id = n.id) LEFT JOIN categories c ON (t.$category = c.id) LEFT JOIN ts_torrents_details d ON (t.$id = d.tid) LEFT JOIN users u ON (t.$owner = u.id) LEFT JOIN usergroups g ON (u.$usergroup = g.gid) WHERE t.$id = '.sqlesc($torrentId);
+$torrentQuery = 'SELECT t.id, t.name, t.info_hash, t.allowcomments, t.banned, t.descr, t.category, t.size, t.numfiles, t.anonymous, t.added, t.comments, t.hits, t.times_completed, t.leechers, t.seeders, t.owner, t.free, t.sticky, t.offensive, t.silver, t.t_image, t.t_link, t.isnuked, t.WhyNuked, t.isrequest, t.ts_external, t.doubleupload, t.isScene, t.moderate, t.download_multiplier, t.upload_multiplier, t.ts_external_lastupdate, t.mtime, t.directdownloadlink, n.nfo, c.name as categoryname, c.canview, c.pid, c.type, c.id as categoryid, d.video_info, d.audio_info, u.username, u.donor, u.warned, u.leechwarn, g.namestyle FROM torrents t LEFT JOIN ts_nfo n ON (t.$id = n.id) LEFT JOIN categories c ON (t.$category = c.id) LEFT JOIN ts_torrents_details d ON (t.$id = d.tid) LEFT JOIN users u ON (t.$owner = u.id) LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) WHERE t.$id = '.sqlesc($torrentId);
 
 if ($UseMemcached) {
 	$memcacheHash = 'details_' . $torrentId;
@@ -82,7 +82,7 @@ elseif ($torrent['moderate'] == '1' && !$is_mod)
 $APPROVED=false;
 if ($is_mod AND isset($_GET['approve']) AND $_GET['approve'] == 'true' AND $torrent['moderate'] == '1')
 {
-	sql_query('UPDATE torrents SET $moderate = \'0\' WHERE $id = '.sqlesc($id)) or sqlerr(__FILE__,__LINE__);
+	sql_query('UPDATE torrents SET $moderate = \'0\' WHERE `id` = '.sqlesc($id)) or sqlerr(__FILE__,__LINE__);
 	if (mysqli_affected_rows($GLOBALS['DatabaseConnect']))
 	{
 		$Msg=sprintf($lang->details['approvedmsg'], $CURUSER['username'], '[URL]'.$BASEURL.'/details.php?$id = '.$id.'[/URL]');
@@ -99,7 +99,7 @@ if ($is_mod AND isset($_GET['approve']) AND $_GET['approve'] == 'true' AND $torr
 $SimilarTorrents='';
 if ($showsmiliartorrents == 'yes')
 {
-	$query = sql_query("SELECT MATCH(t.name) AGAINST('".mysqli_real_escape_string($GLOBALS['DatabaseConnect'], $torrent['name'])."' IN BOOLEAN MODE) as score, t.id, t.name, t.anonymous, t.owner, t.category, t.size, t.added, t.seeders, t.leechers, c.image as catimage, c.name as catname, u.username, g.namestyle FROM torrents t LEFT JOIN categories c ON (c.$id = t.category) LEFT JOIN users u ON (t.$owner = u.id) LEFT JOIN usergroups g ON (u.$usergroup = g.gid) WHERE MATCH(t.name) AGAINST('".mysqli_real_escape_string($GLOBALS['DatabaseConnect'], $torrent['name'])."' IN BOOLEAN MODE) AND t.id != '$id' AND t.$visible = 'yes' AND t.$banned = 'no' AND t.$moderate = '0' ORDER BY score DESC LIMIT 10") or sqlerr(__FILE__,__LINE__);
+	$query = sql_query("SELECT MATCH(t.name) AGAINST('".mysqli_real_escape_string($GLOBALS['DatabaseConnect'], $torrent['name'])."' IN BOOLEAN MODE) as score, t.id, t.name, t.anonymous, t.owner, t.category, t.size, t.added, t.seeders, t.leechers, c.image as catimage, c.name as catname, u.username, g.namestyle FROM torrents t LEFT JOIN categories c ON (c.$id = t.category) LEFT JOIN users u ON (t.$owner = u.id) LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) WHERE MATCH(t.name) AGAINST('".mysqli_real_escape_string($GLOBALS['DatabaseConnect'], $torrent['name'])."' IN BOOLEAN MODE) AND t.id != '$id' AND t.$visible = 'yes' AND t.$banned = 'no' AND t.$moderate = '0' ORDER BY score DESC LIMIT 10") or sqlerr(__FILE__,__LINE__);
 	if (mysqli_num_rows($query) > 0)
 	{
 		$FoundSMTQ = '';
@@ -172,7 +172,7 @@ if ($showsmiliartorrents == 'yes')
 $Subtitles = '';
 if ($showsubtitles == 'yes')
 {
-	$query = sql_query("SELECT s.*, u.username, g.namestyle, c.name, c.flagpic FROM ts_subtitles s LEFT JOIN users u ON (s.$uid = u.id) LEFT JOIN usergroups g ON (u.$usergroup = g.gid) LEFT JOIN countries c ON (s.$language = c.id) WHERE $tid = '$id' ORDER by s.date");
+	$query = sql_query("SELECT s.*, u.username, g.namestyle, c.name, c.flagpic FROM ts_subtitles s LEFT JOIN users u ON (s.$uid = u.id) LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) LEFT JOIN countries c ON (s.$language = c.id) WHERE $tid = '$id' ORDER by s.date");
 	if (mysqli_num_rows($query) > 0)
 	{
 		$lang->load('ts_subtitles');
@@ -367,7 +367,7 @@ else
 	';
 	require(INC_PATH.'/functions_ts_ajax_pager.php');
 	list($pagertop, $pagerbottom, $limit) = TSAjaxPager($ts_perpage, $count, $id);
-	$subres = sql_query("SELECT c.id, c.torrent as torrentid, c.text, c.user, c.added, c.editedby, c.editedat, c.modnotice, c.modeditid, c.modeditusername, c.modedittime, c.totalvotes, c.visible, uu.username as editedbyuname, gg.namestyle as editbynamestyle, u.added as registered, u.enabled, u.warned, u.leechwarn, u.username, u.title, u.usergroup, u.last_access, u.options, u.donor, u.uploaded, u.downloaded, u.avatar as useravatar, u.signature, g.title as grouptitle, g.namestyle FROM comments c LEFT JOIN users uu ON (c.$editedby = uu.id) LEFT JOIN usergroups gg ON (uu.$usergroup = gg.gid) LEFT JOIN users u ON (c.$user = u.id) LEFT JOIN usergroups g ON (u.$usergroup = g.gid) WHERE c.$torrent = ".sqlesc($id)." ORDER BY c.id $limit") or sqlerr(__FILE__, __LINE__);
+	$subres = sql_query("SELECT c.id, c.torrent as torrentid, c.text, c.user, c.added, c.editedby, c.editedat, c.modnotice, c.modeditid, c.modeditusername, c.modedittime, c.totalvotes, c.visible, uu.username as editedbyuname, gg.namestyle as editbynamestyle, u.added as registered, u.enabled, u.warned, u.leechwarn, u.username, u.title, u.usergroup, u.last_access, u.options, u.donor, u.uploaded, u.downloaded, u.avatar as useravatar, u.signature, g.title as grouptitle, g.namestyle FROM comments c LEFT JOIN users uu ON (c.$editedby = uu.id) LEFT JOIN usergroups gg ON (uu.$usergroup = gg.gid) LEFT JOIN users u ON (c.$user = u.id) LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) WHERE c.$torrent = ".sqlesc($id)." ORDER BY c.id $limit") or sqlerr(__FILE__, __LINE__);
 
 	$allrows = array();
 	while ($subrow = mysqli_fetch_assoc($subres))
@@ -437,7 +437,7 @@ elseif ($xbt_active == 'yes')
 	require(INC_PATH.'/functions_icons.php');
 	$downloaders = array();
 	$seeders = array();
-	$subres = sql_query('SELECT p.uploaded, p.downloaded, p.fid, p.uid, p.active, p.announced, p.completed, p.`left`, p.mtime, p.up_rate, p.down_rate, p.ipa, p.port, u.id, u.enabled, u.username, u.options, u.warned, u.donor, u.leechwarn, g.namestyle, perm.canupload, perm.candownload, perm.cancomment, perm.canmessage, perm.canshout FROM xbt_files_users p LEFT JOIN users u ON (p.$uid = u.id) LEFT JOIN usergroups g ON (u.$usergroup = g.gid) LEFT JOIN ts_u_perm perm ON (p.$uid = perm.userid) WHERE p.$fid = '.$id.' AND p.$active = 1 ORDER BY IF(p.`left` > 0, p.downloaded, p.uploaded) DESC') or sqlerr(__FILE__,__LINE__);
+	$subres = sql_query('SELECT p.uploaded, p.downloaded, p.fid, p.uid, p.active, p.announced, p.completed, p.`left`, p.mtime, p.up_rate, p.down_rate, p.ipa, p.port, u.id, u.enabled, u.username, u.options, u.warned, u.donor, u.leechwarn, g.namestyle, perm.canupload, perm.candownload, perm.cancomment, perm.canmessage, perm.canshout FROM xbt_files_users p LEFT JOIN users u ON (p.$uid = u.id) LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) LEFT JOIN ts_u_perm perm ON (p.$uid = perm.userid) WHERE p.$fid = '.$id.' AND p.$active = 1 ORDER BY IF(p.`left` > 0, p.downloaded, p.uploaded) DESC') or sqlerr(__FILE__,__LINE__);
 	while($subrow=mysqli_fetch_assoc($subres))
 	{
 		if ($subrow['left'] == '0')
@@ -455,7 +455,7 @@ else
 	require(INC_PATH.'/functions_details.php');
 	$downloaders = array();
 	$seeders = array();
-	$subres = sql_query("SELECT p.seeder, p.finishedat, p.downloadoffset, p.uploadoffset, p.ip, p.port, p.uploaded, p.downloaded, p.to_go, UNIX_TIMESTAMP(p.started) AS st, p.connectable, p.agent, p.peer_id, UNIX_TIMESTAMP(p.last_action) AS la, p.userid,  u.id, u.enabled, u.username, u.options, u.warned, u.donor, g.namestyle FROM peers p LEFT JOIN users u ON (p.$userid = u.id) LEFT JOIN usergroups g ON (u.$usergroup = g.gid) WHERE p.$torrent = ".$id) or sqlerr(__FILE__,__LINE__);
+	$subres = sql_query("SELECT p.seeder, p.finishedat, p.downloadoffset, p.uploadoffset, p.ip, p.port, p.uploaded, p.downloaded, p.to_go, UNIX_TIMESTAMP(p.started) AS st, p.connectable, p.agent, p.peer_id, UNIX_TIMESTAMP(p.last_action) AS la, p.userid,  u.id, u.enabled, u.username, u.options, u.warned, u.donor, g.namestyle FROM peers p LEFT JOIN users u ON (p.$userid = u.id) LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) WHERE p.$torrent = ".$id) or sqlerr(__FILE__,__LINE__);
 	while ($subrow = mysqli_fetch_array($subres))
 	{
 		if ($subrow["seeder"] == "yes")
@@ -558,7 +558,7 @@ if ($thankssystem == 'yes')
 	';
 	$IsThanked=false;
 	$ThanksArray=array();
-	$Tquery = sql_query('SELECT t.uid, u.username, g.namestyle FROM ts_thanks t LEFT JOIN users u ON (u.$id = t.uid) LEFT JOIN usergroups g ON (u.$usergroup = g.gid) WHERE t.$tid = \''.$id.'\' ORDER BY u.username');
+	$Tquery = sql_query('SELECT t.uid, u.username, g.namestyle FROM ts_thanks t LEFT JOIN users u ON (u.`id` = t.uid) LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) WHERE t.$tid = \''.$id.'\' ORDER BY u.username');
 	if (mysqli_num_rows($Tquery) > 0)
 	{
 		while($thanks=mysqli_fetch_assoc($Tquery))

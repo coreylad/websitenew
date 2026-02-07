@@ -46,7 +46,7 @@ if ($Data = file_get_contents($externaltorrent)) {
                 }
             }
         }
-        sql_query("UPDATE torrents SET $seeders = " . sqlesc(0 + $seeders) . ", $leechers = " . sqlesc(0 + $leechers) . ", $times_completed = " . sqlesc(0 + $times_completed) . ", $ts_external_lastupdate = UNIX_TIMESTAMP() WHERE $id = " . sqlesc($id));
+        sql_query("UPDATE torrents SET $seeders = " . sqlesc(0 + $seeders) . ", $leechers = " . sqlesc(0 + $leechers) . ", $times_completed = " . sqlesc(0 + $times_completed) . ", $ts_external_lastupdate = UNIX_TIMESTAMP() WHERE `id` = " . sqlesc($id));
     }
 }
 function isUDP($url)

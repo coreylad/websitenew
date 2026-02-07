@@ -12,7 +12,7 @@ $Message = "";
 $Act = isset($_GET["act"]) ? trim($_GET["act"]) : (isset($_POST["act"]) ? trim($_POST["act"]) : "");
 $id = isset($_GET["id"]) ? intval($_GET["id"]) : (isset($_POST["id"]) ? intval($_POST["id"]) : 0);
 if ($Act == "view_msg" && $id) {
-    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT msg, subject FROM staffmessages WHERE $id = \"" . $id . "\"");
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT msg, subject FROM staffmessages WHERE `id` = \"" . $id . "\"");
     if (mysqli_num_rows($query)) {
         $Result = mysqli_fetch_assoc($query);
         $msgtext = function_114($Result["msg"]);
@@ -21,7 +21,7 @@ if ($Act == "view_msg" && $id) {
     }
 } else {
     if ($Act == "view_reply" && $id) {
-        $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT answer, subject FROM staffmessages WHERE $id = \"" . $id . "\"");
+        $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT answer, subject FROM staffmessages WHERE `id` = \"" . $id . "\"");
         if (mysqli_num_rows($query)) {
             $Result = mysqli_fetch_assoc($query);
             $msgtext = function_114($Result["answer"]);
@@ -39,7 +39,7 @@ if ($Act == "view_msg" && $id) {
                 if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
                     if (isset($_POST["answer"]) && !empty($_POST["answer"])) {
                         $answer = $_POST["answer"];
-                        mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE staffmessages SET $answeredby = \"" . $_SESSION["ADMIN_ID"] . "\", $answer = \"" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $answer) . "\" WHERE $id = \"" . $id . "\"");
+                        mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE staffmessages SET $answeredby = \"" . $_SESSION["ADMIN_ID"] . "\", $answer = \"" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $answer) . "\" WHERE `id` = \"" . $id . "\"");
                         var_237($StaffMsg["sender"], $answer, $Language[17], $_SESSION["ADMIN_ID"]);
                         redirectTo("index.php?do=staff_messages&$id = " . $id);
                     } else {
@@ -69,7 +69,7 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
 }
 $results = mysqli_num_rows(mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM staffmessages"));
 list($pagertop, $limit) = buildPaginationLinks(25, $results, $_SERVER["SCRIPT_NAME"] . "?do=staff_messages&amp;");
-$sql = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT s.*, u.username, g.namestyle, uu.username as aby, gg.namestyle as ans FROM staffmessages s LEFT JOIN users u ON (s.$sender = u.id) LEFT JOIN usergroups g ON (u.$usergroup = g.gid) LEFT JOIN users uu ON (s.$answeredby = uu.id) LEFT JOIN usergroups gg ON (uu.$usergroup = gg.gid) ORDER BY s.added DESC " . $limit);
+$sql = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT s.*, u.username, g.namestyle, uu.username as aby, gg.namestyle as ans FROM staffmessages s LEFT JOIN users u ON (s.$sender = u.id) LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) LEFT JOIN users uu ON (s.$answeredby = uu.id) LEFT JOIN usergroups gg ON (uu.$usergroup = gg.gid) ORDER BY s.added DESC " . $limit);
 if (mysqli_num_rows($sql) == 0) {
     echo "\r\n\t\r\n\t" . showAlertError($Language[4]);
 } else {
@@ -102,7 +102,7 @@ class Class_6
     }
     public function function_115()
     {
-        $var_281 = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = \"MAIN\"");
+        $var_281 = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = \"MAIN\"");
         $Result = mysqli_fetch_assoc($var_281);
         $this->Settings = unserialize($Result["content"]);
     }
@@ -430,7 +430,7 @@ function loadTinyMCEEditor($type = 1, $mode = "textareas", $elements = "")
     define("TINYMCE_ELEMENTS", $elements);
     define("WORKPATH", "./../scripts/");
     define("TINYMCE_EMOTIONS_URL", "./../tinymce_emotions.php");
-    $var_281 = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = \"MAIN\"");
+    $var_281 = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = \"MAIN\"");
     $Result = mysqli_fetch_assoc($var_281);
     $var_27 = unserialize($Result["content"]);
     $var_282 = $var_27["pic_base_url"];
@@ -602,7 +602,7 @@ function sendPrivateMessage($receiver = 0, $msg = "", $subject = "", $sender = 0
 {
     if (!($sender != 0 && !$sender || !$receiver || empty($msg))) {
         mysqli_query($GLOBALS["DatabaseConnect"], "\r\n\t\t\t\t\tINSERT INTO messages\r\n\t\t\t\t\t\t(sender, receiver, added, subject, msg, unread, saved, location)\r\n\t\t\t\t\t\tVALUES\r\n\t\t\t\t\t\t('" . $sender . "', '" . $receiver . "', NOW(), '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $subject) . "', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $msg) . "', '" . $unread . "', '" . $saved . "', '" . $location . "')\r\n\t\t\t\t\t");
-        mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET $pmunread = pmunread + 1 WHERE $id = '" . $receiver . "'");
+        mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET $pmunread = pmunread + 1 WHERE `id` = '" . $receiver . "'");
     }
 }
 function function_114($message, $htmlspecialchars_uni = true, $noshoutbox = true, $xss_clean = true, $show_smilies = true, $imagerel = "posts")

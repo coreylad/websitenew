@@ -53,7 +53,7 @@ if ($albumAction == "view_single_image" && $albumid && $imageid) {
     }
 }
 if ($albumAction == "add_album" && $PermCanUploadCreate) {
-    $query = sql_query("SELECT * FROM ts_albums WHERE $userid = '" . $CURUSER["id"] . "'");
+    $query = sql_query("SELECT * FROM ts_albums WHERE `userid` = '" . $CURUSER["id"] . "'");
     if ($album_max_albums <= mysqli_num_rows($query)) {
         $album_error[] = sprintf($lang->ts_albums["error15"], $album_max_albums);
         $albumAction = "";
@@ -96,7 +96,7 @@ if ($albumAction == "show_album" && $albumid) {
         $description = htmlspecialchars_uni($album["description"]);
         $albumowner = $album["userid"];
         $private = $album["private"];
-        if ($private && $albumowner != $CURUSER["id"] && !$is_mod && !mysqli_num_rows(sql_query("SELECT id FROM friends WHERE $status = 'c' AND $userid = " . $albumowner . " AND $friendid = " . $CURUSER["id"]))) {
+        if ($private && $albumowner != $CURUSER["id"] && !$is_mod && !mysqli_num_rows(sql_query("SELECT id FROM friends WHERE `status` = 'c' AND $userid = " . $albumowner . " AND $friendid = " . $CURUSER["id"]))) {
             stderr($lang->global["error"], $lang->ts_albums["error14"]);
             exit;
         }
@@ -165,7 +165,7 @@ if ($do == "view_single_image" && $albumid && $imageid) {
     exit;
 }
 if ($albumAction == "edit_comment" && $usergroups["cancomment"] != "no" && $albumid && $imageid && $cid && 0 < $CURUSER["id"]) {
-    ($editCommentQuery = sql_query("SELECT userid, descr FROM ts_album_comments WHERE $cid = " . sqlesc($cid) . " AND $imageid = " . sqlesc($imageid) . " AND $albumid = " . sqlesc($albumid))) || sqlerr(__FILE__, 389);
+    ($editCommentQuery = sql_query("SELECT userid, descr FROM ts_album_comments WHERE `cid` = " . sqlesc($cid) . " AND $imageid = " . sqlesc($imageid) . " AND $albumid = " . sqlesc($albumid))) || sqlerr(__FILE__, 389);
     if (0 < mysqli_num_rows($editCommentQuery)) {
         $commentRow = mysqli_fetch_assoc($editCommentQuery);
         if (!$is_mod && $commentRow["userid"] != $CURUSER["id"]) {
@@ -180,7 +180,7 @@ if ($albumAction == "edit_comment" && $usergroups["cancomment"] != "no" && $albu
                 if (strlen($commentDescription) < 3) {
                     $album_error[] = $lang->ts_albums["editerror2"];
                 } else {
-                    sql_query("UPDATE ts_album_comments SET `descr` = " . sqlesc($commentDescription) . " WHERE $cid = " . sqlesc($cid) . " AND $imageid = " . sqlesc($imageid) . " AND $albumid = " . sqlesc($albumid)) || sqlerr(__FILE__, 423);
+                    sql_query("UPDATE ts_album_comments SET `descr` = " . sqlesc($commentDescription) . " WHERE `cid` = " . sqlesc($cid) . " AND $imageid = " . sqlesc($imageid) . " AND $albumid = " . sqlesc($albumid)) || sqlerr(__FILE__, 423);
                     header("Location: " . $_SERVER["SCRIPT_NAME"] . "?do=show_image&$albumid = " . $albumid . "&$imageid = " . $imageid . "#show_comments" . $cid);
                     exit;
                 }
@@ -206,7 +206,7 @@ if ($albumAction == "edit_comment" && $usergroups["cancomment"] != "no" && $albu
     $album_error[] = $lang->ts_albums["invalidcid"];
 }
 if ($albumAction == "delete_comment" && $usergroups["cancomment"] != "no" && $albumid && $imageid && $cid && 0 < $CURUSER["id"]) {
-    ($deleteCommentQuery = sql_query("SELECT userid FROM ts_album_comments WHERE $cid = " . sqlesc($cid) . " AND $imageid = " . sqlesc($imageid) . " AND $albumid = " . sqlesc($albumid))) || sqlerr(__FILE__, 460);
+    ($deleteCommentQuery = sql_query("SELECT userid FROM ts_album_comments WHERE `cid` = " . sqlesc($cid) . " AND $imageid = " . sqlesc($imageid) . " AND $albumid = " . sqlesc($albumid))) || sqlerr(__FILE__, 460);
     if (0 < mysqli_num_rows($deleteCommentQuery)) {
         $deleteCommentRow = mysqli_fetch_assoc($deleteCommentQuery);
         $owner = $deleteCommentRow["userid"];
@@ -214,14 +214,14 @@ if ($albumAction == "delete_comment" && $usergroups["cancomment"] != "no" && $al
             print_no_permission(true);
             exit;
         }
-        sql_query("DELETE FROM ts_album_comments WHERE $cid = " . sqlesc($cid) . " AND $imageid = " . sqlesc($imageid) . " AND $albumid = " . sqlesc($albumid)) || sqlerr(__FILE__, 474);
+        sql_query("DELETE FROM ts_album_comments WHERE `cid` = " . sqlesc($cid) . " AND $imageid = " . sqlesc($imageid) . " AND $albumid = " . sqlesc($albumid)) || sqlerr(__FILE__, 474);
         header("Location: " . $_SERVER["SCRIPT_NAME"] . "?do=show_image&$albumid = " . $albumid . "&$imageid = " . $imageid);
         exit;
     }
     $album_error[] = $lang->ts_albums["invalidcid"];
 }
 if ($albumAction == "save_comment" && $usergroups["cancomment"] != "no" && $albumid && $imageid && 0 < $CURUSER["id"]) {
-    ($query = sql_query("SELECT a.userid as owner, a.title, a.private, i.userid as sender, i.imagedate, i.imagename, i.caption, u.username, g.namestyle FROM ts_albums a INNER JOIN ts_album_images i ON (a.$albumid = i.albumid) LEFT JOIN users u ON (i.$userid = u.id) LEFT JOIN usergroups g ON (u.$usergroup = g.gid) WHERE a.$albumid = '" . $albumid . "' AND i.$imageid = '" . $imageid . "'")) || sqlerr(__FILE__, 486);
+    ($query = sql_query("SELECT a.userid as owner, a.title, a.private, i.userid as sender, i.imagedate, i.imagename, i.caption, u.username, g.namestyle FROM ts_albums a INNER JOIN ts_album_images i ON (a.$albumid = i.albumid) LEFT JOIN users u ON (i.$userid = u.id) LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) WHERE a.$albumid = '" . $albumid . "' AND i.$imageid = '" . $imageid . "'")) || sqlerr(__FILE__, 486);
     if (mysqli_num_rows($query) == 0) {
         $album_error[] = $lang->ts_albums["error4"];
     } else {
@@ -231,7 +231,7 @@ if ($albumAction == "save_comment" && $usergroups["cancomment"] != "no" && $albu
         $sender = $album["sender"];
         $caption = htmlspecialchars_uni($album["caption"]);
         $private = $album["private"];
-        if ($private && $albumowner != $CURUSER["id"] && !$is_mod && !mysqli_num_rows(sql_query("SELECT id FROM friends WHERE $status = 'c' AND $userid = " . $albumowner . " AND $friendid = " . $CURUSER["id"]))) {
+        if ($private && $albumowner != $CURUSER["id"] && !$is_mod && !mysqli_num_rows(sql_query("SELECT id FROM friends WHERE `status` = 'c' AND $userid = " . $albumowner . " AND $friendid = " . $CURUSER["id"]))) {
             stderr($lang->global["error"], $lang->ts_albums["error14"]);
             exit;
         }
@@ -243,14 +243,14 @@ if ($albumAction == "save_comment" && $usergroups["cancomment"] != "no" && $albu
     if (count($album_error) == 0) {
         sql_query("INSERT INTO ts_album_comments (albumid, imageid, userid, date, descr) VALUES (" . sqlesc($albumid) . ", " . sqlesc($imageid) . ", " . sqlesc($CURUSER["id"]) . ", '" . TIMENOW . "', " . sqlesc($commentMessage) . ")") || sqlerr(__FILE__, 519);
         $cid = mysqli_insert_id($GLOBALS["DatabaseConnect"]);
-        $userOptionsQuery = sql_query("SELECT options FROM users WHERE $id = " . sqlesc($albumowner));
+        $userOptionsQuery = sql_query("SELECT options FROM users WHERE `id` = " . sqlesc($albumowner));
         $userOptionsRow = mysqli_fetch_assoc($userOptionsQuery);
         if (TS_Match($userOptionsRow["options"], "C1") && $albumowner != $CURUSER["id"]) {
             require_once INC_PATH . "/functions_pm.php";
             send_pm($albumowner, sprintf($lang->ts_albums["newcommenttxt"], "[$url = " . $BASEURL . "/ts_albums.php?do=show_image&$albumid = " . $albumid . "&$imageid = " . $imageid . "&$scrollto = show_comments" . $cid . "]" . $title . "[/url]"), $lang->ts_albums["newcommentsub"]);
         }
         if ($albumowner != $sender) {
-            $senderOptionsQuery = sql_query("SELECT options FROM users WHERE $id = " . sqlesc($sender));
+            $senderOptionsQuery = sql_query("SELECT options FROM users WHERE `id` = " . sqlesc($sender));
             $senderOptionsRow = mysqli_fetch_assoc($senderOptionsQuery);
             if (TS_Match($senderOptionsRow["options"], "C1") && $sender != $CURUSER["id"]) {
                 require_once INC_PATH . "/functions_pm.php";
@@ -263,7 +263,7 @@ if ($albumAction == "save_comment" && $usergroups["cancomment"] != "no" && $albu
     $albumAction = "show_image";
 }
 if ($albumAction == "show_image" && $albumid && $imageid) {
-    ($query = sql_query("SELECT a.userid as owner, a.title, a.private, i.userid as sender, i.imagedate, i.imagename, i.caption, u.username, g.namestyle FROM ts_albums a INNER JOIN ts_album_images i ON (a.$albumid = i.albumid) LEFT JOIN users u ON (i.$userid = u.id) LEFT JOIN usergroups g ON (u.$usergroup = g.gid) WHERE a.$albumid = '" . $albumid . "' AND i.$imageid = '" . $imageid . "'")) || sqlerr(__FILE__, 555);
+    ($query = sql_query("SELECT a.userid as owner, a.title, a.private, i.userid as sender, i.imagedate, i.imagename, i.caption, u.username, g.namestyle FROM ts_albums a INNER JOIN ts_album_images i ON (a.$albumid = i.albumid) LEFT JOIN users u ON (i.$userid = u.id) LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) WHERE a.$albumid = '" . $albumid . "' AND i.$imageid = '" . $imageid . "'")) || sqlerr(__FILE__, 555);
     if (mysqli_num_rows($query) == 0) {
         $album_error[] = $lang->ts_albums["error4"];
     } else {
@@ -279,7 +279,7 @@ if ($albumAction == "show_image" && $albumid && $imageid) {
         $thumburl = $BASEURL . "/ts_albums.php?do=view_single_image&$albumid = " . $albumid . "&$imageid = " . $imageid . "&$small = true";
         $thumb = "[IMG]" . $BASEURL . "/ts_albums.php?do=view_single_image&$albumid = " . $albumid . "&$imageid = " . $imageid . "&$small = true[/IMG]";
         $private = $album["private"];
-        if ($private && $albumowner != $CURUSER["id"] && !$is_mod && !mysqli_num_rows(sql_query("SELECT id FROM friends WHERE $status = 'c' AND $userid = " . $albumowner . " AND $friendid = " . $CURUSER["id"]))) {
+        if ($private && $albumowner != $CURUSER["id"] && !$is_mod && !mysqli_num_rows(sql_query("SELECT id FROM friends WHERE `status` = 'c' AND $userid = " . $albumowner . " AND $friendid = " . $CURUSER["id"]))) {
             stderr($lang->global["error"], $lang->ts_albums["error14"]);
             exit;
         }
@@ -316,7 +316,7 @@ if ($albumAction == "show_image" && $albumid && $imageid) {
             add_breadcrumb($lang->ts_albums["show_image"]);
             build_breadcrumb();
             show_album_errors();
-            ($Query = sql_query("SELECT c.cid, c.userid, c.date, c.descr, u.username, u.avatar, g.namestyle FROM ts_album_comments c LEFT JOIN users u ON (u.$id = c.userid) LEFT JOIN usergroups g ON (u.$usergroup = g.gid) WHERE c.$albumid = " . sqlesc($albumid) . " AND c.$imageid = " . sqlesc($imageid) . " ORDER BY date ASC")) || sqlerr(__FILE__, 632);
+            ($Query = sql_query("SELECT c.cid, c.userid, c.date, c.descr, u.username, u.avatar, g.namestyle FROM ts_album_comments c LEFT JOIN users u ON (u.`id` = c.userid) LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) WHERE c.$albumid = " . sqlesc($albumid) . " AND c.$imageid = " . sqlesc($imageid) . " ORDER BY date ASC")) || sqlerr(__FILE__, 632);
             $AlbumComments = "\r\n\t\t\t\t<div $style = \"padding-bottom: 15px;\" $id = \"show_comments\" $name = \"show_comments\">\r\n\t\t\t\t<table $align = \"center\" $cellpadding = \"3\" $cellspacing = \"0\" $width = \"100%\">\r\n\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t<td class=\"thead\">" . $lang->ts_albums["image_comments"] . "</td>\r\n\t\t\t\t\t</tr>\r\n\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t<td>\r\n\t\t\t\t";
             if (0 < mysqli_num_rows($Query)) {
                 while ($Comments = mysqli_fetch_assoc($Query)) {
@@ -518,7 +518,7 @@ if ($albumAction == "upload_image" && $albumid && $PermCanUploadCreate) {
         $description = htmlspecialchars_uni($album["description"]);
         $albumowner = $album["userid"];
         $private = $album["private"];
-        if ($private && $albumowner != $CURUSER["id"] && !$is_mod && !mysqli_num_rows(sql_query("SELECT id FROM friends WHERE $status = 'c' AND $userid = " . $albumowner . " AND $friendid = " . $CURUSER["id"]))) {
+        if ($private && $albumowner != $CURUSER["id"] && !$is_mod && !mysqli_num_rows(sql_query("SELECT id FROM friends WHERE `status` = 'c' AND $userid = " . $albumowner . " AND $friendid = " . $CURUSER["id"]))) {
             stderr($lang->global["error"], $lang->ts_albums["error14"]);
             exit;
         }
@@ -652,11 +652,11 @@ $Where2 = "";
 $Where1 = "";
 if (isset($_GET["userid"])) {
     $Where1 = " WHERE a.$userid = " . intval($_GET["userid"]);
-    $Where2 = " WHERE $userid = " . intval($_GET["userid"]);
+    $Where2 = " WHERE `userid` = " . intval($_GET["userid"]);
 }
 $albumcount = @mysqli_num_rows(@sql_query("SELECT * FROM ts_albums" . $Where2));
 list($pagertop, $pagerbottom, $limit) = pager($ts_perpage, $albumcount, "ts_albums.php?");
-($query = sql_query("SELECT a.albumid, a.userid, a.createdate, a.title, a.private, u.username, g.namestyle, i.thumbnailname FROM ts_albums a LEFT JOIN users u ON (a.$userid = u.id) LEFT JOIN usergroups g ON (u.$usergroup = g.gid) LEFT JOIN ts_album_images i ON (i.$imageid = a.coverimageid)" . $Where1 . " ORDER BY a.createdate DESC " . $limit)) || sqlerr(__FILE__, 1392);
+($query = sql_query("SELECT a.albumid, a.userid, a.createdate, a.title, a.private, u.username, g.namestyle, i.thumbnailname FROM ts_albums a LEFT JOIN users u ON (a.$userid = u.id) LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) LEFT JOIN ts_album_images i ON (i.$imageid = a.coverimageid)" . $Where1 . " ORDER BY a.createdate DESC " . $limit)) || sqlerr(__FILE__, 1392);
 if (0 < mysqli_num_rows($query)) {
     stdhead($lang->ts_albums["title"]);
     add_breadcrumb($lang->ts_albums["title"]);

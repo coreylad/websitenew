@@ -180,7 +180,7 @@ function logStaffAction($log)
 }
 function function_159($cid)
 {
-    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT cname FROM ts_games_categories WHERE $cid = '" . $cid . "'");
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT cname FROM ts_games_categories WHERE `cid` = '" . $cid . "'");
     $var_20 = mysqli_fetch_assoc($query);
     return $var_20["cname"];
 }

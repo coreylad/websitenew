@@ -25,7 +25,7 @@ if (isset($_POST["action"]) && $_POST["action"] == "save_quick_edit" && 0 < $CUR
     if ($usergroups["cancomment"] == "no") {
         show_msg($lang->global["nopermission"]);
     }
-    ($query = sql_query("SELECT cancomment FROM ts_u_perm WHERE $userid = " . sqlesc($CURUSER["id"]))) || sqlerr(__FILE__, 100);
+    ($query = sql_query("SELECT cancomment FROM ts_u_perm WHERE `userid` = " . sqlesc($CURUSER["id"]))) || sqlerr(__FILE__, 100);
     if (0 < mysqli_num_rows($query)) {
         $commentperm = mysqli_fetch_assoc($query);
         if ($commentperm["cancomment"] == "0") {
@@ -62,7 +62,7 @@ if (isset($_POST["action"]) && $_POST["action"] == "save_quick_edit" && 0 < $CUR
             }
         }
         $editedat = get_date_time();
-        sql_query("UPDATE comments SET $text = " . sqlesc($msgtext) . ", $editedat = " . sqlesc($editedat) . ", $editedby = " . sqlesc($CURUSER["id"]) . " WHERE $id = " . sqlesc($commentid)) || sqlerr(__FILE__, 150);
+        sql_query("UPDATE comments SET $text = " . sqlesc($msgtext) . ", $editedat = " . sqlesc($editedat) . ", $editedby = " . sqlesc($CURUSER["id"]) . " WHERE `id` = " . sqlesc($commentid)) || sqlerr(__FILE__, 150);
         $edit_date = my_datee($dateformat, $editedat);
         $edit_time = my_datee($timeformat, $editedat);
         $p_text = "<p><font $size = '1' class='small'>" . $lang->global["lastedited"] . " <a $href = '" . $BASEURL . "/userdetails.php?$id = " . $CURUSER["id"] . "'><b>" . $CURUSER["username"] . "</b></a> " . $edit_date . " " . $edit_time . "</font></p>\n";
@@ -78,7 +78,7 @@ if (isset($_POST["action"]) && $_POST["action"] == "save_quick_edit" && 0 < $CUR
         if ($usergroups["cancomment"] == "no") {
             show_msg($lang->global["nopermission"]);
         }
-        ($query = sql_query("SELECT cancomment FROM ts_u_perm WHERE $userid = " . sqlesc($CURUSER["id"]))) || sqlerr(__FILE__, 169);
+        ($query = sql_query("SELECT cancomment FROM ts_u_perm WHERE `userid` = " . sqlesc($CURUSER["id"]))) || sqlerr(__FILE__, 169);
         if (0 < mysqli_num_rows($query)) {
             $commentperm = mysqli_fetch_assoc($query);
             if ($commentperm["cancomment"] == "0") {
@@ -175,7 +175,7 @@ if (isset($_POST["action"]) && $_POST["action"] == "save_quick_edit" && 0 < $CUR
             if (strlen($_POST["message"]) < $f_minmsglength) {
                 show_msg($lang->tsf_forums["too_short"]);
             }
-            ($query = sql_query("SELECT dateline FROM " . TSF_PREFIX . "posts WHERE $uid = " . sqlesc($CURUSER["id"]) . " ORDER by dateline DESC LIMIT 1")) || sqlerr(__FILE__, 314);
+            ($query = sql_query("SELECT dateline FROM " . TSF_PREFIX . "posts WHERE `uid` = " . sqlesc($CURUSER["id"]) . " ORDER by dateline DESC LIMIT 1")) || sqlerr(__FILE__, 314);
             if (mysqli_num_rows($query)) {
                 $Result = mysqli_fetch_assoc($query);
                 $last_post = $Result["dateline"];
@@ -191,7 +191,7 @@ if (isset($_POST["action"]) && $_POST["action"] == "save_quick_edit" && 0 < $CUR
             if ($useparent) {
                 sql_query("UPDATE " . TSF_PREFIX . "forums SET $lastpost = " . $dateline . ", $lastposter = " . $username . ", $lastposteruid = " . $uid . ", $lastposttid = " . $tid . ", $lastpostsubject = " . sqlesc($subject) . " WHERE $fid = '" . $thread["deepforumid"] . "'") || show_msg("dberror7");
             }
-            sql_query("UPDATE users SET $totalposts = totalposts + 1 WHERE $id = " . $uid) || show_msg("dberror8");
+            sql_query("UPDATE users SET $totalposts = totalposts + 1 WHERE `id` = " . $uid) || show_msg("dberror8");
             sql_query("REPLACE INTO " . TSF_PREFIX . "threadsread SET $tid = '" . $tid . "', $uid = '" . $CURUSER["id"] . "', $dateline = '" . TIMENOW . "'");
             $TSSEConfig->TSLoadConfig("KPS");
             KPS("+", isset($kpscomment) && $kpscomment ? $kpscomment : "", $CURUSER["id"]);
@@ -225,7 +225,7 @@ if (isset($_POST["action"]) && $_POST["action"] == "save_quick_edit" && 0 < $CUR
             $status = "<img $src = \"" . $pic_base_url . "friends/online.png\" $border = \"0\" $alt = \"" . $UserOn . "\" $title = \"" . $UserOn . "\" class=\"inlineimg\" />";
             $CURUSER["countryname"] = "";
             $CURUSER["flagpic"] = "";
-            ($query = @sql_query("SELECT flagpic,name as countryname FROM countries WHERE $id = " . @sqlesc($CURUSER["country"]))) || show_msg("dberror9");
+            ($query = @sql_query("SELECT flagpic,name as countryname FROM countries WHERE `id` = " . @sqlesc($CURUSER["country"]))) || show_msg("dberror9");
             if (0 < mysqli_num_rows($query)) {
                 $Result = mysqli_fetch_assoc($query);
                 $CURUSER["countryname"] = $Result["countryname"];
@@ -302,7 +302,7 @@ if (isset($_POST["action"]) && $_POST["action"] == "save_quick_edit" && 0 < $CUR
                 global $lang;
                 global $rootpath;
                 require_once INC_PATH . "/functions_pm.php";
-                ($query = sql_query("SELECT s.*, u.email, u.username FROM " . TSF_PREFIX . "subscribe s LEFT JOIN users u ON (s.$userid = u.id) WHERE s.$tid = " . sqlesc($tid) . " AND s.userid != " . sqlesc($CURUSER["id"]))) || sqlerr(__FILE__, 584);
+                ($query = sql_query("SELECT s.*, u.email, u.username FROM " . TSF_PREFIX . "subscribe s LEFT JOIN users u ON (s.`userid` = u.id) WHERE s.$tid = " . sqlesc($tid) . " AND s.userid != " . sqlesc($CURUSER["id"]))) || sqlerr(__FILE__, 584);
                 if (0 < mysqli_num_rows($query)) {
                     while ($sub = mysqli_fetch_assoc($query)) {
                         send_pm($sub["userid"], sprintf($lang->tsf_forums["msubs"], $sub["username"], $subject, $CURUSER["username"], $BASEURL, $tid, $SITENAME), $subject);
@@ -325,7 +325,7 @@ if (isset($_POST["action"]) && $_POST["action"] == "save_quick_edit" && 0 < $CUR
                 if ($usergroups["cancomment"] == "no") {
                     show_msg($lang->global["nopermission"]);
                 }
-                ($query = sql_query("SELECT cancomment FROM ts_u_perm WHERE $userid = " . sqlesc($CURUSER["id"]))) || sqlerr(__FILE__, 616);
+                ($query = sql_query("SELECT cancomment FROM ts_u_perm WHERE `userid` = " . sqlesc($CURUSER["id"]))) || sqlerr(__FILE__, 616);
                 if (0 < mysqli_num_rows($query)) {
                     $commentperm = mysqli_fetch_assoc($query);
                     if ($commentperm["cancomment"] == "0") {
@@ -360,7 +360,7 @@ if (isset($_POST["action"]) && $_POST["action"] == "save_quick_edit" && 0 < $CUR
                     $last_comment = "";
                 }
                 $floodmsg = flood_check($lang->comment["floodcomment"], $last_comment, true);
-                $res = sql_query("SELECT name, owner FROM torrents WHERE $id = " . sqlesc($torrentid));
+                $res = sql_query("SELECT name, owner FROM torrents WHERE `id` = " . sqlesc($torrentid));
                 $arr = mysqli_fetch_assoc($res);
                 if (!empty($floodmsg)) {
                     show_msg(str_replace(["<font $color = \"#9f040b\" $size = \"2\">", "</font>", "<b>", "</b>"], "", $floodmsg));
@@ -395,9 +395,9 @@ if (isset($_POST["action"]) && $_POST["action"] == "save_quick_edit" && 0 < $CUR
                             if ($usergroups["cancomment"] == "moderate") {
                                 $message = sprintf($lang->comment["modmsg"], $CURUSER["username"], "[URL]" . $BASEURL . "/details.php?$id = " . $torrentid . "&$tab = comments&$showlast = true&$viewcomm = " . $newid . "#cid" . $newid . "[/URL]");
                                 sql_query("INSERT INTO staffmessages (sender, added, msg, subject) VALUES(0, NOW(), " . sqlesc($message) . ", " . sqlesc($lang->comment["modmsgsubject"]) . ")");
-                                sql_query("UPDATE comments SET $text = " . $newtext . ", $visible = 0 WHERE $id = '" . $newid . "'");
+                                sql_query("UPDATE comments SET $text = " . $newtext . ", $visible = 0 WHERE `id` = '" . $newid . "'");
                             } else {
-                                sql_query("UPDATE comments SET $text = " . sqlesc($newtext) . " WHERE $id = '" . $newid . "'");
+                                sql_query("UPDATE comments SET $text = " . sqlesc($newtext) . " WHERE `id` = '" . $newid . "'");
                             }
                             if (mysqli_affected_rows($GLOBALS["DatabaseConnect"])) {
                                 $commentposted = true;
@@ -408,8 +408,8 @@ if (isset($_POST["action"]) && $_POST["action"] == "save_quick_edit" && 0 < $CUR
                 if (!$commentposted) {
                     sql_query("INSERT INTO comments (user, torrent, added, text, visible) VALUES (" . sqlesc($CURUSER["id"]) . ", " . sqlesc($torrentid) . ", " . sqlesc(get_date_time()) . ", " . sqlesc($text) . ", " . ($usergroups["cancomment"] == "moderate" ? 0 : 1) . ")");
                     $cid = mysqli_insert_id($GLOBALS["DatabaseConnect"]);
-                    sql_query("UPDATE torrents SET $comments = comments + 1 WHERE $id = " . sqlesc($torrentid));
-                    $ras = sql_query("SELECT options FROM users WHERE $id = " . sqlesc($arr["owner"]));
+                    sql_query("UPDATE torrents SET $comments = comments + 1 WHERE `id` = " . sqlesc($torrentid));
+                    $ras = sql_query("SELECT options FROM users WHERE `id` = " . sqlesc($arr["owner"]));
                     $arg = mysqli_fetch_assoc($ras);
                     if (TS_Match($arg["options"], "C1") && $CURUSER["id"] != $arr["owner"]) {
                         require_once INC_PATH . "/functions_pm.php";
@@ -424,7 +424,7 @@ if (isset($_POST["action"]) && $_POST["action"] == "save_quick_edit" && 0 < $CUR
                 }
                 require_once INC_PATH . "/commenttable.php";
                 require_once INC_PATH . "/functions_quick_editor.php";
-                ($subres = sql_query("SELECT c.id, c.torrent as torrentid, c.text, c.user, c.added, c.editedby, c.editedat, c.modnotice, c.modeditid, c.modeditusername, c.modedittime, c.totalvotes, c.visible, uu.username as editedbyuname, gg.namestyle as editbynamestyle, u.added as registered, u.enabled, u.warned, u.leechwarn, u.username, u.title, u.usergroup, u.last_access, u.options, u.donor, u.uploaded, u.downloaded, u.avatar as useravatar, u.signature, g.title as grouptitle, g.namestyle FROM comments c LEFT JOIN users uu ON (c.$editedby = uu.id) LEFT JOIN usergroups gg ON (uu.$usergroup = gg.gid) LEFT JOIN users u ON (c.$user = u.id) LEFT JOIN usergroups g ON (u.$usergroup = g.gid) WHERE c.$id = " . sqlesc($cid) . " ORDER BY c.id")) || sqlerr(__FILE__, 753);
+                ($subres = sql_query("SELECT c.id, c.torrent as torrentid, c.text, c.user, c.added, c.editedby, c.editedat, c.modnotice, c.modeditid, c.modeditusername, c.modedittime, c.totalvotes, c.visible, uu.username as editedbyuname, gg.namestyle as editbynamestyle, u.added as registered, u.enabled, u.warned, u.leechwarn, u.username, u.title, u.usergroup, u.last_access, u.options, u.donor, u.uploaded, u.downloaded, u.avatar as useravatar, u.signature, g.title as grouptitle, g.namestyle FROM comments c LEFT JOIN users uu ON (c.$editedby = uu.id) LEFT JOIN usergroups gg ON (uu.$usergroup = gg.gid) LEFT JOIN users u ON (c.$user = u.id) LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) WHERE c.$id = " . sqlesc($cid) . " ORDER BY c.id")) || sqlerr(__FILE__, 753);
                 $allrows = [];
                 while ($subrow = mysqli_fetch_assoc($subres)) {
                     $allrows[] = $subrow;
@@ -449,7 +449,7 @@ if (isset($_POST["action"]) && $_POST["action"] == "save_quick_edit" && 0 < $CUR
                     if (12 < strlen($username)) {
                         show_msg($lang->signup["une2"], false);
                     }
-                    $query = sql_query("SELECT username FROM users WHERE $username = " . sqlesc($username));
+                    $query = sql_query("SELECT username FROM users WHERE `username` = " . sqlesc($username));
                     if (0 < mysqli_num_rows($query)) {
                         show_msg($lang->signup["une4"], false);
                     } else {
@@ -474,7 +474,7 @@ if (isset($_POST["action"]) && $_POST["action"] == "save_quick_edit" && 0 < $CUR
                                 show_msg($lang->signup["invalidemail2"], false);
                             }
                         }
-                        $query = sql_query("SELECT email FROM users WHERE $email = " . sqlesc($email));
+                        $query = sql_query("SELECT email FROM users WHERE `email` = " . sqlesc($email));
                         if (mysqli_num_rows($query) == 0) {
                             show_msg($lang->signup["eavailable"], false, "green");
                         } else {
@@ -487,7 +487,7 @@ if (isset($_POST["action"]) && $_POST["action"] == "save_quick_edit" && 0 < $CUR
                             $Vid = $_POST["vid"] == "1" ? "1" : "-1";
                             if (is_valid_id($Cid) && is_valid_id($Uid)) {
                                 sql_query("REPLACE INTO comments_votes VALUES ('" . $Cid . "', '" . $Uid . "', '" . $Vid . "')") || sqlerr(__FILE__, 838);
-                                ($Query = sql_query("SELECT vid FROM comments_votes WHERE $cid = '" . $Cid . "'")) || sqlerr(__FILE__, 839);
+                                ($Query = sql_query("SELECT vid FROM comments_votes WHERE `cid` = '" . $Cid . "'")) || sqlerr(__FILE__, 839);
                                 $Negative = 0;
                                 $Positive = 0;
                                 if (0 < mysqli_num_rows($Query)) {
@@ -505,7 +505,7 @@ if (isset($_POST["action"]) && $_POST["action"] == "save_quick_edit" && 0 < $CUR
                                         $Positive += 1;
                                     }
                                 }
-                                sql_query("UPDATE comments SET $totalvotes = '" . $Positive . "|" . $Negative . "' WHERE $id = '" . $Cid . "'") || sqlerr(__FILE__, 869);
+                                sql_query("UPDATE comments SET $totalvotes = '" . $Positive . "|" . $Negative . "' WHERE `id` = '" . $Cid . "'") || sqlerr(__FILE__, 869);
                                 echo $Positive - $Negative;
                                 exit;
                             }
@@ -557,7 +557,7 @@ function is_forum_mod($forumid = 0, $userid = 0)
 function allowcomments($torrentid = 0)
 {
     global $is_mod;
-    $query = sql_query("SELECT allowcomments FROM torrents WHERE $id = " . sqlesc($torrentid));
+    $query = sql_query("SELECT allowcomments FROM torrents WHERE `id` = " . sqlesc($torrentid));
     if (!mysqli_num_rows($query)) {
         return false;
     }

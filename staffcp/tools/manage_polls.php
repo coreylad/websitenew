@@ -152,11 +152,11 @@ if ($action == "createpoll") {
                 $action = "showlist";
                 $SysMsg = str_replace(["{1}", "{2}"], [$question, $_SESSION["ADMIN_USERNAME"]], $Language[16]);
                 logStaffAction($SysMsg);
-                $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'SHOUTBOX'");
+                $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'SHOUTBOX'");
                 $Result = mysqli_fetch_assoc($query);
                 $SHOUTBOX = unserialize($Result["content"]);
                 if ($SHOUTBOX["tsshoutbot"] == "yes" && preg_match("#poll#", $SHOUTBOX["tsshoutboxoptions"])) {
-                    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'MAIN'");
+                    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'MAIN'");
                     $Result = mysqli_fetch_assoc($query);
                     $MAIN = unserialize($Result["content"]);
                     $shoutbOT = str_replace(["{1}", "{2}"], ["[URL=" . $MAIN["BASEURL"] . "/index.php#showtspoll]" . $question . "[/URL]", "[URL=userdetails.php?$id = " . $_SESSION["ADMIN_ID"] . "]" . $_SESSION["ADMIN_USERNAME"] . "[/URL]"], $Language[34]);

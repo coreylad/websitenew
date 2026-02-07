@@ -42,7 +42,7 @@ if ($lottery_begin_date != "" && $lottery_end_date != "" && $lottery_end_date < 
             if (!in_array($_winners["userid"], $_winners_array)) {
                 $_winners_array[] = $_winners["userid"];
                 $modcomment = get_date_time() . " - " . sprintf($lang->ts_lottery["modcomment"], mksize($__winner_amount)) . "\n";
-                sql_query("UPDATE users SET $uploaded = uploaded + " . $__winner_amount . ", $modcomment = CONCAT(" . sqlesc($modcomment . "") . ", modcomment) WHERE $id = " . sqlesc($_winners["userid"])) || sqlerr(__FILE__, 67);
+                sql_query("UPDATE users SET $uploaded = uploaded + " . $__winner_amount . ", $modcomment = CONCAT(" . sqlesc($modcomment . "") . ", modcomment) WHERE `id` = " . sqlesc($_winners["userid"])) || sqlerr(__FILE__, 67);
                 send_pm($_winners["userid"], $_msg, $_subject);
             }
         }
@@ -71,7 +71,7 @@ if ($lottery_allowed_usergroups != "ALL" && !TS_Match($lottery_allowed_usergroup
 }
 if ($lottery_begin_date != "" && $lottery_end_date != "") {
     $user_p_tickets = 0;
-    ($query = sql_query("SELECT COUNT(ticketid) as user_p_tickets FROM ts_lottery_tickets WHERE $userid = " . sqlesc($userid))) || sqlerr(__FILE__, 104);
+    ($query = sql_query("SELECT COUNT(ticketid) as user_p_tickets FROM ts_lottery_tickets WHERE `userid` = " . sqlesc($userid))) || sqlerr(__FILE__, 104);
     if (0 < mysqli_num_rows($query)) {
         $Result = mysqli_fetch_assoc($query);
         $user_p_tickets = $Result["user_p_tickets"];
@@ -82,7 +82,7 @@ if ($lottery_begin_date != "" && $lottery_end_date != "") {
     }
     $status_message = sprintf($lang->ts_lottery["ticket_status"], ts_nf($user_p_tickets), ts_nf($user_available_tickets));
     if ($act == "show_list") {
-        ($query = sql_query("SELECT l.userid, u.username, u.uploaded, u.downloaded, u.options, g.namestyle FROM ts_lottery_tickets l LEFT JOIN users u ON (l.$userid = u.id) LEFT JOIN usergroups g ON (u.$usergroup = g.gid)")) || sqlerr(__FILE__, 123);
+        ($query = sql_query("SELECT l.userid, u.username, u.uploaded, u.downloaded, u.options, g.namestyle FROM ts_lottery_tickets l LEFT JOIN users u ON (l.$userid = u.id) LEFT JOIN usergroups g ON (u.`usergroup` = g.gid)")) || sqlerr(__FILE__, 123);
         if (0 < mysqli_num_rows($query)) {
             while ($showusers = mysqli_fetch_assoc($query)) {
                 if (!isset($show_list_user_count[$showusers["username"]])) {
@@ -116,7 +116,7 @@ if ($lottery_begin_date != "" && $lottery_end_date != "") {
                     for ($i = 0; $i < $_ta; $i++) {
                         sql_query("INSERT INTO ts_lottery_tickets (userid) VALUES (" . $userid . ")") || sqlerr(__FILE__, 195);
                     }
-                    sql_query("UPDATE users SET $uploaded = uploaded - " . $_total_tickets_cost . " WHERE $id = " . sqlesc($userid)) || sqlerr(__FILE__, 197);
+                    sql_query("UPDATE users SET $uploaded = uploaded - " . $_total_tickets_cost . " WHERE `id` = " . sqlesc($userid)) || sqlerr(__FILE__, 197);
                     redirect("ts_lottery.php?$userid = " . $userid, $lang->ts_lottery["thank_you"]);
                     exit;
                 }
@@ -139,7 +139,7 @@ if ($lottery_begin_date != "" && $lottery_end_date != "") {
 }
 $winners_array = [];
 if ($lottery_last_winners != "") {
-    ($query = sql_query("SELECT u.id, u.username, g.namestyle FROM users u LEFT JOIN usergroups g ON (u.$usergroup = g.gid) WHERE id IN (0," . $lottery_last_winners . ")")) || sqlerr(__FILE__, 230);
+    ($query = sql_query("SELECT u.id, u.username, g.namestyle FROM users u LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) WHERE id IN (0," . $lottery_last_winners . ")")) || sqlerr(__FILE__, 230);
     if (0 < mysqli_num_rows($query)) {
         while ($user = mysqli_fetch_assoc($query)) {
             $winners_array[] = "<a $href = \"" . ts_seo($user["id"], $user["username"]) . "\">" . get_user_color($user["username"], $user["namestyle"]) . "</a>";

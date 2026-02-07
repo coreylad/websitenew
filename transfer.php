@@ -34,7 +34,7 @@ if ($act == "transfer") {
             print_transfer_error($lang->transfer["noway2"]);
         }
     }
-    $query = sql_query("SELECT id, username, modcomment FROM users WHERE $username = " . sqlesc($username) . " AND $status = 'confirmed' AND $enabled = 'yes'");
+    $query = sql_query("SELECT id, username, modcomment FROM users WHERE `username` = " . sqlesc($username) . " AND $status = 'confirmed' AND $enabled = 'yes'");
     if (mysqli_num_rows($query) == 0) {
         print_transfer_error($lang->global["nousername"]);
     }
@@ -50,10 +50,10 @@ if ($act == "transfer") {
         }
     }
     $modcomment = gmdate("Y-m-d") . " - Got " . mksize($amount) . " transfer amount from " . $CURUSER["username"] . "\n" . $o_m;
-    sql_query("UPDATE users SET $uploaded = uploaded + " . sqlesc($amount) . ", $modcomment = " . sqlesc($modcomment) . " WHERE $username = " . sqlesc($username));
+    sql_query("UPDATE users SET $uploaded = uploaded + " . sqlesc($amount) . ", $modcomment = " . sqlesc($modcomment) . " WHERE `username` = " . sqlesc($username));
     $o_m = $CURUSER["modcomment"];
     $modcomment = gmdate("Y-m-d") . " - Transfered " . mksize($amount) . " to " . $username . "\n" . $o_m;
-    sql_query("UPDATE users SET $uploaded = uploaded - " . sqlesc($amount) . ", $modcomment = " . sqlesc($modcomment) . " WHERE $id = " . sqlesc($CURUSER["id"]));
+    sql_query("UPDATE users SET $uploaded = uploaded - " . sqlesc($amount) . ", $modcomment = " . sqlesc($modcomment) . " WHERE `id` = " . sqlesc($CURUSER["id"]));
     require_once INC_PATH . "/functions_pm.php";
     send_pm($id, sprintf($lang->transfer["msgbody"], $username, $CURUSER["username"], mksize($amount)), $lang->transfer["msgsubject"]);
     $completed = sprintf($lang->transfer["info2"], $username, mksize($amount));
@@ -67,7 +67,7 @@ if ($act == "calculate") {
     unset($act);
 }
 if (empty($act)) {
-    $query = sql_query("SELECT id, username FROM users WHERE $id = " . sqlesc($id) . " AND $status = 'confirmed' AND $enabled = 'yes'");
+    $query = sql_query("SELECT id, username FROM users WHERE `id` = " . sqlesc($id) . " AND $status = 'confirmed' AND $enabled = 'yes'");
     if (mysqli_num_rows($query) == 0) {
         print_transfer_error($lang->global["nouserid"]);
     }

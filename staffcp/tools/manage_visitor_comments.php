@@ -13,7 +13,7 @@ $WHERE = "";
 $LINK = "";
 $perpage = 8;
 if (isset($_GET["delete"]) && ($VID = intval($_GET["vid"]))) {
-    mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM ts_visitor_messages WHERE $id = " . $VID);
+    mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM ts_visitor_messages WHERE `id` = " . $VID);
 }
 if (isset($_GET["sender"]) && ($SENDER = intval($_GET["sender"]))) {
     $WHERE = " WHERE v.$visitorid = " . $SENDER;
@@ -26,7 +26,7 @@ if (isset($_GET["receiver"]) && ($RECEIVER = intval($_GET["receiver"]))) {
 $results = mysqli_num_rows(mysqli_query($GLOBALS["DatabaseConnect"], "SELECT v.id FROM ts_visitor_messages v" . $WHERE));
 list($pagertop, $limit) = buildPaginationLinks($perpage, $results, $_SERVER["SCRIPT_NAME"] . "?do=manage_visitor_comments&amp;" . $LINK);
 $Found = "";
-$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT v.id, v.userid, v.visitorid, v.visitormsg, v.added, u.username, g.namestyle, uu.username as tousername, gg.namestyle as tonamestyle FROM ts_visitor_messages v LEFT JOIN users u ON (u.$id = v.visitorid) LEFT JOIN usergroups g ON (u.$usergroup = g.gid) LEFT JOIN users uu ON (uu.$id = v.userid) LEFT JOIN usergroups gg ON (uu.$usergroup = gg.gid)" . $WHERE . " ORDER by v.added DESC " . $limit);
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT v.id, v.userid, v.visitorid, v.visitormsg, v.added, u.username, g.namestyle, uu.username as tousername, gg.namestyle as tonamestyle FROM ts_visitor_messages v LEFT JOIN users u ON (u.`id` = v.visitorid) LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) LEFT JOIN users uu ON (uu.$id = v.userid) LEFT JOIN usergroups gg ON (uu.$usergroup = gg.gid)" . $WHERE . " ORDER by v.added DESC " . $limit);
 if ($results) {
     while ($R = mysqli_fetch_assoc($query)) {
         $page_url = isset($_GET["page"]) ? "&amp;$page = " . intval($_GET["page"]) : "";
@@ -59,7 +59,7 @@ class Class_6
     }
     public function function_115()
     {
-        $var_281 = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'MAIN'");
+        $var_281 = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'MAIN'");
         $var_20 = mysqli_fetch_assoc($var_281);
         $this->Settings = unserialize($var_20["content"]);
     }

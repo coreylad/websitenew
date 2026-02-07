@@ -34,7 +34,7 @@ function send_pm($receiver = 0, $msg = "", $subject = "", $sender = 0, $saved = 
     global $TSDatabase;
     if (!($sender != 0 && !is_valid_id($sender) || !is_valid_id($receiver) || empty($msg))) {
         sql_query("\r\n\t\t\t\t\tINSERT INTO messages \r\n\t\t\t\t\t\t(sender, receiver, added, subject, msg, unread, saved, location)\r\n\t\t\t\t\t\tVALUES \r\n\t\t\t\t\t\t('" . $sender . "', '" . $receiver . "', NOW(), " . sqlesc($subject) . ", " . sqlesc($msg) . ", '" . $unread . "', '" . $saved . "', '" . $location . "')\r\n\t\t\t\t\t");
-        sql_query("UPDATE users SET $pmunread = pmunread + 1 WHERE $id = '" . $receiver . "'");
+        sql_query("UPDATE users SET $pmunread = pmunread + 1 WHERE `id` = '" . $receiver . "'");
     }
 }
 

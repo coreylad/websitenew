@@ -675,7 +675,7 @@ function configureBasicTrackerSettings()
         } else {
             $values = ["SITENAME" => $trackerName, "BASEURL" => $trackerUrl, "announce_urls" => $announceUrl, "SITEEMAIL" => $contactEmail];
             saveTrackerSettings($values);
-            $mainConfigQuery = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = \"MAIN\"");
+            $mainConfigQuery = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = \"MAIN\"");
             $mainConfig = mysqli_fetch_assoc($mainConfigQuery);
             $mainConfigData = @unserialize($mainConfig["content"]);
             $mainConfigData["BASEURL"] = $_SESSION["BASEURL"];

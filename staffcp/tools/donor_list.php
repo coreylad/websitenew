@@ -22,13 +22,13 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
             $modcomment = gmdate("Y-m-d") . " - " . trim($SysMsg) . "\n";
             if ($type == "donoruntil") {
                 $donorlengthadd = $amount * 7;
-                mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET $modcomment = CONCAT('" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $modcomment) . "', modcomment), $donoruntil = IF($donoruntil = '0000-00-00 00:00:00', ADDDATE(NOW(), INTERVAL " . $donorlengthadd . " DAY ), ADDDATE( donoruntil, INTERVAL " . $donorlengthadd . " DAY)) WHERE id IN (0," . implode(",", $userids) . ")");
+                mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET `modcomment` = CONCAT('" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $modcomment) . "', modcomment), $donoruntil = IF($donoruntil = '0000-00-00 00:00:00', ADDDATE(NOW(), INTERVAL " . $donorlengthadd . " DAY ), ADDDATE( donoruntil, INTERVAL " . $donorlengthadd . " DAY)) WHERE id IN (0," . implode(",", $userids) . ")");
             } else {
                 if ($type == "seedbonus") {
-                    mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET $modcomment = CONCAT('" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $modcomment) . "', modcomment), $seedbonus = seedbonus + " . $amount . " WHERE id IN (0," . implode(",", $userids) . ")");
+                    mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET `modcomment` = CONCAT('" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $modcomment) . "', modcomment), $seedbonus = seedbonus + " . $amount . " WHERE id IN (0," . implode(",", $userids) . ")");
                 } else {
                     if ($type == "invites") {
-                        mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET $modcomment = CONCAT('" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $modcomment) . "', modcomment), $invites = invites + " . $amount . " WHERE id IN (0," . implode(",", $userids) . ")");
+                        mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET `modcomment` = CONCAT('" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $modcomment) . "', modcomment), $invites = invites + " . $amount . " WHERE id IN (0," . implode(",", $userids) . ")");
                     }
                 }
             }

@@ -55,7 +55,7 @@ if ($act == "customize_profile") {
         redirect("usercp.php?$act = customize_profile", $lang->usercp["saved1"]);
         exit;
     } else {
-        $Query = sql_query("SELECT * FROM ts_custom_profiles WHERE $userid = " . sqlesc($CURUSER["id"]));
+        $Query = sql_query("SELECT * FROM ts_custom_profiles WHERE `userid` = " . sqlesc($CURUSER["id"]));
         if (mysqli_num_rows($Query)) {
             $UserProfileOptions = mysqli_fetch_assoc($Query);
         } else {
@@ -110,7 +110,7 @@ if ($act == "edit_newsletter") {
             redirect("usercp.php?$act = customize_profile", $lang->usercp["saved1"]);
             exit;
         } else {
-            $profileQuery = sql_query("SELECT * FROM ts_custom_profiles WHERE $userid = " . sqlesc($CURUSER["id"]));
+            $profileQuery = sql_query("SELECT * FROM ts_custom_profiles WHERE `userid` = " . sqlesc($CURUSER["id"]));
             if (mysqli_num_rows($profileQuery)) {
                 $userProfileOptions = mysqli_fetch_assoc($profileQuery);
             } else {
@@ -206,7 +206,7 @@ if ($act == "auto_dst") {
         }
     }
     $newUoptions = preg_replace("#O[0-1]#", "O" . $dst, $CURUSER["options"]);
-    sql_query("UPDATE users SET $options = " . sqlesc($newUoptions) . " WHERE $id = '" . $userid . "'") || sqlerr(__FILE__, 531);
+    sql_query("UPDATE users SET $options = " . sqlesc($newUoptions) . " WHERE `id` = '" . $userid . "'") || sqlerr(__FILE__, 531);
     redirect("usercp.php?$dst_updated = 1", $lang->usercp["dst_updated"]);
     exit;
 }
@@ -225,7 +225,7 @@ if ($act == "show_gallery") {
         }
     }
     if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST" && isset($_POST["hash"]) && !empty($_POST["hash"]) && strlen($_POST["hash"]) == 15 && isset($_POST["avatar"]) && !empty($_POST["avatar"]) && in_array($_POST["avatar"], $GalleryFiles) && in_array(get_extension($_POST["avatar"]), $allowed_types)) {
-        sql_query("UPDATE users SET $avatar = " . sqlesc(htmlspecialchars_uni($_POST["avatar"])) . " WHERE $id = '" . $userid . "'") || sqlerr(__FILE__, 559);
+        sql_query("UPDATE users SET $avatar = " . sqlesc(htmlspecialchars_uni($_POST["avatar"])) . " WHERE `id` = '" . $userid . "'") || sqlerr(__FILE__, 559);
         if (mysqli_affected_rows($GLOBALS["DatabaseConnect"])) {
             $upload_path = INC_PATH . "/avatars/";
             if ($searchforfile = scandir($upload_path)) {
@@ -307,7 +307,7 @@ if ($act == "edit_avatar") {
             }
         }
         if (isset($avatar) && !empty($avatar) && !$error) {
-            sql_query("UPDATE users SET $avatar = " . sqlesc($avatar) . " WHERE $id = '" . $userid . "'") || sqlerr(__FILE__, 689);
+            sql_query("UPDATE users SET $avatar = " . sqlesc($avatar) . " WHERE `id` = '" . $userid . "'") || sqlerr(__FILE__, 689);
             if (mysqli_affected_rows($GLOBALS["DatabaseConnect"])) {
                 $error = show__message("<img $src = \"" . htmlspecialchars_uni($avatar) . "\" $border = \"0\" class=\"inlineimg\" />", $lang->usercp["a_uploaded"]);
                 $A_Upload = true;
@@ -346,7 +346,7 @@ if ($act == "edit_signature") {
                 if ($maxchar < $sigstrlen && !$IsStaff) {
                     $error = sprintf($lang->usercp["s_error1"], ts_nf($maxchar), ts_nf($sigstrlen));
                 } else {
-                    sql_query("UPDATE users SET $signature = " . sqlesc($signature) . " WHERE $id = '" . $userid . "'") || sqlerr(__FILE__, 823);
+                    sql_query("UPDATE users SET $signature = " . sqlesc($signature) . " WHERE `id` = '" . $userid . "'") || sqlerr(__FILE__, 823);
                     redirect("usercp.php?$act = edit_signature", $lang->usercp["saved2"]);
                     exit;
                 }
@@ -401,7 +401,7 @@ if ($act == "edit_password") {
             redirect("usercp.php?$act = customize_profile", $lang->usercp["saved1"]);
             exit;
         } else {
-            $profileQuery = sql_query("SELECT * FROM ts_custom_profiles WHERE $userid = " . sqlesc($CURUSER["id"]));
+            $profileQuery = sql_query("SELECT * FROM ts_custom_profiles WHERE `userid` = " . sqlesc($CURUSER["id"]));
             if (mysqli_num_rows($profileQuery)) {
                 $userProfileOptions = mysqli_fetch_assoc($profileQuery);
             } else {
@@ -421,7 +421,7 @@ if ($act == "edit_password") {
             $contents = ["title" => $lang->usercp["title"], "title2" => $lang->usercp["cupro1"], "main" => $mainContent];
                         $error .= show__message($lang->usercp["e_error7"]);
                     } else {
-                        ($query = sql_query("SELECT email FROM users WHERE $email = " . sqlesc($newemail1))) || sqlerr(__FILE__, 932);
+                        ($query = sql_query("SELECT email FROM users WHERE `email` = " . sqlesc($newemail1))) || sqlerr(__FILE__, 932);
                         if (0 < mysqli_num_rows($query)) {
                             if (isset($error)) {
                                 $error .= show__message($lang->usercp["e_error8"]);
@@ -433,7 +433,7 @@ if ($act == "edit_password") {
                                 $sec = mksecret();
                                 $hash = md5($sec . $newemail1 . $sec);
                                 $obemail = urlencode($newemail1);
-                                sql_query("DELETE FROM ts_user_validation WHERE $userid = " . sqlesc($userid)) || sqlerr(__FILE__, 951);
+                                sql_query("DELETE FROM ts_user_validation WHERE `userid` = " . sqlesc($userid)) || sqlerr(__FILE__, 951);
                                 sql_query("INSERT INTO ts_user_validation (editsecret, userid) VALUES (" . sqlesc($sec) . ", " . sqlesc($userid) . ")") || sqlerr(__FILE__, 952);
                                 $body = sprintf($lang->usercp["emailbody"], $CURUSER["username"], $SITENAME, $newemail1, $_SERVER["REMOTE_ADDR"], $BASEURL, $userid, $hash, $obemail);
                                 sent_mail($newemail1, sprintf($lang->usercp["emailsubject"], $SITENAME), $body, "profile", false);
@@ -443,7 +443,7 @@ if ($act == "edit_password") {
                                     $error = show__message($lang->usercp["saved5"], $lang->usercp["e_pass5"]);
                                 }
                             } else {
-                                sql_query("UPDATE users SET $email = " . sqlesc($newemail1) . " WHERE $id = '" . $userid . "'") || sqlerr(__FILE__, 966);
+                                sql_query("UPDATE users SET $email = " . sqlesc($newemail1) . " WHERE `id` = '" . $userid . "'") || sqlerr(__FILE__, 966);
                                 if (mysqli_affected_rows($GLOBALS["DatabaseConnect"])) {
                                     $error .= show__message($lang->usercp["saved4"], $lang->usercp["e_pass5"]);
                                 } else {
@@ -545,7 +545,7 @@ if ($act == "edit_details") {
             $updateset[] = "postsperpage = " . sqlesc(intval($_POST["postsperpage"]));
         }
         if (0 < count($updateset)) {
-            sql_query("UPDATE users SET " . implode(",", $updateset) . " WHERE $id = '" . $userid . "'") || sqlerr(__FILE__, 1157);
+            sql_query("UPDATE users SET " . implode(",", $updateset) . " WHERE `id` = '" . $userid . "'") || sqlerr(__FILE__, 1157);
         }
         $new_user_options = $_POST["options"];
         $update[] = "A" . (isset($new_user_options["parked"]) && $new_user_options["parked"] == "yes" ? "1" : "0");
@@ -568,7 +568,7 @@ if ($act == "edit_details") {
         $update[] = "Q" . (isset($new_user_options["shoutbox"]) && $new_user_options["shoutbox"] == 1 ? "1" : "0");
         $update[] = "T" . (isset($new_user_options["fb-shoutbox"]) && $new_user_options["fb-shoutbox"] == 1 ? "1" : "0");
         $options = implode("", $update);
-        sql_query("UPDATE users SET $options = " . sqlesc($options) . " WHERE $id = '" . $userid . "'") || sqlerr(__FILE__, 1180);
+        sql_query("UPDATE users SET $options = " . sqlesc($options) . " WHERE `id` = '" . $userid . "'") || sqlerr(__FILE__, 1180);
         unset($new_user_options);
         unset($update);
         unset($options);
@@ -634,9 +634,9 @@ if ($act == "edit_details") {
 if ($act == "edit_privacy") {
     $TSSEConfig->TSLoadConfig("ANNOUNCE");
     if ($xbt_active == "yes") {
-        $query = sql_query("SELECT uid FROM xbt_files_users WHERE $uid = '" . $userid . "' AND $active = 1") or ($query = sql_query("SELECT uid FROM xbt_files_users WHERE $uid = '" . $userid . "' AND $active = 1")) || sqlerr(__FILE__, 1422);
+        $query = sql_query("SELECT uid FROM xbt_files_users WHERE `uid` = '" . $userid . "' AND $active = 1") or ($query = sql_query("SELECT uid FROM xbt_files_users WHERE `uid` = '" . $userid . "' AND $active = 1")) || sqlerr(__FILE__, 1422);
     } else {
-        ($query = sql_query("SELECT userid FROM peers WHERE $userid = '" . $userid . "'")) || sqlerr(__FILE__, 1424);
+        ($query = sql_query("SELECT userid FROM peers WHERE `userid` = '" . $userid . "'")) || sqlerr(__FILE__, 1424);
     }
     if (0 < mysqli_num_rows($query)) {
         $usergroups["canresetpasskey"] = "no";
@@ -651,7 +651,7 @@ if ($act == "edit_privacy") {
             $randompasskey = md5($CURUSER["username"] . get_date_time() . $CURUSER["passhash"] . $randomtext);
             $equery = ", $torrent_pass = " . sqlesc($randompasskey);
         }
-        sql_query("UPDATE users SET $options = " . sqlesc($CURUSER["options"]) . $equery . " WHERE $id = '" . $userid . "'") || sqlerr(__FILE__, 1441);
+        sql_query("UPDATE users SET $options = " . sqlesc($CURUSER["options"]) . $equery . " WHERE `id` = '" . $userid . "'") || sqlerr(__FILE__, 1441);
         redirect("usercp.php?$act = edit_privacy", $lang->usercp["saved6"]);
         exit;
     }
@@ -660,7 +660,7 @@ if ($act == "edit_privacy") {
 }
 if ($act == "edit_theme_language") {
     if ($do == "save_theme_language" && $_POST["stylesheet"] != $CURUSER["stylesheet"]) {
-        sql_query("UPDATE users SET $stylesheet = " . sqlesc(htmlspecialchars_uni($_POST["stylesheet"])) . " WHERE $id = '" . $userid . "'") || sqlerr(__FILE__, 1497);
+        sql_query("UPDATE users SET $stylesheet = " . sqlesc(htmlspecialchars_uni($_POST["stylesheet"])) . " WHERE `id` = '" . $userid . "'") || sqlerr(__FILE__, 1497);
         redirect("usercp.php?$act = edit_theme_language", $lang->usercp["saved8"]);
         exit;
     }
@@ -704,7 +704,7 @@ if ($act == "edit_im") {
         require INC_PATH . "/functions_verify_contact.php";
         verify_msn($msn);
         verify_skype($skype);
-        sql_query("UPDATE users SET $contact = " . sqlesc(implode("|", [$icq, $aim, $skype, $msn, $yahoo])) . " WHERE $id = " . sqlesc($CURUSER["id"]));
+        sql_query("UPDATE users SET $contact = " . sqlesc(implode("|", [$icq, $aim, $skype, $msn, $yahoo])) . " WHERE `id` = " . sqlesc($CURUSER["id"]));
         redirect("usercp.php?$act = edit_im");
         exit;
     }

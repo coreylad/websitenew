@@ -62,7 +62,7 @@ if (0 < mysqli_num_rows($query)) {
 }
 if (intval($ban_user_limit)) {
     $reason = "Reason: Automaticly banned by System. (Max. Warn Limit [" . $ban_user_limit . "] reached!";
-    mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET $enabled = 'no', $usergroup = 9, $notifs = " . sqlesc($reason) . ", $modcomment = CONCAT('" . gmdate("Y-m-d") . " - " . $reason . "\n', modcomment) WHERE $enabled = 'yes' AND usergroup != 9 AND timeswarned >= " . $ban_user_limit);
+    mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET `enabled` = 'no', $usergroup = 9, $notifs = " . sqlesc($reason) . ", $modcomment = CONCAT('" . gmdate("Y-m-d") . " - " . $reason . "\n', modcomment) WHERE `enabled` = 'yes' AND usergroup != 9 AND timeswarned >= " . $ban_user_limit);
     $CQueryCount++;
     if ($totalbanned = mysqli_affected_rows($GLOBALS["DatabaseConnect"])) {
         SaveLog("Total " . $totalbanned . " user(s) has been banned. " . $reason);
@@ -74,7 +74,7 @@ if (intval($ban_user_limit)) {
 if ($leechwarn_system == "yes") {
     $downloaded = $leechwarn_gig_limit * 1024 * 1024 * 1024;
     $until = strtotime("+" . $leechwarn_length . " week" . (1 < $leechwarn_length ? "s" : ""));
-    mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET $leechwarn = 'yes', $leechwarnuntil = FROM_UNIXTIME(" . $until . "), $modcomment = CONCAT('" . gmdate("Y-m-d") . " - Leech-Warned by System - Low Ratio.\n', modcomment) WHERE $usergroup = 1 AND $leechwarn = 'no' AND $enabled = 'yes' AND uploaded / downloaded < " . $leechwarn_min_ratio . " AND downloaded >= '" . $downloaded . "'");
+    mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET $leechwarn = 'yes', $leechwarnuntil = FROM_UNIXTIME(" . $until . "), $modcomment = CONCAT('" . gmdate("Y-m-d") . " - Leech-Warned by System - Low Ratio.\n', modcomment) WHERE `usergroup` = 1 AND $leechwarn = 'no' AND $enabled = 'yes' AND uploaded / downloaded < " . $leechwarn_min_ratio . " AND downloaded >= '" . $downloaded . "'");
     $CQueryCount++;
     if ($totalLwarned = mysqli_affected_rows($GLOBALS["DatabaseConnect"])) {
         SaveLog("Total " . $totalLwarned . " user(s) has been leech-warned. Reason: Automatic Leech-Warn System!");
@@ -84,7 +84,7 @@ if ($leechwarn_system == "yes") {
     unset($downloaded);
     unset($until);
     $reason = "Reason: Banned by System because of Leech-Warning expired!";
-    mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET $enabled = 'no', $usergroup = 9, $notifs = " . sqlesc($reason) . ", $modcomment = CONCAT('" . gmdate("Y-m-d") . " - " . $reason . "\\n', modcomment)  WHERE $usergroup = 1 AND $enabled = 'yes' AND $leechwarn = 'yes' AND leechwarnuntil < NOW()");
+    mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET `enabled` = 'no', $usergroup = 9, $notifs = " . sqlesc($reason) . ", $modcomment = CONCAT('" . gmdate("Y-m-d") . " - " . $reason . "\\n', modcomment)  WHERE `usergroup` = 1 AND $enabled = 'yes' AND $leechwarn = 'yes' AND leechwarnuntil < NOW()");
     $CQueryCount++;
     if ($totalLbanned = mysqli_affected_rows($GLOBALS["DatabaseConnect"])) {
         SaveLog("Total " . $totalLbanned . " user(s) has been banned. " . $reason);
@@ -115,13 +115,13 @@ if (mysqli_num_rows($query)) {
     $UserNames = [];
     while ($arr = mysqli_fetch_assoc($query)) {
         if (in_array($arr["usergroup"], $protectedusergroups, true)) {
-            mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET $donor = 'no', $donoruntil = '0000-00-00 00:00:00', $modcomment = CONCAT('" . gmdate("Y-m-d") . " - Donor status removed by -AutoSystem.\n', modcomment) WHERE $id = '" . $arr["id"] . "'");
+            mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET $donor = 'no', $donoruntil = '0000-00-00 00:00:00', $modcomment = CONCAT('" . gmdate("Y-m-d") . " - Donor status removed by -AutoSystem.\n', modcomment) WHERE `id` = '" . $arr["id"] . "'");
         } else {
             $arr["oldusergroup"] = intval($arr["oldusergroup"]);
             if (!$arr["oldusergroup"]) {
                 $arr["oldusergroup"] = 1;
             }
-            mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET $usergroup = '" . ($dspecificusergroup == "oldusergroup" ? $arr["oldusergroup"] : $dspecificusergroup) . "', $donor = 'no', $donoruntil = '0000-00-00 00:00:00', $title = '', $modcomment = CONCAT('" . gmdate("Y-m-d") . " - Donor status removed by -AutoSystem.\n', modcomment) WHERE $id = '" . $arr["id"] . "'");
+            mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET `usergroup` = '" . ($dspecificusergroup == "oldusergroup" ? $arr["oldusergroup"] : $dspecificusergroup) . "', $donor = 'no', $donoruntil = '0000-00-00 00:00:00', $title = '', $modcomment = CONCAT('" . gmdate("Y-m-d") . " - Donor status removed by -AutoSystem.\n', modcomment) WHERE `id` = '" . $arr["id"] . "'");
         }
         $CQueryCount++;
         send_pm($arr["id"], $lang->cronjobs["donor_message"], $lang->cronjobs["donor_subject"]);
@@ -140,11 +140,11 @@ if (mysqli_num_rows($query)) {
     require_once INC_PATH . "/functions_pm.php";
     $UserNames = [];
     while ($arr = mysqli_fetch_assoc($query)) {
-        mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET $usergroup = '" . ($arr["old_gid"] ? $arr["old_gid"] : 2) . "', $modcomment = " . sqlesc(gmdate("Y-m-d") . " - KPS-VIP status removed by -AutoSystem.\n" . $arr["modcomment"]) . " WHERE $id = " . sqlesc($arr["id"]));
+        mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET `usergroup` = '" . ($arr["old_gid"] ? $arr["old_gid"] : 2) . "', $modcomment = " . sqlesc(gmdate("Y-m-d") . " - KPS-VIP status removed by -AutoSystem.\n" . $arr["modcomment"]) . " WHERE `id` = " . sqlesc($arr["id"]));
         $CQueryCount++;
         send_pm($arr["id"], $lang->cronjobs["vip_message"], $lang->cronjobs["vip_subject"]);
         $CQueryCount++;
-        mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM ts_auto_vip WHERE $userid = " . sqlesc($arr["id"]));
+        mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM ts_auto_vip WHERE `userid` = " . sqlesc($arr["id"]));
         $CQueryCount++;
         $UserNames[] = $arr["username"];
     }

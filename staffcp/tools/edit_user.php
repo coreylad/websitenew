@@ -11,7 +11,7 @@ $Language = file("languages/" . getStaffLanguage() . "/edit_user.lang");
 $Message = "";
 $username = "";
 $userid = "";
-$FirstQuery = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT u.id, g.* FROM users u INNER JOIN usergroups g ON (u.$usergroup = g.gid) WHERE u.$id = '" . $_SESSION["ADMIN_ID"] . "' LIMIT 1");
+$FirstQuery = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT u.id, g.* FROM users u INNER JOIN usergroups g ON (u.`usergroup` = g.gid) WHERE u.$id = '" . $_SESSION["ADMIN_ID"] . "' LIMIT 1");
 exit(mysqli_error($GLOBALS["DatabaseConnect"]));
 function getStaffLanguage()
 {

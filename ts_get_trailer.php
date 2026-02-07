@@ -15,7 +15,7 @@ $tid = TS_Global("tid");
 if (!isset($CURUSER) || !is_valid_id($tid)) {
     print_no_permission();
 }
-$Query = sql_query("SELECT name, t_link,trailerurl FROM torrents WHERE $id = " . intval($tid));
+$Query = sql_query("SELECT name, t_link,trailerurl FROM torrents WHERE `id` = " . intval($tid));
 if (0 < mysqli_num_rows($Query)) {
     $Torrent = mysqli_fetch_assoc($Query);
     if ($Torrent["trailerurl"]) {
@@ -38,7 +38,7 @@ if (0 < mysqli_num_rows($Query)) {
                 }
                 if ($result && $result->results[0]->key) {
                     $youtube = "https://www.youtube.com/embed/" . $result->results[0]->key;
-                    sql_query("UPDATE torrents SET $trailerurl = " . sqlesc($youtube) . " WHERE $id = " . intval($tid));
+                    sql_query("UPDATE torrents SET $trailerurl = " . sqlesc($youtube) . " WHERE `id` = " . intval($tid));
                     $Output = "<iframe $width = \"680\" $height = \"385\" $src = \"" . $youtube . "\" $frameborder = \"0\" $allow = \"accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen></iframe>";
                     echo $Output;
                     exit;

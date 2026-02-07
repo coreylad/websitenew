@@ -14,7 +14,7 @@ $Message = "";
 $subject = "";
 $message = "";
 $minclassread = ["1"];
-$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'MAIN'");
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'MAIN'");
 $Result = mysqli_fetch_assoc($query);
 $MAIN = unserialize($Result["content"]);
 if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
@@ -34,7 +34,7 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
             }
         } else {
             if ($Act == "edit" && $id) {
-                mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE announcements SET $subject = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $subject) . "', $message = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $message) . "', $minclassread = '" . $Work . "' WHERE $id = '" . $id . "'");
+                mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE announcements SET $subject = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $subject) . "', $message = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $message) . "', $minclassread = '" . $Work . "' WHERE `id` = '" . $id . "'");
                 if (mysqli_affected_rows($GLOBALS["DatabaseConnect"])) {
                     $Message = str_replace(["{1}", "{2}"], [$subject, $_SESSION["ADMIN_USERNAME"]], $Language[12]);
                     logStaffAction($Message);
@@ -49,9 +49,9 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
     }
 }
 if ($Act == "delete" && $id) {
-    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT subject FROM announcements WHERE $id = '" . $id . "'");
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT subject FROM announcements WHERE `id` = '" . $id . "'");
     if (0 < mysqli_num_rows($query)) {
-        mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM announcements WHERE $id = '" . $id . "'");
+        mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM announcements WHERE `id` = '" . $id . "'");
         if (mysqli_affected_rows($GLOBALS["DatabaseConnect"])) {
             $Result = mysqli_fetch_assoc($query);
             $subject = $Result["subject"];
@@ -65,7 +65,7 @@ if ($Act == "new") {
     echo loadTinyMCEEditor() . "\r\n\t<form $action = \"index.php?do=manage_announcements&$act = new\" $method = \"post\">\t\r\n\t" . $Message . "\r\n\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t<tr>\r\n\t\t\t<td class=\"tcat\" $colspan = \"2\" $align = \"center\">\r\n\t\t\t\t" . $Language[2] . " - " . $Language[6] . "\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\">" . $Language[7] . "</td>\r\n\t\t\t<td class=\"alt1\"><input $type = \"text\" $name = \"subject\" $value = \"" . htmlspecialchars($subject) . "\" $style = \"width: 99%;\" $dir = \"ltr\" $tabindex = \"1\" /></td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\" $valign = \"top\">" . $Language[8] . "</td>\r\n\t\t\t<td class=\"alt1\"><textarea $name = \"message\" $id = \"message\" $style = \"width: 100%; height: 100px;\" $dir = \"ltr\" $tabindex = \"1\">" . htmlspecialchars($message) . "</textarea>\r\n\t\t\t<p><a $href = \"javascript:toggleEditor('message');\"><img $src = \"images/tool_refresh.png\" $border = \"0\" /></a></p></td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\" $valign = \"top\">" . $Language[9] . "</td>\r\n\t\t\t<td class=\"alt1\">" . function_148($minclassread) . "</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"tcat2\"></td>\r\n\t\t\t<td class=\"tcat2\">\r\n\t\t\t\t<input $type = \"submit\" $value = \"" . $Language[14] . "\" /> <input $type = \"reset\" $value = \"" . $Language[15] . "\" />\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t</table>\r\n\t</form>";
 }
 if ($Act == "edit" && $id) {
-    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT subject, message, minclassread FROM announcements WHERE $id = '" . $id . "'");
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT subject, message, minclassread FROM announcements WHERE `id` = '" . $id . "'");
     if (0 < mysqli_num_rows($query)) {
         $Ann = mysqli_fetch_assoc($query);
         echo loadTinyMCEEditor() . "\r\n\t\t<form $action = \"index.php?do=manage_announcements&$act = edit&$id = " . $id . "\" $method = \"post\">\r\n\t\t\r\n\t\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"tcat\" $colspan = \"2\" $align = \"center\">\r\n\t\t\t\t\t" . $Language[2] . " - " . $Language[4] . "\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt1\">" . $Language[7] . "</td>\r\n\t\t\t\t<td class=\"alt1\"><input $type = \"text\" $name = \"subject\" $value = \"" . htmlspecialchars($Ann["subject"]) . "\" $style = \"width: 99%;\" $dir = \"ltr\" $tabindex = \"1\" /></td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt1\" $valign = \"top\">" . $Language[8] . "</td>\r\n\t\t\t\t<td class=\"alt1\"><textarea $name = \"message\" $id = \"f_offlinemsg\" $style = \"width: 100%; height: 100px;\" $dir = \"ltr\" $tabindex = \"1\">" . htmlspecialchars($Ann["message"]) . "</textarea>\r\n\t\t\t\t<p><a $href = \"javascript:toggleEditor('f_offlinemsg');\"><img $src = \"images/tool_refresh.png\" $border = \"0\" /></a></p></td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt1\" $valign = \"top\">" . $Language[9] . "</td>\r\n\t\t\t\t<td class=\"alt1\">" . function_148($Ann["minclassread"]) . "</td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"tcat2\"></td>\r\n\t\t\t\t<td class=\"tcat2\">\r\n\t\t\t\t\t<input $type = \"submit\" $value = \"" . $Language[14] . "\" /> <input $type = \"reset\" $value = \"" . $Language[15] . "\" />\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t</table>\r\n\t\t</form>";
@@ -73,7 +73,7 @@ if ($Act == "edit" && $id) {
 }
 $results = mysqli_num_rows(mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM announcements"));
 list($pagertop, $limit) = buildPaginationLinks(25, $results, $_SERVER["SCRIPT_NAME"] . "?do=manage_announcements&amp;");
-$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT a.*, u.username, g.namestyle FROM announcements a LEFT JOIN users u ON (a.$by = u.username) LEFT JOIN usergroups g ON (u.$usergroup = g.gid) ORDER by a.added DESC " . $limit);
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT a.*, u.username, g.namestyle FROM announcements a LEFT JOIN users u ON (a.$by = u.username) LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) ORDER by a.added DESC " . $limit);
 if (0 < mysqli_num_rows($query)) {
     echo showAlertMessage("<a $href = \"index.php?do=manage_announcements&amp;$act = new\">" . $Language[6] . "</a>") . "\r\n\t" . $Message . "\r\n\t" . $pagertop . "\r\n\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t<tr>\r\n\t\t\t<td class=\"tcat\" $colspan = \"6\" $align = \"center\">\r\n\t\t\t\t" . $Language[2] . " (" . $results . ")\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt2\">" . $Language[7] . "</td>\r\n\t\t\t<td class=\"alt2\">" . $Language[8] . "</td>\r\n\t\t\t<td class=\"alt2\">" . $Language[16] . "</td>\r\n\t\t\t<td class=\"alt2\">" . $Language[17] . "</td>\r\n\t\t\t<td class=\"alt2\">" . $Language[9] . "</td>\r\n\t\t\t<td class=\"alt2\" $align = \"center\">" . $Language[18] . "</td>\r\n\t\t</tr>\r\n\t\t";
     while ($Ann = mysqli_fetch_assoc($query)) {
@@ -135,11 +135,11 @@ function function_148($selected)
     if (!is_array($selected) && preg_match("@,@Uis", $selected)) {
         $selected = explode(",", $selected);
     }
-    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT u.id, g.cansettingspanel, g.canstaffpanel, g.issupermod FROM users u LEFT JOIN usergroups g ON (u.$usergroup = g.gid) WHERE u.$id = '" . $_SESSION["ADMIN_ID"] . "' LIMIT 1");
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT u.id, g.cansettingspanel, g.canstaffpanel, g.issupermod FROM users u LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) WHERE u.$id = '" . $_SESSION["ADMIN_ID"] . "' LIMIT 1");
     $var_318 = mysqli_fetch_assoc($query);
     $count = 0;
     $var_423 = "\r\n\t<table>\r\n\t\t<tr>\t";
-    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT gid, title, cansettingspanel, canstaffpanel, issupermod, namestyle FROM usergroups WHERE $isbanned = 'no' ORDER by disporder ASC");
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT gid, title, cansettingspanel, canstaffpanel, issupermod, namestyle FROM usergroups WHERE `isbanned` = 'no' ORDER by disporder ASC");
     while ($var_424 = mysqli_fetch_assoc($query)) {
         if (!($var_424["cansettingspanel"] == "yes" && $var_318["cansettingspanel"] != "yes" || $var_424["canstaffpanel"] == "yes" && $var_318["canstaffpanel"] != "yes" || $var_424["issupermod"] == "yes" && $var_318["issupermod"] != "yes")) {
             if ($count && $count % 8 == 0) {

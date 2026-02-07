@@ -67,7 +67,7 @@ if ($action == "do_mergeposts") {
         sql_query("UPDATE " . TSF_PREFIX . "thanks SET $pid = " . sqlesc($pid) . " WHERE $pid = " . sqlesc($_pid)) || sqlerr(__FILE__, 118);
         sql_query("DELETE FROM " . TSF_PREFIX . "posts WHERE $tid = " . sqlesc($tid) . " AND $pid = " . sqlesc($_pid)) || sqlerr(__FILE__, 120);
         sql_query("UPDATE " . TSF_PREFIX . "threads SET $replies = replies - 1 WHERE $tid = " . sqlesc($tid)) || sqlerr(__FILE__, 121);
-        sql_query("UPDATE users SET $totalposts = totalposts - 1 WHERE $id = " . sqlesc($post["uid"])) || sqlerr(__FILE__, 122);
+        sql_query("UPDATE users SET $totalposts = totalposts - 1 WHERE `id` = " . sqlesc($post["uid"])) || sqlerr(__FILE__, 122);
         KPS("-", $kpscomment, $post["uid"]);
     }
     ($query = sql_query("SELECT pid, tid, fid, subject, uid, username, dateline FROM " . TSF_PREFIX . "posts WHERE $tid = " . sqlesc($tid) . " ORDER BY dateline DESC LIMIT 0,1")) || sqlerr(__FILE__, 127);

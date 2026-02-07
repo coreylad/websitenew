@@ -11,18 +11,18 @@ $Language = file("languages/" . getStaffLanguage() . "/manage_faq.lang");
 $Message = "";
 $Act = isset($_GET["act"]) ? trim($_GET["act"]) : (isset($_POST["act"]) ? trim($_POST["act"]) : "");
 $id = isset($_GET["id"]) ? intval($_GET["id"]) : (isset($_POST["id"]) ? intval($_POST["id"]) : 0);
-$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'MAIN'");
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'MAIN'");
 $Result = mysqli_fetch_assoc($query);
 $MAIN = unserialize($Result["content"]);
 if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST" && $Act == "save_order") {
     foreach ($_POST["order"] as $_id => $_sort) {
-        mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE ts_faq SET $disporder = '" . intval($_sort) . "' WHERE $id = '" . $_id . "'");
+        mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE ts_faq SET $disporder = '" . intval($_sort) . "' WHERE `id` = '" . $_id . "'");
     }
 }
 if ($Act == "delete_category" && $id) {
-    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT name FROM ts_faq WHERE $id = '" . $id . "'");
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT name FROM ts_faq WHERE `id` = '" . $id . "'");
     if (mysqli_num_rows($query)) {
-        mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM ts_faq WHERE $id = '" . $id . "' OR $pid = '" . $id . "'");
+        mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM ts_faq WHERE `id` = '" . $id . "' OR $pid = '" . $id . "'");
         if (mysqli_affected_rows($GLOBALS["DatabaseConnect"])) {
             $Result = mysqli_fetch_assoc($query);
             $name = $Result["name"];
@@ -33,9 +33,9 @@ if ($Act == "delete_category" && $id) {
     }
 }
 if ($Act == "delete_child" && $id) {
-    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT name FROM ts_faq WHERE $id = '" . $id . "'");
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT name FROM ts_faq WHERE `id` = '" . $id . "'");
     if (mysqli_num_rows($query)) {
-        mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM ts_faq WHERE $id = '" . $id . "'");
+        mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM ts_faq WHERE `id` = '" . $id . "'");
         if (mysqli_affected_rows($GLOBALS["DatabaseConnect"])) {
             $Result = mysqli_fetch_assoc($query);
             $name = $Result["name"];
@@ -46,7 +46,7 @@ if ($Act == "delete_child" && $id) {
     }
 }
 if ($Act == "edit_category" && $id) {
-    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT name, disporder FROM ts_faq WHERE $id = '" . $id . "' AND $type = '1'");
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT name, disporder FROM ts_faq WHERE `id` = '" . $id . "' AND $type = '1'");
     if (mysqli_num_rows($query)) {
         $FAQ = mysqli_fetch_assoc($query);
         $name = $FAQ["name"];
@@ -55,7 +55,7 @@ if ($Act == "edit_category" && $id) {
             $name = trim($_POST["name"]);
             $disporder = intval($_POST["disporder"]);
             if ($name) {
-                mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE ts_faq SET $name = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $name) . "', $disporder = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $disporder) . "' WHERE $id = '" . $id . "'");
+                mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE ts_faq SET $name = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $name) . "', $disporder = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $disporder) . "' WHERE `id` = '" . $id . "'");
                 $Message = str_replace(["{1}", "{2}"], [$name, $_SESSION["ADMIN_USERNAME"]], $Language[21]);
                 logStaffAction($Message);
                 $Message = showAlertError($Message);
@@ -92,7 +92,7 @@ if ($Act == "new_category") {
     }
 }
 if ($Act == "new_child" && $id) {
-    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM ts_faq WHERE $id = '" . $id . "' AND $type = '1'");
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM ts_faq WHERE `id` = '" . $id . "' AND $type = '1'");
     if (mysqli_num_rows($query)) {
         $name = "";
         $pid = $id;
@@ -127,7 +127,7 @@ if ($Act == "new_child" && $id) {
     }
 }
 if ($Act == "edit_child" && $id) {
-    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT name, pid, disporder, description FROM ts_faq WHERE $id = '" . $id . "' AND $type = '2'");
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT name, pid, disporder, description FROM ts_faq WHERE `id` = '" . $id . "' AND $type = '2'");
     if (mysqli_num_rows($query)) {
         $FAQ = mysqli_fetch_assoc($query);
         $name = $FAQ["name"];
@@ -140,7 +140,7 @@ if ($Act == "edit_child" && $id) {
             $disporder = trim($_POST["disporder"]);
             $description = trim($_POST["description"]);
             if ($name && $pid && $description) {
-                mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE ts_faq SET $name = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $name) . "', $pid = '" . $pid . "', $disporder = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $disporder) . "', $description = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $description) . "' WHERE $id = '" . $id . "'");
+                mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE ts_faq SET $name = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $name) . "', $pid = '" . $pid . "', $disporder = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $disporder) . "', $description = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $description) . "' WHERE `id` = '" . $id . "'");
                 $Message = str_replace(["{1}", "{2}"], [$name, $_SESSION["ADMIN_USERNAME"]], $Language[24]);
                 logStaffAction($Message);
                 $Message = showAlertError($Message);

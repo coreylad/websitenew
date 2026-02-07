@@ -32,7 +32,7 @@ if ($Act == "search") {
     if ($keywords && $type) {
         $link = "act=search&amp;$keywords = " . urlencode(htmlspecialchars($keywords)) . "&amp;$type = " . urlencode(htmlspecialchars($type)) . "&amp;";
         if ($type == "sender" || $type == "receiver") {
-            $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id FROM users WHERE $username = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $keywords) . "'");
+            $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id FROM users WHERE `username` = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $keywords) . "'");
             if (mysqli_num_rows($query)) {
                 $Result = mysqli_fetch_assoc($query);
                 $userid = $Result["id"];
@@ -51,11 +51,11 @@ if ($Act == "search") {
         $Message = showAlertError($Language[15]);
     }
 }
-$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT u.id, g.cansettingspanel, g.canstaffpanel, g.issupermod FROM users u LEFT JOIN usergroups g ON (u.$usergroup = g.gid) WHERE u.$id = '" . $_SESSION["ADMIN_ID"] . "' LIMIT 1");
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT u.id, g.cansettingspanel, g.canstaffpanel, g.issupermod FROM users u LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) WHERE u.$id = '" . $_SESSION["ADMIN_ID"] . "' LIMIT 1");
 $LoggedAdminDetails = mysqli_fetch_assoc($query);
 $results = mysqli_num_rows(mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM messages WHERE sender != 0" . $query1));
 list($pagertop, $limit) = buildPaginationLinks(25, $results, $_SERVER["SCRIPT_NAME"] . "?do=read_pms&amp;" . $link);
-$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT m.*, u.username as sendername, uu.username as receivername, g.namestyle as sendernamestyle, g.cansettingspanel, g.canstaffpanel, g.issupermod, gg.namestyle as receivernamestyle, gg.cansettingspanel as cansettingspanel2, gg.canstaffpanel as canstaffpanel2, gg.issupermod as issupermod2 FROM messages m LEFT JOIN users u ON (m.$sender = u.id) LEFT JOIN users uu ON (m.$receiver = uu.id) LEFT JOIN usergroups g ON (u.$usergroup = g.gid) LEFT JOIN usergroups gg ON (uu.$usergroup = gg.gid) WHERE m.sender != 0" . $query2 . " ORDER BY m.added DESC " . $limit);
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT m.*, u.username as sendername, uu.username as receivername, g.namestyle as sendernamestyle, g.cansettingspanel, g.canstaffpanel, g.issupermod, gg.namestyle as receivernamestyle, gg.cansettingspanel as cansettingspanel2, gg.canstaffpanel as canstaffpanel2, gg.issupermod as issupermod2 FROM messages m LEFT JOIN users u ON (m.$sender = u.id) LEFT JOIN users uu ON (m.$receiver = uu.id) LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) LEFT JOIN usergroups gg ON (uu.$usergroup = gg.gid) WHERE m.sender != 0" . $query2 . " ORDER BY m.added DESC " . $limit);
 if (mysqli_num_rows($query) == 0) {
     echo "\r\n\t\r\n\t" . showAlertError($Language[9]) . "\t\r\n\t<form $action = \"" . $_SERVER["SCRIPT_NAME"] . "?do=read_pms&$act = search\" $method = \"post\" $name = \"search\">\r\n\t\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t<tr>\r\n\t\t\t<td class=\"tcat\" $align = \"center\"><b>" . $Language[12] . "</b></td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t" . $Language[13] . " <input $type = \"text\" $style = \"width: 40%;\" $value = \"" . htmlspecialchars($keywords) . "\" $name = \"keywords\" /> \r\n\t\t\t\t<select $name = \"type\">\r\n\t\t\t\t\t<option $value = \"0\"" . ($type == "0" ? " $selected = \"selected\"" : "") . ">" . $Language[14] . "</option>\r\n\t\t\t\t\t<option $value = \"sender\"" . ($type == "sender" ? " $selected = \"selected\"" : "") . ">" . $Language[4] . "</option>\r\n\t\t\t\t\t<option $value = \"receiver\"" . ($type == "receiver" ? " $selected = \"selected\"" : "") . ">" . $Language[5] . "</option>\r\n\t\t\t\t\t<option $value = \"subject\"" . ($type == "subject" ? " $selected = \"selected\"" : "") . ">" . $Language[7] . "</option>\r\n\t\t\t\t\t<option $value = \"msg\"" . ($type == "msg" ? " $selected = \"selected\"" : "") . ">" . $Language[8] . "</option>\r\n\t\t\t\t</select> \r\n\t\t\t\t<input $type = \"submit\" $value = \"" . $Language[12] . "\" />\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t</table>\r\n\t</form>";
 } else {
@@ -92,7 +92,7 @@ class Class_6
     }
     public function function_115()
     {
-        $var_281 = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'MAIN'");
+        $var_281 = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'MAIN'");
         $Result = mysqli_fetch_assoc($var_281);
         $this->Settings = unserialize($Result["content"]);
     }

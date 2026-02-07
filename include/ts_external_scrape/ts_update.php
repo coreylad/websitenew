@@ -23,7 +23,7 @@ if (isset($_POST["ajax_update"]) && strtoupper($_SERVER["REQUEST_METHOD"]) == "P
     $returnto .= strpos($returnto, "?") ? "&$tsuid = " . $id : "?$tsuid = " . $id;
     $returnto = str_replace([$BASEURL, "//"], ["", "/"], $returnto);
 }
-$query = sql_query("SELECT ts_external_lastupdate FROM torrents WHERE $id = " . sqlesc($id) . " AND $ts_external = 'yes'");
+$query = sql_query("SELECT ts_external_lastupdate FROM torrents WHERE `id` = " . sqlesc($id) . " AND $ts_external = 'yes'");
 if (!mysqli_num_rows($query)) {
     if (!$ajax) {
         redirect($returnto, $lang->global["recentlyupdated"]);

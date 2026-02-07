@@ -11,7 +11,7 @@ $Language = file("languages/" . getStaffLanguage() . "/cache.lang");
 $Act = isset($_GET["act"]) ? trim($_GET["act"]) : (isset($_POST["act"]) ? trim($_POST["act"]) : "");
 $Message = "";
 if (isset($_GET["cache"])) {
-    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'MAIN'");
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'MAIN'");
     $Result = mysqli_fetch_assoc($query);
     $MAIN = unserialize($Result["content"]);
     $cache_arrays = ["categories", "ipban", "plugin", "usergroup", "indexstats", "smilies"];
@@ -51,7 +51,7 @@ if (isset($_GET["cache"])) {
         echo var_633();
     }
     echo function_322("Index Stats");
-    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'ANNOUNCE'");
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'ANNOUNCE'");
     $Result = mysqli_fetch_assoc($query);
     $ANNOUNCE = unserialize($Result["content"]);
     $torrents = function_324("id", "torrents");
@@ -75,7 +75,7 @@ if (isset($_GET["cache"])) {
     $totaldownloaded = $row["totaldl"];
     $totaluploaded = $row["totalul"];
     $registered = $row["totaluser"];
-    $latestuser = mysqli_fetch_assoc(mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id,username FROM users WHERE $status = 'confirmed' ORDER BY id DESC LIMIT 1"));
+    $latestuser = mysqli_fetch_assoc(mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id,username FROM users WHERE `status` = 'confirmed' ORDER BY id DESC LIMIT 1"));
     $latestuser = "<a $href = \"" . $MAIN["BASEURL"] . "/userdetails.php?$id = " . $latestuser["id"] . "\">" . $latestuser["username"] . "</a>";
     $getfstats = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT SUM(posts) AS totalposts, SUM(threads) AS totalthreads FROM tsf_forums");
     $fstats = mysqli_fetch_assoc($getfstats);

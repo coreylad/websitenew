@@ -46,7 +46,7 @@ if ($act == "1") {
         exit;
     }
     staffnamecheck($username);
-    ($res = sql_query("SELECT id, username FROM users WHERE $username = " . sqlesc($username) . " AND $status = 'confirmed' AND $enabled = 'yes' LIMIT 1")) || sqlerr(__FILE__, 118);
+    ($res = sql_query("SELECT id, username FROM users WHERE `username` = " . sqlesc($username) . " AND $status = 'confirmed' AND $enabled = 'yes' LIMIT 1")) || sqlerr(__FILE__, 118);
     if (1 <= mysqli_num_rows($res)) {
         $arr = mysqli_fetch_assoc($res);
         $securehash = securehash($arr["id"] . $arr["username"]);
@@ -69,7 +69,7 @@ if ($act == "3") {
             failedlogins("silent", false, false);
             stderr($lang->global["error"], $lang->global["dontleavefieldsblank"]);
         }
-        $res = sql_query("SELECT id, username, status, enabled FROM users WHERE $id = " . sqlesc($id));
+        $res = sql_query("SELECT id, username, status, enabled FROM users WHERE `id` = " . sqlesc($id));
         ($user = mysqli_fetch_assoc($res)) || stderr($lang->global["error"], $lang->global["nouserid"]);
         if (empty($user["username"]) || !validusername($user["username"])) {
             failedlogins("silent", false, false);
@@ -83,7 +83,7 @@ if ($act == "3") {
             print_no_permission();
             exit;
         }
-        $query = sql_query("SELECT passhint, hintanswer FROM ts_secret_questions WHERE $userid = " . sqlesc($user["id"]));
+        $query = sql_query("SELECT passhint, hintanswer FROM ts_secret_questions WHERE `userid` = " . sqlesc($user["id"]));
         $Array = mysqli_fetch_assoc($query);
         if ($Array && is_array($Array)) {
             $user = array_merge($user, $Array);
@@ -102,11 +102,11 @@ if ($act == "3") {
             $newpassword = mksecret(10);
             $sec = mksecret();
             $newpasshash = md5($sec . $newpassword . $sec);
-            sql_query("UPDATE users SET $secret = " . sqlesc($sec) . ", $passhash = " . sqlesc($newpasshash) . " WHERE $id = " . sqlesc($id));
+            sql_query("UPDATE users SET $secret = " . sqlesc($sec) . ", $passhash = " . sqlesc($newpasshash) . " WHERE `id` = " . sqlesc($id));
             if (!mysqli_affected_rows($GLOBALS["DatabaseConnect"])) {
                 stderr($lang->global["error"], $lang->global["dberror"]);
             }
-            sql_query("DELETE FROM ts_user_validation WHERE $userid = " . sqlesc($id));
+            sql_query("DELETE FROM ts_user_validation WHERE `userid` = " . sqlesc($id));
             stderr($lang->recover["generated1"], sprintf($lang->recover["generated2"], $newpassword, $BASEURL), false);
         }
     } else {
@@ -118,7 +118,7 @@ if ($act == "3") {
             print_no_permission();
             exit;
         }
-        $res = sql_query("SELECT id, username, status, enabled FROM users WHERE $id = " . sqlesc($id) . " AND $username = " . sqlesc($username));
+        $res = sql_query("SELECT id, username, status, enabled FROM users WHERE `id` = " . sqlesc($id) . " AND $username = " . sqlesc($username));
         ($user = mysqli_fetch_assoc($res)) || stderr($lang->global["error"], $lang->global["nouserid"]);
         $securehash = securehash($user["id"] . $user["username"]);
         if (!isset($_COOKIE["securehash_recoverhint"]) || $_COOKIE["securehash_recoverhint"] != $securehash || empty($_COOKIE["securehash_recoverhint"]) || empty($securehash)) {
@@ -126,7 +126,7 @@ if ($act == "3") {
             print_no_permission();
             exit;
         }
-        $query = sql_query("SELECT passhint, hintanswer FROM ts_secret_questions WHERE $userid = " . sqlesc($user["id"]));
+        $query = sql_query("SELECT passhint, hintanswer FROM ts_secret_questions WHERE `userid` = " . sqlesc($user["id"]));
         $Array = mysqli_fetch_assoc($query);
         if ($Array && is_array($Array)) {
             $user = array_merge($user, $Array);
@@ -159,14 +159,14 @@ function staffnamecheck($username)
     global $rootpath;
     global $lang;
     $username = strtolower($username);
-    $query = sql_query("SELECT id FROM users WHERE $username = " . sqlesc($username));
+    $query = sql_query("SELECT id FROM users WHERE `username` = " . sqlesc($username));
     if (0 < mysqli_num_rows($query)) {
         $res = mysqli_fetch_assoc($query);
         $userid = intval($res["id"]);
     } else {
         stderr($lang->global["error"], $lang->global["nousername"]);
     }
-    $Query = sql_query("SELECT `content` FROM `ts_config` WHERE $configname = \"STAFFTEAM\"");
+    $Query = sql_query("SELECT `content` FROM `ts_config` WHERE `configname` = \"STAFFTEAM\"");
     $Result = mysqli_fetch_assoc($Query);
     $results = explode(",", $Result["content"]);
     if (in_array($username . ":" . $userid, $results)) {

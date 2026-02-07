@@ -67,7 +67,7 @@ if ($ajaxAction == "check_email") {
     if (EmailBanned($ajaxValue)) {
         exit($lang->signup["emailbanned"]);
     }
-    $ajaxQuery = sql_query("SELECT email FROM users WHERE $email = " . sqlesc($ajaxValue));
+    $ajaxQuery = sql_query("SELECT email FROM users WHERE `email` = " . sqlesc($ajaxValue));
     if (mysqli_num_rows($ajaxQuery) == 0) {
         exit($lang->signup["emailokay"]);
     }
@@ -80,7 +80,7 @@ if ($ajaxAction == "check_username") {
     if (strlen($ajaxValue) < 3 || 12 < strlen($ajaxValue)) {
         exit($lang->signup["validusername2"]);
     }
-    $query = sql_query("SELECT id FROM users WHERE $username = " . sqlesc($value));
+    $query = sql_query("SELECT id FROM users WHERE `username` = " . sqlesc($value));
     if (0 < mysqli_num_rows($query)) {
         exit($lang->signup["usernamexists"]);
     }

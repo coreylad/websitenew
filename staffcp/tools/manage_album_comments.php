@@ -13,7 +13,7 @@ $WHERE = "";
 $LINK = "";
 $perpage = 8;
 if (isset($_GET["delete"]) && ($CID = intval($_GET["cid"]))) {
-    mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM ts_album_comments WHERE $cid = " . $CID);
+    mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM ts_album_comments WHERE `cid` = " . $CID);
 }
 if (isset($_GET["sender"]) && ($SENDER = intval($_GET["sender"]))) {
     $WHERE = " WHERE a.$userid = " . $SENDER;
@@ -22,7 +22,7 @@ if (isset($_GET["sender"]) && ($SENDER = intval($_GET["sender"]))) {
 $results = mysqli_num_rows(mysqli_query($GLOBALS["DatabaseConnect"], "SELECT a.cid FROM ts_album_comments a" . $WHERE));
 list($pagertop, $limit) = buildPaginationLinks($perpage, $results, $_SERVER["SCRIPT_NAME"] . "?do=manage_album_comments&amp;" . $LINK);
 $Found = "";
-$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT a.*, u.username, g.namestyle FROM ts_album_comments a LEFT JOIN users u ON (u.$id = a.userid) LEFT JOIN usergroups g ON (u.$usergroup = g.gid) " . $WHERE . " ORDER by a.date DESC " . $limit);
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT a.*, u.username, g.namestyle FROM ts_album_comments a LEFT JOIN users u ON (u.`id` = a.userid) LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) " . $WHERE . " ORDER by a.date DESC " . $limit);
 if ($results) {
     while ($R = mysqli_fetch_assoc($query)) {
         $page_url = isset($_GET["page"]) ? "&amp;$page = " . intval($_GET["page"]) : "";
@@ -55,7 +55,7 @@ class Class_6
     }
     public function function_115()
     {
-        $var_281 = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'MAIN'");
+        $var_281 = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'MAIN'");
         $var_20 = mysqli_fetch_assoc($var_281);
         $this->Settings = unserialize($var_20["content"]);
     }

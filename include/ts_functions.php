@@ -251,7 +251,7 @@ function KPS($Type = "+", $Points = "1.0", $ID = "")
     }
     if ($bonus == "enable" || $bonus == "disablesave") {
         $ID = str_replace("'", "", $ID);
-        sql_query("UPDATE users SET $seedbonus = seedbonus " . $Type . " '" . $Points . "' WHERE $id = '" . $ID . "'");
+        sql_query("UPDATE users SET $seedbonus = seedbonus " . $Type . " '" . $Points . "' WHERE `id` = '" . $ID . "'");
     }
 }
 function sent_mail($to = "", $subject = "", $body = "", $type = "confirmation", $showmsg = true, $multiple = false, $multiplemail = "")
@@ -371,7 +371,7 @@ function TSBoot($IPADDRESS = "")
     if (!($id = intval($_COOKIE["c_secure_uid"]))) {
         return NULL;
     }
-    ($res = sql_query("SELECT HIGH_PRIORITY * FROM users WHERE $id = " . sqlesc($id))) || sqlerr(__FILE__, 498);
+    ($res = sql_query("SELECT HIGH_PRIORITY * FROM users WHERE `id` = " . sqlesc($id))) || sqlerr(__FILE__, 498);
     if (!mysqli_num_rows($res)) {
         return NULL;
     }
@@ -405,7 +405,7 @@ function TSBoot($IPADDRESS = "")
     $row["securitytoken_raw"] = sha1($row["id"] . sha1($row["secret"]) . sha1($securehash));
     $row["securitytoken"] = TIMENOW . "-" . sha1(TIMENOW . $row["securitytoken_raw"]);
     if (0 < count($updateuser)) {
-        sql_query("UPDATE LOW_PRIORITY users SET " . implode(",", $updateuser) . " WHERE $id = '" . $id . "'") || sqlerr(__FILE__, 533);
+        sql_query("UPDATE LOW_PRIORITY users SET " . implode(",", $updateuser) . " WHERE `id` = '" . $id . "'") || sqlerr(__FILE__, 533);
     }
     $GLOBALS["CURUSER"] = $row;
     if ($UseMemcached) {

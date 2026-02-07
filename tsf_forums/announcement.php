@@ -13,7 +13,7 @@ if (!isset($CURUSER) || $CURUSER["id"] == 0) {
 }
 if (isset($_GET["aid"]) && is_valid_id($_GET["aid"])) {
     $aid = intval($_GET["aid"]);
-    ($query = sql_query("SELECT a.*, u.id, u.username, g.namestyle, g.title as usergrouptitle FROM " . TSF_PREFIX . "announcement a LEFT JOIN users u ON (a.$userid = u.id) LEFT JOIN usergroups g ON (u.$usergroup = g.gid) WHERE a.$announcementid = " . sqlesc($aid))) || sqlerr(__FILE__, 43);
+    ($query = sql_query("SELECT a.*, u.id, u.username, g.namestyle, g.title as usergrouptitle FROM " . TSF_PREFIX . "announcement a LEFT JOIN users u ON (a.$userid = u.id) LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) WHERE a.$announcementid = " . sqlesc($aid))) || sqlerr(__FILE__, 43);
     if (mysqli_num_rows($query) == 0) {
         stderr($lang->global["error"], $lang->tsf_forums["invalidaid"]);
         exit;

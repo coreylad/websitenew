@@ -29,7 +29,7 @@ if (mysqli_num_rows($query) == 0) {
     $SG = mysqli_fetch_assoc($query);
 }
 $lang->load("ts_social_groups");
-$query = sql_query("SELECT userid FROM ts_social_group_members WHERE $userid = " . sqlesc($CURUSER["id"]) . " AND $type = 'public'");
+$query = sql_query("SELECT userid FROM ts_social_group_members WHERE `userid` = " . sqlesc($CURUSER["id"]) . " AND $type = 'public'");
 if (mysqli_num_rows($query) == 0) {
     show_msg($lang->ts_social_groups["error7"], true);
 }

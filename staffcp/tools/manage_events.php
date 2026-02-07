@@ -14,10 +14,10 @@ $Act = isset($_GET["act"]) ? trim($_GET["act"]) : (isset($_POST["act"]) ? trim($
 $id = isset($_GET["id"]) ? intval($_GET["id"]) : (isset($_POST["id"]) ? intval($_POST["id"]) : 0);
 $months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 if ($Act == "delete" && $id) {
-    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT title FROM ts_events WHERE $id = '" . $id . "'");
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT title FROM ts_events WHERE `id` = '" . $id . "'");
     if (mysqli_num_rows($query)) {
         $Events = mysqli_fetch_assoc($query);
-        mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM ts_events WHERE $id = '" . $id . "'");
+        mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM ts_events WHERE `id` = '" . $id . "'");
         if (mysqli_affected_rows($GLOBALS["DatabaseConnect"])) {
             $Message = str_replace(["{1}", "{2}"], [$Events["title"], $_SESSION["ADMIN_USERNAME"]], $Language[16]);
             logStaffAction($Message);
@@ -26,7 +26,7 @@ if ($Act == "delete" && $id) {
     }
 }
 if ($Act == "edit" && $id) {
-    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM ts_events WHERE $id = '" . $id . "'");
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM ts_events WHERE `id` = '" . $id . "'");
     if (mysqli_num_rows($query)) {
         $Events = mysqli_fetch_assoc($query);
         $title = $Events["title"];
@@ -36,7 +36,7 @@ if ($Act == "edit" && $id) {
             $event = isset($_POST["event"]) ? trim($_POST["event"]) : "";
             $date = htmlspecialchars($_POST["month"]) . "-" . intval($_POST["day"]) . "-" . intval($_POST["year"]);
             if ($title && $event && $date) {
-                mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE ts_events SET $title = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $title) . "', $event = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $event) . "', $date = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $date) . "' WHERE $id = '" . $id . "'");
+                mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE ts_events SET $title = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $title) . "', $event = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $event) . "', $date = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $date) . "' WHERE `id` = '" . $id . "'");
                 $Message = str_replace(["{1}", "{2}"], [$Events["title"], $_SESSION["ADMIN_USERNAME"]], $Language[17]);
                 logStaffAction($Message);
                 $Message = showAlertMessage($Message);

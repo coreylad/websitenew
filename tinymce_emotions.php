@@ -12,7 +12,7 @@ ini_set("display_startup_errors", 0);
 error_reporting(32759);
 require "./include/php_default_timezone_set.php";
 fast_db_connect();
-$configQuery = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'MAIN'");
+$configQuery = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'MAIN'");
 $configResult = mysqli_fetch_assoc($configQuery);
 $MAIN = unserialize($configResult["content"]);
 $cache = $MAIN["cache"];

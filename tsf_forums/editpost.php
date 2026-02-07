@@ -71,7 +71,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["submit"])) {
     if (strlen($_POST["subject"]) < $f_minmsglength || strlen($_POST["message"]) < $f_minmsglength) {
         $error = $lang->tsf_forums["too_short"];
     }
-    $query = sql_query("SELECT dateline FROM " . TSF_PREFIX . "posts WHERE $uid = " . sqlesc($CURUSER["id"]) . " ORDER by dateline DESC LIMIT 1");
+    $query = sql_query("SELECT dateline FROM " . TSF_PREFIX . "posts WHERE `uid` = " . sqlesc($CURUSER["id"]) . " ORDER by dateline DESC LIMIT 1");
     if (mysqli_num_rows($query)) {
         $Result = mysqli_fetch_assoc($query);
         $last_post = $Result["dateline"];

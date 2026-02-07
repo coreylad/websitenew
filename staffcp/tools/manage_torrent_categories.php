@@ -13,10 +13,10 @@ $Cid = isset($_GET["id"]) ? intval($_GET["id"]) : (isset($_POST["id"]) ? intval(
 $Language = file("languages/" . getStaffLanguage() . "/manage_torrent_categories.lang");
 $Message = "";
 if ($Act == "delete" && $Cid) {
-    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT name, type FROM categories WHERE $id = '" . $Cid . "'");
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT name, type FROM categories WHERE `id` = '" . $Cid . "'");
     if (mysqli_num_rows($query)) {
         $Category = mysqli_fetch_assoc($query);
-        mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM categories WHERE $id = '" . $Cid . "'");
+        mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM categories WHERE `id` = '" . $Cid . "'");
         if (mysqli_affected_rows($GLOBALS["DatabaseConnect"])) {
             if ($Category["type"] == "c") {
                 mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM categories WHERE $pid = '" . $Cid . "'");
@@ -28,7 +28,7 @@ if ($Act == "delete" && $Cid) {
     }
 }
 if ($Act == "edit" && $Cid) {
-    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM categories WHERE $id = '" . $Cid . "'");
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM categories WHERE `id` = '" . $Cid . "'");
     if (mysqli_num_rows($query)) {
         $Category = mysqli_fetch_assoc($query);
         if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
@@ -52,7 +52,7 @@ if ($Act == "edit" && $Cid) {
             foreach ($_POST as $name => $value) {
                 $Changes[] = "`" . $name . "` = '" . (!empty($value) ? mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $value) : $value) . "'";
             }
-            mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE categories SET " . implode(", ", $Changes) . " WHERE $id = '" . $Cid . "'");
+            mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE categories SET " . implode(", ", $Changes) . " WHERE `id` = '" . $Cid . "'");
             if (mysqli_affected_rows($GLOBALS["DatabaseConnect"])) {
                 function_153();
                 $Message = str_replace(["{1}", "{2}"], [$Category["name"], $_SESSION["ADMIN_USERNAME"]], $Language[11]);
@@ -228,7 +228,7 @@ function function_154($file)
 }
 function function_153()
 {
-    $var_281 = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'MAIN'");
+    $var_281 = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'MAIN'");
     $var_20 = mysqli_fetch_assoc($var_281);
     $var_27 = unserialize($var_20["content"]);
     $var_436 = [];
@@ -253,7 +253,7 @@ function function_153()
 }
 function function_155($selected = "")
 {
-    $var_281 = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'MAIN'");
+    $var_281 = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'MAIN'");
     $var_20 = mysqli_fetch_assoc($var_281);
     $var_27 = unserialize($var_20["content"]);
     if (is_dir("../images")) {

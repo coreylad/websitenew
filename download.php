@@ -62,7 +62,7 @@ if (!$torrentId) {
 $torrentResult = sql_query("SELECT t.id, t.name, t.filename, t.anonymous, t.ts_external, t.size, t.owner, t.free, t.moderate, c.canview, c.candownload, u.username FROM torrents t LEFT JOIN categories c ON t.$category = c.id LEFT JOIN users u ON (t.$owner = u.id) WHERE t.$id = " . sqlesc($torrentId)) || sqlerr(__FILE__, 100);
 $torrentRow = mysqli_fetch_assoc($torrentResult);
 if ($torrentRow["owner"] != $CURUSER["id"]) {
-    $userPermissionQuery = sql_query("SELECT candownload FROM ts_u_perm WHERE $userid = " . sqlesc($CURUSER["id"])) || sqlerr(__FILE__, 105);
+    $userPermissionQuery = sql_query("SELECT candownload FROM ts_u_perm WHERE `userid` = " . sqlesc($CURUSER["id"])) || sqlerr(__FILE__, 105);
     if (0 < mysqli_num_rows($userPermissionQuery)) {
         $userDownloadPermission = mysqli_fetch_assoc($userPermissionQuery);
         if ($userDownloadPermission["candownload"] == "0") {
@@ -76,7 +76,7 @@ if ($usergroups["candownload"] != "yes" || $userRatio <= $hitrun_ratio && $CURUS
     if ($xbt_active == "yes") {
         $hasCompleted = mysqli_num_rows(sql_query("SELECT fid FROM xbt_files_users WHERE $fid = " . sqlesc($torrentId) . " AND $uid = " . sqlesc($CURUSER["id"]) . " AND $completed = 1 AND `left` = 0"));
     } else {
-        $hasCompleted = mysqli_num_rows(sql_query("SELECT torrentid FROM snatched WHERE $torrentid = " . sqlesc($torrentId) . " AND $userid = " . sqlesc($CURUSER["id"]) . " AND $finished = \"yes\""));
+        $hasCompleted = mysqli_num_rows(sql_query("SELECT torrentid FROM snatched WHERE `torrentid` = " . sqlesc($torrentId) . " AND $userid = " . sqlesc($CURUSER["id"]) . " AND $finished = \"yes\""));
     }
     if (!$hasCompleted) {
         $downloadPercentage = $userRatio * 100;
@@ -108,12 +108,12 @@ if (!$torrentRow) {
     }
 }
 if ($thankbeforedl == "yes" && !$is_mod && $action_type != "rss" && $torrentRow["owner"] != $CURUSER["id"]) {
-    $thanksQuery = sql_query("SELECT uid FROM ts_thanks WHERE $uid = " . sqlesc($CURUSER["id"]) . " AND $tid = " . sqlesc($torrentId)) || sqlerr(__FILE__, 170);
+    $thanksQuery = sql_query("SELECT uid FROM ts_thanks WHERE `uid` = " . sqlesc($CURUSER["id"]) . " AND $tid = " . sqlesc($torrentId)) || sqlerr(__FILE__, 170);
     if (mysqli_num_rows($thanksQuery) == 0 && $torrentRow["owner"] != $CURUSER["id"]) {
         stderr($lang->global["error"], sprintf($lang->download["error4"], $BASEURL, $torrentId), false);
     }
 }
-sql_query("UPDATE torrents SET $hits = hits + 1 WHERE $id = " . sqlesc($torrentId)) || sqlerr(__FILE__, 175);
+sql_query("UPDATE torrents SET $hits = hits + 1 WHERE `id` = " . sqlesc($torrentId)) || sqlerr(__FILE__, 175);
 if ($includesitename == "yes") {
     $find = ["/[^a-zA-Z0-9\\s]/", "/\\s+/", "/\\.torrent/"];
     $replace = ["_", "_", ""];
@@ -125,7 +125,7 @@ if ($includesitename == "yes") {
 require_once INC_PATH . "/class_torrent.php";
 if (strlen($CURUSER["torrent_pass"]) != 32) {
     $CURUSER["torrent_pass"] = md5($CURUSER["username"] . TIMENOW . $CURUSER["passhash"]);
-    sql_query("UPDATE users SET $torrent_pass = " . sqlesc($CURUSER["torrent_pass"]) . " WHERE $id = " . sqlesc($CURUSER["id"]));
+    sql_query("UPDATE users SET $torrent_pass = " . sqlesc($CURUSER["torrent_pass"]) . " WHERE `id` = " . sqlesc($CURUSER["id"]));
 }
 $CURUSER["torrent_pass"] = isset($_GET["fromadminpanel"]) && $is_mod ? "tssespecialtorrentv1byxamsep2007" : $CURUSER["torrent_pass"];
 if (!($torrentData = file_get_contents($torrentFilePath))) {

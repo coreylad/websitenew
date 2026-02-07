@@ -9,7 +9,7 @@
 var_235();
 $Language = file("languages/" . getStaffLanguage() . "/unconnectable_peers.lang");
 $Message = "";
-$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'ANNOUNCE'");
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'ANNOUNCE'");
 $Result = mysqli_fetch_assoc($query);
 $ANNOUNCE = unserialize($Result["content"]);
 if ($ANNOUNCE["xbt_active"] == "yes") {
@@ -54,7 +54,7 @@ if (!isset($STOP)) {
     }
     $results = mysqli_num_rows(mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM peers WHERE $connectable = 'no'"));
     list($pagertop, $limit) = buildPaginationLinks(25, $results, $_SERVER["SCRIPT_NAME"] . "?do=unconnectable_peers&amp;");
-    $sql = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT p.torrent, p.userid, p.agent, p.started, p.last_action, p.ip, p.port, p.seeder, p.uploaded, p.downloaded, p.uploadoffset, p.downloadoffset, u.username, g.namestyle, t.name FROM peers p  INNER JOIN users u ON (p.$userid = u.id) LEFT JOIN usergroups g ON (u.$usergroup = g.gid) LEFT JOIN torrents t ON (p.$torrent = t.id) WHERE p.$connectable = 'no' AND u.$enabled = 'yes' AND g.$isbanned = 'no' ORDER BY u.username " . $limit);
+    $sql = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT p.torrent, p.userid, p.agent, p.started, p.last_action, p.ip, p.port, p.seeder, p.uploaded, p.downloaded, p.uploadoffset, p.downloadoffset, u.username, g.namestyle, t.name FROM peers p  INNER JOIN users u ON (p.$userid = u.id) LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) LEFT JOIN torrents t ON (p.$torrent = t.id) WHERE p.$connectable = 'no' AND u.$enabled = 'yes' AND g.$isbanned = 'no' ORDER BY u.username " . $limit);
     if (mysqli_num_rows($sql) == 0) {
         echo "\r\n\t\t\r\n\t\t" . showAlertError($Language[1]);
     } else {
@@ -242,7 +242,7 @@ function sendPrivateMessage($receiver = 0, $msg = "", $subject = "", $sender = 0
 {
     if (!($sender != 0 && !$sender || !$receiver || empty($msg))) {
         mysqli_query($GLOBALS["DatabaseConnect"], "\r\n\t\t\t\t\tINSERT INTO messages\r\n\t\t\t\t\t\t(sender, receiver, added, subject, msg, unread, saved, location)\r\n\t\t\t\t\t\tVALUES\r\n\t\t\t\t\t\t('" . $sender . "', '" . $receiver . "', NOW(), '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $subject) . "', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $msg) . "', '" . $unread . "', '" . $saved . "', '" . $location . "')\r\n\t\t\t\t\t");
-        mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET $pmunread = pmunread + 1 WHERE $id = '" . $receiver . "'");
+        mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET $pmunread = pmunread + 1 WHERE `id` = '" . $receiver . "'");
     }
 }
 

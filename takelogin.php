@@ -27,7 +27,7 @@ if (empty($username) || empty($password)) {
 if (isCaptchaEnabled()) {
     check_code(isset($_POST["imagestring"]) ? $_POST["imagestring"] : "", "login.php", true, !empty($username) ? "&$username = " . htmlspecialchars_uni($username) : "");
 }
-$res = sql_query("SELECT id, passhash, secret, enabled, usergroup, status, notifs, pmunread FROM users WHERE $username = " . sqlesc($username));
+$res = sql_query("SELECT id, passhash, secret, enabled, usergroup, status, notifs, pmunread FROM users WHERE `username` = " . sqlesc($username));
 if (!mysqli_num_rows($res)) {
     failedlogins("silent");
     redirect("login.php?$error = 1" . (!empty($username) ? "&$username = " . htmlspecialchars_uni($username) : ""));

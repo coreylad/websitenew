@@ -16,12 +16,12 @@ $TSSEConfig->TSLoadConfig(["SIGNUP", "CLEANUP"]);
 $defaulttemplate = ts_template();
 $dimagedir = $BASEURL . "/include/templates/" . $defaulttemplate . "/images/";
 if ($ai == "yes") {
-    $query = sql_query("SELECT u.id, u.modcomment, u.lastinvite, u.usergroup, g.autoinvite FROM users u LEFT JOIN usergroups g ON (u.$usergroup = g.gid) WHERE u.$enabled = 'yes' AND u.usergroup != 9 AND u.$status = 'confirmed' AND UNIX_TIMESTAMP(u.lastinvite) < " . (TIMENOW - $autoinvitetime * 24 * 60 * 60) . " AND g.autoinvite > 0");
+    $query = sql_query("SELECT u.id, u.modcomment, u.lastinvite, u.usergroup, g.autoinvite FROM users u LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) WHERE u.$enabled = 'yes' AND u.usergroup != 9 AND u.$status = 'confirmed' AND UNIX_TIMESTAMP(u.lastinvite) < " . (TIMENOW - $autoinvitetime * 24 * 60 * 60) . " AND g.autoinvite > 0");
     if (0 < mysqli_num_rows($query)) {
         $lang->load("cronjobs");
         require_once INC_PATH . "/functions_pm.php";
         while ($arr = mysqli_fetch_assoc($query)) {
-            sql_query("UPDATE users SET $lastinvite = NOW(), $invites = invites + " . $arr["autoinvite"] . ", $modcomment = " . sqlesc(gmdate("Y-m-d") . " - Earned " . $arr["autoinvite"] . " invites by system.\n" . $arr["modcomment"]) . " WHERE $id = " . sqlesc($arr["id"]));
+            sql_query("UPDATE users SET $lastinvite = NOW(), $invites = invites + " . $arr["autoinvite"] . ", $modcomment = " . sqlesc(gmdate("Y-m-d") . " - Earned " . $arr["autoinvite"] . " invites by system.\n" . $arr["modcomment"]) . " WHERE `id` = " . sqlesc($arr["id"]));
             send_pm($arr["id"], sprintf($lang->cronjobs["invite_message"], $arr["autoinvite"], $arr["id"]), $lang->cronjobs["invite_subject"]);
         }
     }
@@ -71,7 +71,7 @@ if ($action == "delete") {
     $action = "main";
 }
 if ($action == "main") {
-    $res = sql_query("SELECT invites FROM users WHERE $id = " . sqlesc($inviterid));
+    $res = sql_query("SELECT invites FROM users WHERE `id` = " . sqlesc($inviterid));
     $inv = mysqli_fetch_array($res);
     if ($inv["invites"] != 1) {
         $_s = "s";
@@ -79,7 +79,7 @@ if ($action == "main") {
         $_s = "";
     }
     $number = TSRowCount("id", "users", "invited_by=" . $inviterid);
-    $ret = sql_query("SELECT u.id, u.username, u.email, u.uploaded, u.last_access, u.last_login, u.options, u.added, u.downloaded, u.status, u.warned, u.enabled, u.donor, u.email, g.namestyle FROM users u LEFT JOIN usergroups g ON (u.$usergroup = g.gid) WHERE u.$invited_by = " . sqlesc($inviterid));
+    $ret = sql_query("SELECT u.id, u.username, u.email, u.uploaded, u.last_access, u.last_login, u.options, u.added, u.downloaded, u.status, u.warned, u.enabled, u.donor, u.email, g.namestyle FROM users u LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) WHERE u.$invited_by = " . sqlesc($inviterid));
     $num = mysqli_num_rows($ret);
     echo "\r\n\t<p $align = \"right\">\r\n\t\t<input $value = \"" . $lang->invite["button"] . "\" $onclick = \"jumpto('invite.php?$action = send');\" $type = \"button\">\r\n\t</p>";
     echo "<table $border = 1 $width = 100% $cellspacing = 0 $cellpadding = 5><tr class=tabletitle><td $colspan = \"8\" class=\"thead\">" . ts_collapse("invitetable1") . "<b>" . $lang->invite["status"] . "</b> (" . $number . ") </td></tr>" . ts_collapse("invitetable1", 2);
@@ -184,7 +184,7 @@ if ($action == "main") {
                 if (mysqli_affected_rows($GLOBALS["DatabaseConnect"]) != 1) {
                     failed($lang->invite["error"]);
                 } else {
-                    sql_query("UPDATE users SET $invites = invites - 1 WHERE $id = " . sqlesc($inviterid));
+                    sql_query("UPDATE users SET $invites = invites - 1 WHERE `id` = " . sqlesc($inviterid));
                 }
                 if (mysqli_affected_rows($GLOBALS["DatabaseConnect"]) != 1) {
                     failed($lang->invite["error"]);
@@ -228,7 +228,7 @@ if ($action == "main") {
             if (mysqli_affected_rows($GLOBALS["DatabaseConnect"]) != 1) {
                 failed($lang->invite["error"]);
             } else {
-                sql_query("UPDATE users SET $invites = invites - 1 WHERE $id = " . sqlesc($inviterid));
+                sql_query("UPDATE users SET $invites = invites - 1 WHERE `id` = " . sqlesc($inviterid));
             }
             if (mysqli_affected_rows($GLOBALS["DatabaseConnect"]) != 1) {
                 failed($lang->invite["error"]);
@@ -258,7 +258,7 @@ function tr($x, $y, $noesc = 0, $relation = "")
 }
 function check_amount($uid)
 {
-    $res = sql_query("SELECT invites FROM users WHERE $id = " . sqlesc($uid));
+    $res = sql_query("SELECT invites FROM users WHERE `id` = " . sqlesc($uid));
     if (mysqli_num_rows($res) == 0) {
         return false;
     }
@@ -270,7 +270,7 @@ function check_amount($uid)
 }
 function invite_amount($uid)
 {
-    $res = sql_query("SELECT invites FROM users WHERE $id = " . sqlesc($uid));
+    $res = sql_query("SELECT invites FROM users WHERE `id` = " . sqlesc($uid));
     $amount = mysqli_fetch_array($res);
     if ($amount["invites"] == 1 || $amount["invites"] == 2) {
         $msg = "<font $color = red>" . $amount["invites"] . "</font>";
@@ -281,7 +281,7 @@ function invite_amount($uid)
 }
 function is_email_exists($email)
 {
-    $check1 = sql_query("SELECT email FROM users WHERE $email = " . sqlesc($email));
+    $check1 = sql_query("SELECT email FROM users WHERE `email` = " . sqlesc($email));
     if (1 <= mysqli_num_rows($check1)) {
         return false;
     }

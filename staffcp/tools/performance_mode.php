@@ -49,7 +49,7 @@ if ($Act == "enable") {
                 $Contents["announce_wait"] = "90";
                 break;
             default:
-                mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE ts_config SET `content` = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], serialize($Contents)) . "' WHERE $configname = '" . $Config["configname"] . "'");
+                mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE ts_config SET `content` = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], serialize($Contents)) . "' WHERE `configname` = '" . $Config["configname"] . "'");
                 mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE ts_staffcp_tools SET $options = '" . time() . "' WHERE $filename = 'performance_mode'");
         }
     }
@@ -96,7 +96,7 @@ if ($Act == "disable") {
                 $Contents["announce_wait"] = "30";
                 break;
             default:
-                mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE ts_config SET `content` = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], serialize($Contents)) . "' WHERE $configname = '" . $Config["configname"] . "'");
+                mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE ts_config SET `content` = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], serialize($Contents)) . "' WHERE `configname` = '" . $Config["configname"] . "'");
                 mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE ts_staffcp_tools SET $options = '' WHERE $filename = 'performance_mode'");
         }
     }
@@ -142,7 +142,7 @@ function logStaffAction($log)
 function function_136()
 {
     $var_375 = "";
-    $var_281 = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'ANNOUNCE'");
+    $var_281 = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'ANNOUNCE'");
     $Result = mysqli_fetch_assoc($var_281);
     $var_56 = unserialize($Result["content"]);
     $var_376 = $var_56["xbt_active"];
@@ -180,7 +180,7 @@ function function_136()
     $var_375 .= "\$checkip = '" . $var_388 . "';";
     $var_375 .= "\$banned_ports = '" . $var_389 . "';";
     $var_375 .= "\$nc = '" . $var_390 . "';";
-    $var_281 = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'MAIN'");
+    $var_281 = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'MAIN'");
     $Result = mysqli_fetch_assoc($var_281);
     $var_27 = unserialize($Result["content"]);
     $var_391 = $var_27["BASEURL"];
@@ -190,7 +190,7 @@ function function_136()
     $var_375 .= "\$BASEURL = '" . $var_391 . "';";
     $var_375 .= "\$SITENAME = '" . $var_392 . "';";
     $var_375 .= "\$cache = '" . $var_393 . "';";
-    $var_281 = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'TWEAK'");
+    $var_281 = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'TWEAK'");
     $Result = mysqli_fetch_assoc($var_281);
     $var_394 = unserialize($Result["content"]);
     $var_395 = $var_394["snatchmod"];
@@ -198,7 +198,7 @@ function function_136()
     $var_375 .= "/* TWEAK */";
     $var_375 .= "\$snatchmod = '" . $var_395 . "';";
     $var_375 .= "\$gzipcompress = '" . $var_396 . "';";
-    $var_281 = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'SECURITY'");
+    $var_281 = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'SECURITY'");
     $Result = mysqli_fetch_assoc($var_281);
     $var_400 = unserialize($Result["content"]);
     $var_401 = $var_400["privatetrackerpatch"];
@@ -206,7 +206,7 @@ function function_136()
     $var_375 .= "/* SECURITY */";
     $var_375 .= "\$privatetrackerpatch = '" . $var_401 . "';";
     $var_375 .= "\$aggressivecheckip = '" . $var_402 . "';";
-    $var_281 = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'THEME'");
+    $var_281 = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'THEME'");
     $Result = mysqli_fetch_assoc($var_281);
     $var_28 = unserialize($Result["content"]);
     $var_403 = $var_28["defaultlanguage"];
@@ -214,7 +214,7 @@ function function_136()
     $var_375 .= "/* THEME */";
     $var_375 .= "\$defaultlanguage = '" . $var_403 . "';";
     $var_375 .= "\$charset = '" . $var_10 . "';";
-    $var_281 = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'KPS'");
+    $var_281 = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'KPS'");
     $Result = mysqli_fetch_assoc($var_281);
     $var_404 = unserialize($Result["content"]);
     $var_405 = $var_404["bdayreward"];

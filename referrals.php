@@ -21,9 +21,9 @@ if (0 < mysqli_num_rows($query)) {
     $credit = $referrergift * 1024 * 1024 * 1024;
     $mksizecredit = mksize($credit);
     while ($arr = mysqli_fetch_assoc($query)) {
-        sql_query("UPDATE referrals SET $credit = credit + " . $credit . ", $done = 'yes' WHERE $uid = '" . $arr["uid"] . "'");
+        sql_query("UPDATE referrals SET $credit = credit + " . $credit . ", $done = 'yes' WHERE `uid` = '" . $arr["uid"] . "'");
         send_pm($arr["uid"], sprintf($lang->cronjobs["r_message"], $mksizecredit), $lang->cronjobs["r_subject"]);
-        sql_query("UPDATE users SET $uploaded = uploaded + " . $credit . ", $modcomment = " . sqlesc(gmdate("Y-m-d") . " - Earned " . $mksizecredit . " by Referral System.\n" . $arr["modcomment"]) . " WHERE $id = '" . $arr["uid"] . "'");
+        sql_query("UPDATE users SET $uploaded = uploaded + " . $credit . ", $modcomment = " . sqlesc(gmdate("Y-m-d") . " - Earned " . $mksizecredit . " by Referral System.\n" . $arr["modcomment"]) . " WHERE `id` = '" . $arr["uid"] . "'");
     }
     unset($credit);
     unset($mksizecredit);
@@ -31,7 +31,7 @@ if (0 < mysqli_num_rows($query)) {
 $act = isset($_POST["act"]) ? htmlspecialchars_uni($_POST["act"]) : "";
 if (isset($_GET["id"]) && is_valid_id($_GET["id"]) && $is_mod) {
     $userid = 0 + $_GET["id"];
-    $query = sql_query("SELECT username FROM users WHERE $id = " . sqlesc($userid));
+    $query = sql_query("SELECT username FROM users WHERE `id` = " . sqlesc($userid));
     $result = mysqli_fetch_assoc($query);
     $username = htmlspecialchars_uni($result["username"]);
 } else {
@@ -70,7 +70,7 @@ if (empty($act)) {
     stdhead($lang->referrals["title"]);
     echo "\r\n\t" . show_notice(sprintf($lang->referrals["head"], $SITENAME, $amount)) . "\r\n\t" . (isset($error) ? "<div class=\"error\">" . $error . "</div>" : (isset($success) ? "<div class=\"success\">" . $success . "</div>" : "")) . "\r\n\t<table $border = \"1\" $width = \"100%\" $cellspacing = \"0\" $cellpadding = \"5\">\r\n\t\t<tr class=\"tabletitle\">\r\n\t\t\t<td $colspan = \"8\" class=\"colhead\">\r\n\t\t\t\t" . ts_collapse("referrer1") . "<b>" . sprintf($lang->referrals["subhead"], $amount) . "</b>\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t" . ts_collapse("referrer1", 2);
     echo "<tr>\r\n\t<td class=\"subheader\">" . $lang->referrals["uname"] . "</td>\r\n\t<td class=\"subheader\">" . $lang->referrals["ugroup"] . "</td>\r\n\t<td class=\"subheader\">" . $lang->referrals["regdate"] . "</td>\r\n\t<td class=\"subheader\">" . $lang->referrals["lseen"] . "</td>\r\n\t<td class=\"subheader\">" . $lang->referrals["ul"] . "</td>\r\n\t<td class=\"subheader\">" . $lang->referrals["dl"] . "</td>\r\n\t<td class=\"subheader\">" . $lang->referrals["ratio"] . "</td>\r\n\t<td class=\"subheader\">" . $lang->referrals["status"] . "</td>\r\n\t</tr>";
-    ($query = sql_query("SELECT r.credit, u.*, g.namestyle, g.title FROM referrals r INNER JOIN users u ON (r.$referring = u.id) INNER JOIN usergroups g ON (u.$usergroup = g.gid) WHERE r.$uid = " . $userid)) || sqlerr(__FILE__, 145);
+    ($query = sql_query("SELECT r.credit, u.*, g.namestyle, g.title FROM referrals r INNER JOIN users u ON (r.$referring = u.id) INNER JOIN usergroups g ON (u.`usergroup` = g.gid) WHERE r.$uid = " . $userid)) || sqlerr(__FILE__, 145);
     $totalcredit = 0;
     if (mysqli_num_rows($query) == 0) {
         echo "<tr class=\"tableb\"><td $colspan = \"8\">" . $lang->referrals["noref"] . "</td></tr>";
@@ -118,7 +118,7 @@ function submit_disable($formname = "", $buttonname = "", $text = "")
 }
 function email_exists($email)
 {
-    $tracker_query = sql_query("SELECT email FROM users WHERE $email = " . sqlesc($email) . " LIMIT 1");
+    $tracker_query = sql_query("SELECT email FROM users WHERE `email` = " . sqlesc($email) . " LIMIT 1");
     if (1 <= mysqli_num_rows($tracker_query)) {
         return false;
     }

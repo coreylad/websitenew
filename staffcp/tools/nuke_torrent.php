@@ -14,10 +14,10 @@ $reason = "";
 if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST" && $tid) {
     $reason = trim($_POST["reason"]);
     if ($reason) {
-        $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT name FROM torrents WHERE $id = '" . $tid . "'");
+        $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT name FROM torrents WHERE `id` = '" . $tid . "'");
         if (0 < mysqli_num_rows($query)) {
             $Result = mysqli_fetch_assoc($query);
-            mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE torrents SET $isnuked = 'yes', WhyNuked = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], htmlspecialchars($reason)) . "' WHERE $id = '" . $tid . "'");
+            mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE torrents SET $isnuked = 'yes', WhyNuked = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], htmlspecialchars($reason)) . "' WHERE `id` = '" . $tid . "'");
             $SysMsg = str_replace(["{1}", "{2}", "{3}"], [$Result["name"], $_SESSION["ADMIN_USERNAME"], $reason], $Language[7]);
             logStaffAction($SysMsg);
             $Message = showAlertError($SysMsg);

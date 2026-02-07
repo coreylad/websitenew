@@ -18,7 +18,7 @@ $input = trim(urldecode($_GET["input"]));
 $input = strval($input);
 $GLOBALS["DatabaseConnect"] = mysqli_connect(MYSQL_HOST, MYSQL_USER, MYSQL_PASS, MYSQL_DB);
 if ($GLOBALS["DatabaseConnect"]) {
-    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM ts_config WHERE $configname = 'THEME'");
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM ts_config WHERE `configname` = 'THEME'");
     $Result = mysqli_fetch_assoc($query);
     $THEME = unserialize($Result["content"]);
     $charset = $THEME["charset"];

@@ -19,7 +19,7 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
     $email = trim($_POST["email"]);
     $usergroup = intval($_POST["usergroup"]);
     if ($username && $password && $email && $usergroup) {
-        $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id FROM users WHERE $username = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $username) . "' OR $email = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $email) . "'");
+        $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id FROM users WHERE `username` = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $username) . "' OR $email = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $email) . "'");
         if (0 < mysqli_num_rows($query)) {
             $Message = showAlertError($Language[1]);
         } else {
@@ -48,7 +48,7 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
         $Message = showAlertError($Language[4]);
     }
 }
-$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT u.id, g.cansettingspanel, g.canstaffpanel, g.issupermod FROM users u LEFT JOIN usergroups g ON (u.$usergroup = g.gid) WHERE u.$id = '" . $_SESSION["ADMIN_ID"] . "' LIMIT 1");
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT u.id, g.cansettingspanel, g.canstaffpanel, g.issupermod FROM users u LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) WHERE u.$id = '" . $_SESSION["ADMIN_ID"] . "' LIMIT 1");
 $LoggedAdminDetails = mysqli_fetch_assoc($query);
 $showusergroups = "\r\n<select $name = \"usergroup\" $tabindex = \"1\" class=\"bginput\">";
 $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT gid, title, cansettingspanel, canstaffpanel, issupermod FROM usergroups ORDER by disporder ASC");

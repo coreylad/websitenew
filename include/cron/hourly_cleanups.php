@@ -34,7 +34,7 @@ if (intval($delete_old_login_attempts)) {
     $CQueryCount++;
 }
 if (intval($delete_old_unconfirmed_users)) {
-    mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM users WHERE $status = 'pending' AND UNIX_TIMESTAMP(added) < '" . (TIMENOW - $delete_old_unconfirmed_users * 86400) . "'");
+    mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM users WHERE `status` = 'pending' AND UNIX_TIMESTAMP(added) < '" . (TIMENOW - $delete_old_unconfirmed_users * 86400) . "'");
     $CQueryCount++;
 }
 mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM ts_sessions WHERE lastactivity < '" . (TIMENOW - 86400) . "'");

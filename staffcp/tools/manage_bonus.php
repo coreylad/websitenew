@@ -12,9 +12,9 @@ $Message = "";
 $Act = isset($_GET["act"]) ? trim($_GET["act"]) : (isset($_POST["act"]) ? trim($_POST["act"]) : "");
 $id = isset($_GET["id"]) ? intval($_GET["id"]) : (isset($_POST["id"]) ? intval($_POST["id"]) : 0);
 if ($Act == "delete" && $id) {
-    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT bonusname FROM bonus WHERE $id = '" . $id . "'");
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT bonusname FROM bonus WHERE `id` = '" . $id . "'");
     if (mysqli_num_rows($query)) {
-        mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM bonus WHERE $id = '" . $id . "'");
+        mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM bonus WHERE `id` = '" . $id . "'");
         if (mysqli_affected_rows($GLOBALS["DatabaseConnect"])) {
             $Result = mysqli_fetch_assoc($query);
             $bonusname = $Result["bonusname"];
@@ -53,7 +53,7 @@ if ($Act == "new") {
     }
 }
 if ($Act == "edit" && $id) {
-    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM bonus WHERE $id = '" . $id . "'");
+    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM bonus WHERE `id` = '" . $id . "'");
     if (mysqli_num_rows($query)) {
         $Bonus = mysqli_fetch_assoc($query);
         $bonusname = $Bonus["bonusname"];
@@ -68,7 +68,7 @@ if ($Act == "edit" && $id) {
             $art = trim($_POST["art"]);
             $menge = trim($_POST["menge"]);
             if ($bonusname && $points && $description && $art && $menge) {
-                mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE bonus SET $bonusname = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $bonusname) . "', $points = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $points) . "', $description = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $description) . "', $art = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $art) . "', $menge = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $menge) . "' WHERE $id = '" . $id . "'");
+                mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE bonus SET $bonusname = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $bonusname) . "', $points = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $points) . "', $description = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $description) . "', $art = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $art) . "', $menge = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $menge) . "' WHERE `id` = '" . $id . "'");
                 if (mysqli_affected_rows($GLOBALS["DatabaseConnect"])) {
                     $Message = str_replace(["{1}", "{2}"], [$bonusname, $_SESSION["ADMIN_USERNAME"]], $Language[12]);
                     logStaffAction($Message);

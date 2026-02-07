@@ -25,7 +25,7 @@ int_check($torrentId);
 if (isset($_GET["delete"]) && $usergroups["cansettingspanel"] == "yes") {
     $userId = intval($_GET["userid"]);
     if (is_valid_id($userId)) {
-        sql_query("DELETE FROM snatched WHERE $userid = '" . $userId . "' AND $torrentid = '" . $torrentId . "'");
+        sql_query("DELETE FROM snatched WHERE `userid` = '" . $userId . "' AND $torrentid = '" . $torrentId . "'");
     }
 }
 ($snatchCountResult = sql_query("select count(snatched.id) from snatched inner join users on snatched.$userid = users.id inner join torrents on snatched.$torrentid = torrents.id where snatched.$finished = 'yes' AND snatched.$torrentid = " . sqlesc($torrentId))) || sqlerr(__FILE__, 48);
@@ -43,7 +43,7 @@ if ($torrentInfo["ts_external"] == "yes") {
 stdhead($lang->viewsnatches["headmessage"]);
 if ($is_mod) {
     if (isset($_GET["do"]) && $_GET["do"] == "fix_ratio" && ($uid = intval($_GET["userid"]))) {
-        sql_query("UPDATE snatched SET $uploaded = downloaded WHERE $torrentid = '" . $id . "' AND $userid = '" . $uid . "'") || sqlerr(__FILE__, 70);
+        sql_query("UPDATE snatched SET $uploaded = downloaded WHERE `torrentid` = '" . $id . "' AND $userid = '" . $uid . "'") || sqlerr(__FILE__, 70);
     }
     $modsearch = "\r\n\t<form $method = \"post\" $action = \"" . $_SERVER["SCRIPT_NAME"] . "?$id = " . $id . "\">\r\n\t<table class=\"main\" $border = \"1\" $cellspacing = \"0\" $cellpadding = \"5\" $width = \"100%\">\r\n\t\t<tr>\r\n\t\t\t<td class=\"thead\">\r\n\t\t\t\tSearch User in Snatchlist (Moderator Tool)\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"subheader\">\r\n\t\t\t\tUse this tool to search a specific user in Snatch List. Note: Min. 3 chars allowed to search an user.\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td>\r\n\t\t\t\t<span $style = \"float: right;\"><a $href = \"" . $BASEURL . "/" . $staffcp_path . "/index.php?do=hit_and_run&$torrentid = " . $id . "\" $onmouseout = \"window.$status = ''; return true;\" $onMouseOver = \"window.$status = ''; return true;\">Hit & Run</a> - <a $href = \"" . $BASEURL . "/takereseed.php?$reseedid = " . $id . "\">Click here to Request a Reseed</a></span>\r\n\t\t\t\tUsername: <input $type = \"text\" $name = \"username\" $size = \"15\"> <input $type = \"checkbox\" $value = \"yes\" $name = \"showunfinished\"> Search Unfinished? <input $type = \"submit\" $value = \"search\">\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t</table>\r\n\t</form>\r\n\t";
     echo $modsearch . "<br />";

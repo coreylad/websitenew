@@ -129,7 +129,7 @@ if (!empty($feeds)) {
                                 mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE tsf_forums SET $lastpost = " . $Queries["dateline"] . ", $lastposter = " . $Queries["username"] . ", $lastposteruid = " . $Queries["uid"] . ", $lastposttid = " . $Queries["tid"] . ", $lastpostsubject = " . $Queries["subject"] . " WHERE $fid = " . $realforumid);
                                 $CQueryCount++;
                             }
-                            mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET $totalposts = totalposts + 1 WHERE $id = " . $Queries["uid"]);
+                            mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET $totalposts = totalposts + 1 WHERE `id` = " . $Queries["uid"]);
                             $CQueryCount++;
                             mysqli_query($GLOBALS["DatabaseConnect"], "REPLACE INTO ts_rsslog VALUES (" . $item["rssfeedid"] . ", " . $Queries["tid"] . ", '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $uniquehash) . "', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $item["contenthash"]) . "', " . $Queries["dateline"] . ")");
                             $CQueryCount++;

@@ -16,7 +16,7 @@ define("FB_MEMBERS_IN_CHAT", "1.0 by xam");
 $TSSEConfig->TSLoadConfig("SHOUTBOX");
 require_once INC_PATH . "/functions_icons.php";
 $_dt = TIMENOW - $GLOBALS["S_REFRESHTIME"] * 2;
-$_wgo_query = sql_query("SELECT distinct s.userid as id, u.username, u.options, u.enabled, u.donor, u.leechwarn, u.warned, p.canupload, p.candownload, p.cancomment, p.canmessage, p.canshout, g.namestyle FROM ts_sessions s LEFT JOIN users u ON (s.$userid = u.id) LEFT JOIN ts_u_perm p ON (u.$id = p.userid) LEFT JOIN usergroups g ON (u.$usergroup = g.gid) WHERE s.lastactivity > '" . $_dt . "' ORDER by u.last_access DESC");
+$_wgo_query = sql_query("SELECT distinct s.userid as id, u.username, u.options, u.enabled, u.donor, u.leechwarn, u.warned, p.canupload, p.candownload, p.cancomment, p.canmessage, p.canshout, g.namestyle FROM ts_sessions s LEFT JOIN users u ON (s.`userid` = u.id) LEFT JOIN ts_u_perm p ON (u.`id` = p.userid) LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) WHERE s.lastactivity > '" . $_dt . "' ORDER by u.last_access DESC");
 $Output = [];
 while ($User = mysqli_fetch_assoc($_wgo_query)) {
     if ($User["id"]) {

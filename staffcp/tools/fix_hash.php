@@ -12,7 +12,7 @@
 var_235();
 $Language = file("languages/" . getStaffLanguage() . "/fix_hash.lang");
 $Message = "";
-$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = \"MAIN\"");
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = \"MAIN\"");
 $Result = mysqli_fetch_assoc($query);
 $MAIN = unserialize($Result["content"]);
 if (isset($_GET["usedid"])) {
@@ -41,7 +41,7 @@ if (!isset($Done)) {
             $info_hash = $Torrent->function_166();
             if ($info_hash != $orj_info_hash) {
                 if ($info_hash) {
-                    mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE torrents SET $info_hash = \"" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $info_hash) . "\" WHERE $id = \"" . $id . "\"");
+                    mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE torrents SET $info_hash = \"" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $info_hash) . "\" WHERE `id` = \"" . $id . "\"");
                     if (!mysqli_affected_rows($GLOBALS["DatabaseConnect"])) {
                         $INFO = $Language[6];
                     } else {
