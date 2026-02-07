@@ -168,12 +168,12 @@ switch ($mailbox) {
                             }
                         }
                         $showbox .= "</select>";
-                        $hiddenvalues = "";
+                        $hiddenFields = "";
                         foreach ($pmids as $pmid) {
-                            $hiddenvalues .= "<input $type = \"hidden\" $name = \"pmid[]\" $value = \"" . intval($pmid) . "\">";
+                            $hiddenFields .= "<input $type = \"hidden\" $name = \"pmid[]\" $value = \"" . intval($pmid) . "\">";
                         }
                         stdhead($lang->messages["newtitle18"]);
-                        echo "\r\n\t\t\t<form $method = \"post\" $action = \"" . $_SERVER["SCRIPT_NAME"] . "?$userid = " . $userid . "&amp;$mailbox = " . $mailbox . "&amp;$page = " . intval($_GET["page"]) . "\" $name = \"messageform\">\r\n\t\t\t<input $type = \"hidden\" $name = \"do\" $value = \"move\">\r\n\t\t\t" . $hiddenvalues . "\r\n\t\t\t<table $align = \"center\" $border = \"0\" $cellpadding = \"6\" $cellspacing = \"0\" $width = \"100%\">\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td class=\"thead\" $align = \"left\">" . $lang->messages["newtitle18"] . "\r\n\t\t\t\t</tr>\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td>" . $lang->messages["newtitle15"] . "<br />" . $lang->messages["newtitle10"] . "<br />" . $showbox . "</td>\r\n\t\t\t\t</tr>\r\n\t\t\t\t<tr><td $align = \"center\"><input $type = \"submit\" $value = \"" . $lang->messages["newtitle16"] . "\"> <input $type = \"button\" $value = \"" . $lang->messages["newtitle17"] . "\" $onclick = \"jumpto('" . $_SERVER["SCRIPT_NAME"] . "?$userid = " . $userid . "&amp;$mailbox = " . $mailbox . "&amp;$page = " . intval($_GET["page"]) . "')\"></td></tr>\r\n\t\t\t\t</table>\r\n\t\t\t\t</form>\r\n\t\t\t";
+                        echo "\r\n\t\t\t<form $method = \"post\" $action = \"" . $_SERVER["SCRIPT_NAME"] . "?$userid = " . $userid . "&amp;$mailbox = " . $mailbox . "&amp;$page = " . intval($_GET["page"]) . "\" $name = \"messageform\">\r\n\t\t\t<input $type = \"hidden\" $name = \"do\" $value = \"move\">\r\n\t\t\t" . $hiddenFields . "\r\n\t\t\t<table $align = \"center\" $border = \"0\" $cellpadding = \"6\" $cellspacing = \"0\" $width = \"100%\">\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td class=\"thead\" $align = \"left\">" . $lang->messages["newtitle18"] . "\r\n\t\t\t\t</tr>\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td>" . $lang->messages["newtitle15"] . "<br />" . $lang->messages["newtitle10"] . "<br />" . $showbox . "</td>\r\n\t\t\t\t</tr>\r\n\t\t\t\t<tr><td $align = \"center\"><input $type = \"submit\" $value = \"" . $lang->messages["newtitle16"] . "\"> <input $type = \"button\" $value = \"" . $lang->messages["newtitle17"] . "\" $onclick = \"jumpto('" . $_SERVER["SCRIPT_NAME"] . "?$userid = " . $userid . "&amp;$mailbox = " . $mailbox . "&amp;$page = " . intval($_GET["page"]) . "')\"></td></tr>\r\n\t\t\t\t</table>\r\n\t\t\t\t</form>\r\n\t\t\t";
                         stdfoot();
                         exit;
                     }

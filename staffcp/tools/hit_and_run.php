@@ -14,8 +14,8 @@ $alreadywarnedarrays = [];
 $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'HITRUN'");
 $Result = mysqli_fetch_assoc($query);
 $HITRUN = unserialize($Result["content"]);
-$__Queries = [];
-$hiddenvalues = "";
+$whereClauses = [];
+$hiddenFields = "";
 $link = "";
 $Message = "";
 $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'ANNOUNCE'");
@@ -34,13 +34,13 @@ if ($Act == "manage_users" && isset($_POST["user_torrent_ids"]) && $_POST["user_
         $MAIN = unserialize($Result["content"]);
         $msgsbj = $Language[11];
         foreach ($user_torrent_ids as $work) {
-            $arrays = explode("|", $work);
-            mysqli_query($GLOBALS["DatabaseConnect"], "INSERT INTO ts_hit_and_run (userid, torrentid, added) VALUES ('" . $arrays[0] . "', '" . $arrays[1] . "', '" . $timenow . "')");
-            $msgbody = trim(str_replace("{1}", "[URL]" . $MAIN["BASEURL"] . "/details.php?$id = " . $arrays[1] . "[/URL]", $Language[12]));
-            var_237($arrays[0], $msgbody, $msgsbj);
-            $Modcomment = str_replace(["{1}", "{2}"], [$_SESSION["ADMIN_USERNAME"], $arrays[1]], $Language[17]);
+            $parts = explode("|", $work);
+            mysqli_query($GLOBALS["DatabaseConnect"], "INSERT INTO ts_hit_and_run (userid, torrentid, added) VALUES ('" . $parts[0] . "', '" . $parts[1] . "', '" . $timenow . "')");
+            $msgbody = trim(str_replace("{1}", "[URL]" . $MAIN["BASEURL"] . "/details.php?$id = " . $parts[1] . "[/URL]", $Language[12]));
+            var_237($parts[0], $msgbody, $msgsbj);
+            $Modcomment = str_replace(["{1}", "{2}"], [$_SESSION["ADMIN_USERNAME"], $parts[1]], $Language[17]);
             $Modcomment = gmdate("Y-m-d") . " - " . trim($Modcomment) . "\n";
-            mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET `timeswarned` = timeswarned + 1, $modcomment = CONCAT(\"" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $Modcomment) . "\", modcomment) WHERE `id` = '" . $arrays[0] . "'");
+            mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET `timeswarned` = timeswarned + 1, $modcomment = CONCAT(\"" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $Modcomment) . "\", modcomment) WHERE `id` = '" . $parts[0] . "'");
         }
         $SysMsg = str_replace(["{1}", "{2}"], [$_SESSION["ADMIN_USERNAME"], implode(",", $user_torrent_ids)], $Language[13]);
         logStaffAction($SysMsg);
@@ -50,10 +50,10 @@ if ($Act == "manage_users" && isset($_POST["user_torrent_ids"]) && $_POST["user_
             $Result = mysqli_fetch_assoc($userQuery);
             $usergroupid = $Result["gid"];
             foreach ($user_torrent_ids as $work) {
-                $arrays = explode("|", $work);
-                $Modcomment = str_replace(["{1}", "{2}"], [$_SESSION["ADMIN_USERNAME"], $arrays[1]], $Language[15]);
+                $parts = explode("|", $work);
+                $Modcomment = str_replace(["{1}", "{2}"], [$_SESSION["ADMIN_USERNAME"], $parts[1]], $Language[15]);
                 $Modcomment = gmdate("Y-m-d") . " - " . trim($Modcomment) . "\n";
-                mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET `enabled` = 'no', $usergroup = '" . $usergroupid . "', $notifs = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $Modcomment) . "', $modcomment = CONCAT('" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $Modcomment) . "', modcomment) WHERE `id` = '" . $arrays[0] . "'");
+                mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET `enabled` = 'no', $usergroup = '" . $usergroupid . "', $notifs = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $Modcomment) . "', $modcomment = CONCAT('" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $Modcomment) . "', modcomment) WHERE `id` = '" . $parts[0] . "'");
             }
             $SysMsg = str_replace(["{1}", "{2}"], [$_SESSION["ADMIN_USERNAME"], implode(",", $user_torrent_ids)], $Language[14]);
             logStaffAction($SysMsg);
@@ -75,15 +75,15 @@ if (0 < mysqli_num_rows($query)) {
     }
 }
 if ($torrentid) {
-    $__Queries[] = "s.$torrentid = " . $torrentid;
-    $hiddenvalues = "<input $type = \"hidden\" $name = \"torrentid\" $value = \"" . $torrentid . "\" />";
+    $whereClauses[] = "s.$torrentid = " . $torrentid;
+    $hiddenFields = "<input $type = \"hidden\" $name = \"torrentid\" $value = \"" . $torrentid . "\" />";
     $link = "torrentid=" . $torrentid . "&amp;";
 }
 if (isset($_GET["page"]) && 0 < intval($_GET["page"])) {
-    $hiddenvalues .= "<input $type = \"hidden\" $name = \"page\" $value = \"" . intval($_GET["page"]) . "\" />";
+    $hiddenFields .= "<input $type = \"hidden\" $name = \"page\" $value = \"" . intval($_GET["page"]) . "\" />";
 }
 if (isset($_GET["show_by_userid"]) && ($userid = intval($_GET["show_by_userid"]))) {
-    $__Queries[] = "u.$id = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $userid) . "'";
+    $whereClauses[] = "u.$id = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $userid) . "'";
     $link = $link . "show_by_userid=" . $userid . "&amp;";
 }
 $keywords = "";
@@ -94,43 +94,43 @@ if ($Act == "do_search") {
         $searchtype = isset($_GET["searchtype"]) ? intval($_GET["searchtype"]) : (isset($_POST["searchtype"]) ? intval($_POST["searchtype"]) : "");
         switch ($searchtype) {
             case "1":
-                $__Queries[] = "u.$username = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $keywords) . "'";
+                $whereClauses[] = "u.$username = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $keywords) . "'";
                 break;
             case "2":
-                $__Queries[] = "u.$id = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $keywords) . "'";
+                $whereClauses[] = "u.$id = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $keywords) . "'";
                 break;
             case "3":
-                $__Queries[] = "s.$torrentid = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $keywords) . "'";
+                $whereClauses[] = "s.$torrentid = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $keywords) . "'";
                 break;
             default:
                 $link = $link . "act=do_search&amp;$keywords = " . htmlspecialchars($keywords) . "&amp;$searchtype = " . htmlspecialchars($searchtype) . "&amp;";
         }
     }
 }
-$__Queries[] = "s.$finished = 'yes'";
-$__Queries[] = "s.$seeder = 'no'";
-$__Queries[] = "t.$banned = 'no'";
-$__Queries[] = "u.$enabled = 'yes'";
+$whereClauses[] = "s.$finished = 'yes'";
+$whereClauses[] = "s.$seeder = 'no'";
+$whereClauses[] = "t.$banned = 'no'";
+$whereClauses[] = "u.$enabled = 'yes'";
 if ($HITRUN["Categories"]) {
-    $__Queries[] = "t.category IN (" . $HITRUN["Categories"] . ")";
+    $whereClauses[] = "t.category IN (" . $HITRUN["Categories"] . ")";
 }
 if ($HITRUN["HRSkipUsergroups"]) {
-    $__Queries[] = "u.usergroup NOT IN (" . $HITRUN["HRSkipUsergroups"] . ")";
+    $whereClauses[] = "u.usergroup NOT IN (" . $HITRUN["HRSkipUsergroups"] . ")";
 }
 if (0 < $HITRUN["MinFinishDate"]) {
-    $__Queries[] = "UNIX_TIMESTAMP(s.completedat) > " . $HITRUN["MinFinishDate"];
+    $whereClauses[] = "UNIX_TIMESTAMP(s.completedat) > " . $HITRUN["MinFinishDate"];
 }
 if (0 < $HITRUN["MinSeedTime"]) {
-    $__Queries[] = "s.seedtime < " . $HITRUN["MinSeedTime"] * 60 * 60;
+    $whereClauses[] = "s.seedtime < " . $HITRUN["MinSeedTime"] * 60 * 60;
 }
 if (0 < $HITRUN["MinRatio"]) {
-    $__Queries[] = "s.uploaded / s.downloaded < " . $HITRUN["MinRatio"];
+    $whereClauses[] = "s.uploaded / s.downloaded < " . $HITRUN["MinRatio"];
 }
-$FinishedQuery = "SELECT s.torrentid, s.userid, s.seedtime, t.name, u.username FROM snatched s INNER JOIN torrents t ON (s.`torrentid` = t.id) INNER JOIN users u ON (s.`userid` = u.id) WHERE " . implode(" AND ", $__Queries);
+$FinishedQuery = "SELECT s.torrentid, s.userid, s.seedtime, t.name, u.username FROM snatched s INNER JOIN torrents t ON (s.`torrentid` = t.id) INNER JOIN users u ON (s.`userid` = u.id) WHERE " . implode(" AND ", $whereClauses);
 $query = mysqli_query($GLOBALS["DatabaseConnect"], $FinishedQuery);
 $total_count = mysqli_num_rows($query);
 list($pagertop, $limit) = buildPaginationLinks(25, $total_count, "index.php?do=hit_and_run&amp;" . $link);
-$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT s.torrentid, s.seedtime, s.leechtime, s.userid, s.downloaded, s.uploaded, t.name, t.seeders, t.leechers, u.timeswarned, u.username, u.enabled, u.donor, u.leechwarn, u.warned, p.canupload, p.candownload, p.cancomment, p.canmessage, p.canshout, g.namestyle FROM snatched s INNER JOIN users u ON (s.`userid` = u.id) LEFT JOIN ts_u_perm p ON (u.`id` = p.userid) LEFT JOIN torrents t ON (s.`torrentid` = t.id) LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) WHERE " . implode(" AND ", $__Queries) . " ORDER by u.timeswarned DESC " . $limit);
+$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT s.torrentid, s.seedtime, s.leechtime, s.userid, s.downloaded, s.uploaded, t.name, t.seeders, t.leechers, u.timeswarned, u.username, u.enabled, u.donor, u.leechwarn, u.warned, p.canupload, p.candownload, p.cancomment, p.canmessage, p.canshout, g.namestyle FROM snatched s INNER JOIN users u ON (s.`userid` = u.id) LEFT JOIN ts_u_perm p ON (u.`id` = p.userid) LEFT JOIN torrents t ON (s.`torrentid` = t.id) LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) WHERE " . implode(" AND ", $whereClauses) . " ORDER by u.timeswarned DESC " . $limit);
 if (mysqli_num_rows($query) == 0) {
     $Message = showAlertError($Language[3]);
 } else {

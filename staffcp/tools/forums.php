@@ -133,10 +133,10 @@ if ($Act == "add_moderator" && ($fid = intval($_GET["fid"]))) {
         $Updated = true;
     }
     if (!isset($Updated)) {
-        $hiddenvalues = "";
+        $hiddenFields = "";
         $Moderators = "";
         if ($ForumType == "c") {
-            $hiddenvalues = "\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td $align = \"right\">\r\n\t\t\t\t\t\t" . $Language[55] . "\r\n\t\t\t\t\t</td>\r\n\t\t\t\t\t<td>\r\n\t\t\t\t\t\t<input $type = \"checkbox\" $name = \"applychild\" $value = \"yes\" $checked = \"checked\" />\r\n\t\t\t\t\t</td>\r\n\t\t\t\t</tr>\r\n\t\t\t";
+            $hiddenFields = "\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td $align = \"right\">\r\n\t\t\t\t\t\t" . $Language[55] . "\r\n\t\t\t\t\t</td>\r\n\t\t\t\t\t<td>\r\n\t\t\t\t\t\t<input $type = \"checkbox\" $name = \"applychild\" $value = \"yes\" $checked = \"checked\" />\r\n\t\t\t\t\t</td>\r\n\t\t\t\t</tr>\r\n\t\t\t";
         }
         $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT m.userid, u.username FROM " . TSF_PREFIX . "moderators m LEFT JOIN users u ON (m.$userid = u.id) WHERE m.$forumid = " . $fid);
         $rowcount = mysqli_num_rows($query);
@@ -153,7 +153,7 @@ if ($Act == "add_moderator" && ($fid = intval($_GET["fid"]))) {
                 $Moderators .= "\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td $align = \"right\">\r\n\t\t\t\t\t\t<strong>\r\n\t\t\t\t\t\t\t" . $Language[53] . "[" . $i . "]:\r\n\t\t\t\t\t\t</strong>\r\n\t\t\t\t\t</td>\r\n\t\t\t\t\t<td $align = \"left\">\r\n\t\t\t\t\t\t<input $type = \"text\" $name = \"moderator[" . $i . "]\" $value = \"\" $size = \"30\" />\r\n\t\t\t\t\t</td>\r\n\t\t\t\t</tr>\r\n\t\t\t\t";
             }
         }
-        $List = "\r\n\t\t" . showAlertMessage("<a $href = \"index.php?do=forums\">" . $Language[36] . "</a>") . "\r\n\t\t" . $Message . "\r\n\t\t<form $method = \"post\" $action = \"index.php?do=forums&$act = add_moderator&$fid = " . $fid . "\" $name = \"add_moderator\">\r\n\t\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"tcat\" $align = \"center\">\r\n\t\t\t\t\t" . $Language[2] . " - " . $Language[6] . " (" . $ForumName . ")\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t<table $align = \"center\" $border = \"0\" $cellpadding = \"5\" $cellspacing = \"0\" $width = \"100%\">\r\n\t\t\t\t\t\t" . $Moderators . "\r\n\t\t\t\t\t\t" . $hiddenvalues . "\r\n\t\t\t\t\t</table>\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"tcat2\" $align = \"center\">\r\n\t\t\t\t\t<input $type = \"submit\" $value = \"" . $Language[17] . "\" /> <input $type = \"reset\" $value = \"" . $Language[18] . "\" />\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t</table>\r\n\t\t</form>";
+        $List = "\r\n\t\t" . showAlertMessage("<a $href = \"index.php?do=forums\">" . $Language[36] . "</a>") . "\r\n\t\t" . $Message . "\r\n\t\t<form $method = \"post\" $action = \"index.php?do=forums&$act = add_moderator&$fid = " . $fid . "\" $name = \"add_moderator\">\r\n\t\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"tcat\" $align = \"center\">\r\n\t\t\t\t\t" . $Language[2] . " - " . $Language[6] . " (" . $ForumName . ")\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t<table $align = \"center\" $border = \"0\" $cellpadding = \"5\" $cellspacing = \"0\" $width = \"100%\">\r\n\t\t\t\t\t\t" . $Moderators . "\r\n\t\t\t\t\t\t" . $hiddenFields . "\r\n\t\t\t\t\t</table>\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"tcat2\" $align = \"center\">\r\n\t\t\t\t\t<input $type = \"submit\" $value = \"" . $Language[17] . "\" /> <input $type = \"reset\" $value = \"" . $Language[18] . "\" />\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t</table>\r\n\t\t</form>";
     }
 }
 if ($Act == "delete_announcement" && ($announcementid = intval($_GET["announcementid"]))) {

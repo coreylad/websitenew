@@ -27,11 +27,11 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST" && isset($_POST["backupfile
                 }
             }
         }
-        $hiddenvalues = "";
+        $hiddenFields = "";
         foreach ($_POST["backupfiles"] as $backupfile) {
-            $hiddenvalues .= "<input $type = \"hidden\" $name = \"backupfiles[]\" $value = \"" . $backupfile . "\" />";
+            $hiddenFields .= "<input $type = \"hidden\" $name = \"backupfiles[]\" $value = \"" . $backupfile . "\" />";
         }
-        echo showAlertError("\r\n\t\t" . (isset($Notice) ? $Notice : "") . "\r\n\t\t" . (!isset($DONEMYSQL) ? "<form $action = \"" . $_SERVER["SCRIPT_NAME"] . "?do=restore_database\" $method = \"post\" $name = \"restore_database\">\r\n\t\t" . $hiddenvalues . "\r\n\t\t<table>\r\n\t\t\t<tr>\r\n\t\t\t\t<td $colspan = \"2\" class=\"alt1\">\r\n\t\t\t\t\tWindows System detected! Please enter the path of <b>mysql (mysql.exe)</b> file.. If you have no idea about this, please use PHPMyAdmin to restore your database.\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt2\">Path:</td>\r\n\t\t\t\t<td class=\"alt2\">\r\n\t\t\t\t\t<input $type = \"text\" $name = \"mysqldumppath\" $value = \"" . $mysqldumppath . "\" $size = \"70\" /> <small><b>Example</b>: D:\\\\wamp\\\\bin\\mysql\\\\mysql5.1.36\\\\bin\\\\</small>\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt2\">Database name:</td>\r\n\t\t\t\t<td class=\"alt2\">\r\n\t\t\t\t\t<input $type = \"text\" $name = \"databasename\" $value = \"" . $databasename . "\" $size = \"70\" /> <input $type = \"submit\" $value = \"" . $Language[5] . "\" />\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t</form>" : "DONE!") . "\r\n\t\t");
+        echo showAlertError("\r\n\t\t" . (isset($Notice) ? $Notice : "") . "\r\n\t\t" . (!isset($DONEMYSQL) ? "<form $action = \"" . $_SERVER["SCRIPT_NAME"] . "?do=restore_database\" $method = \"post\" $name = \"restore_database\">\r\n\t\t" . $hiddenFields . "\r\n\t\t<table>\r\n\t\t\t<tr>\r\n\t\t\t\t<td $colspan = \"2\" class=\"alt1\">\r\n\t\t\t\t\tWindows System detected! Please enter the path of <b>mysql (mysql.exe)</b> file.. If you have no idea about this, please use PHPMyAdmin to restore your database.\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt2\">Path:</td>\r\n\t\t\t\t<td class=\"alt2\">\r\n\t\t\t\t\t<input $type = \"text\" $name = \"mysqldumppath\" $value = \"" . $mysqldumppath . "\" $size = \"70\" /> <small><b>Example</b>: D:\\\\wamp\\\\bin\\mysql\\\\mysql5.1.36\\\\bin\\\\</small>\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt2\">Database name:</td>\r\n\t\t\t\t<td class=\"alt2\">\r\n\t\t\t\t\t<input $type = \"text\" $name = \"databasename\" $value = \"" . $databasename . "\" $size = \"70\" /> <input $type = \"submit\" $value = \"" . $Language[5] . "\" />\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t</form>" : "DONE!") . "\r\n\t\t");
         exit;
     } else {
         $files = $_POST["backupfiles"];
@@ -50,11 +50,11 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST" && isset($_POST["backupfile
                 }
             }
         }
-        $hiddenvalues = "";
+        $hiddenFields = "";
         foreach ($files as $backupfile) {
-            $hiddenvalues .= "<input $type = \"hidden\" $name = \"backupfiles[]\" $value = \"" . $backupfile . "\" />";
+            $hiddenFields .= "<input $type = \"hidden\" $name = \"backupfiles[]\" $value = \"" . $backupfile . "\" />";
         }
-        echo showAlertError("\r\n\t\t" . (isset($Notice) ? $Notice : "") . "\r\n\t\t" . (!isset($DONEMYSQL) ? "<form $action = \"" . $_SERVER["SCRIPT_NAME"] . "?do=restore_database\" $method = \"post\" $name = \"restore_database\">\r\n\t\t" . $hiddenvalues . "\r\n\t\t<table>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt2\">Database name:</td>\r\n\t\t\t\t<td class=\"alt2\">\r\n\t\t\t\t\t<input $type = \"text\" $name = \"databasename\" $value = \"" . $databasename . "\" $size = \"70\" /> <input $type = \"submit\" $value = \"" . $Language[5] . "\" />\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t</form>" : "DONE!") . "\r\n\t\t");
+        echo showAlertError("\r\n\t\t" . (isset($Notice) ? $Notice : "") . "\r\n\t\t" . (!isset($DONEMYSQL) ? "<form $action = \"" . $_SERVER["SCRIPT_NAME"] . "?do=restore_database\" $method = \"post\" $name = \"restore_database\">\r\n\t\t" . $hiddenFields . "\r\n\t\t<table>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt2\">Database name:</td>\r\n\t\t\t\t<td class=\"alt2\">\r\n\t\t\t\t\t<input $type = \"text\" $name = \"databasename\" $value = \"" . $databasename . "\" $size = \"70\" /> <input $type = \"submit\" $value = \"" . $Language[5] . "\" />\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t</form>" : "DONE!") . "\r\n\t\t");
         exit;
     }
 } else {
