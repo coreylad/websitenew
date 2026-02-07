@@ -81,7 +81,7 @@ if (isset($_GET["cache"])) {
     $fstats = mysqli_fetch_assoc($getfstats);
     $totalposts = $fstats["totalposts"];
     $totalthreads = $fstats["totalthreads"];
-    $contents = ["torrents" => $torrents, "seeders" => $seeders, "leechers" => $leechers, "peers" => (string) $peers, "totaldownloaded" => var_238($totaldownloaded), "totaluploaded" => var_238($totaluploaded), "registered" => $registered, "latestuser" => $latestuser, "totalposts" => $totalposts, "totalthreads" => $totalthreads];
+    $contents = ["torrents" => $torrents, "seeders" => $seeders, "leechers" => $leechers, "peers" => (string) $peers, "totaldownloaded" => formatBytes($totaldownloaded), "totaluploaded" => formatBytes($totaluploaded), "registered" => $registered, "latestuser" => $latestuser, "totalposts" => $totalposts, "totalthreads" => $totalthreads];
     $_filename = "../" . $MAIN["cache"] . "/indexstats.php";
     $_cachecontents = "<?php\n/** TS Generated Cache#1 - Do Not Alter\n * Cache Name: Index Stats\n * Generated: " . gmdate("r") . "\n*/\n\n";
     $_cachecontents .= "\$indexstats = " . @var_export($contents, true) . ";\n?>";

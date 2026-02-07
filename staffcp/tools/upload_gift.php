@@ -31,16 +31,16 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
                     $user = trim($user);
                     $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT usergroup FROM users WHERE `username` = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $user) . "'");
                     if (0 < mysqli_num_rows($query)) {
-                        $newModComment = str_replace("'", "\"", date("Y-m-d") . " - " . str_replace(["{1}", "{2}", "{3}"], [$user, var_238($uamount), $_SESSION["ADMIN_USERNAME"]], $Language[13]) . "\\n");
+                        $newModComment = str_replace("'", "\"", date("Y-m-d") . " - " . str_replace(["{1}", "{2}", "{3}"], [$user, formatBytes($uamount), $_SESSION["ADMIN_USERNAME"]], $Language[13]) . "\\n");
                         $newModCommentSQL = ", `modcomment` = IF(ISNULL(modcomment), '" . $newModComment . "', CONCAT('" . $newModComment . "', modcomment))";
                         mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET `uploaded` = uploaded + " . $uamount . $newModCommentSQL . " WHERE `username` = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $user) . "'") or exit(mysqli_error($GLOBALS["DatabaseConnect"]));
                     }
                 }
-                $SysMsg = str_replace(["{1}", "{2}", "{3}"], [$username, var_238($uamount), $_SESSION["ADMIN_USERNAME"]], $Language[13]);
+                $SysMsg = str_replace(["{1}", "{2}", "{3}"], [$username, formatBytes($uamount), $_SESSION["ADMIN_USERNAME"]], $Language[13]);
             } else {
                 $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT usergroup FROM users WHERE `username` = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $username) . "'");
                 if (0 < mysqli_num_rows($query)) {
-                    $newModComment = str_replace("'", "\"", date("Y-m-d") . " - " . str_replace(["{1}", "{2}", "{3}"], [$username, var_238($uamount), $_SESSION["ADMIN_USERNAME"]], $Language[13]) . "\\n");
+                    $newModComment = str_replace("'", "\"", date("Y-m-d") . " - " . str_replace(["{1}", "{2}", "{3}"], [$username, formatBytes($uamount), $_SESSION["ADMIN_USERNAME"]], $Language[13]) . "\\n");
                     $newModCommentSQL = ", `modcomment` = IF(ISNULL(modcomment), '" . $newModComment . "', CONCAT('" . $newModComment . "', modcomment))";
                     mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET $uploaded = uploaded + " . $uamount . $newModCommentSQL . " WHERE `username` = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $username) . "'");
                     exit(mysqli_error($GLOBALS["DatabaseConnect"]));
@@ -53,7 +53,7 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
             }
         } else {
             $work = implode(",", $usergroups);
-            $SysMsg = str_replace(["{1}", "{2}", "{3}"], [$work, var_238($uamount), $_SESSION["ADMIN_USERNAME"]], $Language[3]);
+            $SysMsg = str_replace(["{1}", "{2}", "{3}"], [$work, formatBytes($uamount), $_SESSION["ADMIN_USERNAME"]], $Language[3]);
             $newModComment = str_replace("'", "\"", date("Y-m-d") . " - " . $SysMsg . "\\n");
             $newModCommentSQL = ", `modcomment` = IF(ISNULL(modcomment), '" . $newModComment . "', CONCAT('" . $newModComment . "', modcomment))";
             mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET $uploaded = uploaded + " . $uamount . $newModCommentSQL . " WHERE usergroup IN (0, " . $work . ")");
