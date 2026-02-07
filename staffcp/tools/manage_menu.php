@@ -7,7 +7,7 @@
  */
 
 var_235();
-$Language = file("languages/" . function_75() . "/manage_menu.lang");
+$Language = file("languages/" . getStaffLanguage() . "/manage_menu.lang");
 $Act = isset($_GET["act"]) ? trim($_GET["act"]) : (isset($_POST["act"]) ? trim($_POST["act"]) : "");
 $Message = "";
 $Found = "";
@@ -55,12 +55,12 @@ if ($Act == "new" && ($lang = trim($_GET["language"]))) {
                 }
             }
             mysqli_query($GLOBALS["DatabaseConnect"], "INSERT INTO ts_menu (pid,sort,title,link,image,permissions,sub,language) VALUES (" . $pid . ", " . $sort . ", '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $title) . "', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $link) . "', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $image) . "', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $usergroups) . "', " . $sub . ", '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $lang) . "')");
-            function_79(str_replace("{1}", $_SESSION["ADMIN_USERNAME"], $Language[24]));
-            function_78("index.php?do=manage_menu&$act = manage_menu_items&$language = " . $lang . "&$updated = true");
+            logStaffAction(str_replace("{1}", $_SESSION["ADMIN_USERNAME"], $Language[24]));
+            redirectTo("index.php?do=manage_menu&$act = manage_menu_items&$language = " . $lang . "&$updated = true");
             exit;
         }
     }
-    echo "\r\n\t" . function_81("<a $href = \"index.php?do=manage_menu&$act = manage_menu_items&$language = " . $lang . "\">" . $Language[16] . "</a>") . "\r\n\t" . ($Message ? function_81($Message) : "") . "\r\n\t<form $action = \"" . $_SERVER["SCRIPT_NAME"] . "?do=manage_menu&$act = new&$language = " . $lang . "\" $method = \"post\" $name = \"manage_menu\">\r\n\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t<tr>\r\n\t\t\t<td class=\"tcat\" $align = \"center\" $colspan = \"5\"><b>" . $Language[5] . "</b></td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt2\" $align = \"center\"><b>" . $Language[6] . "</b></td>\r\n\t\t\t<td class=\"alt2\"><b>" . $Language[7] . "</b></td>\r\n\t\t\t<td class=\"alt2\"><b>" . $Language[8] . "</b></td>\r\n\t\t\t<td class=\"alt2\"><b>" . $Language[22] . "</b></td>\r\n\t\t\t<td class=\"alt2\" $align = \"center\"><b>" . $Language[9] . "</b></td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\" $align = \"center\">\r\n\t\t\t\t<input $type = \"text\" $size = \"5\" $name = \"sort\" $value = \"" . ($sort ? $sort : "") . "\" />\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t<input $type = \"text\" $size = \"40\" $name = \"title\" $value = \"" . ($title ? $title : "") . "\" />\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t<input $type = \"text\" $size = \"40\" $name = \"link\" $value = \"" . ($link ? $link : "") . "\" />\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t<input $type = \"text\" $size = \"40\" $name = \"image\" $value = \"" . ($image ? $image : "") . "\" />\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\" $align = \"center\">\r\n\t\t\t\t" . function_197($pid) . "\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"tcat\" $align = \"center\" $colspan = \"5\"><b>" . $Language[23] . "</b></td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt2\" $align = \"center\" $colspan = \"5\">" . function_198($usergroups) . "</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"tcat2\" $align = \"center\" $colspan = \"5\"><input $type = \"submit\" $value = \"" . $Language[17] . "\" /> <input $type = \"reset\" $value = \"" . $Language[14] . "\" /></td>\r\n\t\t</tr>\r\n\t</table>\r\n\t</form>\r\n\t";
+    echo "\r\n\t" . showAlertMessage("<a $href = \"index.php?do=manage_menu&$act = manage_menu_items&$language = " . $lang . "\">" . $Language[16] . "</a>") . "\r\n\t" . ($Message ? showAlertMessage($Message) : "") . "\r\n\t<form $action = \"" . $_SERVER["SCRIPT_NAME"] . "?do=manage_menu&$act = new&$language = " . $lang . "\" $method = \"post\" $name = \"manage_menu\">\r\n\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t<tr>\r\n\t\t\t<td class=\"tcat\" $align = \"center\" $colspan = \"5\"><b>" . $Language[5] . "</b></td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt2\" $align = \"center\"><b>" . $Language[6] . "</b></td>\r\n\t\t\t<td class=\"alt2\"><b>" . $Language[7] . "</b></td>\r\n\t\t\t<td class=\"alt2\"><b>" . $Language[8] . "</b></td>\r\n\t\t\t<td class=\"alt2\"><b>" . $Language[22] . "</b></td>\r\n\t\t\t<td class=\"alt2\" $align = \"center\"><b>" . $Language[9] . "</b></td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\" $align = \"center\">\r\n\t\t\t\t<input $type = \"text\" $size = \"5\" $name = \"sort\" $value = \"" . ($sort ? $sort : "") . "\" />\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t<input $type = \"text\" $size = \"40\" $name = \"title\" $value = \"" . ($title ? $title : "") . "\" />\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t<input $type = \"text\" $size = \"40\" $name = \"link\" $value = \"" . ($link ? $link : "") . "\" />\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t<input $type = \"text\" $size = \"40\" $name = \"image\" $value = \"" . ($image ? $image : "") . "\" />\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\" $align = \"center\">\r\n\t\t\t\t" . function_197($pid) . "\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"tcat\" $align = \"center\" $colspan = \"5\"><b>" . $Language[23] . "</b></td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt2\" $align = \"center\" $colspan = \"5\">" . function_198($usergroups) . "</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"tcat2\" $align = \"center\" $colspan = \"5\"><input $type = \"submit\" $value = \"" . $Language[17] . "\" /> <input $type = \"reset\" $value = \"" . $Language[14] . "\" /></td>\r\n\t\t</tr>\r\n\t</table>\r\n\t</form>\r\n\t";
 }
 if ($Act == "edit" && ($mid = intval($_GET["mid"])) && ($lang = trim($_GET["language"]))) {
     $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM ts_menu WHERE $language = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $lang) . "' AND $mid = " . $mid);
@@ -105,24 +105,24 @@ if ($Act == "edit" && ($mid = intval($_GET["mid"])) && ($lang = trim($_GET["lang
                     }
                 }
                 mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE ts_menu SET $pid = " . $pid . ", $sort = " . $sort . ", $title = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $title) . "', $link = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $link) . "', $image = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $image) . "', $permissions = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $usergroups) . "', $sub = " . $sub . " WHERE $mid = " . $mid);
-                function_79(str_replace("{1}", $_SESSION["ADMIN_USERNAME"], $Language[24]));
-                function_78("index.php?do=manage_menu&$act = manage_menu_items&$language = " . $lang . "&$updated = true");
+                logStaffAction(str_replace("{1}", $_SESSION["ADMIN_USERNAME"], $Language[24]));
+                redirectTo("index.php?do=manage_menu&$act = manage_menu_items&$language = " . $lang . "&$updated = true");
                 exit;
             }
         }
-        echo "\r\n\t\t\r\n\t\t" . function_81("<a $href = \"index.php?do=manage_menu&$act = manage_menu_items&$language = " . $lang . "\">" . $Language[16] . "</a>") . "\r\n\t\t" . ($Message ? function_81($Message) : "") . "\r\n\t\t<form $action = \"" . $_SERVER["SCRIPT_NAME"] . "?do=manage_menu&$act = edit&$mid = " . $mid . "&$language = " . $lang . "\" $method = \"post\" $name = \"manage_menu\">\r\n\t\t<input $type = \"hidden\" $name = \"act\" $value = \"edit\" />\r\n\t\t<input $type = \"hidden\" $name = \"mid\" $value = \"" . $mid . "\" />\r\n\t\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"tcat\" $align = \"center\" $colspan = \"5\"><b>" . $Language[5] . "</b></td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt2\" $align = \"center\"><b>" . $Language[6] . "</b></td>\r\n\t\t\t\t<td class=\"alt2\"><b>" . $Language[7] . "</b></td>\r\n\t\t\t\t<td class=\"alt2\"><b>" . $Language[8] . "</b></td>\r\n\t\t\t\t<td class=\"alt2\"><b>" . $Language[22] . "</b></td>\r\n\t\t\t\t<td class=\"alt2\" $align = \"center\"><b>" . $Language[9] . "</b></td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt1\" $align = \"center\">\r\n\t\t\t\t\t<input $type = \"text\" $size = \"5\" $name = \"sort\" $value = \"" . ($sort ? $sort : "") . "\" />\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t<input $type = \"text\" $size = \"40\" $name = \"title\" $value = \"" . ($title ? $title : "") . "\" />\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t<input $type = \"text\" $size = \"40\" $name = \"link\" $value = \"" . ($link ? $link : "") . "\" />\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t<input $type = \"text\" $size = \"40\" $name = \"image\" $value = \"" . ($image ? $image : "") . "\" />\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\" $align = \"center\">\r\n\t\t\t\t\t" . function_197($pid ? $pid : ($sub ? $sub : 0), $mid) . "\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"tcat\" $align = \"center\" $colspan = \"5\"><b>" . $Language[23] . "</b></td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt2\" $align = \"center\" $colspan = \"5\">" . function_198($usergroups) . "</td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"tcat2\" $align = \"center\" $colspan = \"5\"><input $type = \"submit\" $value = \"" . $Language[13] . "\" /> <input $type = \"reset\" $value = \"" . $Language[14] . "\" /></td>\r\n\t\t\t</tr>\r\n\t\t</table>\r\n\t\t</form>\r\n\t\t";
+        echo "\r\n\t\t\r\n\t\t" . showAlertMessage("<a $href = \"index.php?do=manage_menu&$act = manage_menu_items&$language = " . $lang . "\">" . $Language[16] . "</a>") . "\r\n\t\t" . ($Message ? showAlertMessage($Message) : "") . "\r\n\t\t<form $action = \"" . $_SERVER["SCRIPT_NAME"] . "?do=manage_menu&$act = edit&$mid = " . $mid . "&$language = " . $lang . "\" $method = \"post\" $name = \"manage_menu\">\r\n\t\t<input $type = \"hidden\" $name = \"act\" $value = \"edit\" />\r\n\t\t<input $type = \"hidden\" $name = \"mid\" $value = \"" . $mid . "\" />\r\n\t\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"tcat\" $align = \"center\" $colspan = \"5\"><b>" . $Language[5] . "</b></td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt2\" $align = \"center\"><b>" . $Language[6] . "</b></td>\r\n\t\t\t\t<td class=\"alt2\"><b>" . $Language[7] . "</b></td>\r\n\t\t\t\t<td class=\"alt2\"><b>" . $Language[8] . "</b></td>\r\n\t\t\t\t<td class=\"alt2\"><b>" . $Language[22] . "</b></td>\r\n\t\t\t\t<td class=\"alt2\" $align = \"center\"><b>" . $Language[9] . "</b></td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt1\" $align = \"center\">\r\n\t\t\t\t\t<input $type = \"text\" $size = \"5\" $name = \"sort\" $value = \"" . ($sort ? $sort : "") . "\" />\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t<input $type = \"text\" $size = \"40\" $name = \"title\" $value = \"" . ($title ? $title : "") . "\" />\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t<input $type = \"text\" $size = \"40\" $name = \"link\" $value = \"" . ($link ? $link : "") . "\" />\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t<input $type = \"text\" $size = \"40\" $name = \"image\" $value = \"" . ($image ? $image : "") . "\" />\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\" $align = \"center\">\r\n\t\t\t\t\t" . function_197($pid ? $pid : ($sub ? $sub : 0), $mid) . "\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"tcat\" $align = \"center\" $colspan = \"5\"><b>" . $Language[23] . "</b></td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt2\" $align = \"center\" $colspan = \"5\">" . function_198($usergroups) . "</td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"tcat2\" $align = \"center\" $colspan = \"5\"><input $type = \"submit\" $value = \"" . $Language[13] . "\" /> <input $type = \"reset\" $value = \"" . $Language[14] . "\" /></td>\r\n\t\t\t</tr>\r\n\t\t</table>\r\n\t\t</form>\r\n\t\t";
     }
 }
 if ($Act == "delete" && ($mid = intval($_GET["mid"])) && ($lang = trim($_GET["language"]))) {
     mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM ts_menu WHERE $language = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $lang) . "' AND $mid = " . $mid);
-    function_79(str_replace("{1}", $_SESSION["ADMIN_USERNAME"], $Language[24]));
+    logStaffAction(str_replace("{1}", $_SESSION["ADMIN_USERNAME"], $Language[24]));
     $UPDATED = true;
     $Act = "manage_menu_items";
 }
 if ($Act == "delete_language" && ($lid = intval($_GET["lid"])) && ($lang = trim($_GET["language"]))) {
     mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM ts_menu_languages WHERE $lid = " . $lid . " AND  $language = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $lang) . "'");
     mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM ts_menu WHERE $language = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $lang) . "'");
-    function_79(str_replace("{1}", $_SESSION["ADMIN_USERNAME"], $Language[24]));
+    logStaffAction(str_replace("{1}", $_SESSION["ADMIN_USERNAME"], $Language[24]));
     $Q = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'MAIN'");
     $Result = mysqli_fetch_assoc($Q);
     $MAIN = unserialize($Result["content"]);
@@ -168,13 +168,13 @@ if (isset($_POST["export"]) && $_POST["export"] == "true" && $Act == "manage_men
         mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE ts_menu SET $image = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], trim($value)) . "' WHERE $language = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $lang) . "' AND $mid = " . intval($mid));
     }
     $EXPORT = $_POST["language"];
-    function_79(str_replace("{1}", $_SESSION["ADMIN_USERNAME"], $Language[24]));
+    logStaffAction(str_replace("{1}", $_SESSION["ADMIN_USERNAME"], $Language[24]));
     function_199($_POST["language"]);
 }
 if ($Act == "manage_menu_items" && isset($_GET["language"]) && ($lang = trim($_GET["language"]))) {
     $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM ts_menu WHERE $pid = 0 AND $sub = 0 AND $language = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $lang) . "' ORDER by sort");
     if (mysqli_num_rows($Query) == 0) {
-        $Message = function_76($Language[1]);
+        $Message = showAlertError($Language[1]);
     } else {
         while ($M = mysqli_fetch_assoc($Query)) {
             $MainMenus[$M["mid"]] = $M;
@@ -211,7 +211,7 @@ if ($Act == "manage_menu_items" && isset($_GET["language"]) && ($lang = trim($_G
     if ($Message) {
         echo "\r\n\t\t" . $Message;
     } else {
-        echo "\r\n\t\t<script $type = \"text/javascript\">\r\n\t\t\tfunction ConfirmDelete(MID, LANG)\r\n\t\t\t{\r\n\t\t\t\tif (confirm(\"" . trim($Language[4]) . "\"))\r\n\t\t\t\t{\r\n\t\t\t\t\tTSJump(\"index.php?do=manage_menu&$act = delete&$mid = \"+MID+\"&$language = \"+LANG);\r\n\t\t\t\t}\r\n\t\t\t\telse\r\n\t\t\t\t{\r\n\t\t\t\t\treturn false;\r\n\t\t\t\t}\r\n\t\t\t}\r\n\t\t</script>\r\n\t\t" . function_81("<a $href = \"index.php?do=manage_menu&amp;$act = new&amp;$language = " . $lang . "\">" . $Language[3] . "</a>") . "\r\n\t\t" . (isset($UPDATED) || isset($_GET["updated"]) ? function_81($Language[15]) : "") . "\r\n\t\t" . (isset($EXPORT) ? function_81(str_replace("{1}", "menu_" . $EXPORT . ".php", $Language[21])) : "") . "\r\n\t\t<form $action = \"" . $_SERVER["SCRIPT_NAME"] . "?do=manage_menu&$act = manage_menu_items&$language = " . $lang . "\" $method = \"post\" $name = \"manage_menu\">\r\n\t\t<input $type = \"hidden\" $name = \"export\" $value = \"true\" />\r\n\t\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"tcat\" $align = \"center\" $colspan = \"6\"><b>" . $Language[5] . "</b></td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt2\" $align = \"center\"><b>" . $Language[6] . "</b></td>\r\n\t\t\t\t<td class=\"alt2\"><b>" . $Language[7] . "</b></td>\r\n\t\t\t\t<td class=\"alt2\"><b>" . $Language[8] . "</b></td>\r\n\t\t\t\t<td class=\"alt2\"><b>" . $Language[22] . "</b></td>\r\n\t\t\t\t<td class=\"alt2\" $align = \"center\"><b>" . $Language[9] . "</b></td>\r\n\t\t\t\t<td class=\"alt2\" $align = \"center\"><b>" . $Language[10] . "</b></td>\r\n\t\t\t</tr>\r\n\t\t\t" . $Found . "\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"tcat2\" $align = \"center\" $colspan = \"6\">" . $Language[19] . " " . function_200() . " <input $type = \"submit\" $value = \"" . $Language[20] . "\" /> <input $type = \"reset\" $value = \"" . $Language[14] . "\" /></td>\r\n\t\t\t</tr>\r\n\t\t</table>\r\n\t\t</form>\r\n\t\t";
+        echo "\r\n\t\t<script $type = \"text/javascript\">\r\n\t\t\tfunction ConfirmDelete(MID, LANG)\r\n\t\t\t{\r\n\t\t\t\tif (confirm(\"" . trim($Language[4]) . "\"))\r\n\t\t\t\t{\r\n\t\t\t\t\tTSJump(\"index.php?do=manage_menu&$act = delete&$mid = \"+MID+\"&$language = \"+LANG);\r\n\t\t\t\t}\r\n\t\t\t\telse\r\n\t\t\t\t{\r\n\t\t\t\t\treturn false;\r\n\t\t\t\t}\r\n\t\t\t}\r\n\t\t</script>\r\n\t\t" . showAlertMessage("<a $href = \"index.php?do=manage_menu&amp;$act = new&amp;$language = " . $lang . "\">" . $Language[3] . "</a>") . "\r\n\t\t" . (isset($UPDATED) || isset($_GET["updated"]) ? showAlertMessage($Language[15]) : "") . "\r\n\t\t" . (isset($EXPORT) ? showAlertMessage(str_replace("{1}", "menu_" . $EXPORT . ".php", $Language[21])) : "") . "\r\n\t\t<form $action = \"" . $_SERVER["SCRIPT_NAME"] . "?do=manage_menu&$act = manage_menu_items&$language = " . $lang . "\" $method = \"post\" $name = \"manage_menu\">\r\n\t\t<input $type = \"hidden\" $name = \"export\" $value = \"true\" />\r\n\t\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"tcat\" $align = \"center\" $colspan = \"6\"><b>" . $Language[5] . "</b></td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt2\" $align = \"center\"><b>" . $Language[6] . "</b></td>\r\n\t\t\t\t<td class=\"alt2\"><b>" . $Language[7] . "</b></td>\r\n\t\t\t\t<td class=\"alt2\"><b>" . $Language[8] . "</b></td>\r\n\t\t\t\t<td class=\"alt2\"><b>" . $Language[22] . "</b></td>\r\n\t\t\t\t<td class=\"alt2\" $align = \"center\"><b>" . $Language[9] . "</b></td>\r\n\t\t\t\t<td class=\"alt2\" $align = \"center\"><b>" . $Language[10] . "</b></td>\r\n\t\t\t</tr>\r\n\t\t\t" . $Found . "\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"tcat2\" $align = \"center\" $colspan = \"6\">" . $Language[19] . " " . function_200() . " <input $type = \"submit\" $value = \"" . $Language[20] . "\" /> <input $type = \"reset\" $value = \"" . $Language[14] . "\" /></td>\r\n\t\t\t</tr>\r\n\t\t</table>\r\n\t\t</form>\r\n\t\t";
     }
 }
 if ($Act == "new_language") {
@@ -219,11 +219,11 @@ if ($Act == "new_language") {
     if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
         $lang = trim($_POST["lang"]);
         if (!is_dir("../include/languages/" . $lang) || !file_exists("../include/languages/" . $lang . "/browse.lang.php")) {
-            $Message = function_76($Language[34]);
+            $Message = showAlertError($Language[34]);
         } else {
             $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM ts_menu_languages WHERE $language = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $lang) . "'");
             if (mysqli_num_rows($query)) {
-                $Message = function_76($Language[36]);
+                $Message = showAlertError($Language[36]);
             } else {
                 mysqli_query($GLOBALS["DatabaseConnect"], "INSERT INTO ts_menu_languages (language) VALUES ('" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $lang) . "')");
                 if (mysqli_insert_id($GLOBALS["DatabaseConnect"])) {
@@ -245,14 +245,14 @@ if ($Act == "new_language") {
                             }
                         }
                     }
-                    function_79(str_replace(["{1}", "{2}"], [$lang, $_SESSION["ADMIN_USERNAME"]], $Language[35]));
-                    function_78("index.php?do=manage_menu&$act = manage_menu_items&$language = " . $lang . "&$updated = true");
+                    logStaffAction(str_replace(["{1}", "{2}"], [$lang, $_SESSION["ADMIN_USERNAME"]], $Language[35]));
+                    redirectTo("index.php?do=manage_menu&$act = manage_menu_items&$language = " . $lang . "&$updated = true");
                     exit;
                 }
             }
         }
     }
-    echo "\r\n\t<form $method = \"post\" $action = \"index.php?do=manage_menu&$act = new_language\">\r\n\t" . function_81("<a $href = \"index.php?do=manage_menu\">" . $Language[16] . "</a>") . "\r\n\t" . $Message . "\r\n\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t<tr>\r\n\t\t\t<td class=\"tcat\" $align = \"center\" $colspan = \"2\">" . $Language[30] . "</td>\r\n\t\t</tr>\r\n\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt2\" $colspan = \"2\">" . $Language[32] . "</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\" $width = \"50%\" $align = \"justify\">\r\n\t\t\t\t" . $Language[33] . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\" $width = \"50%\" $valign = \"top\">\r\n\t\t\t\t<input $type = \"text\" $name = \"lang\" $value = \"" . $lang . "\" $size = \"30\" />\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt2\"></td>\r\n\t\t\t<td class=\"alt2\">\r\n\t\t\t\t<input $type = \"submit\" $value = \"" . $Language[17] . "\" /> <input $type = \"reset\" $value = \"" . $Language[16] . "\" />\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t</table>\r\n\t</form>";
+    echo "\r\n\t<form $method = \"post\" $action = \"index.php?do=manage_menu&$act = new_language\">\r\n\t" . showAlertMessage("<a $href = \"index.php?do=manage_menu\">" . $Language[16] . "</a>") . "\r\n\t" . $Message . "\r\n\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t<tr>\r\n\t\t\t<td class=\"tcat\" $align = \"center\" $colspan = \"2\">" . $Language[30] . "</td>\r\n\t\t</tr>\r\n\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt2\" $colspan = \"2\">" . $Language[32] . "</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\" $width = \"50%\" $align = \"justify\">\r\n\t\t\t\t" . $Language[33] . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\" $width = \"50%\" $valign = \"top\">\r\n\t\t\t\t<input $type = \"text\" $name = \"lang\" $value = \"" . $lang . "\" $size = \"30\" />\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt2\"></td>\r\n\t\t\t<td class=\"alt2\">\r\n\t\t\t\t<input $type = \"submit\" $value = \"" . $Language[17] . "\" /> <input $type = \"reset\" $value = \"" . $Language[16] . "\" />\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t</table>\r\n\t</form>";
 }
 if (!$Act) {
     $FileCount = [];
@@ -277,22 +277,22 @@ if (!$Act) {
         $class = $Count % 2 == 1 ? "alt2" : "alt1";
         $List .= "\r\n\t\t<tr>\r\n\t\t\t<td class=\"" . $class . "\" $align = \"center\">" . $l["lid"] . "</td>\r\n\t\t\t<td class=\"" . $class . "\">" . $l["language"] . "</td>\r\n\t\t\t<td class=\"" . $class . "\">" . $FileCount[$l["language"]] . "</td>\r\n\t\t\t<td class=\"" . $class . "\" $align = \"center\"><img $src = \"../include/languages/" . $l["language"] . "/flag/flag.gif\" $border = \"0\" $alt = \"\" $title = \"\" /></td>\r\n\t\t\t<td class=\"" . $class . "\" $align = \"center\"><a $href = \"index.php?do=manage_menu&amp;$act = manage_menu_items&amp;$language = " . $l["language"] . "\"><img $src = \"images/link_go.png\" $border = \"0\" $alt = \"" . $Language[31] . "\" $title = \"" . $Language[31] . "\" /></a> " . ($l["language"] != "english" && $language["lid"] != 1 ? "<a $href = \"#\" $onclick = \"ConfirmDelete(" . $l["lid"] . ", '" . $l["language"] . "');\"><img $src = \"images/tool_delete.png\" $alt = \"" . $Language[12] . "\" $title = \"" . $Language[12] . "\" $border = \"0\" /></a>" : "") . "</td>\r\n\t\t</tr>";
     }
-    echo "\r\n\t<script $type = \"text/javascript\">\r\n\t\tfunction ConfirmDelete(LID, LANG)\r\n\t\t{\r\n\t\t\tif (confirm(\"" . trim($Language[4]) . "\"))\r\n\t\t\t{\r\n\t\t\t\tTSJump(\"index.php?do=manage_menu&$act = delete_language&$lid = \"+LID+\"&$language = \"+LANG);\r\n\t\t\t}\r\n\t\t\telse\r\n\t\t\t{\r\n\t\t\t\treturn false;\r\n\t\t\t}\r\n\t\t}\r\n\t</script>\r\n\t" . function_81("<a $href = \"index.php?do=manage_menu&amp;$act = new_language\">" . $Language[30] . "</a>") . "\r\n\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t<tr>\r\n\t\t\t<td class=\"tcat\" $align = \"center\" $colspan = \"5\"><b>" . $Language[25] . "</b></td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt2\" $align = \"center\"><b>" . $Language[26] . "</b></td>\r\n\t\t\t<td class=\"alt2\"><b>" . $Language[27] . "</b></td>\r\n\t\t\t<td class=\"alt2\"><b>" . $Language[28] . "</b></td>\r\n\t\t\t<td class=\"alt2\" $align = \"center\"><b>" . $Language[29] . "</b></td>\r\n\t\t\t<td class=\"alt2\" $align = \"center\"><b>" . $Language[10] . "</b></td>\r\n\t\t</tr>\r\n\t\t" . $List . "\r\n\t</table>";
+    echo "\r\n\t<script $type = \"text/javascript\">\r\n\t\tfunction ConfirmDelete(LID, LANG)\r\n\t\t{\r\n\t\t\tif (confirm(\"" . trim($Language[4]) . "\"))\r\n\t\t\t{\r\n\t\t\t\tTSJump(\"index.php?do=manage_menu&$act = delete_language&$lid = \"+LID+\"&$language = \"+LANG);\r\n\t\t\t}\r\n\t\t\telse\r\n\t\t\t{\r\n\t\t\t\treturn false;\r\n\t\t\t}\r\n\t\t}\r\n\t</script>\r\n\t" . showAlertMessage("<a $href = \"index.php?do=manage_menu&amp;$act = new_language\">" . $Language[30] . "</a>") . "\r\n\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t<tr>\r\n\t\t\t<td class=\"tcat\" $align = \"center\" $colspan = \"5\"><b>" . $Language[25] . "</b></td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt2\" $align = \"center\"><b>" . $Language[26] . "</b></td>\r\n\t\t\t<td class=\"alt2\"><b>" . $Language[27] . "</b></td>\r\n\t\t\t<td class=\"alt2\"><b>" . $Language[28] . "</b></td>\r\n\t\t\t<td class=\"alt2\" $align = \"center\"><b>" . $Language[29] . "</b></td>\r\n\t\t\t<td class=\"alt2\" $align = \"center\"><b>" . $Language[10] . "</b></td>\r\n\t\t</tr>\r\n\t\t" . $List . "\r\n\t</table>";
 }
-function function_75()
+function getStaffLanguage()
 {
     if (isset($_COOKIE["staffcplanguage"]) && is_dir("languages/" . $_COOKIE["staffcplanguage"]) && is_file("languages/" . $_COOKIE["staffcplanguage"] . "/staffcp.lang")) {
         return $_COOKIE["staffcplanguage"];
     }
     return "english";
 }
-function function_77()
+function checkStaffAuthentication()
 {
     if (!defined("IN-TSSE-STAFF-PANEL")) {
         var_236("../index.php");
     }
 }
-function function_78($url)
+function redirectTo($url)
 {
     if (!headers_sent()) {
         header("Location: " . $url);
@@ -301,11 +301,11 @@ function function_78($url)
     }
     exit;
 }
-function function_76($Error)
+function showAlertError($Error)
 {
     return "<div class=\"alert\"><div>" . $Error . "</div></div>";
 }
-function function_81($message = "")
+function showAlertMessage($message = "")
 {
     return "<div class=\"alert\"><div>" . $message . "</div></div>";
 }
@@ -436,7 +436,7 @@ function function_198($usergroups)
     $var_423 .= "</tr></table>";
     return $var_423;
 }
-function function_79($log)
+function logStaffAction($log)
 {
     mysqli_query($GLOBALS["DatabaseConnect"], "INSERT INTO ts_staffcp_logs (uid, date, log) VALUES ('" . $_SESSION["ADMIN_ID"] . "', '" . time() . "', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $log) . "')");
 }

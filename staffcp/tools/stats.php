@@ -8,7 +8,7 @@
 
 var_235();
 $Act = isset($_GET["act"]) ? trim($_GET["act"]) : (isset($_POST["act"]) ? trim($_POST["act"]) : "");
-$Language = file("languages/" . function_75() . "/stats.lang");
+$Language = file("languages/" . getStaffLanguage() . "/stats.lang");
 $Message = "";
 $day = date("d");
 $month = date("m");
@@ -195,22 +195,22 @@ if ($numrows != 0) {
     }
     echo "\r\n\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t<tr>\r\n\t\t\t<td $colspan = \"2\" $width = \"75%\" $align = \"left\" class=\"tcat\"><b>" . $Language[4] . "</b></td>\r\n\t\t\t<td $width = \"25%\" class=\"tcat\" $align = \"center\"><b>" . $Language[5] . "</b></td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td $align = \"center\" class=\"alt1\"><img $src = \"images/firefox.gif\" $width = \"35\" $height = \"35\"></td>\r\n\t\t\t<td class=\"alt1\">Firefox</td>\r\n\t\t\t<td $align = \"center\" class=\"alt1\">" . $firefox . "%</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td $width = \"25%\" $align = \"center\" class=\"alt1\"><img $src = \"images/ie.gif\" $width = \"35\" $height = \"35\"></td>\r\n\t\t\t<td $width = \"50%\" class=\"alt1\">Internet Explorer </td>\r\n\t\t\t<td $width = \"25%\" $align = \"center\" class=\"alt1\">" . $ie . "%</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td $align = \"center\" class=\"alt1\"><img $src = \"images/chrome.png\" $width = \"35\" $height = \"35\"></td>\r\n\t\t\t<td class=\"alt1\">Chrome</td>\r\n\t\t\t<td $align = \"center\" class=\"alt1\">" . $chrome . "%</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td $align = \"center\" class=\"alt1\"><img $src = \"images/opera.png\" $width = \"35\" $height = \"35\"></td>\r\n\t\t\t<td class=\"alt1\">Opera</td>\r\n\t\t\t<td $align = \"center\" class=\"alt1\">" . $opera . "%</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td $align = \"center\" class=\"alt1\"><img $src = \"images/konqueror.gif\" $width = \"35\" $height = \"35\"></td>\r\n\t\t\t<td class=\"alt1\">Konqueror</td>\r\n\t\t\t<td $align = \"center\" class=\"alt1\">" . $konqueror . "%</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td $align = \"center\" class=\"alt1\"><img $src = \"images/icab.gif\" $width = \"35\" $height = \"35\"></td>\r\n\t\t\t<td class=\"alt1\">iCab</td>\r\n\t\t\t<td $align = \"center\" class=\"alt1\">" . $icab . "%</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td $align = \"center\" class=\"alt1\"><img $src = \"images/mozilla.gif\" $width = \"35\" $height = \"35\"></td>\r\n\t\t\t<td class=\"alt1\">Mozilla</td>\r\n\t\t\t<td $align = \"center\" class=\"alt1\">" . $mozilla . "%</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td $align = \"center\" class=\"alt1\"><img $src = \"images/lynx.gif\" $width = \"35\" $height = \"35\"></td>\r\n\t\t\t<td class=\"alt1\">Lynx</td>\r\n\t\t\t<td $align = \"center\" class=\"alt1\">" . $lynx . "%</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td $align = \"center\" class=\"alt1\"><img $src = \"images/netscape.gif\" $width = \"35\" $height = \"35\"></td>\r\n\t\t\t<td class=\"alt1\">Netscape</td>\r\n\t\t\t<td $align = \"center\" class=\"alt1\">" . $netscape . "%</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td $align = \"center\" class=\"alt1\"><img $src = \"images/safari.gif\" $width = \"35\" $height = \"35\"></td>\r\n\t\t\t<td class=\"alt1\">Safari</td>\r\n\t\t\t<td $align = \"center\" class=\"alt1\">" . $safari . "%</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td $align = \"center\" class=\"alt1\"><img $src = \"images/aol.gif\" $width = \"35\" $height = \"35\"></td>\r\n\t\t\t<td class=\"alt1\">AOL</td>\r\n\t\t\t<td $align = \"center\" class=\"alt1\">" . $aol . "%</td>\r\n\t\t</tr>\r\n\t</table>\r\n\r\n\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t<tr>\r\n\t\t\t<td $colspan = \"2\" $width = \"75%\" $align = \"left\" class=\"tcat\"><b>" . $Language[6] . "</b></td>\r\n\t\t\t<td $width = \"25%\" class=\"tcat\" $align = \"center\"><b>" . $Language[5] . "</b></td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td $width = \"25%\" $align = \"center\" $height = \"25\" class=\"alt1\"><img $src = \"images/windows.gif\" $width = \"35\" $height = \"35\"></td>\r\n\t\t\t<td $width = \"50%\" class=\"alt1\">Windows</td>\r\n\t\t\t<td $width = \"25%\" $align = \"center\" class=\"alt1\">" . $windows . "%</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td $align = \"center\" class=\"alt1\"><img $src = \"images/mac.gif\" $width = \"35\" $height = \"35\"></td>\r\n\t\t\t<td class=\"alt1\">Mac</td>\r\n\t\t\t<td $align = \"center\" class=\"alt1\">" . $mac . "%</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td $align = \"center\" class=\"alt1\"><img $src = \"images/linux.gif\" $width = \"35\" $height = \"35\"></td>\r\n\t\t\t<td class=\"alt1\">Linux</td>\r\n\t\t\t<td $align = \"center\" class=\"alt1\">" . $linux . "%</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td $align = \"center\" class=\"alt1\"><img $src = \"images/os2.gif\" $width = \"35\" $height = \"35\"></td>\r\n\t\t\t<td class=\"alt1\">OS/2</td>\r\n\t\t\t<td $align = \"center\" class=\"alt1\">" . $os2 . "%</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td $align = \"center\" class=\"alt1\"><img $src = \"images/beos.gif\" $width = \"35\" $height = \"35\"></td>\r\n\t\t\t<td class=\"alt1\">BeOS</td>\r\n\t\t\t<td $align = \"center\" class=\"alt1\">" . $beos . "%</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td $align = \"center\" class=\"alt1\"><img $src = \"images/unix.gif\" $width = \"35\" $height = \"35\"></td>\r\n\t\t\t<td class=\"alt1\">Unix</td>\r\n\t\t\t<td $align = \"center\" class=\"alt1\">" . $unix . "%</td>\r\n\t\t</tr>\r\n\t</table>\r\n\t\r\n\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t<tr>\r\n\t\t\t<td $align = \"left\" class=\"tcat\" $colspan = \"2\">\r\n\t\t\t\t<b>" . $Language[7] . "</b>\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t" . $Extra . "\r\n\t\t<tr>\r\n\t\t\t<td $width = \"40%\" $height = \"25\" class=\"alt1\"><b>" . $Language[12] . "</b></td>\r\n\t\t\t<td $width = \"60%\" $height = \"25\" class=\"alt1\">" . number_format($total["hits"]) . "</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td $width = \"40%\" $height = \"25\" class=\"alt1\"><b>" . $Language[13] . "</b></td>\r\n\t\t\t<td $width = \"60%\" $height = \"25\" class=\"alt1\">" . number_format($total2["visits"]) . "</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td $width = \"40%\" $height = \"25\" class=\"alt1\"><b>" . $Language[14] . "</b></td>\r\n\t\t\t<td $width = \"60%\" $height = \"25\" class=\"alt1\">" . number_format($current["hits"]) . "</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td $width = \"40%\" $height = \"25\" class=\"alt1\"><b>" . $Language[15] . "</b></td>\r\n\t\t\t<td $width = \"60%\" $height = \"25\" class=\"alt1\">" . number_format($current["uniquehits"]) . "</td>\r\n\t\t</tr>\r\n\t</table>\r\n\r\n\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t" . $Extra2 . "\r\n\t</table>\r\n\r\n\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t" . $Extra3 . "\r\n\t</table>\r\n\r\n\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t<tr>\r\n\t\t\t<td class=\"tcat\">\r\n\t\t\t\t<b>" . $Language[17] . "</b>\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t<p><a $href = \"index.php?do=stats&amp;$act = referers\">" . $Language[18] . "</a></p>\r\n\t\t\t\t<p><a $href = \"index.php?do=stats&amp;$act = daily\">" . $Language[19] . "</a></p>\r\n\t\t\t\t<p><a $href = \"index.php?do=stats&amp;$act = montly\">" . $Language[20] . "</a></p>\r\n\t\t\t\t<p><a $href = \"index.php?do=stats&amp;$act = yearly\">" . $Language[21] . "</a></p>\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t</table>\r\n\r\n\t\r\n\t\r\n\t";
 } else {
-    echo "\r\n\t\r\n\t" . function_76($Language[3]);
+    echo "\r\n\t\r\n\t" . showAlertError($Language[3]);
 }
-function function_75()
+function getStaffLanguage()
 {
     if (isset($_COOKIE["staffcplanguage"]) && is_dir("languages/" . $_COOKIE["staffcplanguage"]) && is_file("languages/" . $_COOKIE["staffcplanguage"] . "/staffcp.lang")) {
         return $_COOKIE["staffcplanguage"];
     }
     return "english";
 }
-function function_77()
+function checkStaffAuthentication()
 {
     if (!defined("IN-TSSE-STAFF-PANEL")) {
         var_236("../index.php");
     }
 }
-function function_78($url)
+function redirectTo($url)
 {
     if (!headers_sent()) {
         header("Location: " . $url);
@@ -219,7 +219,7 @@ function function_78($url)
     }
     exit;
 }
-function function_76($Error)
+function showAlertError($Error)
 {
     return "<div class=\"alert\"><div>" . $Error . "</div></div>";
 }

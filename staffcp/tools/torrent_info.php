@@ -10,7 +10,7 @@
 @ini_set("memory_limit", "20000M");
 @set_time_limit(0);
 var_235();
-$Language = file("languages/" . function_75() . "/torrent_info.lang");
+$Language = file("languages/" . getStaffLanguage() . "/torrent_info.lang");
 $Message = "";
 $tid = isset($_GET["tid"]) ? intval($_GET["tid"]) : (isset($_POST["tid"]) ? intval($_POST["tid"]) : "");
 if ($tid) {
@@ -45,13 +45,13 @@ if ($tid) {
                 $Private = $Torrent->function_179();
                 $STR = "\r\n\t\t\t\t" . $Message . "\r\n\t\t\t\t\r\n\t\t\t\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\t\t\t\t\t\r\n\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t<td class=\"tcat\" $align = \"center\">\r\n\t\t\t\t\t\t\t" . $Language[2] . " (" . htmlspecialchars($name) . ")\r\n\t\t\t\t\t\t</td>\r\n\t\t\t\t\t</tr>\r\n\t\t\t\t\t\r\n\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t\t\t" . function_327("Torrent", "Filename:", $filename) . "\r\n\t\t\t\t\t\t\t" . function_327(NULL, "Info Hash:", chunk_split(strtoupper(bin2hex($Torrent->function_166())), 8, " ")) . "\r\n\r\n\t\t\t\t\t\t\t" . $TrackersRow . "\r\n\r\n\t\t\t\t\t\t\t" . function_327("Meta Data", "Created On:", date("m/d/y h:i:s", $Torrent->function_174())) . "\r\n\t\t\t\t\t\t\t" . function_327(NULL, "Created By:", $Torrent->function_175()) . "\r\n\t\t\t\t\t\t\t" . function_327(NULL, "Comment:", $Torrent->function_173()) . "\r\n\t\t\t\t\t\t\t" . function_327(NULL, "Piece Length:", var_238($Torrent->function_177())) . "\r\n\t\t\t\t\t\t\t" . function_327(NULL, "Private:", $Private == -1 ? "Off - Unset" : ($Private == 0 ? "Off - Set" : "On - Set")) . "\r\n\r\n\t\t\t\t\t\t\t" . $FilesRow . "\r\n\r\n\t\t\t\t\t\t\t" . function_327("Peers", "Seeders:", number_format($seeders)) . "\r\n\t\t\t\t\t\t\t" . function_327(NULL, "Leechers:", number_format($leechers)) . "\r\n\t\t\t\t\t\t</td>\r\n\t\t\t\t\t</tr>\r\n\t\t\t\t</table>";
             } else {
-                $Message = function_76($Language[7]);
+                $Message = showAlertError($Language[7]);
             }
         } else {
-            $Message = function_76($Language[8]);
+            $Message = showAlertError($Language[8]);
         }
     } else {
-        $Message = function_76($Language[6]);
+        $Message = showAlertError($Language[6]);
     }
 }
 if (!isset($STR)) {
@@ -67,11 +67,11 @@ class Class_7
     public function function_165(&$data)
     {
         $this->$torrent = function_167::function_168($data);
-        if ($this->torrent->function_169() == "error") {
+        if ($this->torrent->getBencodeEnd() == "error") {
             $this->$error = $this->torrent->function_170();
             return false;
         }
-        if ($this->torrent->function_169() != "dictionary") {
+        if ($this->torrent->getBencodeEnd() != "dictionary") {
             $this->$error = "The file was not a valid torrent file.";
             return false;
         }
@@ -352,7 +352,7 @@ class function_167
 }
 class Class_14
 {
-    public function function_169()
+    public function getBencodeEnd()
     {
         return "end";
     }
@@ -368,7 +368,7 @@ class Class_12
     {
         return $this->error;
     }
-    public function function_169()
+    public function getBencodeEnd()
     {
         return "error";
     }
@@ -391,7 +391,7 @@ class Class_11
     {
         return $this->value;
     }
-    public function function_169()
+    public function getBencodeEnd()
     {
         return "int";
     }
@@ -413,16 +413,16 @@ class Class_13
         while (true) {
             $offset++;
             $name = function_167::function_168($raw, $offset);
-            if ($name->function_169() != "end") {
-                if ($name->function_169() == "error") {
+            if ($name->getBencodeEnd() != "end") {
+                if ($name->getBencodeEnd() == "error") {
                     return $name;
                 }
-                if ($name->function_169() != "string") {
+                if ($name->getBencodeEnd() != "string") {
                     return new Class_12("Key name in dictionary was not a string.");
                 }
                 $offset++;
                 $value = function_167::function_168($raw, $offset);
-                if ($value->function_169() == "error") {
+                if ($value->getBencodeEnd() == "error") {
                     return $value;
                 }
                 $var_492[$name->function_170()] = $value;
@@ -450,7 +450,7 @@ class Class_13
         $var_493 .= "e";
         return $var_493;
     }
-    public function function_169()
+    public function getBencodeEnd()
     {
         return "dictionary";
     }
@@ -484,8 +484,8 @@ class Class_10
         while (true) {
             $offset++;
             $value = function_167::function_168($raw, $offset);
-            if ($value->function_169() != "end") {
-                if ($value->function_169() == "error") {
+            if ($value->getBencodeEnd() != "end") {
+                if ($value->getBencodeEnd() == "error") {
                     return $value;
                 }
                 array_push($var_8, $value);
@@ -506,7 +506,7 @@ class Class_10
     {
         return $this->value;
     }
-    public function function_169()
+    public function getBencodeEnd()
     {
         return "list";
     }
@@ -530,7 +530,7 @@ class Class_9
     {
         return $this->value;
     }
-    public function function_169()
+    public function getBencodeEnd()
     {
         return "string";
     }
@@ -544,20 +544,20 @@ class Class_9
         $this->$value = $value;
     }
 }
-function function_75()
+function getStaffLanguage()
 {
     if (isset($_COOKIE["staffcplanguage"]) && is_dir("languages/" . $_COOKIE["staffcplanguage"]) && is_file("languages/" . $_COOKIE["staffcplanguage"] . "/staffcp.lang")) {
         return $_COOKIE["staffcplanguage"];
     }
     return "english";
 }
-function function_77()
+function checkStaffAuthentication()
 {
     if (!defined("IN-TSSE-STAFF-PANEL")) {
         var_236("../index.php");
     }
 }
-function function_78($url)
+function redirectTo($url)
 {
     if (!headers_sent()) {
         header("Location: " . $url);
@@ -566,7 +566,7 @@ function function_78($url)
     }
     exit;
 }
-function function_76($Error)
+function showAlertError($Error)
 {
     return "<div class=\"alert\"><div>" . $Error . "</div></div>";
 }
@@ -574,7 +574,7 @@ function function_327($title = "", $label = "", $content = "")
 {
     return ($title ? "\r\n\t<h2>" . $title . "</h2>" : "") . "\r\n\t<div class=\"row\">\r\n\t\t<div class=\"label\">" . $label . "</div>\r\n\t\t<div class=\"content\">" . htmlspecialchars($content) . "</div>\r\n\t</div>";
 }
-function function_88($bytes = 0)
+function formatBytes($bytes = 0)
 {
     if ($bytes < 1024000) {
         return number_format($bytes / 1024, 2) . " KB";

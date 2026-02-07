@@ -7,7 +7,7 @@
  */
 
 var_235();
-$Language = file("languages/" . function_75() . "/manage_album_comments.lang");
+$Language = file("languages/" . getStaffLanguage() . "/manage_album_comments.lang");
 $Message = "";
 $WHERE = "";
 $LINK = "";
@@ -20,17 +20,17 @@ if (isset($_GET["sender"]) && ($SENDER = intval($_GET["sender"]))) {
     $LINK = "sender=" . $SENDER . "&amp;";
 }
 $results = mysqli_num_rows(mysqli_query($GLOBALS["DatabaseConnect"], "SELECT a.cid FROM ts_album_comments a" . $WHERE));
-list($pagertop, $limit) = function_82($perpage, $results, $_SERVER["SCRIPT_NAME"] . "?do=manage_album_comments&amp;" . $LINK);
+list($pagertop, $limit) = buildPaginationLinks($perpage, $results, $_SERVER["SCRIPT_NAME"] . "?do=manage_album_comments&amp;" . $LINK);
 $Found = "";
 $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT a.*, u.username, g.namestyle FROM ts_album_comments a LEFT JOIN users u ON (u.$id = a.userid) LEFT JOIN usergroups g ON (u.$usergroup = g.gid) " . $WHERE . " ORDER by a.date DESC " . $limit);
 if ($results) {
     while ($R = mysqli_fetch_assoc($Query)) {
         $page_url = isset($_GET["page"]) ? "&amp;$page = " . intval($_GET["page"]) : "";
         $msgtext = function_114($R["descr"]);
-        $Found .= "\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t<p class=\"alt2\">\r\n\t\t\t\t\t<span $style = \"float: right;\">\r\n\r\n\t\t\t\t\t</span>\r\n\t\t\t\t\t<a $href = \"" . $_SERVER["SCRIPT_NAME"] . "?do=manage_album_comments&amp;$delete = true&amp;$cid = " . $R["cid"] . (isset($_GET["page"]) ? "&amp;$page = " . intval($_GET["page"]) : "") . "\"><img $src = \"images/tool_delete.png\" $style = \"vertical-align: middle;\" $border = \"0\" /></a> <a $href = \"./../ts_albums.php?do=show_image&$albumid = " . $R["albumid"] . "&$imageid = " . $R["imageid"] . "#show_comments" . $R["cid"] . "\" $target = \"_blank\">#" . intval($R["cid"]) . "</a> " . function_84($R["date"]) . " " . $Language[3] . " <a $href = \"" . $_SERVER["SCRIPT_NAME"] . "?do=manage_album_comments&amp;$sender = " . $R["userid"] . "\">" . function_83($R["username"], $R["namestyle"]) . "</a>\r\n\t\t\t\t</p>\r\n\t\t\t\t<p>\r\n\t\t\t\t\t" . $msgtext . "\r\n\t\t\t\t</p>\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t";
+        $Found .= "\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t<p class=\"alt2\">\r\n\t\t\t\t\t<span $style = \"float: right;\">\r\n\r\n\t\t\t\t\t</span>\r\n\t\t\t\t\t<a $href = \"" . $_SERVER["SCRIPT_NAME"] . "?do=manage_album_comments&amp;$delete = true&amp;$cid = " . $R["cid"] . (isset($_GET["page"]) ? "&amp;$page = " . intval($_GET["page"]) : "") . "\"><img $src = \"images/tool_delete.png\" $style = \"vertical-align: middle;\" $border = \"0\" /></a> <a $href = \"./../ts_albums.php?do=show_image&$albumid = " . $R["albumid"] . "&$imageid = " . $R["imageid"] . "#show_comments" . $R["cid"] . "\" $target = \"_blank\">#" . intval($R["cid"]) . "</a> " . formatTimestamp($R["date"]) . " " . $Language[3] . " <a $href = \"" . $_SERVER["SCRIPT_NAME"] . "?do=manage_album_comments&amp;$sender = " . $R["userid"] . "\">" . applyUsernameStyle($R["username"], $R["namestyle"]) . "</a>\r\n\t\t\t\t</p>\r\n\t\t\t\t<p>\r\n\t\t\t\t\t" . $msgtext . "\r\n\t\t\t\t</p>\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t";
     }
 } else {
-    echo "\r\n\t" . function_76($Language[2]);
+    echo "\r\n\t" . showAlertError($Language[2]);
 }
 echo "\r\n" . $pagertop . "\r\n<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t<tr>\r\n\t\t<td class=\"tcat\" $align = \"center\" $colspan = \"9\">" . $Language[1] . "</td>\r\n\t</tr>\r\n\t" . $Found . "\r\n</table>\r\n" . $pagertop;
 class Class_6
@@ -376,20 +376,20 @@ class Class_6
         return $text;
     }
 }
-function function_75()
+function getStaffLanguage()
 {
     if (isset($_COOKIE["staffcplanguage"]) && is_dir("languages/" . $_COOKIE["staffcplanguage"]) && is_file("languages/" . $_COOKIE["staffcplanguage"] . "/staffcp.lang")) {
         return $_COOKIE["staffcplanguage"];
     }
     return "english";
 }
-function function_77()
+function checkStaffAuthentication()
 {
     if (!defined("IN-TSSE-STAFF-PANEL")) {
         var_236("../index.php");
     }
 }
-function function_78($url)
+function redirectTo($url)
 {
     if (!headers_sent()) {
         header("Location: " . $url);
@@ -398,15 +398,15 @@ function function_78($url)
     }
     exit;
 }
-function function_76($Error)
+function showAlertError($Error)
 {
     return "<div class=\"alert\"><div>" . $Error . "</div></div>";
 }
-function function_79($log)
+function logStaffAction($log)
 {
     mysqli_query($GLOBALS["DatabaseConnect"], "INSERT INTO ts_staffcp_logs (uid, date, log) VALUES ('" . $_SESSION["ADMIN_ID"] . "', '" . time() . "', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $log) . "')");
 }
-function function_86($numresults, &$page, &$perpage, $maxperpage = 20, $defaultperpage = 20)
+function validatePerPage($numresults, &$page, &$perpage, $maxperpage = 20, $defaultperpage = 20)
 {
     $perpage = intval($perpage);
     if ($perpage < 1) {
@@ -428,7 +428,7 @@ function function_86($numresults, &$page, &$perpage, $maxperpage = 20, $defaultp
         }
     }
 }
-function function_87($pagenumber, $perpage, $total)
+function calculatePagination($pagenumber, $perpage, $total)
 {
     $var_241 = $perpage * ($pagenumber - 1);
     $var_89 = $var_241 + $perpage;
@@ -438,7 +438,7 @@ function function_87($pagenumber, $perpage, $total)
     $var_241++;
     return ["first" => number_format($var_241), "last" => number_format($var_89)];
 }
-function function_82($perpage, $results, $address)
+function buildPaginationLinks($perpage, $results, $address)
 {
     if ($results < $perpage) {
         return ["", ""];
@@ -449,7 +449,7 @@ function function_82($perpage, $results, $address)
         $var_242 = 0;
     }
     $pagenumber = isset($_GET["page"]) ? intval($_GET["page"]) : (isset($_POST["page"]) ? intval($_POST["page"]) : "");
-    function_86($results, $pagenumber, $perpage, 200);
+    validatePerPage($results, $pagenumber, $perpage, 200);
     $var_243 = ($pagenumber - 1) * $perpage;
     $var_244 = $pagenumber * $perpage;
     if ($results < $var_244) {
@@ -475,12 +475,12 @@ function function_82($perpage, $results, $address)
     $var_251["prev"] = $var_251["next"];
     if (1 < $pagenumber) {
         $var_252 = $pagenumber - 1;
-        $var_253 = function_87($var_252, $perpage, $results);
+        $var_253 = calculatePagination($var_252, $perpage, $results);
         $var_251["prev"] = true;
     }
     if ($pagenumber < $var_242) {
         $var_254 = $pagenumber + 1;
-        $var_255 = function_87($var_254, $perpage, $results);
+        $var_255 = calculatePagination($var_254, $perpage, $results);
         $var_251["next"] = true;
     }
     $var_256 = "3";
@@ -495,15 +495,15 @@ function function_82($perpage, $results, $address)
     }
     if ($var_256 <= abs($var_250 - $pagenumber) && $var_256 != 0) {
         if ($var_250 == 1) {
-            $var_260 = function_87(1, $perpage, $results);
+            $var_260 = calculatePagination(1, $perpage, $results);
             $var_251["first"] = true;
         }
         if ($var_250 == $var_242) {
-            $var_261 = function_87($var_242, $perpage, $results);
+            $var_261 = calculatePagination($var_242, $perpage, $results);
             $var_251["last"] = true;
         }
         if (in_array(abs($var_250 - $pagenumber), $var_257) && $var_250 != 1 && $var_250 != $var_242) {
-            $var_262 = function_87($var_250, $perpage, $results);
+            $var_262 = calculatePagination($var_250, $perpage, $results);
             $var_263 = $var_250 - $pagenumber;
             if (0 < $var_263) {
                 $var_263 = "+" . $var_263;
@@ -512,15 +512,15 @@ function function_82($perpage, $results, $address)
         }
     } else {
         if ($var_250 == $pagenumber) {
-            $var_264 = function_87($var_250, $perpage, $results);
+            $var_264 = calculatePagination($var_250, $perpage, $results);
             $var_245 .= "<li><a $name = \"current\" class=\"current\" $title = \"Showing results " . $var_264["first"] . " to " . $var_264["last"] . " of " . $total . "\">" . $var_250 . "</a></li>";
         } else {
-            $var_262 = function_87($var_250, $perpage, $results);
+            $var_262 = calculatePagination($var_250, $perpage, $results);
             $var_245 .= "<li><a $href = \"" . $address . ($var_250 != 1 ? "page=" . $var_250 : "") . "\" $title = \"Show results " . $var_262["first"] . " to " . $var_262["last"] . " of " . $total . "\">" . $var_250 . "</a></li>";
         }
     }
 }
-function function_84($timestamp = "")
+function formatTimestamp($timestamp = "")
 {
     $var_265 = "m-d-Y h:i A";
     if (empty($timestamp)) {
@@ -532,7 +532,7 @@ function function_84($timestamp = "")
     }
     return date($var_265, $timestamp);
 }
-function function_83($username, $namestyle)
+function applyUsernameStyle($username, $namestyle)
 {
     return str_replace("{username}", $username, $namestyle);
 }

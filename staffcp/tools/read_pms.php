@@ -7,7 +7,7 @@
  */
 
 var_235();
-$Language = file("languages/" . function_75() . "/read_pms.lang");
+$Language = file("languages/" . getStaffLanguage() . "/read_pms.lang");
 $Message = "";
 $Found = "";
 $Act = isset($_GET["act"]) ? trim($_GET["act"]) : (isset($_POST["act"]) ? trim($_POST["act"]) : "");
@@ -22,7 +22,7 @@ if ($Act == "delete" && isset($_POST["ids"]) && $_POST["ids"][0] != "") {
         mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM messages WHERE id IN (" . $ids . ")");
         if (mysqli_affected_rows($GLOBALS["DatabaseConnect"])) {
             $SysMsg = str_replace(["{1}", "{2}"], [$ids, $_SESSION["ADMIN_USERNAME"]], $Language[10]);
-            function_79($SysMsg);
+            logStaffAction($SysMsg);
         }
     }
 }
@@ -39,7 +39,7 @@ if ($Act == "search") {
                 $query1 = " AND " . $type . " = '" . $userid . "'";
                 $query2 = " AND m." . $type . " = '" . $userid . "'";
             } else {
-                $Message = function_76($Language[9]);
+                $Message = showAlertError($Language[9]);
             }
         } else {
             if ($type == "subject" || $type == "msg") {
@@ -48,16 +48,16 @@ if ($Act == "search") {
             }
         }
     } else {
-        $Message = function_76($Language[15]);
+        $Message = showAlertError($Language[15]);
     }
 }
 $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT u.id, g.cansettingspanel, g.canstaffpanel, g.issupermod FROM users u LEFT JOIN usergroups g ON (u.$usergroup = g.gid) WHERE u.$id = '" . $_SESSION["ADMIN_ID"] . "' LIMIT 1");
 $LoggedAdminDetails = mysqli_fetch_assoc($query);
 $results = mysqli_num_rows(mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM messages WHERE sender != 0" . $query1));
-list($pagertop, $limit) = function_82(25, $results, $_SERVER["SCRIPT_NAME"] . "?do=read_pms&amp;" . $link);
+list($pagertop, $limit) = buildPaginationLinks(25, $results, $_SERVER["SCRIPT_NAME"] . "?do=read_pms&amp;" . $link);
 $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT m.*, u.username as sendername, uu.username as receivername, g.namestyle as sendernamestyle, g.cansettingspanel, g.canstaffpanel, g.issupermod, gg.namestyle as receivernamestyle, gg.cansettingspanel as cansettingspanel2, gg.canstaffpanel as canstaffpanel2, gg.issupermod as issupermod2 FROM messages m LEFT JOIN users u ON (m.$sender = u.id) LEFT JOIN users uu ON (m.$receiver = uu.id) LEFT JOIN usergroups g ON (u.$usergroup = g.gid) LEFT JOIN usergroups gg ON (uu.$usergroup = gg.gid) WHERE m.sender != 0" . $query2 . " ORDER BY m.added DESC " . $limit);
 if (mysqli_num_rows($query) == 0) {
-    echo "\r\n\t\r\n\t" . function_76($Language[9]) . "\t\r\n\t<form $action = \"" . $_SERVER["SCRIPT_NAME"] . "?do=read_pms&$act = search\" $method = \"post\" $name = \"search\">\r\n\t\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t<tr>\r\n\t\t\t<td class=\"tcat\" $align = \"center\"><b>" . $Language[12] . "</b></td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t" . $Language[13] . " <input $type = \"text\" $style = \"width: 40%;\" $value = \"" . htmlspecialchars($keywords) . "\" $name = \"keywords\" /> \r\n\t\t\t\t<select $name = \"type\">\r\n\t\t\t\t\t<option $value = \"0\"" . ($type == "0" ? " $selected = \"selected\"" : "") . ">" . $Language[14] . "</option>\r\n\t\t\t\t\t<option $value = \"sender\"" . ($type == "sender" ? " $selected = \"selected\"" : "") . ">" . $Language[4] . "</option>\r\n\t\t\t\t\t<option $value = \"receiver\"" . ($type == "receiver" ? " $selected = \"selected\"" : "") . ">" . $Language[5] . "</option>\r\n\t\t\t\t\t<option $value = \"subject\"" . ($type == "subject" ? " $selected = \"selected\"" : "") . ">" . $Language[7] . "</option>\r\n\t\t\t\t\t<option $value = \"msg\"" . ($type == "msg" ? " $selected = \"selected\"" : "") . ">" . $Language[8] . "</option>\r\n\t\t\t\t</select> \r\n\t\t\t\t<input $type = \"submit\" $value = \"" . $Language[12] . "\" />\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t</table>\r\n\t</form>";
+    echo "\r\n\t\r\n\t" . showAlertError($Language[9]) . "\t\r\n\t<form $action = \"" . $_SERVER["SCRIPT_NAME"] . "?do=read_pms&$act = search\" $method = \"post\" $name = \"search\">\r\n\t\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t<tr>\r\n\t\t\t<td class=\"tcat\" $align = \"center\"><b>" . $Language[12] . "</b></td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t" . $Language[13] . " <input $type = \"text\" $style = \"width: 40%;\" $value = \"" . htmlspecialchars($keywords) . "\" $name = \"keywords\" /> \r\n\t\t\t\t<select $name = \"type\">\r\n\t\t\t\t\t<option $value = \"0\"" . ($type == "0" ? " $selected = \"selected\"" : "") . ">" . $Language[14] . "</option>\r\n\t\t\t\t\t<option $value = \"sender\"" . ($type == "sender" ? " $selected = \"selected\"" : "") . ">" . $Language[4] . "</option>\r\n\t\t\t\t\t<option $value = \"receiver\"" . ($type == "receiver" ? " $selected = \"selected\"" : "") . ">" . $Language[5] . "</option>\r\n\t\t\t\t\t<option $value = \"subject\"" . ($type == "subject" ? " $selected = \"selected\"" : "") . ">" . $Language[7] . "</option>\r\n\t\t\t\t\t<option $value = \"msg\"" . ($type == "msg" ? " $selected = \"selected\"" : "") . ">" . $Language[8] . "</option>\r\n\t\t\t\t</select> \r\n\t\t\t\t<input $type = \"submit\" $value = \"" . $Language[12] . "\" />\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t</table>\r\n\t</form>";
 } else {
     for ($Count = 0; $Msg = mysqli_fetch_assoc($query); $Count++) {
         $class = $Count % 2 == 1 ? "alt2" : "alt1";
@@ -65,7 +65,7 @@ if (mysqli_num_rows($query) == 0) {
             $Found .= "\r\n\t\t\t<tr>\r\n\t\t\t\t<td $colspan = \"6\" class=\"" . $class . "\">\r\n\t\t\t\t\t" . $Language[16] . "\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t\t";
         } else {
             $msgtext = function_114($Msg["msg"]);
-            $Found .= "\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td class=\"" . $class . "\" $valign = \"top\">\r\n\t\t\t\t\t\t<a $href = \"index.php?do=edit_user&amp;$username = " . $Msg["sendername"] . "\">" . function_83($Msg["sendername"], $Msg["sendernamestyle"]) . "</a>\r\n\t\t\t\t\t</td>\r\n\t\t\t\t\t<td class=\"" . $class . "\" $valign = \"top\">\r\n\t\t\t\t\t\t<a $href = \"index.php?do=edit_user&amp;$username = " . $Msg["receivername"] . "\">" . function_83($Msg["receivername"], $Msg["receivernamestyle"]) . "</a>\r\n\t\t\t\t\t</td>\t\t\t\t\t\r\n\t\t\t\t\t<td class=\"" . $class . "\" $valign = \"top\">\r\n\t\t\t\t\t\t" . function_84($Msg["added"]) . "\r\n\t\t\t\t\t</td>\r\n\t\t\t\t\t<td class=\"" . $class . "\" $valign = \"top\">\r\n\t\t\t\t\t\t<font $color = \"" . ($Msg["unread"] == "yes" ? "red" : "green") . "\">" . htmlspecialchars($Msg["subject"]) . "</font>\r\n\t\t\t\t\t</td>\r\n\t\t\t\t\t<td class=\"" . $class . "\" $valign = \"top\">\r\n\t\t\t\t\t\t" . $msgtext . "\r\n\t\t\t\t\t</td>\r\n\t\t\t\t\t<td class=\"" . $class . "\" $align = \"center\" $valign = \"top\" $style = \"width: 100px;\">\r\n\t\t\t\t\t\t<input $type = \"checkbox\" $name = \"ids[]\" $value = \"" . $Msg["id"] . "\" $checkme = \"group\" />\r\n\t\t\t\t\t</td>\r\n\t\t\t\t</tr>\t\t\t\t\r\n\t\t\t\t";
+            $Found .= "\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td class=\"" . $class . "\" $valign = \"top\">\r\n\t\t\t\t\t\t<a $href = \"index.php?do=edit_user&amp;$username = " . $Msg["sendername"] . "\">" . applyUsernameStyle($Msg["sendername"], $Msg["sendernamestyle"]) . "</a>\r\n\t\t\t\t\t</td>\r\n\t\t\t\t\t<td class=\"" . $class . "\" $valign = \"top\">\r\n\t\t\t\t\t\t<a $href = \"index.php?do=edit_user&amp;$username = " . $Msg["receivername"] . "\">" . applyUsernameStyle($Msg["receivername"], $Msg["receivernamestyle"]) . "</a>\r\n\t\t\t\t\t</td>\t\t\t\t\t\r\n\t\t\t\t\t<td class=\"" . $class . "\" $valign = \"top\">\r\n\t\t\t\t\t\t" . formatTimestamp($Msg["added"]) . "\r\n\t\t\t\t\t</td>\r\n\t\t\t\t\t<td class=\"" . $class . "\" $valign = \"top\">\r\n\t\t\t\t\t\t<font $color = \"" . ($Msg["unread"] == "yes" ? "red" : "green") . "\">" . htmlspecialchars($Msg["subject"]) . "</font>\r\n\t\t\t\t\t</td>\r\n\t\t\t\t\t<td class=\"" . $class . "\" $valign = \"top\">\r\n\t\t\t\t\t\t" . $msgtext . "\r\n\t\t\t\t\t</td>\r\n\t\t\t\t\t<td class=\"" . $class . "\" $align = \"center\" $valign = \"top\" $style = \"width: 100px;\">\r\n\t\t\t\t\t\t<input $type = \"checkbox\" $name = \"ids[]\" $value = \"" . $Msg["id"] . "\" $checkme = \"group\" />\r\n\t\t\t\t\t</td>\r\n\t\t\t\t</tr>\t\t\t\t\r\n\t\t\t\t";
         }
     }
     echo "\r\n\t<script $type = \"text/javascript\">\r\n\t\tfunction select_deselectAll(formname,elm,group)\r\n\t\t{\r\n\t\t\tvar $frm = document.forms[formname];\r\n\t\t\tfor($i = 0;i<frm.length;i++)\r\n\t\t\t{\r\n\t\t\t\tif(elm.attributes[\"checkall\"] != null && elm.attributes[\"checkall\"].$value = = group)\r\n\t\t\t\t{\r\n\t\t\t\t\tif(frm.elements[i].attributes[\"checkme\"] != null && frm.elements[i].attributes[\"checkme\"].$value = = group)\r\n\t\t\t\t\t{\r\n\t\t\t\t\t\tfrm.elements[i].$checked = elm.checked;\r\n\t\t\t\t\t}\r\n\t\t\t\t}\r\n\t\t\t\telse if(frm.elements[i].attributes[\"checkme\"] != null && frm.elements[i].attributes[\"checkme\"].$value = = group)\r\n\t\t\t\t{\r\n\t\t\t\t\tif(frm.elements[i].$checked = = false)\r\n\t\t\t\t\t{\r\n\t\t\t\t\t\tfrm.elements[1].$checked = false;\r\n\t\t\t\t\t}\r\n\t\t\t\t}\r\n\t\t\t}\r\n\t\t}\r\n\t</script>\t\r\n\t\r\n\t" . $Message . "\r\n\t<form $action = \"" . $_SERVER["SCRIPT_NAME"] . "?do=read_pms&$act = search\" $method = \"post\" $name = \"search\">\r\n\t\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t<tr>\r\n\t\t\t<td class=\"tcat\" $align = \"center\"><b>" . $Language[12] . "</b></td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t" . $Language[13] . " <input $type = \"text\" $style = \"width: 40%;\" $value = \"" . htmlspecialchars($keywords) . "\" $name = \"keywords\" /> \r\n\t\t\t\t<select $name = \"type\">\r\n\t\t\t\t\t<option $value = \"0\"" . ($type == "0" ? " $selected = \"selected\"" : "") . ">" . $Language[14] . "</option>\r\n\t\t\t\t\t<option $value = \"sender\"" . ($type == "sender" ? " $selected = \"selected\"" : "") . ">" . $Language[4] . "</option>\r\n\t\t\t\t\t<option $value = \"receiver\"" . ($type == "receiver" ? " $selected = \"selected\"" : "") . ">" . $Language[5] . "</option>\r\n\t\t\t\t\t<option $value = \"subject\"" . ($type == "subject" ? " $selected = \"selected\"" : "") . ">" . $Language[7] . "</option>\r\n\t\t\t\t\t<option $value = \"msg\"" . ($type == "msg" ? " $selected = \"selected\"" : "") . ">" . $Language[8] . "</option>\r\n\t\t\t\t</select> \r\n\t\t\t\t<input $type = \"submit\" $value = \"" . $Language[12] . "\" />\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t</table>\r\n\t</form>\r\n\t" . $pagertop . "\r\n\t<form $action = \"" . $_SERVER["SCRIPT_NAME"] . "?do=read_pms&$act = delete" . (isset($_GET["page"]) ? "&$page = " . intval($_GET["page"]) : "") . "\" $method = \"post\" $name = \"read_pms\">\r\n\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t<tr>\r\n\t\t\t<td class=\"tcat\" $align = \"center\" $colspan = \"6\"><b>" . $Language[2] . " (" . number_format($results) . ")</b></td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt2\"><b>" . $Language[4] . "</b></td>\r\n\t\t\t<td class=\"alt2\"><b>" . $Language[5] . "</b></td>\r\n\t\t\t<td class=\"alt2\"><b>" . $Language[6] . "</b></td>\r\n\t\t\t<td class=\"alt2\"><b>" . $Language[7] . "</b></td>\r\n\t\t\t<td class=\"alt2\"><b>" . $Language[8] . "</b></td>\r\n\t\t\t<td class=\"alt2\" $align = \"center\"><input $type = \"checkbox\" $checkall = \"group\" $onclick = \"javascript: return select_deselectAll ('read_pms', this, 'group');\"></td>\r\n\t\t</tr>\r\n\t\t" . $Found . "\r\n\t\t<tr>\r\n\t\t\t<td $colspan = \"6\" $align = \"right\" class=\"tcat2\">\r\n\t\t\t\t<input $type = \"submit\" $value = \"" . $Language[11] . "\" />\r\n\t\t</tr>\r\n\t</table>\r\n\t</form>\r\n\t" . $pagertop;
@@ -413,20 +413,20 @@ class Class_6
         return $text;
     }
 }
-function function_75()
+function getStaffLanguage()
 {
     if (isset($_COOKIE["staffcplanguage"]) && is_dir("languages/" . $_COOKIE["staffcplanguage"]) && is_file("languages/" . $_COOKIE["staffcplanguage"] . "/staffcp.lang")) {
         return $_COOKIE["staffcplanguage"];
     }
     return "english";
 }
-function function_77()
+function checkStaffAuthentication()
 {
     if (!defined("IN-TSSE-STAFF-PANEL")) {
         var_236("../index.php");
     }
 }
-function function_78($url)
+function redirectTo($url)
 {
     if (!headers_sent()) {
         header("Location: " . $url);
@@ -435,11 +435,11 @@ function function_78($url)
     }
     exit;
 }
-function function_79($log)
+function logStaffAction($log)
 {
     mysqli_query($GLOBALS["DatabaseConnect"], "INSERT INTO ts_staffcp_logs (uid, date, log) VALUES ('" . $_SESSION["ADMIN_ID"] . "', '" . time() . "', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $log) . "')");
 }
-function function_88($bytes = 0)
+function formatBytes($bytes = 0)
 {
     if ($bytes < 1024000) {
         return number_format($bytes / 1024, 2) . " KB";
@@ -452,11 +452,11 @@ function function_88($bytes = 0)
     }
     return number_format($bytes / 0, 2) . " TB";
 }
-function function_76($Error)
+function showAlertError($Error)
 {
     return "<div class=\"alert\"><div>" . $Error . "</div></div>";
 }
-function function_86($numresults, &$page, &$perpage, $maxperpage = 20, $defaultperpage = 20)
+function validatePerPage($numresults, &$page, &$perpage, $maxperpage = 20, $defaultperpage = 20)
 {
     $perpage = intval($perpage);
     if ($perpage < 1) {
@@ -478,7 +478,7 @@ function function_86($numresults, &$page, &$perpage, $maxperpage = 20, $defaultp
         }
     }
 }
-function function_87($pagenumber, $perpage, $total)
+function calculatePagination($pagenumber, $perpage, $total)
 {
     $var_241 = $perpage * ($pagenumber - 1);
     $var_89 = $var_241 + $perpage;
@@ -488,7 +488,7 @@ function function_87($pagenumber, $perpage, $total)
     $var_241++;
     return ["first" => number_format($var_241), "last" => number_format($var_89)];
 }
-function function_82($perpage, $results, $address)
+function buildPaginationLinks($perpage, $results, $address)
 {
     if ($results < $perpage) {
         return ["", ""];
@@ -499,7 +499,7 @@ function function_82($perpage, $results, $address)
         $var_242 = 0;
     }
     $pagenumber = isset($_GET["page"]) ? intval($_GET["page"]) : (isset($_POST["page"]) ? intval($_POST["page"]) : "");
-    function_86($results, $pagenumber, $perpage, 200);
+    validatePerPage($results, $pagenumber, $perpage, 200);
     $var_243 = ($pagenumber - 1) * $perpage;
     $var_244 = $pagenumber * $perpage;
     if ($results < $var_244) {
@@ -525,12 +525,12 @@ function function_82($perpage, $results, $address)
     $var_251["prev"] = $var_251["next"];
     if (1 < $pagenumber) {
         $var_252 = $pagenumber - 1;
-        $var_253 = function_87($var_252, $perpage, $results);
+        $var_253 = calculatePagination($var_252, $perpage, $results);
         $var_251["prev"] = true;
     }
     if ($pagenumber < $var_242) {
         $var_254 = $pagenumber + 1;
-        $var_255 = function_87($var_254, $perpage, $results);
+        $var_255 = calculatePagination($var_254, $perpage, $results);
         $var_251["next"] = true;
     }
     $var_256 = "3";
@@ -545,15 +545,15 @@ function function_82($perpage, $results, $address)
     }
     if ($var_256 <= abs($var_250 - $pagenumber) && $var_256 != 0) {
         if ($var_250 == 1) {
-            $var_260 = function_87(1, $perpage, $results);
+            $var_260 = calculatePagination(1, $perpage, $results);
             $var_251["first"] = true;
         }
         if ($var_250 == $var_242) {
-            $var_261 = function_87($var_242, $perpage, $results);
+            $var_261 = calculatePagination($var_242, $perpage, $results);
             $var_251["last"] = true;
         }
         if (in_array(abs($var_250 - $pagenumber), $var_257) && $var_250 != 1 && $var_250 != $var_242) {
-            $var_262 = function_87($var_250, $perpage, $results);
+            $var_262 = calculatePagination($var_250, $perpage, $results);
             $var_263 = $var_250 - $pagenumber;
             if (0 < $var_263) {
                 $var_263 = "+" . $var_263;
@@ -562,15 +562,15 @@ function function_82($perpage, $results, $address)
         }
     } else {
         if ($var_250 == $pagenumber) {
-            $var_264 = function_87($var_250, $perpage, $results);
+            $var_264 = calculatePagination($var_250, $perpage, $results);
             $var_245 .= "<li><a $name = \"current\" class=\"current\" $title = \"Showing results " . $var_264["first"] . " to " . $var_264["last"] . " of " . $total . "\">" . $var_250 . "</a></li>";
         } else {
-            $var_262 = function_87($var_250, $perpage, $results);
+            $var_262 = calculatePagination($var_250, $perpage, $results);
             $var_245 .= "<li><a $href = \"" . $address . ($var_250 != 1 ? "page=" . $var_250 : "") . "\" $title = \"Show results " . $var_262["first"] . " to " . $var_262["last"] . " of " . $total . "\">" . $var_250 . "</a></li>";
         }
     }
 }
-function function_84($timestamp = "")
+function formatTimestamp($timestamp = "")
 {
     $var_265 = "m-d-Y h:i A";
     if (empty($timestamp)) {
@@ -582,7 +582,7 @@ function function_84($timestamp = "")
     }
     return date($var_265, $timestamp);
 }
-function function_83($username, $namestyle)
+function applyUsernameStyle($username, $namestyle)
 {
     return str_replace("{username}", $username, $namestyle);
 }

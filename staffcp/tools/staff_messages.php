@@ -7,7 +7,7 @@
  */
 
 var_235();
-$Language = file("languages/" . function_75() . "/staff_messages.lang");
+$Language = file("languages/" . getStaffLanguage() . "/staff_messages.lang");
 $Message = "";
 $Act = isset($_GET["act"]) ? trim($_GET["act"]) : (isset($_POST["act"]) ? trim($_POST["act"]) : "");
 $id = isset($_GET["id"]) ? intval($_GET["id"]) : (isset($_POST["id"]) ? intval($_POST["id"]) : 0);
@@ -41,12 +41,12 @@ if ($Act == "view_msg" && $id) {
                         $answer = $_POST["answer"];
                         mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE staffmessages SET $answeredby = \"" . $_SESSION["ADMIN_ID"] . "\", $answer = \"" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $answer) . "\" WHERE $id = \"" . $id . "\"");
                         var_237($StaffMsg["sender"], $answer, $Language[17], $_SESSION["ADMIN_ID"]);
-                        function_78("index.php?do=staff_messages&$id = " . $id);
+                        redirectTo("index.php?do=staff_messages&$id = " . $id);
                     } else {
-                        $Message = function_76($Language[3]);
+                        $Message = showAlertError($Language[3]);
                     }
                 }
-                echo function_90(2) . "\r\n\r\n\t\t<div $style = \"margin: 10px 0; border: 1px solid #ddd; width: 99%;\">\r\n\t\t\t<div $style = \"padding: 5px;\">\r\n\t\t\t\t<div $style = \"font-size: 14px; font-weight: bold; border-bottom: 1px dotted #000; padding-bottom: 5px; margin-bottom: 5px;\">" . htmlspecialchars($subject) . "</div>\r\n\t\t\t\t" . $msgtext . "\r\n\t\t\t</div>\r\n\t\t</div>\r\n\t\t\r\n\t\t<form $method = \"post\" $action = \"index.php?do=staff_messages&$act = reply&$id = " . $id . "" . (isset($_GET["page"]) ? "&$page = " . intval($_GET["page"]) : "") . "\">\r\n\t\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"tcat\" $align = \"center\">\r\n\t\t\t\t\t" . $Language[2] . " - " . $Language[12] . "\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t<textarea $name = \"answer\" $id = \"answer\" $style = \"width: 100%; height: 200px;\">" . htmlspecialchars($answer) . "</textarea>\r\n\t\t\t\t\t<p><a $href = \"javascript:toggleEditor('answer');\"><img $src = \"images/tool_refresh.png\" $border = \"0\" /></a></p>\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"tcat2\"><input $type = \"submit\" $value = \"" . $Language[13] . "\" /> <input $type = \"reset\" $value = \"" . $Language[14] . "\" /></td>\r\n\t\t\t</tr>\r\n\t\t</table>\r\n\t\t</form>\r\n\t\t<script $type = \"text/javascript\">\r\n\t\t\tTSGetID(\"answer\").focus();\r\n\t\t</script>";
+                echo loadTinyMCEEditor(2) . "\r\n\r\n\t\t<div $style = \"margin: 10px 0; border: 1px solid #ddd; width: 99%;\">\r\n\t\t\t<div $style = \"padding: 5px;\">\r\n\t\t\t\t<div $style = \"font-size: 14px; font-weight: bold; border-bottom: 1px dotted #000; padding-bottom: 5px; margin-bottom: 5px;\">" . htmlspecialchars($subject) . "</div>\r\n\t\t\t\t" . $msgtext . "\r\n\t\t\t</div>\r\n\t\t</div>\r\n\t\t\r\n\t\t<form $method = \"post\" $action = \"index.php?do=staff_messages&$act = reply&$id = " . $id . "" . (isset($_GET["page"]) ? "&$page = " . intval($_GET["page"]) : "") . "\">\r\n\t\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"tcat\" $align = \"center\">\r\n\t\t\t\t\t" . $Language[2] . " - " . $Language[12] . "\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t<textarea $name = \"answer\" $id = \"answer\" $style = \"width: 100%; height: 200px;\">" . htmlspecialchars($answer) . "</textarea>\r\n\t\t\t\t\t<p><a $href = \"javascript:toggleEditor('answer');\"><img $src = \"images/tool_refresh.png\" $border = \"0\" /></a></p>\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"tcat2\"><input $type = \"submit\" $value = \"" . $Language[13] . "\" /> <input $type = \"reset\" $value = \"" . $Language[14] . "\" /></td>\r\n\t\t\t</tr>\r\n\t\t</table>\r\n\t\t</form>\r\n\t\t<script $type = \"text/javascript\">\r\n\t\t\tTSGetID(\"answer\").focus();\r\n\t\t</script>";
             }
         }
     }
@@ -68,15 +68,15 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
     }
 }
 $results = mysqli_num_rows(mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM staffmessages"));
-list($pagertop, $limit) = function_82(25, $results, $_SERVER["SCRIPT_NAME"] . "?do=staff_messages&amp;");
+list($pagertop, $limit) = buildPaginationLinks(25, $results, $_SERVER["SCRIPT_NAME"] . "?do=staff_messages&amp;");
 $sql = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT s.*, u.username, g.namestyle, uu.username as aby, gg.namestyle as ans FROM staffmessages s LEFT JOIN users u ON (s.$sender = u.id) LEFT JOIN usergroups g ON (u.$usergroup = g.gid) LEFT JOIN users uu ON (s.$answeredby = uu.id) LEFT JOIN usergroups gg ON (uu.$usergroup = gg.gid) ORDER BY s.added DESC " . $limit);
 if (mysqli_num_rows($sql) == 0) {
-    echo "\r\n\t\r\n\t" . function_76($Language[4]);
+    echo "\r\n\t\r\n\t" . showAlertError($Language[4]);
 } else {
     $Found = "";
     for ($Count = 0; $Msg = mysqli_fetch_assoc($sql); $Count++) {
         $class = $Count % 2 == 1 ? "alt2" : "alt1";
-        $Found .= "\r\n\t\t<tr>\r\n\t\t\t<td class=\"" . $class . "\">\r\n\t\t\t\t" . ($Msg["sender"] ? "<a $href = \"" . WEBSITEURL . "userdetails.php?$id = " . $Msg["sender"] . "\" $target = \"_blank\">" . function_83($Msg["username"], $Msg["namestyle"]) . "</a>" : "<i>SYSTEM</i>") . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"" . $class . "\">\r\n\t\t\t\t<a $href = \"index.php?do=staff_messages&amp;$act = view_msg&amp;$id = " . $Msg["id"] . (isset($_GET["page"]) ? "&amp;$page = " . intval($_GET["page"]) : "") . "\">" . ($Msg["subject"] ? htmlspecialchars($Msg["subject"]) : "N/A") . "</a>\r\n\t\t\t</td>\r\n\t\t\t<td class=\"" . $class . "\">\r\n\t\t\t\t" . function_84($Msg["added"]) . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"" . $class . "\">\r\n\t\t\t\t" . ($Msg["sender"] ? $Msg["answeredby"] != 0 && $Msg["answer"] != "" ? str_replace(["{1}", "{2}"], ["<a $href = \"" . WEBSITEURL . "userdetails.php?$id = " . $Msg["answeredby"] . "\" $target = \"_blank\">" . function_83($Msg["aby"], $Msg["ans"]) . "</a>", "index.php?do=staff_messages&amp;$act = view_reply&amp;$id = " . $Msg["id"] . (isset($_GET["page"]) ? "&amp;$page = " . intval($_GET["page"]) : "")], $Language[16]) : str_replace("{1}", "index.php?do=staff_messages&amp;$act = reply&amp;$id = " . $Msg["id"] . (isset($_GET["page"]) ? "&amp;$page = " . intval($_GET["page"]) : ""), $Language[15]) : "<i>SYSTEM</i>") . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"" . $class . "\">\r\n\t\t\t\t<input $type = \"checkbox\" $name = \"ids[]\" $value = \"" . $Msg["id"] . "\" $checkme = \"group\" />\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t";
+        $Found .= "\r\n\t\t<tr>\r\n\t\t\t<td class=\"" . $class . "\">\r\n\t\t\t\t" . ($Msg["sender"] ? "<a $href = \"" . WEBSITEURL . "userdetails.php?$id = " . $Msg["sender"] . "\" $target = \"_blank\">" . applyUsernameStyle($Msg["username"], $Msg["namestyle"]) . "</a>" : "<i>SYSTEM</i>") . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"" . $class . "\">\r\n\t\t\t\t<a $href = \"index.php?do=staff_messages&amp;$act = view_msg&amp;$id = " . $Msg["id"] . (isset($_GET["page"]) ? "&amp;$page = " . intval($_GET["page"]) : "") . "\">" . ($Msg["subject"] ? htmlspecialchars($Msg["subject"]) : "N/A") . "</a>\r\n\t\t\t</td>\r\n\t\t\t<td class=\"" . $class . "\">\r\n\t\t\t\t" . formatTimestamp($Msg["added"]) . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"" . $class . "\">\r\n\t\t\t\t" . ($Msg["sender"] ? $Msg["answeredby"] != 0 && $Msg["answer"] != "" ? str_replace(["{1}", "{2}"], ["<a $href = \"" . WEBSITEURL . "userdetails.php?$id = " . $Msg["answeredby"] . "\" $target = \"_blank\">" . applyUsernameStyle($Msg["aby"], $Msg["ans"]) . "</a>", "index.php?do=staff_messages&amp;$act = view_reply&amp;$id = " . $Msg["id"] . (isset($_GET["page"]) ? "&amp;$page = " . intval($_GET["page"]) : "")], $Language[16]) : str_replace("{1}", "index.php?do=staff_messages&amp;$act = reply&amp;$id = " . $Msg["id"] . (isset($_GET["page"]) ? "&amp;$page = " . intval($_GET["page"]) : ""), $Language[15]) : "<i>SYSTEM</i>") . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"" . $class . "\">\r\n\t\t\t\t<input $type = \"checkbox\" $name = \"ids[]\" $value = \"" . $Msg["id"] . "\" $checkme = \"group\" />\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t";
     }
     echo "\r\n\t<script $type = \"text/javascript\">\r\n\t\tfunction select_deselectAll(formname,elm,group)\r\n\t\t{\r\n\t\t\tvar $frm = document.forms[formname];\r\n\t\t\tfor($i = 0;i<frm.length;i++)\r\n\t\t\t{\r\n\t\t\t\tif(elm.attributes[\"checkall\"] != null && elm.attributes[\"checkall\"].$value = = group)\r\n\t\t\t\t{\r\n\t\t\t\t\tif(frm.elements[i].attributes[\"checkme\"] != null && frm.elements[i].attributes[\"checkme\"].$value = = group)\r\n\t\t\t\t\t{\r\n\t\t\t\t\t\tfrm.elements[i].$checked = elm.checked;\r\n\t\t\t\t\t}\r\n\t\t\t\t}\r\n\t\t\t\telse if(frm.elements[i].attributes[\"checkme\"] != null && frm.elements[i].attributes[\"checkme\"].$value = = group)\r\n\t\t\t\t{\r\n\t\t\t\t\tif(frm.elements[i].$checked = = false)\r\n\t\t\t\t\t{\r\n\t\t\t\t\t\tfrm.elements[1].$checked = false;\r\n\t\t\t\t\t}\r\n\t\t\t\t}\r\n\t\t\t}\r\n\t\t}\r\n\t</script>\r\n\t<form $action = \"" . $_SERVER["SCRIPT_NAME"] . "?do=staff_messages" . (isset($_GET["page"]) ? "&$page = " . intval($_GET["page"]) : "") . "\" $method = \"post\" $name = \"staff_messages\">\r\n\t\r\n\t" . $Message . "\r\n\t" . $pagertop . "\r\n\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t<tr>\r\n\t\t\t<td class=\"tcat\" $align = \"center\" $colspan = \"5\"><b>" . $Language[2] . " (" . number_format($results) . ")</b></td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt2\"><b>" . $Language[5] . "</b></td>\r\n\t\t\t<td class=\"alt2\"><b>" . $Language[6] . "</b></td>\r\n\t\t\t<td class=\"alt2\"><b>" . $Language[7] . "</b></td>\r\n\t\t\t<td class=\"alt2\"><b>" . $Language[8] . "</b></td>\r\n\t\t\t<td class=\"alt2\"><input $type = \"checkbox\" $checkall = \"group\" $onclick = \"javascript: return select_deselectAll ('staff_messages', this, 'group');\"></td>\r\n\t\t</tr>\r\n\t\t" . $Found . "\r\n\t\t<tr>\r\n\t\t\t<td class=\"tcat2\" $colspan = \"5\" $align = \"right\">\r\n\t\t\t\t<input $type = \"submit\" $name = \"set_answered\" $value = \"" . $Language[9] . "\" /> <input $type = \"submit\" $name = \"set_unanswered\" $value = \"" . $Language[20] . "\" /> <input $type = \"submit\" $name = \"delete\" $value = \"" . $Language[10] . "\" />\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t</table>\r\n\t" . $pagertop;
 }
@@ -423,7 +423,7 @@ class Class_6
         return $text;
     }
 }
-function function_90($type = 1, $mode = "textareas", $elements = "")
+function loadTinyMCEEditor($type = 1, $mode = "textareas", $elements = "")
 {
     define("EDITOR_TYPE", $type);
     define("TINYMCE_MODE", $mode);
@@ -442,20 +442,20 @@ function function_90($type = 1, $mode = "textareas", $elements = "")
     ob_end_clean();
     return $var_81;
 }
-function function_75()
+function getStaffLanguage()
 {
     if (isset($_COOKIE["staffcplanguage"]) && is_dir("languages/" . $_COOKIE["staffcplanguage"]) && is_file("languages/" . $_COOKIE["staffcplanguage"] . "/staffcp.lang")) {
         return $_COOKIE["staffcplanguage"];
     }
     return "english";
 }
-function function_77()
+function checkStaffAuthentication()
 {
     if (!defined("IN-TSSE-STAFF-PANEL")) {
         var_236("../index.php");
     }
 }
-function function_78($url)
+function redirectTo($url)
 {
     if (!headers_sent()) {
         header("Location: " . $url);
@@ -464,11 +464,11 @@ function function_78($url)
     }
     exit;
 }
-function function_76($Error)
+function showAlertError($Error)
 {
     return "<div class=\"alert\"><div>" . $Error . "</div></div>";
 }
-function function_86($numresults, &$page, &$perpage, $maxperpage = 20, $defaultperpage = 20)
+function validatePerPage($numresults, &$page, &$perpage, $maxperpage = 20, $defaultperpage = 20)
 {
     $perpage = intval($perpage);
     if ($perpage < 1) {
@@ -490,7 +490,7 @@ function function_86($numresults, &$page, &$perpage, $maxperpage = 20, $defaultp
         }
     }
 }
-function function_87($pagenumber, $perpage, $total)
+function calculatePagination($pagenumber, $perpage, $total)
 {
     $var_241 = $perpage * ($pagenumber - 1);
     $var_89 = $var_241 + $perpage;
@@ -500,7 +500,7 @@ function function_87($pagenumber, $perpage, $total)
     $var_241++;
     return ["first" => number_format($var_241), "last" => number_format($var_89)];
 }
-function function_82($perpage, $results, $address)
+function buildPaginationLinks($perpage, $results, $address)
 {
     if ($results < $perpage) {
         return ["", ""];
@@ -511,7 +511,7 @@ function function_82($perpage, $results, $address)
         $var_242 = 0;
     }
     $pagenumber = isset($_GET["page"]) ? intval($_GET["page"]) : (isset($_POST["page"]) ? intval($_POST["page"]) : "");
-    function_86($results, $pagenumber, $perpage, 200);
+    validatePerPage($results, $pagenumber, $perpage, 200);
     $var_243 = ($pagenumber - 1) * $perpage;
     $var_244 = $pagenumber * $perpage;
     if ($results < $var_244) {
@@ -537,12 +537,12 @@ function function_82($perpage, $results, $address)
     $var_251["prev"] = $var_251["next"];
     if (1 < $pagenumber) {
         $var_252 = $pagenumber - 1;
-        $var_253 = function_87($var_252, $perpage, $results);
+        $var_253 = calculatePagination($var_252, $perpage, $results);
         $var_251["prev"] = true;
     }
     if ($pagenumber < $var_242) {
         $var_254 = $pagenumber + 1;
-        $var_255 = function_87($var_254, $perpage, $results);
+        $var_255 = calculatePagination($var_254, $perpage, $results);
         $var_251["next"] = true;
     }
     $var_256 = "3";
@@ -557,15 +557,15 @@ function function_82($perpage, $results, $address)
     }
     if ($var_256 <= abs($var_250 - $pagenumber) && $var_256 != 0) {
         if ($var_250 == 1) {
-            $var_260 = function_87(1, $perpage, $results);
+            $var_260 = calculatePagination(1, $perpage, $results);
             $var_251["first"] = true;
         }
         if ($var_250 == $var_242) {
-            $var_261 = function_87($var_242, $perpage, $results);
+            $var_261 = calculatePagination($var_242, $perpage, $results);
             $var_251["last"] = true;
         }
         if (in_array(abs($var_250 - $pagenumber), $var_257) && $var_250 != 1 && $var_250 != $var_242) {
-            $var_262 = function_87($var_250, $perpage, $results);
+            $var_262 = calculatePagination($var_250, $perpage, $results);
             $var_263 = $var_250 - $pagenumber;
             if (0 < $var_263) {
                 $var_263 = "+" . $var_263;
@@ -574,15 +574,15 @@ function function_82($perpage, $results, $address)
         }
     } else {
         if ($var_250 == $pagenumber) {
-            $var_264 = function_87($var_250, $perpage, $results);
+            $var_264 = calculatePagination($var_250, $perpage, $results);
             $var_245 .= "<li><a $name = \"current\" class=\"current\" $title = \"Showing results " . $var_264["first"] . " to " . $var_264["last"] . " of " . $total . "\">" . $var_250 . "</a></li>";
         } else {
-            $var_262 = function_87($var_250, $perpage, $results);
+            $var_262 = calculatePagination($var_250, $perpage, $results);
             $var_245 .= "<li><a $href = \"" . $address . ($var_250 != 1 ? "page=" . $var_250 : "") . "\" $title = \"Show results " . $var_262["first"] . " to " . $var_262["last"] . " of " . $total . "\">" . $var_250 . "</a></li>";
         }
     }
 }
-function function_84($timestamp = "")
+function formatTimestamp($timestamp = "")
 {
     $var_265 = "m-d-Y h:i A";
     if (empty($timestamp)) {
@@ -594,11 +594,11 @@ function function_84($timestamp = "")
     }
     return date($var_265, $timestamp);
 }
-function function_83($username, $namestyle)
+function applyUsernameStyle($username, $namestyle)
 {
     return str_replace("{username}", $username, $namestyle);
 }
-function function_80($receiver = 0, $msg = "", $subject = "", $sender = 0, $saved = "no", $location = "1", $unread = "yes")
+function sendPrivateMessage($receiver = 0, $msg = "", $subject = "", $sender = 0, $saved = "no", $location = "1", $unread = "yes")
 {
     if (!($sender != 0 && !$sender || !$receiver || empty($msg))) {
         mysqli_query($GLOBALS["DatabaseConnect"], "\r\n\t\t\t\t\tINSERT INTO messages\r\n\t\t\t\t\t\t(sender, receiver, added, subject, msg, unread, saved, location)\r\n\t\t\t\t\t\tVALUES\r\n\t\t\t\t\t\t('" . $sender . "', '" . $receiver . "', NOW(), '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $subject) . "', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $msg) . "', '" . $unread . "', '" . $saved . "', '" . $location . "')\r\n\t\t\t\t\t");

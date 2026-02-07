@@ -7,7 +7,7 @@
  */
 
 var_235();
-$Language = file("languages/" . function_75() . "/manage_bonus.lang");
+$Language = file("languages/" . getStaffLanguage() . "/manage_bonus.lang");
 $Message = "";
 $Act = isset($_GET["act"]) ? trim($_GET["act"]) : (isset($_POST["act"]) ? trim($_POST["act"]) : "");
 $id = isset($_GET["id"]) ? intval($_GET["id"]) : (isset($_POST["id"]) ? intval($_POST["id"]) : 0);
@@ -19,8 +19,8 @@ if ($Act == "delete" && $id) {
             $Result = mysqli_fetch_assoc($query);
             $bonusname = $Result["bonusname"];
             $Message = str_replace(["{1}", "{2}"], [$bonusname, $_SESSION["ADMIN_USERNAME"]], $Language[11]);
-            function_79($Message);
-            $Message = function_81($Message);
+            logStaffAction($Message);
+            $Message = showAlertMessage($Message);
         }
     }
 }
@@ -40,12 +40,12 @@ if ($Act == "new") {
             mysqli_query($GLOBALS["DatabaseConnect"], "INSERT INTO bonus (bonusname, points, description, art, menge) VALUES ('" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $bonusname) . "', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $points) . "', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $description) . "', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $art) . "', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $menge) . "')");
             if (mysqli_affected_rows($GLOBALS["DatabaseConnect"])) {
                 $Message = str_replace(["{1}", "{2}"], [$bonusname, $_SESSION["ADMIN_USERNAME"]], $Language[13]);
-                function_79($Message);
-                $Message = function_81($Message);
+                logStaffAction($Message);
+                $Message = showAlertMessage($Message);
                 $Done = true;
             }
         } else {
-            $Message = function_76($Language[3]);
+            $Message = showAlertError($Language[3]);
         }
     }
     if (!isset($Done)) {
@@ -71,12 +71,12 @@ if ($Act == "edit" && $id) {
                 mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE bonus SET $bonusname = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $bonusname) . "', $points = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $points) . "', $description = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $description) . "', $art = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $art) . "', $menge = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $menge) . "' WHERE $id = '" . $id . "'");
                 if (mysqli_affected_rows($GLOBALS["DatabaseConnect"])) {
                     $Message = str_replace(["{1}", "{2}"], [$bonusname, $_SESSION["ADMIN_USERNAME"]], $Language[12]);
-                    function_79($Message);
-                    $Message = function_81($Message);
+                    logStaffAction($Message);
+                    $Message = showAlertMessage($Message);
                     $Done = true;
                 }
             } else {
-                $Message = function_76($Language[3]);
+                $Message = showAlertError($Language[3]);
             }
         }
         if (!isset($Done)) {
@@ -93,21 +93,21 @@ if (0 < mysqli_num_rows($Query)) {
 } else {
     $Found .= "<tr><td $colspan = \"6\" class=\"alt1\">" . str_replace("{1}", "index.php?do=manage_bonus&amp;$act = new", $Language[10]) . "</td></tr>";
 }
-echo function_81("<a $href = \"index.php?do=manage_bonus&amp;$act = new\">" . $Language[6] . "</a>") . "\r\n<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t<tr>\r\n\t\t<td class=\"tcat\" $align = \"center\" $colspan = \"6\">" . $Language[2] . "</td>\r\n\t</tr>\r\n\t<tr>\r\n\t\t<td class=\"alt2\">\r\n\t\t\t" . $Language[14] . "\r\n\t\t</td>\r\n\t\t<td class=\"alt2\">\r\n\t\t\t" . $Language[15] . "\r\n\t\t</td>\r\n\t\t<td class=\"alt2\">\r\n\t\t\t" . $Language[17] . "\r\n\t\t</td>\r\n\t\t<td class=\"alt2\">\r\n\t\t\t" . $Language[16] . "\r\n\t\t</td>\r\n\t\t<td class=\"alt2\">\r\n\t\t\t" . $Language[18] . "\r\n\t\t</td>\r\n\t\t<td class=\"alt2\" $align = \"center\">\r\n\t\t\t" . $Language[26] . "\r\n\t\t</td>\r\n\t</tr>\r\n\t" . $Found . "\r\n</table>";
-function function_75()
+echo showAlertMessage("<a $href = \"index.php?do=manage_bonus&amp;$act = new\">" . $Language[6] . "</a>") . "\r\n<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t<tr>\r\n\t\t<td class=\"tcat\" $align = \"center\" $colspan = \"6\">" . $Language[2] . "</td>\r\n\t</tr>\r\n\t<tr>\r\n\t\t<td class=\"alt2\">\r\n\t\t\t" . $Language[14] . "\r\n\t\t</td>\r\n\t\t<td class=\"alt2\">\r\n\t\t\t" . $Language[15] . "\r\n\t\t</td>\r\n\t\t<td class=\"alt2\">\r\n\t\t\t" . $Language[17] . "\r\n\t\t</td>\r\n\t\t<td class=\"alt2\">\r\n\t\t\t" . $Language[16] . "\r\n\t\t</td>\r\n\t\t<td class=\"alt2\">\r\n\t\t\t" . $Language[18] . "\r\n\t\t</td>\r\n\t\t<td class=\"alt2\" $align = \"center\">\r\n\t\t\t" . $Language[26] . "\r\n\t\t</td>\r\n\t</tr>\r\n\t" . $Found . "\r\n</table>";
+function getStaffLanguage()
 {
     if (isset($_COOKIE["staffcplanguage"]) && is_dir("languages/" . $_COOKIE["staffcplanguage"]) && is_file("languages/" . $_COOKIE["staffcplanguage"] . "/staffcp.lang")) {
         return $_COOKIE["staffcplanguage"];
     }
     return "english";
 }
-function function_77()
+function checkStaffAuthentication()
 {
     if (!defined("IN-TSSE-STAFF-PANEL")) {
         var_236("../index.php");
     }
 }
-function function_78($url)
+function redirectTo($url)
 {
     if (!headers_sent()) {
         header("Location: " . $url);
@@ -116,19 +116,19 @@ function function_78($url)
     }
     exit;
 }
-function function_76($Error)
+function showAlertError($Error)
 {
     return "<div class=\"alert\"><div>" . $Error . "</div></div>";
 }
-function function_81($message = "")
+function showAlertMessage($message = "")
 {
     return "<div class=\"alert\"><div>" . $message . "</div></div>";
 }
-function function_79($log)
+function logStaffAction($log)
 {
     mysqli_query($GLOBALS["DatabaseConnect"], "INSERT INTO ts_staffcp_logs (uid, date, log) VALUES ('" . $_SESSION["ADMIN_ID"] . "', '" . time() . "', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $log) . "')");
 }
-function function_88($bytes = 0)
+function formatBytes($bytes = 0)
 {
     if ($bytes < 1024000) {
         return number_format($bytes / 1024, 2) . " KB";

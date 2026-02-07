@@ -7,7 +7,7 @@
  */
 
 var_235();
-$Language = file("languages/" . function_75() . "/sent_invite.lang");
+$Language = file("languages/" . getStaffLanguage() . "/sent_invite.lang");
 $Message = "";
 $Act = isset($_GET["act"]) ? trim($_GET["act"]) : (isset($_POST["act"]) ? trim($_POST["act"]) : "");
 $Q = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = \"MAIN\"");
@@ -56,15 +56,15 @@ if ($Act == "post_invites") {
                 $Output .= "</td>\r\n\t\t\t\t</tr>";
             }
             $Output .= "\r\n\t\t\t</table>";
-            $Message = function_76($Language[10]) . $Output;
-            function_79(str_replace(["{1}", "{2}", "{3}"], [$_SESSION["ADMIN_USERNAME"], implode(",", $SEmails), $subject], $Language[14]));
+            $Message = showAlertError($Language[10]) . $Output;
+            logStaffAction(str_replace(["{1}", "{2}", "{3}"], [$_SESSION["ADMIN_USERNAME"], implode(",", $SEmails), $subject], $Language[14]));
             $invitemessage = str_replace(["{1}", "{2}"], [$MAIN["SITENAME"], $MAIN["BASEURL"]], $Language[16]);
         }
     } else {
-        $Message = function_76($Language[8]);
+        $Message = showAlertError($Language[8]);
     }
 }
-echo function_90() . "\r\n<script $type = \"text/javascript\">\r\n\tif (TSGetID(\"sending\") != \"\")\r\n\t{\r\n\t\tTSGetID(\"sending\").style.$display = \"none\";\r\n\t}\r\n</script>\r\n\r\n" . $Message . "\r\n<form $method = \"post\" $action = \"index.php?do=sent_invite&$act = post_invites\">\r\n<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t<tr>\r\n\t\t<td class=\"tcat\" $colspan = \"2\" $align = \"center\">\r\n\t\t\t" . $Language[2] . "\r\n\t\t</td>\r\n\t</tr>\r\n\t<tr>\r\n\t\t<td class=\"alt1\" $style = \"width: 200px;\">" . $Language[3] . "</td>\r\n\t\t<td class=\"alt1\"><input $type = \"text\" $name = \"subject\" $value = \"" . htmlspecialchars($subject) . "\" $style = \"width: 99%;\" /></td>\r\n\t</tr>\r\n\t<tr>\r\n\t\t<td class=\"alt1\" $valign = \"top\">" . $Language[7] . "</td>\r\n\t\t<td class=\"alt1\"><input $type = \"text\" $name = \"emails\" $value = \"" . htmlspecialchars($emails) . "\" $style = \"width: 99%;\"></td>\r\n\t</tr>\r\n\t<tr>\r\n\t\t<td class=\"alt1\" $valign = \"top\">" . $Language[4] . "</td>\r\n\t\t<td class=\"alt1\"><textarea $name = \"message\" $id = \"message\" $style = \"width: 99%; height: 200px;\" $id = \"textarea1\">" . htmlspecialchars($invitemessage) . "</textarea>\r\n\t\t<p><a $href = \"javascript:toggleEditor('message');\"><img $src = \"images/tool_refresh.png\" $border = \"0\" /></a></p></td>\r\n\t</tr>\r\n\r\n\t<tr>\r\n\t\t<td class=\"tcat2\"></td>\r\n\t\t<td class=\"tcat2\">\r\n\t\t\t<input $type = \"submit\" $value = \"" . $Language[5] . "\" $onclick = \"this.$value = '" . trim($Language[15]) . "';\" /> <input $type = \"reset\" $value = \"" . $Language[6] . "\" />\r\n\t\t</td>\r\n\t</tr>\r\n</table>\r\n</form>";
+echo loadTinyMCEEditor() . "\r\n<script $type = \"text/javascript\">\r\n\tif (TSGetID(\"sending\") != \"\")\r\n\t{\r\n\t\tTSGetID(\"sending\").style.$display = \"none\";\r\n\t}\r\n</script>\r\n\r\n" . $Message . "\r\n<form $method = \"post\" $action = \"index.php?do=sent_invite&$act = post_invites\">\r\n<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t<tr>\r\n\t\t<td class=\"tcat\" $colspan = \"2\" $align = \"center\">\r\n\t\t\t" . $Language[2] . "\r\n\t\t</td>\r\n\t</tr>\r\n\t<tr>\r\n\t\t<td class=\"alt1\" $style = \"width: 200px;\">" . $Language[3] . "</td>\r\n\t\t<td class=\"alt1\"><input $type = \"text\" $name = \"subject\" $value = \"" . htmlspecialchars($subject) . "\" $style = \"width: 99%;\" /></td>\r\n\t</tr>\r\n\t<tr>\r\n\t\t<td class=\"alt1\" $valign = \"top\">" . $Language[7] . "</td>\r\n\t\t<td class=\"alt1\"><input $type = \"text\" $name = \"emails\" $value = \"" . htmlspecialchars($emails) . "\" $style = \"width: 99%;\"></td>\r\n\t</tr>\r\n\t<tr>\r\n\t\t<td class=\"alt1\" $valign = \"top\">" . $Language[4] . "</td>\r\n\t\t<td class=\"alt1\"><textarea $name = \"message\" $id = \"message\" $style = \"width: 99%; height: 200px;\" $id = \"textarea1\">" . htmlspecialchars($invitemessage) . "</textarea>\r\n\t\t<p><a $href = \"javascript:toggleEditor('message');\"><img $src = \"images/tool_refresh.png\" $border = \"0\" /></a></p></td>\r\n\t</tr>\r\n\r\n\t<tr>\r\n\t\t<td class=\"tcat2\"></td>\r\n\t\t<td class=\"tcat2\">\r\n\t\t\t<input $type = \"submit\" $value = \"" . $Language[5] . "\" $onclick = \"this.$value = '" . trim($Language[15]) . "';\" /> <input $type = \"reset\" $value = \"" . $Language[6] . "\" />\r\n\t\t</td>\r\n\t</tr>\r\n</table>\r\n</form>";
 class Class_5
 {
     public $smtpHost = NULL;
@@ -298,7 +298,7 @@ class Class_5
         return preg_replace("#(\\r\\n|\\n|\\r)+#", " ", $text);
     }
 }
-function function_90($type = 1, $mode = "textareas", $elements = "")
+function loadTinyMCEEditor($type = 1, $mode = "textareas", $elements = "")
 {
     define("EDITOR_TYPE", $type);
     define("TINYMCE_MODE", $mode);
@@ -311,20 +311,20 @@ function function_90($type = 1, $mode = "textareas", $elements = "")
     ob_end_clean();
     return $var_81;
 }
-function function_75()
+function getStaffLanguage()
 {
     if (isset($_COOKIE["staffcplanguage"]) && is_dir("languages/" . $_COOKIE["staffcplanguage"]) && is_file("languages/" . $_COOKIE["staffcplanguage"] . "/staffcp.lang")) {
         return $_COOKIE["staffcplanguage"];
     }
     return "english";
 }
-function function_77()
+function checkStaffAuthentication()
 {
     if (!defined("IN-TSSE-STAFF-PANEL")) {
         var_236("../index.php");
     }
 }
-function function_78($url, $timeout = false)
+function redirectTo($url, $timeout = false)
 {
     if (!headers_sent()) {
         if (!$timeout) {
@@ -396,11 +396,11 @@ function function_100($to, $subject, $body)
     $var_301 = $var_300->function_98();
     return $var_301;
 }
-function function_76($Error)
+function showAlertError($Error)
 {
     return "<div class=\"alert\"><div>" . $Error . "</div></div>";
 }
-function function_79($log)
+function logStaffAction($log)
 {
     mysqli_query($GLOBALS["DatabaseConnect"], "INSERT INTO ts_staffcp_logs (uid, date, log) VALUES (\"" . $_SESSION["ADMIN_ID"] . "\", \"" . time() . "\", \"" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $log) . "\")");
 }

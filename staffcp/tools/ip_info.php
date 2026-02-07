@@ -7,7 +7,7 @@
  */
 
 var_235();
-$Language = file("languages/" . function_75() . "/ip_info.lang");
+$Language = file("languages/" . getStaffLanguage() . "/ip_info.lang");
 $Message = "";
 $ip = isset($_GET["ip"]) ? trim(urldecode($_GET["ip"])) : "";
 if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
@@ -16,7 +16,7 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
         $ipdata = new Class_33($ip);
         $Message = "\r\n\t\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"tcat\" $align = \"center\" $colspan = \"8\"><b>" . $Language[13] . "</b></td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt2\">" . $Language[3] . "</td>\r\n\t\t\t\t<td class=\"alt2\">" . $Language[6] . "</td>\r\n\t\t\t\t<td class=\"alt2\">" . $Language[7] . "</td>\r\n\t\t\t\t<td class=\"alt2\">" . $Language[8] . "</td>\r\n\t\t\t\t<td class=\"alt2\">" . $Language[9] . "</td>\r\n\t\t\t\t<td class=\"alt2\">" . $Language[10] . "</td>\r\n\t\t\t\t<td class=\"alt2\">" . $Language[11] . "</td>\r\n\t\t\t\t<td class=\"alt2\">" . $Language[12] . "</td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt1\">" . htmlspecialchars($ipdata->ip) . "</td>\r\n\t\t\t\t<td class=\"alt1\">" . htmlspecialchars($ipdata->country) . "</td>\r\n\t\t\t\t<td class=\"alt1\">" . htmlspecialchars($ipdata->host) . "</td>\r\n\t\t\t\t<td class=\"alt1\">" . htmlspecialchars($ipdata->netname) . "</td>\r\n\t\t\t\t<td class=\"alt1\">" . htmlspecialchars($ipdata->person) . "</td>\r\n\t\t\t\t<td class=\"alt1\">" . htmlspecialchars($ipdata->address) . "</td>\r\n\t\t\t\t<td class=\"alt1\">" . htmlspecialchars($ipdata->phone) . "</td>\r\n\t\t\t\t<td class=\"alt1\">" . htmlspecialchars($ipdata->email) . "</td>\r\n\t\t\t</tr>\r\n\t\t</table>\r\n\t\t";
     } else {
-        $Message = function_76($Language[5]);
+        $Message = showAlertError($Language[5]);
     }
 }
 echo "<form $action = \"";
@@ -133,20 +133,20 @@ class Class_33
         }
     }
 }
-function function_75()
+function getStaffLanguage()
 {
     if (isset($_COOKIE["staffcplanguage"]) && is_dir("languages/" . $_COOKIE["staffcplanguage"]) && is_file("languages/" . $_COOKIE["staffcplanguage"] . "/staffcp.lang")) {
         return $_COOKIE["staffcplanguage"];
     }
     return "english";
 }
-function function_77()
+function checkStaffAuthentication()
 {
     if (!defined("IN-TSSE-STAFF-PANEL")) {
         var_236("../index.php");
     }
 }
-function function_78($url)
+function redirectTo($url)
 {
     if (!headers_sent()) {
         header("Location: " . $url);
@@ -155,7 +155,7 @@ function function_78($url)
     }
     exit;
 }
-function function_76($Error)
+function showAlertError($Error)
 {
     return "<div class=\"alert\"><div>" . $Error . "</div></div>";
 }

@@ -7,7 +7,7 @@
  */
 
 var_235();
-$Language = file("languages/" . function_75() . "/cache.lang");
+$Language = file("languages/" . getStaffLanguage() . "/cache.lang");
 $Act = isset($_GET["act"]) ? trim($_GET["act"]) : (isset($_POST["act"]) ? trim($_POST["act"]) : "");
 $Message = "";
 if (isset($_GET["cache"])) {
@@ -91,27 +91,27 @@ if (isset($_GET["cache"])) {
         echo var_633();
     }
     $Message = str_replace(["{1}", "{2}"], ["Categories, Smilies, Index Stats ", $_SESSION["ADMIN_USERNAME"]], $Language[3]);
-    function_79($Message);
-    echo function_76($Message);
+    logStaffAction($Message);
+    echo showAlertError($Message);
     exit;
 }
 echo "<script $type = \"text/javascript\">\r\n\t\$(document).ready(function()\r\n\t{\r\n\t\tsetTimeout(function()\r\n\t\t{\r\n\t\t\t\$.get('index.php?do=cache&$cache = true', function(response)\r\n\t\t\t{\r\n\t\t\t\t\$('.alt1').html(response);\r\n\t\t\t});\r\n\t\t}, 1000);\r\n\t});\r\n</script>\r\n<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t<tr>\r\n\t\t<td class=\"tcat\" $align = \"center\">";
 echo $Language[2];
 echo "</td>\r\n\t</tr>\r\n\t<tr>\r\n\t\t<td class=\"alt1\">\r\n\t\t\t<img $src = \"./images/fb_ajax-loader.gif\" $style = \"vertical-align: middle;\" $alt = \"\" $title = \"\" /> Updating...\r\n\t\t</td>\r\n\t</tr>\r\n</table>";
-function function_75()
+function getStaffLanguage()
 {
     if (isset($_COOKIE["staffcplanguage"]) && is_dir("languages/" . $_COOKIE["staffcplanguage"]) && is_file("languages/" . $_COOKIE["staffcplanguage"] . "/staffcp.lang")) {
         return $_COOKIE["staffcplanguage"];
     }
     return "english";
 }
-function function_77()
+function checkStaffAuthentication()
 {
     if (!defined("IN-TSSE-STAFF-PANEL")) {
         var_236("../index.php");
     }
 }
-function function_78($url, $timeout = false)
+function redirectTo($url, $timeout = false)
 {
     if (!headers_sent()) {
         if (!$timeout) {
@@ -128,15 +128,15 @@ function function_78($url, $timeout = false)
     }
     exit;
 }
-function function_76($Error)
+function showAlertError($Error)
 {
     return "<div class=\"alert\"><div>" . $Error . "</div></div>";
 }
-function function_79($log)
+function logStaffAction($log)
 {
     mysqli_query($GLOBALS["DatabaseConnect"], "INSERT INTO ts_staffcp_logs (uid, date, log) VALUES ('" . $_SESSION["ADMIN_ID"] . "', '" . time() . "', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $log) . "')");
 }
-function function_88($bytes = 0)
+function formatBytes($bytes = 0)
 {
     if ($bytes < 1024000) {
         return number_format($bytes / 1024, 2) . " KB";

@@ -7,7 +7,7 @@
  */
 
 var_235();
-$Language = file("languages/" . function_75() . "/add_user.lang");
+$Language = file("languages/" . getStaffLanguage() . "/add_user.lang");
 $Message = "";
 $email = "";
 $username = "";
@@ -21,31 +21,31 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
     if ($username && $password && $email && $usergroup) {
         $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id FROM users WHERE $username = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $username) . "' OR $email = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $email) . "'");
         if (0 < mysqli_num_rows($Query)) {
-            $Message = function_76($Language[1]);
+            $Message = showAlertError($Language[1]);
         } else {
             if (preg_match("|[^a-z\\|A-Z\\|0-9]|", $username)) {
-                $Message = function_76($Language[2]);
+                $Message = showAlertError($Language[2]);
             } else {
                 if (!preg_match("#^[a-z0-9.!\\#\$%&'*+-/=?^_`{|}~]+@([0-9.]+|([^\\s'\"<>@,;]+\\.+[a-z]{2,6}))\$#si", $email)) {
-                    $Message = function_76($Language[3]);
+                    $Message = showAlertError($Language[3]);
                 } else {
-                    $secret = function_102();
+                    $secret = generateSecret();
                     $passhash = md5($secret . $password . $secret);
                     $SysMsg = str_replace(["{1}", "{2}"], [$username, $_SESSION["ADMIN_USERNAME"]], $Language[14]);
                     $modcomment = gmdate("Y-m-d") . " - " . trim($SysMsg) . "\n";
                     mysqli_query($GLOBALS["DatabaseConnect"], "INSERT INTO users (status, username, passhash, secret, email, added, usergroup, modcomment) VALUES ('confirmed', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $username) . "', '" . $passhash . "', '" . $secret . "', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $email) . "', NOW(), '" . $usergroup . "', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $modcomment) . "')");
                     $userid = mysqli_insert_id($GLOBALS["DatabaseConnect"]);
                     if ($userid) {
-                        function_79($SysMsg);
-                        function_78("index.php?do=edit_user&$username = " . htmlspecialchars($username));
+                        logStaffAction($SysMsg);
+                        redirectTo("index.php?do=edit_user&$username = " . htmlspecialchars($username));
                     } else {
-                        $Message = function_76($Language[13]);
+                        $Message = showAlertError($Language[13]);
                     }
                 }
             }
         }
     } else {
-        $Message = function_76($Language[4]);
+        $Message = showAlertError($Language[4]);
     }
 }
 $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT u.id, g.cansettingspanel, g.canstaffpanel, g.issupermod FROM users u LEFT JOIN usergroups g ON (u.$usergroup = g.gid) WHERE u.$id = '" . $_SESSION["ADMIN_ID"] . "' LIMIT 1");
@@ -83,20 +83,20 @@ echo $Language[11];
 echo "\" $accesskey = \"s\" />\r\n\t\t\t<input $type = \"reset\" class=\"button\" $tabindex = \"1\" $value = \"";
 echo $Language[12];
 echo "\" $accesskey = \"r\" />\r\n\t\t</td>\r\n\t</tr>\r\n</table>\r\n</form>";
-function function_75()
+function getStaffLanguage()
 {
     if (isset($_COOKIE["staffcplanguage"]) && is_dir("languages/" . $_COOKIE["staffcplanguage"]) && is_file("languages/" . $_COOKIE["staffcplanguage"] . "/staffcp.lang")) {
         return $_COOKIE["staffcplanguage"];
     }
     return "english";
 }
-function function_77()
+function checkStaffAuthentication()
 {
     if (!defined("IN-TSSE-STAFF-PANEL")) {
         var_236("../index.php");
     }
 }
-function function_78($url)
+function redirectTo($url)
 {
     if (!headers_sent()) {
         header("Location: " . $url);
@@ -105,11 +105,11 @@ function function_78($url)
     }
     exit;
 }
-function function_76($Error)
+function showAlertError($Error)
 {
     return "<div class=\"alert\"><div>" . $Error . "</div></div>";
 }
-function function_102($length = 20)
+function generateSecret($length = 20)
 {
     $var_308 = ["a", "A", "b", "B", "c", "C", "d", "D", "e", "E", "f", "F", "g", "G", "h", "H", "i", "I", "j", "J", "k", "K", "l", "L", "m", "M", "n", "N", "o", "O", "p", "P", "q", "Q", "r", "R", "s", "S", "t", "T", "u", "U", "v", "V", "w", "W", "x", "X", "y", "Y", "z", "Z", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
     $var_309 = "";
@@ -119,7 +119,7 @@ function function_102($length = 20)
     }
     return $var_309;
 }
-function function_79($log)
+function logStaffAction($log)
 {
     mysqli_query($GLOBALS["DatabaseConnect"], "INSERT INTO ts_staffcp_logs (uid, date, log) VALUES ('" . $_SESSION["ADMIN_ID"] . "', '" . time() . "', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $log) . "')");
 }

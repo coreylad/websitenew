@@ -25,7 +25,7 @@ class Class_16
         return "OAuthConsumer[$key = " . $this->key . ",$secret = " . $this->secret . "]";
     }
 }
-$Language = file("languages/" . function_75() . "/twitter.lang");
+$Language = file("languages/" . getStaffLanguage() . "/twitter.lang");
 $Act = isset($_GET["act"]) ? trim($_GET["act"]) : (isset($_POST["act"]) ? trim($_POST["act"]) : "");
 $Message = "";
 $username = "";
@@ -37,18 +37,18 @@ $SOCIAL = unserialize($Result["content"]);
 if ($Act == "post") {
     $_message = isset($_POST["message"]) ? trim($_POST["message"]) : "";
     if (!$_message) {
-        $Message = function_76($Language[8]);
+        $Message = showAlertError($Language[8]);
     } else {
         $consumerKey = $SOCIAL["ConsumerKey"];
         $consumerSecret = $SOCIAL["ConsumerSecret"];
         $accessToken = $SOCIAL["AccessToken"];
         $accessTokenSecret = $SOCIAL["AccessTokenSecret"];
         if (!$consumerKey || !$consumerSecret || !$accessToken || !$accessTokenSecret) {
-            $Message = function_76("Please setup Twitter API options first. (Manage Tracker Settings > SOCIAL)");
+            $Message = showAlertError("Please setup Twitter API options first. (Manage Tracker Settings > SOCIAL)");
         } else {
             $Twitter = new Class_17($consumerKey, $consumerSecret, $accessToken, $accessTokenSecret);
             $Twitter->function_98(substr(strip_tags($_message), 0, 120));
-            $Message = function_76($Language[12]);
+            $Message = showAlertError($Language[12]);
         }
     }
 }
@@ -699,20 +699,20 @@ class Class_17
 class Class_27 extends Exception
 {
 }
-function function_75()
+function getStaffLanguage()
 {
     if (isset($_COOKIE["staffcplanguage"]) && is_dir("languages/" . $_COOKIE["staffcplanguage"]) && is_file("languages/" . $_COOKIE["staffcplanguage"] . "/staffcp.lang")) {
         return $_COOKIE["staffcplanguage"];
     }
     return "english";
 }
-function function_77()
+function checkStaffAuthentication()
 {
     if (!defined("IN-TSSE-STAFF-PANEL")) {
         var_236("../index.php");
     }
 }
-function function_78($url, $timeout = false)
+function redirectTo($url, $timeout = false)
 {
     if (!headers_sent()) {
         if (!$timeout) {
@@ -729,11 +729,11 @@ function function_78($url, $timeout = false)
     }
     exit;
 }
-function function_76($Error)
+function showAlertError($Error)
 {
     return "<div class=\"alert\"><div>" . $Error . "</div></div>";
 }
-function function_79($log)
+function logStaffAction($log)
 {
     mysqli_query($GLOBALS["DatabaseConnect"], "INSERT INTO ts_staffcp_logs (uid, date, log) VALUES ('" . $_SESSION["ADMIN_ID"] . "', '" . time() . "', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $log) . "')");
 }

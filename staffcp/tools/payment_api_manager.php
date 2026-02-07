@@ -7,7 +7,7 @@
  */
 
 var_235();
-$Language = file("languages/" . function_75() . "/payment_api_manager.lang");
+$Language = file("languages/" . getStaffLanguage() . "/payment_api_manager.lang");
 $Message = "";
 $Act = isset($_GET["act"]) ? trim($_GET["act"]) : (isset($_POST["act"]) ? trim($_POST["act"]) : "");
 if ($Act == "edit" && isset($_GET["aid"]) && ($Aid = intval($_GET["aid"]))) {
@@ -29,11 +29,11 @@ if ($Act == "edit" && isset($_GET["aid"]) && ($Aid = intval($_GET["aid"]))) {
             $widget = isset($_POST["widget"]) && !empty($_POST["widget"]) ? trim($_POST["widget"]) : $widget;
             $secretkey2 = isset($_POST["secretkey2"]) && !empty($_POST["secretkey2"]) ? trim($_POST["secretkey2"]) : $secretkey2;
             if ((!$_POST["email"] || !$_POST["currency"]) && $API["method"] != "paymentwall") {
-                $Message = function_76($Language[17]);
+                $Message = showAlertError($Language[17]);
             }
             if (empty($Message)) {
                 mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE ts_subscriptions_api SET $active = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $active) . "', $email = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $email) . "', $secretkey = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $secretkey) . "', $currency = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $currency) . "', $widget = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $widget) . "', $secretkey2 = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $secretkey2) . "'  WHERE $aid = '" . $Aid . "'");
-                function_78("index.php?do=payment_api_manager");
+                redirectTo("index.php?do=payment_api_manager");
                 exit;
             }
         }
@@ -52,20 +52,20 @@ if (empty($Act)) {
     }
     echo "\r\n\t\r\n\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t<tr>\r\n\t\t\t<td class=\"tcat\" $colspan = \"6\" $align = \"center\">\r\n\t\t\t\t" . $Language[2] . "\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt2\">" . $Language[3] . "</td>\r\n\t\t\t<td class=\"alt2\">" . $Language[4] . "</td>\r\n\t\t\t<td class=\"alt2\">" . $Language[5] . "</td>\r\n\t\t\t<td class=\"alt2\">" . $Language[6] . "</td>\r\n\t\t</tr>\r\n\t\t" . $List . "\r\n\t</table>\r\n\t";
 }
-function function_75()
+function getStaffLanguage()
 {
     if (isset($_COOKIE["staffcplanguage"]) && is_dir("languages/" . $_COOKIE["staffcplanguage"]) && is_file("languages/" . $_COOKIE["staffcplanguage"] . "/staffcp.lang")) {
         return $_COOKIE["staffcplanguage"];
     }
     return "english";
 }
-function function_77()
+function checkStaffAuthentication()
 {
     if (!defined("IN-TSSE-STAFF-PANEL")) {
         var_236("../index.php");
     }
 }
-function function_78($url)
+function redirectTo($url)
 {
     if (!headers_sent()) {
         header("Location: " . $url);
@@ -74,15 +74,15 @@ function function_78($url)
     }
     exit;
 }
-function function_76($Error)
+function showAlertError($Error)
 {
     return "<div class=\"alert\"><div>" . $Error . "</div></div>";
 }
-function function_79($log)
+function logStaffAction($log)
 {
     mysqli_query($GLOBALS["DatabaseConnect"], "INSERT INTO ts_staffcp_logs (uid, date, log) VALUES ('" . $_SESSION["ADMIN_ID"] . "', '" . time() . "', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $log) . "')");
 }
-function function_81($message = "")
+function showAlertMessage($message = "")
 {
     return "<div class=\"alert\"><div>" . $message . "</div></div>";
 }

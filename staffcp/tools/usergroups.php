@@ -8,7 +8,7 @@
 
 $GLOBALS["yesnocount"] = 0;
 var_235();
-$Language = file("languages/" . function_75() . "/usergroups.lang");
+$Language = file("languages/" . getStaffLanguage() . "/usergroups.lang");
 $Act = isset($_GET["act"]) ? trim($_GET["act"]) : (isset($_POST["act"]) ? trim($_POST["act"]) : "");
 $Message = "";
 if ($Act == "save_disporder") {
@@ -17,8 +17,8 @@ if ($Act == "save_disporder") {
         mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE usergroups SET $disporder = " . intval($disporder) . " WHERE $gid = " . intval($gid));
     }
     $Message = str_replace("{1}", $_SESSION["ADMIN_USERNAME"], $Language[163]);
-    function_79($Message);
-    $Message = function_76($Message);
+    logStaffAction($Message);
+    $Message = showAlertError($Message);
 }
 if ($Act == "delete" && ($gid = intval($_GET["gid"]))) {
     $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT title, type FROM usergroups WHERE $gid = " . $gid);
@@ -26,7 +26,7 @@ if ($Act == "delete" && ($gid = intval($_GET["gid"]))) {
         $Ug = mysqli_fetch_assoc($Query);
         if (isset($_POST["newgid"]) && ($newgid = intval($_POST["newgid"]))) {
             if ($Ug["type"] == 1) {
-                $Message = function_76($Language[11]);
+                $Message = showAlertError($Language[11]);
             } else {
                 $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT title FROM usergroups WHERE $gid = " . $newgid);
                 if (mysqli_num_rows($Query)) {
@@ -35,8 +35,8 @@ if ($Act == "delete" && ($gid = intval($_GET["gid"]))) {
                     mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET $usergroup = " . $newgid . " WHERE $usergroup = " . $gid);
                     mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM usergroups WHERE $gid = " . $gid);
                     $Message = str_replace(["{1}", "{2}", "{3}"], [$Ug["title"], $_SESSION["ADMIN_USERNAME"], $Newgroupname], $Language[13]);
-                    function_79($Message);
-                    $Message = function_76($Message);
+                    logStaffAction($Message);
+                    $Message = showAlertError($Message);
                 }
             }
         } else {
@@ -108,8 +108,8 @@ if ($Act == "new" || $Act == "edit" && ($gid = intval($_GET["gid"]))) {
         }
         mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE usergroups SET " . implode(",", $QueryArray) . " WHERE $gid = " . $NewGID);
         $Message = str_replace(["{1}", "{2}"], [$title, $_SESSION["ADMIN_USERNAME"]], $Language[$Act == "new" ? "23" : "157"]);
-        function_79($Message);
-        $Message = function_76($Message);
+        logStaffAction($Message);
+        $Message = showAlertError($Message);
         unset($Act);
     } else {
         if (!isset($STOP)) {
@@ -201,8 +201,8 @@ if (!isset($Output)) {
     }
     $Output .= "\r\n\t<tr>\r\n\t\t<td class=\"tcat2\" $colspan = \"4\">&nbsp;</td>\r\n\t\t<td class=\"tcat2\" $align = \"center\">\r\n\t\t\t<input $type = \"submit\" $value = \"" . $Language[161] . "\" /> <input $type = \"reset\" $value = \"" . $Language[162] . "\" />\r\n\t\t</td>\r\n\t\t<td class=\"tcat2\">&nbsp;</td>\r\n\t</tr>\r\n\t</form>";
 }
-echo "\r\n" . function_81(empty($Act) ? "<a $href = \"index.php?do=usergroups&amp;$act = new\">" . $Language[16] . "</a>" : "<a $href = \"index.php?do=usergroups\">" . $Language[14] . "</a>") . "\r\n" . $Message . "\r\n<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t<tr>\r\n\t\t<td class=\"tcat\" $align = \"center\" $colspan = \"" . (isset($Act) && $Act == "" ? 6 : 2) . "\">\r\n\t\t\t" . $Language[2] . (isset($Act) && $Act == "new" ? " - " . $Language[16] : (isset($Act) && $Act == "edit" ? " - " . $Language[3] . " (" . $EditUG["title"] . ")" : "")) . "\r\n\t\t</td>\r\n\t</tr>\r\n\t" . $Output . "\r\n</table>";
-function function_90($type = 1, $mode = "textareas", $elements = "")
+echo "\r\n" . showAlertMessage(empty($Act) ? "<a $href = \"index.php?do=usergroups&amp;$act = new\">" . $Language[16] . "</a>" : "<a $href = \"index.php?do=usergroups\">" . $Language[14] . "</a>") . "\r\n" . $Message . "\r\n<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t<tr>\r\n\t\t<td class=\"tcat\" $align = \"center\" $colspan = \"" . (isset($Act) && $Act == "" ? 6 : 2) . "\">\r\n\t\t\t" . $Language[2] . (isset($Act) && $Act == "new" ? " - " . $Language[16] : (isset($Act) && $Act == "edit" ? " - " . $Language[3] . " (" . $EditUG["title"] . ")" : "")) . "\r\n\t\t</td>\r\n\t</tr>\r\n\t" . $Output . "\r\n</table>";
+function loadTinyMCEEditor($type = 1, $mode = "textareas", $elements = "")
 {
     define("EDITOR_TYPE", $type);
     define("TINYMCE_MODE", $mode);
@@ -215,20 +215,20 @@ function function_90($type = 1, $mode = "textareas", $elements = "")
     ob_end_clean();
     return $var_81;
 }
-function function_75()
+function getStaffLanguage()
 {
     if (isset($_COOKIE["staffcplanguage"]) && is_dir("languages/" . $_COOKIE["staffcplanguage"]) && is_file("languages/" . $_COOKIE["staffcplanguage"] . "/staffcp.lang")) {
         return $_COOKIE["staffcplanguage"];
     }
     return "english";
 }
-function function_77()
+function checkStaffAuthentication()
 {
     if (!defined("IN-TSSE-STAFF-PANEL")) {
         var_236("../index.php");
     }
 }
-function function_78($url, $timeout = false)
+function redirectTo($url, $timeout = false)
 {
     if (!headers_sent()) {
         if (!$timeout) {
@@ -245,15 +245,15 @@ function function_78($url, $timeout = false)
     }
     exit;
 }
-function function_76($Error)
+function showAlertError($Error)
 {
     return "<div class=\"alert\"><div>" . $Error . "</div></div>";
 }
-function function_79($log)
+function logStaffAction($log)
 {
     mysqli_query($GLOBALS["DatabaseConnect"], "INSERT INTO ts_staffcp_logs (uid, date, log) VALUES ('" . $_SESSION["ADMIN_ID"] . "', '" . time() . "', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $log) . "')");
 }
-function function_81($message = "")
+function showAlertMessage($message = "")
 {
     return "<div class=\"alert\"><div>" . $message . "</div></div>";
 }

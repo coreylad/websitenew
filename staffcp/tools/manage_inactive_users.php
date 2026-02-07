@@ -8,7 +8,7 @@
 
 var_235();
 $Act = isset($_GET["act"]) ? trim($_GET["act"]) : (isset($_POST["act"]) ? trim($_POST["act"]) : "");
-$Language = file("languages/" . function_75() . "/manage_inactive_users.lang");
+$Language = file("languages/" . getStaffLanguage() . "/manage_inactive_users.lang");
 $Message = "";
 $show_per_page = 40;
 $maxdays = 60;
@@ -53,7 +53,7 @@ if (isset($ShowList) && $ShowList) {
     $count_query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT COUNT(id) as count FROM users WHERE $enabled = 'yes' AND $status = 'confirmed' AND UNIX_TIMESTAMP(last_access) < UNIX_TIMESTAMP(DATE_ADD(NOW(), INTERVAL - " . $maxdays . " DAY)) AND usergroup IN (" . $usergroups . ")");
     $Result = mysqli_fetch_assoc($count_query);
     $total_count = $Result["count"];
-    list($pagertop, $limit) = function_82($show_per_page, $total_count, "index.php?do=manage_inactive_users&amp;$show_per_page = " . $show_per_page . "&amp;$maxdays = " . $maxdays . "&amp;$deleteafter = " . $deleteafter . "&amp;$maxmails = " . $maxmails . "&amp;$waitlimit = " . $waitlimit . "&amp;$usergroups = " . $usergroups . "&amp;");
+    list($pagertop, $limit) = buildPaginationLinks($show_per_page, $total_count, "index.php?do=manage_inactive_users&amp;$show_per_page = " . $show_per_page . "&amp;$maxdays = " . $maxdays . "&amp;$deleteafter = " . $deleteafter . "&amp;$maxmails = " . $maxmails . "&amp;$waitlimit = " . $waitlimit . "&amp;$usergroups = " . $usergroups . "&amp;");
     $query = ["inactive" => mysqli_query($GLOBALS["DatabaseConnect"], "SELECT u.id,u.username,u.email,u.uploaded,u.downloaded,u.last_access,u.added,i.inactivitytag,g.namestyle FROM users u LEFT JOIN ts_inactivity i ON (u.$id = i.userid) LEFT JOIN usergroups g ON (u.$usergroup = g.gid) WHERE u.$enabled = 'yes' AND u.$status = 'confirmed' AND UNIX_TIMESTAMP(u.last_access) < UNIX_TIMESTAMP(DATE_ADD(NOW(), INTERVAL - " . $maxdays . " DAY)) AND u.usergroup IN (" . $usergroups . ") ORDER BY i.inactivitytag DESC, u.last_access DESC " . $limit), "warn" => mysqli_query($GLOBALS["DatabaseConnect"], "SELECT u.id,u.username,u.email,u.uploaded,u.downloaded,u.last_access,u.added,i.inactivitytag,g.namestyle FROM users u LEFT JOIN ts_inactivity i ON (u.$id = i.userid) LEFT JOIN usergroups g ON (u.$usergroup = g.gid) WHERE u.$enabled = 'yes' AND u.$status = 'confirmed' AND IF (i.inactivitytag>0,i.$inactivitytag = 0,u.id>0) AND UNIX_TIMESTAMP(u.last_access) < UNIX_TIMESTAMP(DATE_ADD(NOW(), INTERVAL - " . $maxdays . " DAY)) AND u.usergroup IN (" . $usergroups . ") ORDER BY u.last_access")];
     if ($Act == "warn") {
         if (mysqli_num_rows($query["warn"])) {
@@ -79,11 +79,11 @@ if (isset($ShowList) && $ShowList) {
             }
             echo "\r\n\t\t\t\t\t\t\t\t\t</td>\r\n\t\t\t\t\t\t\t\t</tr>\r\n\t\t\t\t\t\t\t</table>\r\n\t\t\t\t\t\t</div>";
             $SysMsg = str_replace("{1}", number_format($Totalwarn), $Language[32]);
-            function_79($SysMsg);
-            echo function_76($SysMsg);
+            logStaffAction($SysMsg);
+            echo showAlertError($SysMsg);
             var_284("index.php?do=manage_inactive_users&amp;$show_per_page = " . $show_per_page . "&amp;$maxdays = " . $maxdays . "&amp;$deleteafter = " . $deleteafter . "&amp;$maxmails = " . $maxmails . "&amp;$waitlimit = " . $waitlimit . "&amp;$usergroups = " . $usergroups . "&amp;$act = warn", $waitlimit);
         } else {
-            echo "\r\n\t\t\t" . function_76($Language[31]);
+            echo "\r\n\t\t\t" . showAlertError($Language[31]);
         }
     } else {
         if ($Act == "check_delete") {
@@ -116,21 +116,21 @@ if (isset($ShowList) && $ShowList) {
                     mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM " . TSF_PREFIX . "subscribe WHERE userid IN (0, " . $Work . ")");
                 }
                 $SysMsg = str_replace("{1}", number_format(count($Users)), $Language[33]);
-                function_79($SysMsg);
-                echo function_76($SysMsg);
+                logStaffAction($SysMsg);
+                echo showAlertError($SysMsg);
             } else {
-                echo function_76($Language[31]);
+                echo showAlertError($Language[31]);
             }
         } else {
-            echo "\r\n\t\t" . function_81("<a $href = \"index.php?do=manage_inactive_users&amp;$show_per_page = " . $show_per_page . "&amp;$maxdays = " . $maxdays . "&amp;$deleteafter = " . $deleteafter . "&amp;$maxmails = " . $maxmails . "&amp;$waitlimit = " . $waitlimit . "&amp;$usergroups = " . $usergroups . "&amp;$act = warn\"><small>" . $Language[8] . "</small></a> | <a $href = \"index.php?do=manage_inactive_users&amp;$show_per_page = " . $show_per_page . "&amp;$maxdays = " . $maxdays . "&amp;$deleteafter = " . $deleteafter . "&amp;$maxmails = " . $maxmails . "&amp;$waitlimit = " . $waitlimit . "&amp;$usergroups = " . $usergroups . "&amp;$act = check_delete\"><small>" . $Language[9] . "</small></a>") . "";
+            echo "\r\n\t\t" . showAlertMessage("<a $href = \"index.php?do=manage_inactive_users&amp;$show_per_page = " . $show_per_page . "&amp;$maxdays = " . $maxdays . "&amp;$deleteafter = " . $deleteafter . "&amp;$maxmails = " . $maxmails . "&amp;$waitlimit = " . $waitlimit . "&amp;$usergroups = " . $usergroups . "&amp;$act = warn\"><small>" . $Language[8] . "</small></a> | <a $href = \"index.php?do=manage_inactive_users&amp;$show_per_page = " . $show_per_page . "&amp;$maxdays = " . $maxdays . "&amp;$deleteafter = " . $deleteafter . "&amp;$maxmails = " . $maxmails . "&amp;$waitlimit = " . $waitlimit . "&amp;$usergroups = " . $usergroups . "&amp;$act = check_delete\"><small>" . $Language[9] . "</small></a>") . "";
             if (mysqli_num_rows($query["inactive"])) {
                 echo "\r\n\t\t\t" . $pagertop . "\r\n\t\t\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td class=\"tcat\" $colspan = \"7\" $align = \"center\">\r\n\t\t\t\t\t\t" . $Language[2] . " (" . number_format($total_count) . ")\r\n\t\t\t\t\t</td>\r\n\t\t\t\t</tr>\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td class=\"alt2\">\r\n\t\t\t\t\t\t" . $Language[3] . "\r\n\t\t\t\t\t</td>\r\n\t\t\t\t\t<td class=\"alt2\">\r\n\t\t\t\t\t\t" . $Language[4] . "\r\n\t\t\t\t\t</td>\r\n\t\t\t\t\t<td class=\"alt2\">\r\n\t\t\t\t\t\t" . $Language[5] . "\r\n\t\t\t\t\t</td>\r\n\t\t\t\t\t<td class=\"alt2\">\r\n\t\t\t\t\t\t" . $Language[6] . "\r\n\t\t\t\t\t</td>\r\n\t\t\t\t\t<td class=\"alt2\">\r\n\t\t\t\t\t\t" . $Language[23] . "\r\n\t\t\t\t\t</td>\r\n\t\t\t\t\t<td class=\"alt2\">\r\n\t\t\t\t\t\t" . $Language[24] . "\r\n\t\t\t\t\t</td>\r\n\t\t\t\t\t<td class=\"alt2\">\r\n\t\t\t\t\t\t" . $Language[7] . "\r\n\t\t\t\t\t</td>\r\n\t\t\t\t</tr>\r\n\t\t\t\t";
                 while ($user = mysqli_fetch_assoc($query["inactive"])) {
-                    echo "\r\n\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t\t\t<a $href = \"index.php?do=edit_user&amp;$username = " . $user["username"] . "\">" . str_replace("{username}", $user["username"], $user["namestyle"]) . "</a>\r\n\t\t\t\t\t\t</td>\r\n\t\t\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t\t\t" . $user["email"] . "\r\n\t\t\t\t\t\t</td>\r\n\t\t\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t\t\t" . function_84($user["added"]) . "\r\n\t\t\t\t\t\t</td>\r\n\t\t\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t\t\t" . function_84($user["last_access"]) . "\r\n\t\t\t\t\t\t</td>\r\n\t\t\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t\t\t" . var_238($user["uploaded"]) . "\r\n\t\t\t\t\t\t</td>\r\n\t\t\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t\t\t" . var_238($user["downloaded"]) . "\r\n\t\t\t\t\t\t</td>\r\n\t\t\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t\t\t" . ($user["inactivitytag"] != 0 ? str_replace(["{1}", "{2}"], [function_84($user["inactivitytag"]), function_84($user["inactivitytag"] + $deleteafter * 24 * 60 * 60)], $Language[21]) : $Language[22]) . "\r\n\t\t\t\t\t\t</td>\r\n\t\t\t\t\t</tr>\r\n\t\t\t\t\t";
+                    echo "\r\n\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t\t\t<a $href = \"index.php?do=edit_user&amp;$username = " . $user["username"] . "\">" . str_replace("{username}", $user["username"], $user["namestyle"]) . "</a>\r\n\t\t\t\t\t\t</td>\r\n\t\t\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t\t\t" . $user["email"] . "\r\n\t\t\t\t\t\t</td>\r\n\t\t\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t\t\t" . formatTimestamp($user["added"]) . "\r\n\t\t\t\t\t\t</td>\r\n\t\t\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t\t\t" . formatTimestamp($user["last_access"]) . "\r\n\t\t\t\t\t\t</td>\r\n\t\t\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t\t\t" . var_238($user["uploaded"]) . "\r\n\t\t\t\t\t\t</td>\r\n\t\t\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t\t\t" . var_238($user["downloaded"]) . "\r\n\t\t\t\t\t\t</td>\r\n\t\t\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t\t\t" . ($user["inactivitytag"] != 0 ? str_replace(["{1}", "{2}"], [formatTimestamp($user["inactivitytag"]), formatTimestamp($user["inactivitytag"] + $deleteafter * 24 * 60 * 60)], $Language[21]) : $Language[22]) . "\r\n\t\t\t\t\t\t</td>\r\n\t\t\t\t\t</tr>\r\n\t\t\t\t\t";
                 }
                 echo "\r\n\t\t\t\t</table>\r\n\t\t\t\t" . $pagertop;
             } else {
-                echo function_76($Language[31]);
+                echo showAlertError($Language[31]);
             }
         }
     }
@@ -385,20 +385,20 @@ class Class_5
         return preg_replace("#(\\r\\n|\\n|\\r)+#", " ", $text);
     }
 }
-function function_75()
+function getStaffLanguage()
 {
     if (isset($_COOKIE["staffcplanguage"]) && is_dir("languages/" . $_COOKIE["staffcplanguage"]) && is_file("languages/" . $_COOKIE["staffcplanguage"] . "/staffcp.lang")) {
         return $_COOKIE["staffcplanguage"];
     }
     return "english";
 }
-function function_77()
+function checkStaffAuthentication()
 {
     if (!defined("IN-TSSE-STAFF-PANEL")) {
         var_236("../index.php");
     }
 }
-function function_78($url)
+function redirectTo($url)
 {
     if (!headers_sent()) {
         header("Location: " . $url);
@@ -468,15 +468,15 @@ function function_100($to, $subject, $body)
     $var_301 = $var_300->function_98();
     return $var_301;
 }
-function function_76($Error)
+function showAlertError($Error)
 {
     return "<div class=\"alert\"><div>" . $Error . "</div></div>";
 }
-function function_79($log)
+function logStaffAction($log)
 {
     mysqli_query($GLOBALS["DatabaseConnect"], "INSERT INTO ts_staffcp_logs (uid, date, log) VALUES ('" . $_SESSION["ADMIN_ID"] . "', '" . time() . "', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $log) . "')");
 }
-function function_86($numresults, &$page, &$perpage, $maxperpage = 20, $defaultperpage = 20)
+function validatePerPage($numresults, &$page, &$perpage, $maxperpage = 20, $defaultperpage = 20)
 {
     $perpage = intval($perpage);
     if ($perpage < 1) {
@@ -498,7 +498,7 @@ function function_86($numresults, &$page, &$perpage, $maxperpage = 20, $defaultp
         }
     }
 }
-function function_87($pagenumber, $perpage, $total)
+function calculatePagination($pagenumber, $perpage, $total)
 {
     $var_241 = $perpage * ($pagenumber - 1);
     $var_89 = $var_241 + $perpage;
@@ -508,7 +508,7 @@ function function_87($pagenumber, $perpage, $total)
     $var_241++;
     return ["first" => number_format($var_241), "last" => number_format($var_89)];
 }
-function function_82($perpage, $results, $address)
+function buildPaginationLinks($perpage, $results, $address)
 {
     if ($results < $perpage) {
         return ["", ""];
@@ -519,7 +519,7 @@ function function_82($perpage, $results, $address)
         $var_242 = 0;
     }
     $pagenumber = isset($_GET["page"]) ? intval($_GET["page"]) : (isset($_POST["page"]) ? intval($_POST["page"]) : "");
-    function_86($results, $pagenumber, $perpage, 200);
+    validatePerPage($results, $pagenumber, $perpage, 200);
     $var_243 = ($pagenumber - 1) * $perpage;
     $var_244 = $pagenumber * $perpage;
     if ($results < $var_244) {
@@ -545,12 +545,12 @@ function function_82($perpage, $results, $address)
     $var_251["prev"] = $var_251["next"];
     if (1 < $pagenumber) {
         $var_252 = $pagenumber - 1;
-        $var_253 = function_87($var_252, $perpage, $results);
+        $var_253 = calculatePagination($var_252, $perpage, $results);
         $var_251["prev"] = true;
     }
     if ($pagenumber < $var_242) {
         $var_254 = $pagenumber + 1;
-        $var_255 = function_87($var_254, $perpage, $results);
+        $var_255 = calculatePagination($var_254, $perpage, $results);
         $var_251["next"] = true;
     }
     $var_256 = "3";
@@ -565,15 +565,15 @@ function function_82($perpage, $results, $address)
     }
     if ($var_256 <= abs($var_250 - $pagenumber) && $var_256 != 0) {
         if ($var_250 == 1) {
-            $var_260 = function_87(1, $perpage, $results);
+            $var_260 = calculatePagination(1, $perpage, $results);
             $var_251["first"] = true;
         }
         if ($var_250 == $var_242) {
-            $var_261 = function_87($var_242, $perpage, $results);
+            $var_261 = calculatePagination($var_242, $perpage, $results);
             $var_251["last"] = true;
         }
         if (in_array(abs($var_250 - $pagenumber), $var_257) && $var_250 != 1 && $var_250 != $var_242) {
-            $var_262 = function_87($var_250, $perpage, $results);
+            $var_262 = calculatePagination($var_250, $perpage, $results);
             $var_263 = $var_250 - $pagenumber;
             if (0 < $var_263) {
                 $var_263 = "+" . $var_263;
@@ -582,15 +582,15 @@ function function_82($perpage, $results, $address)
         }
     } else {
         if ($var_250 == $pagenumber) {
-            $var_264 = function_87($var_250, $perpage, $results);
+            $var_264 = calculatePagination($var_250, $perpage, $results);
             $var_245 .= "<li><a $name = \"current\" class=\"current\" $title = \"Showing results " . $var_264["first"] . " to " . $var_264["last"] . " of " . $total . "\">" . $var_250 . "</a></li>";
         } else {
-            $var_262 = function_87($var_250, $perpage, $results);
+            $var_262 = calculatePagination($var_250, $perpage, $results);
             $var_245 .= "<li><a $href = \"" . $address . ($var_250 != 1 ? "page=" . $var_250 : "") . "\" $title = \"Show results " . $var_262["first"] . " to " . $var_262["last"] . " of " . $total . "\">" . $var_250 . "</a></li>";
         }
     }
 }
-function function_84($timestamp = "")
+function formatTimestamp($timestamp = "")
 {
     $var_265 = "m-d-Y h:i A";
     if (empty($timestamp)) {
@@ -602,7 +602,7 @@ function function_84($timestamp = "")
     }
     return date($var_265, $timestamp);
 }
-function function_88($bytes = 0)
+function formatBytes($bytes = 0)
 {
     if ($bytes < 1024000) {
         return number_format($bytes / 1024, 2) . " KB";
@@ -615,7 +615,7 @@ function function_88($bytes = 0)
     }
     return number_format($bytes / 0, 2) . " TB";
 }
-function function_81($message = "")
+function showAlertMessage($message = "")
 {
     return "<div class=\"alert\"><div>" . $message . "</div></div>";
 }

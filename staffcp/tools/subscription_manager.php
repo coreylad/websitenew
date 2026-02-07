@@ -7,7 +7,7 @@
  */
 
 var_235();
-$Language = file("languages/" . function_75() . "/subscription_manager.lang");
+$Language = file("languages/" . getStaffLanguage() . "/subscription_manager.lang");
 $Message = "";
 $Act = isset($_GET["act"]) ? trim($_GET["act"]) : (isset($_POST["act"]) ? trim($_POST["act"]) : "");
 $title = "";
@@ -58,10 +58,10 @@ if ($Act == "edit" && isset($_GET["sid"]) && ($Sid = intval($_GET["sid"]))) {
             $RequiredFields = ["title", "cost", "currency", "length", "lengthtype"];
             foreach ($RequiredFields as $Required) {
                 if (!${$Required}) {
-                    $Message = function_76($Language[32]);
+                    $Message = showAlertError($Language[32]);
                     if (empty($Message)) {
                         mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE ts_subscriptions SET $title = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $title) . "', $description = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $description) . "', $active = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $active) . "', $disporder = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $disporder) . "', $usergroup = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $usergroup) . "', $seedbonus = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $seedbonus) . "', $invites = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $invites) . "', $uploaded = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $uploaded) . "',  $cost = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $cost) . "', $currency = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $currency) . "', $length = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $length) . "', $lengthtype = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $lengthtype) . "' WHERE $sid = '" . $Sid . "'");
-                        function_78("index.php?do=subscription_manager");
+                        redirectTo("index.php?do=subscription_manager");
                         exit;
                     }
                 }
@@ -95,10 +95,10 @@ if ($Act == "new") {
         $RequiredFields = ["title", "cost", "currency", "length", "lengthtype"];
         foreach ($RequiredFields as $Required) {
             if (!${$Required}) {
-                $Message = function_76($Language[32]);
+                $Message = showAlertError($Language[32]);
                 if (empty($Message)) {
                     mysqli_query($GLOBALS["DatabaseConnect"], "INSERT INTO ts_subscriptions VALUES (NULL, '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $title) . "', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $description) . "', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $active) . "', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $disporder) . "', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $usergroup) . "', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $seedbonus) . "', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $invites) . "', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $uploaded) . "', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $cost) . "', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $currency) . "', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $length) . "', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $lengthtype) . "')");
-                    function_78("index.php?do=subscription_manager");
+                    redirectTo("index.php?do=subscription_manager");
                     exit;
                 }
             }
@@ -120,22 +120,22 @@ if (empty($Act)) {
             $List .= "\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . htmlspecialchars($Sub["title"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . ($Sub["active"] == "1" ? $Language[23] : $Language[24]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . htmlspecialchars($Sub["cost"]) . " " . htmlspecialchars($Sub["currency"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . htmlspecialchars($Sub["length"]) . " " . ($Sub["lengthtype"] == "days" ? $Language[19] : ($Sub["lengthtype"] == "weeks" ? $Language[20] : ($Sub["lengthtype"] == "months" ? $Language[21] : $Language[22]))) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . intval($Sub["disporder"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t<a $href = \"index.php?do=subscription_manager&amp;$act = edit&amp;$sid = " . $Sub["sid"] . "\">" . trim($Language[9]) . "</a> - <a $href = \"index.php?do=subscription_manager&amp;$act = delete&amp;$sid = " . $Sub["sid"] . "\">" . trim($Language[10]) . "</a>\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t\t";
         }
     }
-    echo "\r\n\t" . function_81("<span $style = \"float: right;\">" . trim($Language[33]) . " </span> <a $href = \"index.php?do=subscription_manager&$act = new\">" . trim($Language[12]) . "</a> ") . "\r\n\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t<tr>\r\n\t\t\t<td class=\"tcat\" $colspan = \"6\" $align = \"center\">\r\n\t\t\t\t" . $Language[2] . "\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt2\">" . $Language[3] . "</td>\r\n\t\t\t<td class=\"alt2\">" . $Language[4] . "</td>\r\n\t\t\t<td class=\"alt2\">" . $Language[27] . "</td>\r\n\t\t\t<td class=\"alt2\">" . $Language[18] . "</td>\r\n\t\t\t<td class=\"alt2\">" . $Language[7] . "</td>\r\n\t\t\t<td class=\"alt2\">" . $Language[8] . "</td>\r\n\t\t</tr>\r\n\t\t" . $List . "\r\n\t</table>\r\n\t";
+    echo "\r\n\t" . showAlertMessage("<span $style = \"float: right;\">" . trim($Language[33]) . " </span> <a $href = \"index.php?do=subscription_manager&$act = new\">" . trim($Language[12]) . "</a> ") . "\r\n\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t<tr>\r\n\t\t\t<td class=\"tcat\" $colspan = \"6\" $align = \"center\">\r\n\t\t\t\t" . $Language[2] . "\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt2\">" . $Language[3] . "</td>\r\n\t\t\t<td class=\"alt2\">" . $Language[4] . "</td>\r\n\t\t\t<td class=\"alt2\">" . $Language[27] . "</td>\r\n\t\t\t<td class=\"alt2\">" . $Language[18] . "</td>\r\n\t\t\t<td class=\"alt2\">" . $Language[7] . "</td>\r\n\t\t\t<td class=\"alt2\">" . $Language[8] . "</td>\r\n\t\t</tr>\r\n\t\t" . $List . "\r\n\t</table>\r\n\t";
 }
-function function_75()
+function getStaffLanguage()
 {
     if (isset($_COOKIE["staffcplanguage"]) && is_dir("languages/" . $_COOKIE["staffcplanguage"]) && is_file("languages/" . $_COOKIE["staffcplanguage"] . "/staffcp.lang")) {
         return $_COOKIE["staffcplanguage"];
     }
     return "english";
 }
-function function_77()
+function checkStaffAuthentication()
 {
     if (!defined("IN-TSSE-STAFF-PANEL")) {
         var_236("../index.php");
     }
 }
-function function_78($url)
+function redirectTo($url)
 {
     if (!headers_sent()) {
         header("Location: " . $url);
@@ -144,15 +144,15 @@ function function_78($url)
     }
     exit;
 }
-function function_76($Error)
+function showAlertError($Error)
 {
     return "<div class=\"alert\"><div>" . $Error . "</div></div>";
 }
-function function_79($log)
+function logStaffAction($log)
 {
     mysqli_query($GLOBALS["DatabaseConnect"], "INSERT INTO ts_staffcp_logs (uid, date, log) VALUES ('" . $_SESSION["ADMIN_ID"] . "', '" . time() . "', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $log) . "')");
 }
-function function_81($message = "")
+function showAlertMessage($message = "")
 {
     return "<div class=\"alert\"><div>" . $message . "</div></div>";
 }

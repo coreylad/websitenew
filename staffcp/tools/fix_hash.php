@@ -10,7 +10,7 @@
 @ini_set("memory_limit", "20000M");
 @set_time_limit(0);
 var_235();
-$Language = file("languages/" . function_75() . "/fix_hash.lang");
+$Language = file("languages/" . getStaffLanguage() . "/fix_hash.lang");
 $Message = "";
 $Q = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = \"MAIN\"");
 $Result = mysqli_fetch_assoc($Q);
@@ -24,7 +24,7 @@ if (isset($_GET["usedid"])) {
         $filename = $Result["filename"];
         $orj_info_hash = $Result["info_hash"];
     } else {
-        echo function_76("All available torrent hashes has been fixed..");
+        echo showAlertError("All available torrent hashes has been fixed..");
         $Done = true;
     }
 } else {
@@ -73,11 +73,11 @@ class Class_7
     public function function_165(&$data)
     {
         $this->$torrent = function_167::function_168($data);
-        if ($this->torrent->function_169() == "error") {
+        if ($this->torrent->getBencodeEnd() == "error") {
             $this->$error = $this->torrent->function_170();
             return false;
         }
-        if ($this->torrent->function_169() != "dictionary") {
+        if ($this->torrent->getBencodeEnd() != "dictionary") {
             $this->$error = "The file was not a valid torrent file.";
             return false;
         }
@@ -358,7 +358,7 @@ class function_167
 }
 class Class_14
 {
-    public function function_169()
+    public function getBencodeEnd()
     {
         return "end";
     }
@@ -374,7 +374,7 @@ class Class_12
     {
         return $this->error;
     }
-    public function function_169()
+    public function getBencodeEnd()
     {
         return "error";
     }
@@ -397,7 +397,7 @@ class Class_11
     {
         return $this->value;
     }
-    public function function_169()
+    public function getBencodeEnd()
     {
         return "int";
     }
@@ -419,16 +419,16 @@ class Class_13
         while (true) {
             $offset++;
             $name = function_167::function_168($raw, $offset);
-            if ($name->function_169() != "end") {
-                if ($name->function_169() == "error") {
+            if ($name->getBencodeEnd() != "end") {
+                if ($name->getBencodeEnd() == "error") {
                     return $name;
                 }
-                if ($name->function_169() != "string") {
+                if ($name->getBencodeEnd() != "string") {
                     return new Class_12("Key name in dictionary was not a string.");
                 }
                 $offset++;
                 $value = function_167::function_168($raw, $offset);
-                if ($value->function_169() == "error") {
+                if ($value->getBencodeEnd() == "error") {
                     return $value;
                 }
                 $var_492[$name->function_170()] = $value;
@@ -456,7 +456,7 @@ class Class_13
         $var_493 .= "e";
         return $var_493;
     }
-    public function function_169()
+    public function getBencodeEnd()
     {
         return "dictionary";
     }
@@ -490,8 +490,8 @@ class Class_10
         while (true) {
             $offset++;
             $value = function_167::function_168($raw, $offset);
-            if ($value->function_169() != "end") {
-                if ($value->function_169() == "error") {
+            if ($value->getBencodeEnd() != "end") {
+                if ($value->getBencodeEnd() == "error") {
                     return $value;
                 }
                 array_push($var_8, $value);
@@ -512,7 +512,7 @@ class Class_10
     {
         return $this->value;
     }
-    public function function_169()
+    public function getBencodeEnd()
     {
         return "list";
     }
@@ -536,7 +536,7 @@ class Class_9
     {
         return $this->value;
     }
-    public function function_169()
+    public function getBencodeEnd()
     {
         return "string";
     }
@@ -550,20 +550,20 @@ class Class_9
         $this->$value = $value;
     }
 }
-function function_75()
+function getStaffLanguage()
 {
     if (isset($_COOKIE["staffcplanguage"]) && is_dir("languages/" . $_COOKIE["staffcplanguage"]) && is_file("languages/" . $_COOKIE["staffcplanguage"] . "/staffcp.lang")) {
         return $_COOKIE["staffcplanguage"];
     }
     return "english";
 }
-function function_77()
+function checkStaffAuthentication()
 {
     if (!defined("IN-TSSE-STAFF-PANEL")) {
         var_236("../index.php");
     }
 }
-function function_78($url)
+function redirectTo($url)
 {
     if (!headers_sent()) {
         header("Location: " . $url);
@@ -572,11 +572,11 @@ function function_78($url)
     }
     exit;
 }
-function function_76($Error)
+function showAlertError($Error)
 {
     return "<div class=\"alert\"><div>" . $Error . "</div></div>";
 }
-function function_79($log)
+function logStaffAction($log)
 {
     mysqli_query($GLOBALS["DatabaseConnect"], "INSERT INTO ts_staffcp_logs (uid, date, log) VALUES (\"" . $_SESSION["ADMIN_ID"] . "\", \"" . time() . "\", \"" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $log) . "\")");
 }

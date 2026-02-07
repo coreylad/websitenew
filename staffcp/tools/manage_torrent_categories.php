@@ -10,7 +10,7 @@ var_235();
 var_435();
 $Act = isset($_GET["act"]) ? trim($_GET["act"]) : (isset($_POST["act"]) ? trim($_POST["act"]) : "");
 $Cid = isset($_GET["id"]) ? intval($_GET["id"]) : (isset($_POST["id"]) ? intval($_POST["id"]) : 0);
-$Language = file("languages/" . function_75() . "/manage_torrent_categories.lang");
+$Language = file("languages/" . getStaffLanguage() . "/manage_torrent_categories.lang");
 $Message = "";
 if ($Act == "delete" && $Cid) {
     $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT name, type FROM categories WHERE $id = '" . $Cid . "'");
@@ -22,7 +22,7 @@ if ($Act == "delete" && $Cid) {
                 mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM categories WHERE $pid = '" . $Cid . "'");
             }
             $SysMsg = str_replace(["{1}", "{2}"], [$Category["name"], $_SESSION["ADMIN_USERNAME"]], $Language[10]);
-            function_79($SysMsg);
+            logStaffAction($SysMsg);
             function_153();
         }
     }
@@ -56,8 +56,8 @@ if ($Act == "edit" && $Cid) {
             if (mysqli_affected_rows($GLOBALS["DatabaseConnect"])) {
                 function_153();
                 $Message = str_replace(["{1}", "{2}"], [$Category["name"], $_SESSION["ADMIN_USERNAME"]], $Language[11]);
-                function_79($Message);
-                $Message = function_81($Message);
+                logStaffAction($Message);
+                $Message = showAlertMessage($Message);
                 $Done = true;
             }
         }
@@ -119,14 +119,14 @@ if ($Act == "new") {
             $type = "c";
         }
         if (!$name || !$image) {
-            $Message = function_76($Language[24]);
+            $Message = showAlertError($Language[24]);
         } else {
             mysqli_query($GLOBALS["DatabaseConnect"], "INSERT INTO categories (name, image, cat_desc, type, pid, canview, candownload) VALUES ('" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $name) . "', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $image) . "', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $cat_desc) . "', '" . $type . "', '" . $pid . "', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $canview) . "', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $candownload) . "')");
             if (mysqli_affected_rows($GLOBALS["DatabaseConnect"])) {
                 function_153();
                 $Message = str_replace(["{1}", "{2}"], [$name, $_SESSION["ADMIN_USERNAME"]], $Language[12]);
-                function_79($Message);
-                $Message = function_81($Message);
+                logStaffAction($Message);
+                $Message = showAlertMessage($Message);
                 $Done = true;
             }
         }
@@ -191,21 +191,21 @@ foreach ($Output as $Category) {
     $List .= $Category;
     $Count++;
 }
-echo "\r\n" . function_81("<a $href = \"index.php?do=manage_torrent_categories&amp;$act = new\">" . trim($Language[25]) . "</a>") . "\r\n" . $Message . "\r\n<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t<tr>\r\n\t\t<td class=\"tcat\" $align = \"center\">" . $Language[2] . "</td>\r\n\t</tr>\r\n</table>" . $List;
-function function_75()
+echo "\r\n" . showAlertMessage("<a $href = \"index.php?do=manage_torrent_categories&amp;$act = new\">" . trim($Language[25]) . "</a>") . "\r\n" . $Message . "\r\n<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t<tr>\r\n\t\t<td class=\"tcat\" $align = \"center\">" . $Language[2] . "</td>\r\n\t</tr>\r\n</table>" . $List;
+function getStaffLanguage()
 {
     if (isset($_COOKIE["staffcplanguage"]) && is_dir("languages/" . $_COOKIE["staffcplanguage"]) && is_file("languages/" . $_COOKIE["staffcplanguage"] . "/staffcp.lang")) {
         return $_COOKIE["staffcplanguage"];
     }
     return "english";
 }
-function function_77()
+function checkStaffAuthentication()
 {
     if (!defined("IN-TSSE-STAFF-PANEL")) {
         var_236("../index.php");
     }
 }
-function function_78($url)
+function redirectTo($url)
 {
     if (!headers_sent()) {
         header("Location: " . $url);
@@ -214,11 +214,11 @@ function function_78($url)
     }
     exit;
 }
-function function_76($Error)
+function showAlertError($Error)
 {
     return "<div class=\"alert\"><div>" . $Error . "</div></div>";
 }
-function function_79($log)
+function logStaffAction($log)
 {
     mysqli_query($GLOBALS["DatabaseConnect"], "INSERT INTO ts_staffcp_logs (uid, date, log) VALUES ('" . $_SESSION["ADMIN_ID"] . "', '" . time() . "', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $log) . "')");
 }
@@ -276,7 +276,7 @@ function function_155($selected = "")
     $var_446 .= "</select>";
     return $var_446;
 }
-function function_81($message = "")
+function showAlertMessage($message = "")
 {
     return "<div class=\"alert\"><div>" . $message . "</div></div>";
 }

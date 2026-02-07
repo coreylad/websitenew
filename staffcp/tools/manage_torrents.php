@@ -7,7 +7,7 @@
  */
 
 var_235();
-$Language = file("languages/" . function_75() . "/manage_torrents.lang");
+$Language = file("languages/" . getStaffLanguage() . "/manage_torrents.lang");
 $Message = "";
 $Found = "";
 $Act = isset($_GET["act"]) ? trim($_GET["act"]) : (isset($_POST["act"]) ? trim($_POST["act"]) : "");
@@ -205,10 +205,10 @@ if ($searchtype != "") {
 if ($Act == "update") {
     $torrentid = isset($_POST["torrentid"]) ? $_POST["torrentid"] : "";
     if (empty($actiontype)) {
-        $Message = function_76($Language[43]);
+        $Message = showAlertError($Language[43]);
     } else {
         if (!is_array($torrentid) || count($torrentid) < 1) {
-            $Message = function_76($Language[44]);
+            $Message = showAlertError($Language[44]);
         } else {
             $torrentids = implode(",", $torrentid);
             if ($torrentids) {
@@ -217,7 +217,7 @@ if ($Act == "update") {
                         if (0 < $category) {
                             mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE torrents SET $category = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $category) . "' WHERE id IN (" . $torrentids . ")");
                         } else {
-                            $Message = function_76($Language[45]);
+                            $Message = showAlertError($Language[45]);
                         }
                         break;
                     case "delete":
@@ -262,14 +262,14 @@ if ($Act == "update") {
                         mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE torrents SET $flags = 0 WHERE $download_multiplier = 1 AND $upload_multiplier = 1 AND flags != 0");
                         mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE torrents SET $flags = 2 WHERE ($download_multiplier = 0 OR $download_multiplier = 0.5 OR $upload_multiplier = 2) AND flags != 2");
                         if (empty($Message)) {
-                            function_79(str_replace(["{1}", "{2}"], [$_SESSION["ADMIN_USERNAME"], $actiontype . " (" . $torrentids . ")"], $Language[39]));
+                            logStaffAction(str_replace(["{1}", "{2}"], [$_SESSION["ADMIN_USERNAME"], $actiontype . " (" . $torrentids . ")"], $Language[39]));
                             if (isset($_GET["from_browse"])) {
-                                function_78("../browse.php" . (isset($_GET["page"]) ? "?$page = " . intval($_GET["page"]) : ""));
+                                redirectTo("../browse.php" . (isset($_GET["page"]) ? "?$page = " . intval($_GET["page"]) : ""));
                             }
                         }
                 }
             } else {
-                $Message = function_76("I can not implode torrent ids!");
+                $Message = showAlertError("I can not implode torrent ids!");
             }
         }
     }
@@ -291,7 +291,7 @@ if ($sort) {
     $orderby = "t." . $sort . " " . $order;
 }
 $results = mysqli_num_rows(mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM torrents" . $extraquery1));
-list($pagertop, $limit) = function_82(25, $results, $_SERVER["SCRIPT_NAME"] . "?do=manage_torrents&amp;" . $extralink);
+list($pagertop, $limit) = buildPaginationLinks(25, $results, $_SERVER["SCRIPT_NAME"] . "?do=manage_torrents&amp;" . $extralink);
 $catdropdown = var_460("category", $category, "<option $value = \"0\">" . $Language[6] . "</option>");
 $catdropdown2 = var_460("browsecategory", $browsecategory, "<option $value = \"0\">" . $Language[6] . "</option>");
 $searchtype_dropdown = "\r\n<select $name = \"searchtype\">\r\n<option $value = \"0\">" . $Language[41] . "</option>";
@@ -304,27 +304,27 @@ $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT t.*, u.username, g.na
 if (mysqli_num_rows($query)) {
     $Found .= "\r\n\t" . $pagertop . "\r\n\t<form $action = \"" . $_SERVER["SCRIPT_NAME"] . "?do=manage_torrents&amp;$act = update" . (isset($_GET["page"]) ? "&amp;$page = " . intval($_GET["page"]) : "") . "\" $method = \"post\" $name = \"manage_torrents\">\r\n\t<input $type = \"hidden\" $name = \"searchword\" $value = \"" . urlencode($searchword) . "\" />\r\n\t<input $type = \"hidden\" $name = \"browsecategory\" $value = \"" . urlencode($browsecategory) . "\" />\r\n\t<input $type = \"hidden\" $name = \"searchtype\" $value = \"" . urlencode($searchtype) . "\" />\r\n\t<input $type = \"hidden\" $name = \"sort\" $value = \"" . urlencode($sort) . "\" />\r\n\t<input $type = \"hidden\" $name = \"order\" $value = \"" . urlencode($order) . "\" />\r\n\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t<tr>\r\n\t\t\t<td class=\"tcat\" $colspan = \"9\" $align = \"center\">\r\n\t\t\t\t" . $Language[2] . "\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt2\">\r\n\t\t\t\t" . function_162("name", $Language[5]) . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt2\" $align = \"center\">\r\n\t\t\t\t" . $Language[14] . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt2\">\r\n\t\t\t\t" . function_162("category", $Language[6]) . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt2\">\r\n\t\t\t\t" . function_162("size", $Language[7]) . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt2\">\r\n\t\t\t\t" . function_162("added", $Language[8]) . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt2\">\r\n\t\t\t\t" . function_162("owner", $Language[9]) . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt2\">\r\n\t\t\t\t" . function_162("seeders", $Language[10]) . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt2\">\r\n\t\t\t\t" . function_162("leechers", $Language[11]) . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt2\" $align = \"center\"><input $type = \"checkbox\" $checkall = \"group\" $onclick = \"javascript: return select_deselectAll ('manage_torrents', this, 'group');\"></td>\r\n\t\t</tr>\r\n\t";
     while ($Torrent = mysqli_fetch_assoc($query)) {
-        $Found .= "\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t<a $href = \"../details.php?$id = " . $Torrent["id"] . "\">" . htmlspecialchars($Torrent["name"]) . "</a>\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\" $align = \"center\">\r\n\t\t\t\t" . function_163($Torrent) . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t" . htmlspecialchars($Torrent["catname"]) . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t" . var_238($Torrent["size"]) . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t" . function_84($Torrent["added"]) . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t<a $href = \"index.php?do=edit_user&amp;$username = " . $Torrent["username"] . "\">" . function_83($Torrent["username"], $Torrent["namestyle"]) . "</a>\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t" . number_format($Torrent["seeders"]) . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t" . number_format($Torrent["leechers"]) . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\" $align = \"center\"><input $type = \"checkbox\" $name = \"torrentid[]\" $value = \"" . $Torrent["id"] . "\" $checkme = \"group\" " . (isset($_POST["torrentid"]) && in_array($Torrent["id"], $_POST["torrentid"]) ? " $checked = \"checked\"" : "") . "/></td>\r\n\t\t</tr>\r\n\t\t";
+        $Found .= "\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t<a $href = \"../details.php?$id = " . $Torrent["id"] . "\">" . htmlspecialchars($Torrent["name"]) . "</a>\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\" $align = \"center\">\r\n\t\t\t\t" . function_163($Torrent) . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t" . htmlspecialchars($Torrent["catname"]) . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t" . var_238($Torrent["size"]) . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t" . formatTimestamp($Torrent["added"]) . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t<a $href = \"index.php?do=edit_user&amp;$username = " . $Torrent["username"] . "\">" . applyUsernameStyle($Torrent["username"], $Torrent["namestyle"]) . "</a>\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t" . number_format($Torrent["seeders"]) . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t" . number_format($Torrent["leechers"]) . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\" $align = \"center\"><input $type = \"checkbox\" $name = \"torrentid[]\" $value = \"" . $Torrent["id"] . "\" $checkme = \"group\" " . (isset($_POST["torrentid"]) && in_array($Torrent["id"], $_POST["torrentid"]) ? " $checked = \"checked\"" : "") . "/></td>\r\n\t\t</tr>\r\n\t\t";
     }
     $Found .= "\r\n\t\t<tr>\r\n\t\t\t<td $colspan = \"3\" $align = \"right\" class=\"tcat2\">\r\n\t\t\t\t<select $name = \"actiontype\" $onchange = \"check_it(this)\">\r\n\t\t\t\t\t<option $value = \"0\"" . ($actiontype == "0" ? " $selected = \"selected\"" : "") . ">" . $Language[26] . "</option>\r\n\t\t\t\t\t<option $value = \"move\"" . ($actiontype == "move" ? " $selected = \"selected\"" : "") . ">" . $Language[27] . "</option>\r\n\t\t\t\t\t<option $value = \"delete\"" . ($actiontype == "delete" ? " $selected = \"selected\"" : "") . ">" . $Language[28] . "</option>\r\n\t\t\t\t\t<option $value = \"sticky\"" . ($actiontype == "sticky" ? " $selected = \"selected\"" : "") . ">" . $Language[29] . "</option>\r\n\t\t\t\t\t<option $value = \"free\"" . ($actiontype == "free" ? " $selected = \"selected\"" : "") . ">" . $Language[30] . "</option>\r\n\t\t\t\t\t<option $value = \"silver\"" . ($actiontype == "silver" ? " $selected = \"selected\"" : "") . ">" . $Language[31] . "</option>\r\n\t\t\t\t\t<option $value = \"doubleupload\"" . ($actiontype == "doubleupload" ? " $selected = \"selected\"" : "") . ">" . $Language[36] . "</option>\r\n\t\t\t\t\t<option $value = \"visible\"" . ($actiontype == "visible" ? " $selected = \"selected\"" : "") . ">" . $Language[32] . "</option>\r\n\t\t\t\t\t<option $value = \"anonymous\"" . ($actiontype == "anonymous" ? " $selected = \"selected\"" : "") . ">" . $Language[33] . "</option>\r\n\t\t\t\t\t<option $value = \"banned\"" . ($actiontype == "banned" ? " $selected = \"selected\"" : "") . ">" . $Language[34] . "</option>\r\n\t\t\t\t\t<option $value = \"nuke\"" . ($actiontype == "nuke" ? " $selected = \"selected\"" : "") . ">" . $Language[35] . "</option>\t\t\t\t\t\r\n\t\t\t\t\t<option $value = \"openclose\"" . ($actiontype == "openclose" ? " $selected = \"selected\"" : "") . ">" . $Language[37] . "</option>\r\n\t\t\t\t\t<option $value = \"request\"" . ($actiontype == "request" ? " $selected = \"selected\"" : "") . ">" . $Language[55] . "</option>\r\n\t\t\t\t</select>\r\n\t\t\t\t<input $type = \"submit\" $value = \"" . $Language[38] . "\" />\r\n\t\t\t</td>\r\n\t\t\t<td $colspan = \"6\" $align = \"left\" class=\"tcat2\">\r\n\t\t\t\t<div $id = \"movetorrent\" $style = \"display: none;\">\r\n\t\t\t\t\t" . $catdropdown . "\r\n\t\t\t\t</div>\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t</table>\r\n\t</form>\r\n\t" . $pagertop;
 } else {
-    $Message = function_76($Language[4]);
+    $Message = showAlertError($Language[4]);
 }
 echo "\r\n<script $type = \"text/javascript\">\r\n\tfunction select_deselectAll(formname,elm,group)\r\n\t{\r\n\t\tvar $frm = document.forms[formname];\r\n\t\tfor($i = 0;i<frm.length;i++)\r\n\t\t{\r\n\t\t\tif(elm.attributes[\"checkall\"] != null && elm.attributes[\"checkall\"].$value = = group)\r\n\t\t\t{\r\n\t\t\t\tif(frm.elements[i].attributes[\"checkme\"] != null && frm.elements[i].attributes[\"checkme\"].$value = = group)\r\n\t\t\t\t{\r\n\t\t\t\t\tfrm.elements[i].$checked = elm.checked;\r\n\t\t\t\t}\r\n\t\t\t}\r\n\t\t\telse if(frm.elements[i].attributes[\"checkme\"] != null && frm.elements[i].attributes[\"checkme\"].$value = = group)\r\n\t\t\t{\r\n\t\t\t\tif(frm.elements[i].$checked = = false)\r\n\t\t\t\t{\r\n\t\t\t\t\tfrm.elements[1].$checked = false;\r\n\t\t\t\t}\r\n\t\t\t}\r\n\t\t}\r\n\t}\r\n\tfunction check_it(wHAT)\r\n\t{\r\n\t\tif (wHAT.$value = = \"move\")\r\n\t\t{\r\n\t\t\tTSGetID(\"movetorrent\").style.$display = \"block\";\r\n\t\t}\r\n\t\telse\r\n\t\t{\r\n\t\t\tTSGetID(\"movetorrent\").style.$display = \"none\";\r\n\t\t}\r\n\t}\r\n</script>\r\n\r\n" . $Message . "\r\n" . $Found;
-function function_75()
+function getStaffLanguage()
 {
     if (isset($_COOKIE["staffcplanguage"]) && is_dir("languages/" . $_COOKIE["staffcplanguage"]) && is_file("languages/" . $_COOKIE["staffcplanguage"] . "/staffcp.lang")) {
         return $_COOKIE["staffcplanguage"];
     }
     return "english";
 }
-function function_77()
+function checkStaffAuthentication()
 {
     if (!defined("IN-TSSE-STAFF-PANEL")) {
         var_236("../index.php");
     }
 }
-function function_78($url)
+function redirectTo($url)
 {
     if (!headers_sent()) {
         header("Location: " . $url);
@@ -333,11 +333,11 @@ function function_78($url)
     }
     exit;
 }
-function function_76($Error)
+function showAlertError($Error)
 {
     return "<div class=\"alert\"><div>" . $Error . "</div></div>";
 }
-function function_88($bytes = 0)
+function formatBytes($bytes = 0)
 {
     if ($bytes < 1024000) {
         return number_format($bytes / 1024, 2) . " KB";
@@ -350,7 +350,7 @@ function function_88($bytes = 0)
     }
     return number_format($bytes / 0, 2) . " TB";
 }
-function function_84($timestamp = "")
+function formatTimestamp($timestamp = "")
 {
     $var_265 = "m-d-Y h:i A";
     if (empty($timestamp)) {
@@ -362,11 +362,11 @@ function function_84($timestamp = "")
     }
     return date($var_265, $timestamp);
 }
-function function_83($username, $namestyle)
+function applyUsernameStyle($username, $namestyle)
 {
     return str_replace("{username}", $username, $namestyle);
 }
-function function_86($numresults, &$page, &$perpage, $maxperpage = 20, $defaultperpage = 20)
+function validatePerPage($numresults, &$page, &$perpage, $maxperpage = 20, $defaultperpage = 20)
 {
     $perpage = intval($perpage);
     if ($perpage < 1) {
@@ -388,7 +388,7 @@ function function_86($numresults, &$page, &$perpage, $maxperpage = 20, $defaultp
         }
     }
 }
-function function_87($pagenumber, $perpage, $total)
+function calculatePagination($pagenumber, $perpage, $total)
 {
     $var_241 = $perpage * ($pagenumber - 1);
     $var_89 = $var_241 + $perpage;
@@ -398,7 +398,7 @@ function function_87($pagenumber, $perpage, $total)
     $var_241++;
     return ["first" => number_format($var_241), "last" => number_format($var_89)];
 }
-function function_82($perpage, $results, $address)
+function buildPaginationLinks($perpage, $results, $address)
 {
     if ($results < $perpage) {
         return ["", ""];
@@ -409,7 +409,7 @@ function function_82($perpage, $results, $address)
         $var_242 = 0;
     }
     $pagenumber = isset($_GET["page"]) ? intval($_GET["page"]) : (isset($_POST["page"]) ? intval($_POST["page"]) : "");
-    function_86($results, $pagenumber, $perpage, 200);
+    validatePerPage($results, $pagenumber, $perpage, 200);
     $var_243 = ($pagenumber - 1) * $perpage;
     $var_244 = $pagenumber * $perpage;
     if ($results < $var_244) {
@@ -435,12 +435,12 @@ function function_82($perpage, $results, $address)
     $var_251["prev"] = $var_251["next"];
     if (1 < $pagenumber) {
         $var_252 = $pagenumber - 1;
-        $var_253 = function_87($var_252, $perpage, $results);
+        $var_253 = calculatePagination($var_252, $perpage, $results);
         $var_251["prev"] = true;
     }
     if ($pagenumber < $var_242) {
         $var_254 = $pagenumber + 1;
-        $var_255 = function_87($var_254, $perpage, $results);
+        $var_255 = calculatePagination($var_254, $perpage, $results);
         $var_251["next"] = true;
     }
     $var_256 = "3";
@@ -455,15 +455,15 @@ function function_82($perpage, $results, $address)
     }
     if ($var_256 <= abs($var_250 - $pagenumber) && $var_256 != 0) {
         if ($var_250 == 1) {
-            $var_260 = function_87(1, $perpage, $results);
+            $var_260 = calculatePagination(1, $perpage, $results);
             $var_251["first"] = true;
         }
         if ($var_250 == $var_242) {
-            $var_261 = function_87($var_242, $perpage, $results);
+            $var_261 = calculatePagination($var_242, $perpage, $results);
             $var_251["last"] = true;
         }
         if (in_array(abs($var_250 - $pagenumber), $var_257) && $var_250 != 1 && $var_250 != $var_242) {
-            $var_262 = function_87($var_250, $perpage, $results);
+            $var_262 = calculatePagination($var_250, $perpage, $results);
             $var_263 = $var_250 - $pagenumber;
             if (0 < $var_263) {
                 $var_263 = "+" . $var_263;
@@ -472,10 +472,10 @@ function function_82($perpage, $results, $address)
         }
     } else {
         if ($var_250 == $pagenumber) {
-            $var_264 = function_87($var_250, $perpage, $results);
+            $var_264 = calculatePagination($var_250, $perpage, $results);
             $var_245 .= "<li><a $name = \"current\" class=\"current\" $title = \"Showing results " . $var_264["first"] . " to " . $var_264["last"] . " of " . $total . "\">" . $var_250 . "</a></li>";
         } else {
-            $var_262 = function_87($var_250, $perpage, $results);
+            $var_262 = calculatePagination($var_250, $perpage, $results);
             $var_245 .= "<li><a $href = \"" . $address . ($var_250 != 1 ? "page=" . $var_250 : "") . "\" $title = \"Show results " . $var_262["first"] . " to " . $var_262["last"] . " of " . $total . "\">" . $var_250 . "</a></li>";
         }
     }
@@ -585,7 +585,7 @@ function function_151($id)
     mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM ts_thanks WHERE $tid = " . $id);
     mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM ts_nfo  WHERE $id = " . $id);
 }
-function function_79($log)
+function logStaffAction($log)
 {
     mysqli_query($GLOBALS["DatabaseConnect"], "INSERT INTO ts_staffcp_logs (uid, date, log) VALUES ('" . $_SESSION["ADMIN_ID"] . "', '" . time() . "', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $log) . "')");
 }

@@ -7,26 +7,26 @@
  */
 
 var_235();
-$Language = file("languages/" . function_75() . "/edit_user.lang");
+$Language = file("languages/" . getStaffLanguage() . "/edit_user.lang");
 $Message = "";
 $username = "";
 $userid = "";
 $FirstQuery = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT u.id, g.* FROM users u INNER JOIN usergroups g ON (u.$usergroup = g.gid) WHERE u.$id = '" . $_SESSION["ADMIN_ID"] . "' LIMIT 1");
 exit(mysqli_error($GLOBALS["DatabaseConnect"]));
-function function_75()
+function getStaffLanguage()
 {
     if (isset($_COOKIE["staffcplanguage"]) && is_dir("languages/" . $_COOKIE["staffcplanguage"]) && is_file("languages/" . $_COOKIE["staffcplanguage"] . "/staffcp.lang")) {
         return $_COOKIE["staffcplanguage"];
     }
     return "english";
 }
-function function_77()
+function checkStaffAuthentication()
 {
     if (!defined("IN-TSSE-STAFF-PANEL")) {
         var_236("../index.php");
     }
 }
-function function_78($url)
+function redirectTo($url)
 {
     if (!headers_sent()) {
         header("Location: " . $url);
@@ -35,11 +35,11 @@ function function_78($url)
     }
     exit;
 }
-function function_76($Error)
+function showAlertError($Error)
 {
     return "<div class=\"alert\"><div>" . $Error . "</div></div>";
 }
-function function_79($log)
+function logStaffAction($log)
 {
     mysqli_query($GLOBALS["DatabaseConnect"], "INSERT INTO ts_staffcp_logs (uid, date, log) VALUES ('" . $_SESSION["ADMIN_ID"] . "', '" . time() . "', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $log) . "')") or exit(mysqli_error($GLOBALS["DatabaseConnect"]));
 }
@@ -50,7 +50,7 @@ function function_104($offset = "all")
 }
 function function_105($tzoffset = 0, $autodst = 0, $dst = 0)
 {
-    $Language = file("languages/" . function_75() . "/timezone.lang");
+    $Language = file("languages/" . getStaffLanguage() . "/timezone.lang");
     $var_314 = "";
     $count = 0;
     foreach (function_104() as $var_315 => $var_316) {
@@ -77,7 +77,7 @@ function function_106($options, $field, $number = 0)
     $array = ["parked" => "A1", "invisible" => "B1", "commentpm" => "C1", "avatars" => "D1", "showoffensivetorrents" => "E1", "popup" => "F1", "leftmenu" => "G1", "signatures" => "H1", "privacy" => "I" . $number, "acceptpms" => "K" . $number, "gender" => "L" . $number, "visitormsg" => "M" . $number, "autodst" => "N1", "dst" => "O1", "quickmenu" => "P1"];
     return preg_match("#" . $array[$field] . "#is", $options) ? true : false;
 }
-function function_102($length = 20)
+function generateSecret($length = 20)
 {
     $var_308 = ["a", "A", "b", "B", "c", "C", "d", "D", "e", "E", "f", "F", "g", "G", "h", "H", "i", "I", "j", "J", "k", "K", "l", "L", "m", "M", "n", "N", "o", "O", "p", "P", "q", "Q", "r", "R", "s", "S", "t", "T", "u", "U", "v", "V", "w", "W", "x", "X", "y", "Y", "z", "Z", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
     $var_309 = "";
@@ -87,7 +87,7 @@ function function_102($length = 20)
     }
     return $var_309;
 }
-function function_88($bytes = 0)
+function formatBytes($bytes = 0)
 {
     if ($bytes < 1024000) {
         return number_format($bytes / 1024, 2) . " KB";
@@ -117,7 +117,7 @@ function function_108($str)
     $str = str_replace("&gt;", ">", $str);
     return $str;
 }
-function function_81($message = "")
+function showAlertMessage($message = "")
 {
     return "<div class=\"alert\"><div>" . $message . "</div></div>";
 }

@@ -7,7 +7,7 @@
  */
 
 var_235();
-$Language = file("languages/" . function_75() . "/manage_avatars.lang");
+$Language = file("languages/" . getStaffLanguage() . "/manage_avatars.lang");
 $Message = "";
 $AvatarPath = "../include/avatars/";
 $Q = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'FORUMCP'");
@@ -118,7 +118,7 @@ if ($handle = scandir($AvatarPath)) {
 $users = [];
 $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT u.username, u.id, g.namestyle FROM users u LEFT JOIN usergroups g ON (u.$usergroup = g.gid) WHERE u.avatar REGEXP '^" . $BASEURL . "/include/avatars/.*\\.(gif|jpg|png|bmp|jpeg)'");
 while ($user = mysqli_fetch_assoc($query)) {
-    $users[$user["id"]] = "<a $href = \"" . $BASEURL . "/userdetails.php?$id = " . $user["id"] . "\">" . function_83($user["username"], $user["namestyle"]) . "</a>";
+    $users[$user["id"]] = "<a $href = \"" . $BASEURL . "/userdetails.php?$id = " . $user["id"] . "\">" . applyUsernameStyle($user["username"], $user["namestyle"]) . "</a>";
 }
 $str = "\r\n\t<tr>\r\n\t\t<td class=\"alt1\">";
 foreach ($_avatars as $avatar) {
@@ -131,20 +131,20 @@ foreach ($_avatars as $avatar) {
 }
 $str .= "\r\n\t</td>\r\n</tr>\r\n<tr>\r\n\t<td class=\"alt2\">\r\n\t\t" . $Language[8] . "\r\n\t\t<select $name = \"action_type\">\r\n\t\t\t<option $value = \"resize_add_text\">" . $Language[14] . "</option>\r\n\t\t\t<option $value = \"add_text\">" . $Language[15] . "</option>\r\n\t\t\t<option $value = \"resize\">" . $Language[9] . "</option>\r\n\t\t\t<option $value = \"delete\">" . $Language[10] . "</option>\r\n\t\t</select>\r\n\t\t<input $type = \"submit\" $value = \"" . $Language[11] . "\" class=button $style = \"vertical-align: middle;\" />\r\n\t</td>\r\n</tr>";
 echo "\r\n<style $type = \"text/css\">\r\n\tdiv.thumb\r\n\t{\r\n\t\tfloat: left;\r\n\t\tmargin-bottom: 10px;\r\n\t\tmargin-right: 10px;\r\n\t\ttext-align: left;\r\n\t}\r\n\r\n\tdiv.thumb a img\r\n\t{\r\n\t\tborder: none;\r\n\t\tmargin: 0;\r\n\t}\r\n\tul.userlist { list-style:none; padding:0px; margin:0px; }\r\n\tul.userlist li { float:left; margin-right:6px; margin-bottom:6px; width:175px; }\r\n\tul.userlist hr { display:none; }\r\n\r\n\t/* avatars shown */\r\n\tul.userlist_showavatars li { position:relative; width:215px; height:190px; border:solid 1px silver; padding:4px; }\r\n\tul.userlist_showavatars div.username a { padding-left:6px; vertical-align:top; font-weight:bold; }\r\n\r\n\tul.userlist_showavatars div.username input { position:absolute; left:4px; top:4px; }\r\n\tul.userlist_showavatars div.friend label { position:absolute; right:4px; bottom:4px; }\r\n\r\n\t/* avatars hidden */\r\n\tul.userlist_hideavatars li { position:relative; width:215px; border:solid 1px silver; padding:4px; }\r\n\tul.userlist_hideavatars label.avatar_label img { display:none; }\r\n\tul.userlist_hideavatars div.username a { font-weight:bold; }\r\n\t/* Auto-clearing of floats */\r\n\t.floatcontainer:after, .block_row:after {\r\n\t\tcontent: \".\";\r\n\t\tdisplay: block;\r\n\t\theight: 0;\r\n\t\tclear: both;\r\n\t\tvisibility: hidden;\r\n\t}\r\n\t.floatcontainer, .block_row {\r\n\t\tdisplay: inline-block;\r\n\t}\r\n\t/* IE-Mac hide \\*/\r\n\t* html .floatcontainer, * html .block_row {\r\n\t\theight: 1%;\r\n\t}\r\n\t.floatcontainer, .block_row {\r\n\t\tdisplay: block;\r\n\t}\r\n\t/* End IE-Mac hide */\r\n\r\n</style>\r\n<script $type = \"text/javascript\">\r\n\tfunction active_this_image(ImageID)\r\n\t{\r\n\t\tvar $valuEtoChange = document.getElementById(ImageID).style.background;\r\n\t\tif (valuEtoChange.match(/white/) || !valuEtoChange)\r\n\t\t{\r\n\t\t\tdocument.getElementById(ImageID).style.$background = \"#DF7401\";\r\n\t\t}\r\n\t\telse\r\n\t\t{\r\n\t\t\tdocument.getElementById(ImageID).style.$background = \"white\";\r\n\t\t}\r\n\t}\r\n</script>\r\n<form $action = \"index.php?do=manage_avatars\" $method = \"post\" $name = \"manage_avatars\">\r\n\r\n<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t" . $str . "\r\n</table>\r\n</form>\r\n";
-function function_75()
+function getStaffLanguage()
 {
     if (isset($_COOKIE["staffcplanguage"]) && is_dir("languages/" . $_COOKIE["staffcplanguage"]) && is_file("languages/" . $_COOKIE["staffcplanguage"] . "/staffcp.lang")) {
         return $_COOKIE["staffcplanguage"];
     }
     return "english";
 }
-function function_77()
+function checkStaffAuthentication()
 {
     if (!defined("IN-TSSE-STAFF-PANEL")) {
         var_236("../index.php");
     }
 }
-function function_78($url)
+function redirectTo($url)
 {
     if (!headers_sent()) {
         header("Location: " . $url);
@@ -153,15 +153,15 @@ function function_78($url)
     }
     exit;
 }
-function function_76($Error)
+function showAlertError($Error)
 {
     return "<div class=\"alert\"><div>" . $Error . "</div></div>";
 }
-function function_79($log)
+function logStaffAction($log)
 {
     mysqli_query($GLOBALS["DatabaseConnect"], "INSERT INTO ts_staffcp_logs (uid, date, log) VALUES ('" . $_SESSION["ADMIN_ID"] . "', '" . time() . "', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $log) . "')");
 }
-function function_84($timestamp = "")
+function formatTimestamp($timestamp = "")
 {
     $var_265 = "m-d-Y h:i A";
     if (empty($timestamp)) {
@@ -173,7 +173,7 @@ function function_84($timestamp = "")
     }
     return date($var_265, $timestamp);
 }
-function function_88($bytes = 0)
+function formatBytes($bytes = 0)
 {
     if ($bytes < 1024000) {
         return number_format($bytes / 1024, 2) . " KB";
@@ -186,7 +186,7 @@ function function_88($bytes = 0)
     }
     return number_format($bytes / 0, 2) . " TB";
 }
-function function_83($username, $namestyle)
+function applyUsernameStyle($username, $namestyle)
 {
     return str_replace("{username}", $username, $namestyle);
 }

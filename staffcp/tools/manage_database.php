@@ -7,16 +7,16 @@
  */
 
 var_235();
-$Language = file("languages/" . function_75() . "/manage_database.lang");
+$Language = file("languages/" . getStaffLanguage() . "/manage_database.lang");
 $Message = "";
 if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
     $table_names = isset($_POST["table_names"]) ? $_POST["table_names"] : "";
     if (is_array($table_names) && count($table_names)) {
         if (isset($_POST["backup"])) {
             if (function_263($table_names)) {
-                $Message = function_76($Language[18]);
+                $Message = showAlertError($Language[18]);
             } else {
-                $Message = function_76($Language[17]);
+                $Message = showAlertError($Language[17]);
             }
         } else {
             if (isset($_POST["repair"])) {
@@ -61,26 +61,26 @@ $totalrows = $totaldsize = $totalisize = 0;
 foreach ($DBTables as $Table) {
     $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SHOW TABLE STATUS LIKE '" . $Table . "'");
     $Res = mysqli_fetch_assoc($Query);
-    echo "\r\n\t<tr>\r\n\t\t<td class=\"alt1\">" . $Res["Name"] . "</td>\r\n\t\t<td class=\"alt1\">" . $Res["Engine"] . "</td>\r\n\t\t<td class=\"alt1\">" . number_format($Res["Rows"]) . "</td>\r\n\t\t<td class=\"alt1\">" . var_238($Res["Data_length"]) . "</td>\r\n\t\t<td class=\"alt1\">" . var_238($Res["Index_length"]) . "</td>\r\n\t\t<td class=\"alt1\">" . (0 < $Res["Data_free"] ? "<font $color = \"red\"><b>" . var_238($Res["Data_free"]) . "</b></font>" : var_238($Res["Data_free"])) . "</td>\r\n\t\t<td class=\"alt1\">" . function_84($Res["Create_time"]) . "</td>\r\n\t\t<td class=\"alt1\">" . function_84($Res["Update_time"]) . "</td>\r\n\t\t<td class=\"alt1\">" . function_84($Res["Check_time"]) . "</td>\r\n\t\t<td class=\"alt1\">" . $Res["Collation"] . "</td>\r\n\t\t<td class=\"alt1\" $align = \"center\"><input $type = \"checkbox\" $name = \"table_names[]\" $value = \"" . $Res["Name"] . "\" $checkme = \"group\" /></td>\r\n\t</tr>\r\n\t";
+    echo "\r\n\t<tr>\r\n\t\t<td class=\"alt1\">" . $Res["Name"] . "</td>\r\n\t\t<td class=\"alt1\">" . $Res["Engine"] . "</td>\r\n\t\t<td class=\"alt1\">" . number_format($Res["Rows"]) . "</td>\r\n\t\t<td class=\"alt1\">" . var_238($Res["Data_length"]) . "</td>\r\n\t\t<td class=\"alt1\">" . var_238($Res["Index_length"]) . "</td>\r\n\t\t<td class=\"alt1\">" . (0 < $Res["Data_free"] ? "<font $color = \"red\"><b>" . var_238($Res["Data_free"]) . "</b></font>" : var_238($Res["Data_free"])) . "</td>\r\n\t\t<td class=\"alt1\">" . formatTimestamp($Res["Create_time"]) . "</td>\r\n\t\t<td class=\"alt1\">" . formatTimestamp($Res["Update_time"]) . "</td>\r\n\t\t<td class=\"alt1\">" . formatTimestamp($Res["Check_time"]) . "</td>\r\n\t\t<td class=\"alt1\">" . $Res["Collation"] . "</td>\r\n\t\t<td class=\"alt1\" $align = \"center\"><input $type = \"checkbox\" $name = \"table_names[]\" $value = \"" . $Res["Name"] . "\" $checkme = \"group\" /></td>\r\n\t</tr>\r\n\t";
     $totalrows += $Res["Rows"];
     $totaldsize += $Res["Data_length"];
     $totalisize += $Res["Index_length"];
 }
 echo "\r\n\t<tr>\r\n\t\t<td class=\"tcat2\" $align = \"right\" $colspan = \"11\">\r\n\t\t\t<input $type = \"submit\" $name = \"backup\" $value = \"" . $Language[6] . "\" /> <input $type = \"submit\" $name = \"repair\" $value = \"" . $Language[8] . "\" /> <input $type = \"submit\" $name = \"optimize\" $value = \"" . $Language[15] . "\" /> <input $type = \"submit\" $name = \"check\" $value = \"" . $Language[16] . "\" />\r\n\t\t</td>\r\n\t</tr>\r\n</table>";
-function function_75()
+function getStaffLanguage()
 {
     if (isset($_COOKIE["staffcplanguage"]) && is_dir("languages/" . $_COOKIE["staffcplanguage"]) && is_file("languages/" . $_COOKIE["staffcplanguage"] . "/staffcp.lang")) {
         return $_COOKIE["staffcplanguage"];
     }
     return "english";
 }
-function function_77()
+function checkStaffAuthentication()
 {
     if (!defined("IN-TSSE-STAFF-PANEL")) {
         var_236("../index.php");
     }
 }
-function function_78($url)
+function redirectTo($url)
 {
     if (!headers_sent()) {
         header("Location: " . $url);
@@ -89,15 +89,15 @@ function function_78($url)
     }
     exit;
 }
-function function_76($Error)
+function showAlertError($Error)
 {
     return "<div class=\"alert\"><div>" . $Error . "</div></div>";
 }
-function function_79($log)
+function logStaffAction($log)
 {
     mysqli_query($GLOBALS["DatabaseConnect"], "INSERT INTO ts_staffcp_logs (uid, date, log) VALUES ('" . $_SESSION["ADMIN_ID"] . "', '" . time() . "', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $log) . "')");
 }
-function function_88($bytes = 0)
+function formatBytes($bytes = 0)
 {
     if ($bytes < 1024000) {
         return number_format($bytes / 1024, 2) . " KB";
@@ -110,7 +110,7 @@ function function_88($bytes = 0)
     }
     return number_format($bytes / 0, 2) . " TB";
 }
-function function_84($timestamp = "")
+function formatTimestamp($timestamp = "")
 {
     $var_265 = "m-d-Y h:i A";
     if (empty($timestamp)) {

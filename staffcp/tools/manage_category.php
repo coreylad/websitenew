@@ -9,11 +9,11 @@
 var_235();
 $Act = isset($_GET["act"]) ? trim($_GET["act"]) : (isset($_POST["act"]) ? trim($_POST["act"]) : "");
 $Cid = isset($_GET["cid"]) ? intval($_GET["cid"]) : (isset($_POST["cid"]) ? intval($_POST["cid"]) : 0);
-$Language = file("languages/" . function_75() . "/manage_category.lang");
+$Language = file("languages/" . getStaffLanguage() . "/manage_category.lang");
 $Message = "";
 $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT name, sort FROM ts_staffcp WHERE $cid = '" . $Cid . "'");
 if (mysqli_num_rows($query) == 0) {
-    echo "\r\n\t" . function_76($Language[11]);
+    echo "\r\n\t" . showAlertError($Language[11]);
     exit;
 }
 $Category = mysqli_fetch_assoc($query);
@@ -24,9 +24,9 @@ if ($Act == "delete" && $Cid) {
     mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM ts_staffcp WHERE $cid = '" . $Cid . "'");
     if (mysqli_affected_rows($GLOBALS["DatabaseConnect"])) {
         $SysMsg = str_replace(["{1}", "{2}"], [$Category["name"], $_SESSION["ADMIN_USERNAME"]], $Language[4]);
-        function_79($SysMsg);
+        logStaffAction($SysMsg);
     }
-    function_78("index.php?do=manage_tools");
+    redirectTo("index.php?do=manage_tools");
 }
 if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
     $name = trim($_POST["name"]);
@@ -34,27 +34,27 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
     if ($name) {
         mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE ts_staffcp SET $name = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $name) . "', $sort = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $sort) . "' WHERE $cid = '" . $Cid . "'");
         $SysMsg = str_replace(["{1}", "{2}"], [$name, $_SESSION["ADMIN_USERNAME"]], $Language[3]);
-        function_79($SysMsg);
-        function_78("index.php?do=manage_tools");
+        logStaffAction($SysMsg);
+        redirectTo("index.php?do=manage_tools");
     } else {
-        $Message = function_76($Language[9]);
+        $Message = showAlertError($Language[9]);
     }
 }
 echo "\r\n" . $Message . "\r\n<form $method = \"post\" $action = \"index.php?do=manage_category&$act = edit&$cid = " . $Cid . "\">\r\n<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"tborder\">\r\n\t<tr>\r\n\t\t<td class=\"tcat\" $colspan = \"2\" $align = \"center\">\r\n\t\t\t" . $Language[2] . "\r\n\t\t</td>\r\n\t</tr>\r\n\t<tr>\r\n\t\t<td class=\"alt1\">" . $Language[5] . "</td>\r\n\t\t<td class=\"alt1\"><input $type = \"text\" $name = \"name\" $value = \"" . htmlspecialchars($name) . "\" $size = \"40\" /></td>\r\n\t</tr>\r\n\t<tr>\r\n\t\t<td class=\"alt1\">" . $Language[6] . "</td>\r\n\t\t<td class=\"alt1\"><input $type = \"text\" $name = \"sort\" $value = \"" . intval($sort) . "\" $size = \"40\" /></td>\r\n\t</tr>\r\n\t<tr>\r\n\t\t<td class=\"tcat2\"></td>\r\n\t\t<td class=\"tcat2\"><input $type = \"submit\" $value = \"" . $Language[7] . "\" /> <input $type = \"reset\" $value = \"" . $Language[8] . "\" /></td>\r\n\t</tr>\r\n</table>\r\n</form>";
-function function_75()
+function getStaffLanguage()
 {
     if (isset($_COOKIE["staffcplanguage"]) && is_dir("languages/" . $_COOKIE["staffcplanguage"]) && is_file("languages/" . $_COOKIE["staffcplanguage"] . "/staffcp.lang")) {
         return $_COOKIE["staffcplanguage"];
     }
     return "english";
 }
-function function_77()
+function checkStaffAuthentication()
 {
     if (!defined("IN-TSSE-STAFF-PANEL")) {
         var_236("../index.php");
     }
 }
-function function_78($url)
+function redirectTo($url)
 {
     if (!headers_sent()) {
         header("Location: " . $url);
@@ -63,11 +63,11 @@ function function_78($url)
     }
     exit;
 }
-function function_76($Error)
+function showAlertError($Error)
 {
     return "<div class=\"alert\"><div>" . $Error . "</div></div>";
 }
-function function_79($log)
+function logStaffAction($log)
 {
     mysqli_query($GLOBALS["DatabaseConnect"], "INSERT INTO ts_staffcp_logs (uid, date, log) VALUES ('" . $_SESSION["ADMIN_ID"] . "', '" . time() . "', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $log) . "')");
 }

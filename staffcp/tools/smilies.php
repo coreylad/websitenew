@@ -7,7 +7,7 @@
  */
 
 var_235();
-$Language = file("languages/" . function_75() . "/smilies.lang");
+$Language = file("languages/" . getStaffLanguage() . "/smilies.lang");
 $Act = isset($_GET["act"]) ? trim($_GET["act"]) : (isset($_POST["act"]) ? trim($_POST["act"]) : "");
 $Message = "";
 $Q = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'MAIN'");
@@ -27,12 +27,12 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST" && $Act == "update_sorder" 
     $sorder = intval($_POST["sorder"]);
     mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE ts_smilies SET $sorder = " . $sorder . " WHERE $sid = " . $sid);
     function_161();
-    function_79(str_replace("{1}", $_SESSION["ADMIN_USERNAME"], $Language[19]));
+    logStaffAction(str_replace("{1}", $_SESSION["ADMIN_USERNAME"], $Language[19]));
 }
 if ($Act == "delete" && ($sid = intval($_GET["sid"]))) {
     mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM ts_smilies WHERE $sid = " . $sid);
     function_161();
-    function_79(str_replace("{1}", $_SESSION["ADMIN_USERNAME"], $Language[19]));
+    logStaffAction(str_replace("{1}", $_SESSION["ADMIN_USERNAME"], $Language[19]));
 }
 if ($Act == "edit" && ($sid = intval($_GET["sid"])) || $Act == "new") {
     if ($Act == "edit") {
@@ -62,7 +62,7 @@ if ($Act == "edit" && ($sid = intval($_GET["sid"])) || $Act == "new") {
         }
         $UPDATED = true;
         function_161();
-        function_79(str_replace("{1}", $_SESSION["ADMIN_USERNAME"], $Language[19]));
+        logStaffAction(str_replace("{1}", $_SESSION["ADMIN_USERNAME"], $Language[19]));
     }
     if (!isset($UPDATED)) {
         $selectbox = "<select $name = \"spath\" $onchange = \"ChangeImage(this.value);\">";
@@ -82,24 +82,24 @@ if (!isset($List)) {
     while ($smilie = mysqli_fetch_assoc($query)) {
         $List .= "\r\n\t\t<div $style = \"float: left; width: 256px; height: 68px; margin: 0 5px 5px 5px;\">\r\n\t\t<table $cellpadding = \"0\" $cellspacing = \"0\" class=\"mainTableNoMinWidth\">\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"tcat\">\r\n\t\t\t\t\t<span $style = \"float: right;\">\r\n\t\t\t\t\t\t<a $href = \"index.php?do=smilies&amp;$act = edit&amp;$sid = " . $smilie["sid"] . "\"><img $src = \"images/tool_edit.png\" $alt = \"" . trim($Language[3]) . "\" $title = \"" . trim($Language[3]) . "\" $border = \"0\" $style = \"vertical-align: middle;\" /></a> <a $href = \"index.php?do=smilies&amp;$act = delete&amp;$sid = " . $smilie["sid"] . "\" $onclick = \"return confirm('" . trim($Language[5]) . "');\"><img $src = \"images/tool_delete.png\" $alt = \"" . trim($Language[4]) . "\" $title = \"" . trim($Language[4]) . "\" $border = \"0\" $style = \"vertical-align: middle;\" /></a>\r\n\t\t\t\t</span>\r\n\t\t\t\t<img $src = \"" . $SmiliePath . $smilie["spath"] . "\" $border = \"0\" $title = \"" . $smilie["stitle"] . "\" $alt = \"" . $smilie["stitle"] . "\" $style = \"max-width: 60px; max-height: 16px;\" />\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt1\" $align = \"center\">\r\n\t\t\t\t\t<form $method = \"post\" $action = \"" . $_SERVER["SCRIPT_NAME"] . "?do=smilies&$act = update_sorder\" />\r\n\t\t\t\t\t\t<input $type = \"hidden\" $name = \"sid\" $value = \"" . $smilie["sid"] . "\" />\r\n\t\t\t\t\t\t" . $Language[7] . " <input $type = \"text\" $name = \"sorder\" $value = \"" . $smilie["sorder"] . "\" $size = \"2\" /> <input $type = \"submit\" $value = \"" . $Language[6] . "\" />\r\n\t\t\t\t\t</form>\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t</table>\r\n\t\t</div>";
     }
-    echo "\r\n\t" . function_81("<a $href = \"index.php?do=smilies&$act = new\">" . $Language[18] . "</a>") . "\r\n\t" . $Message . "\r\n\t<table $cellpadding = \"0\" $cellspacing = \"0\" class=\"mainTable\">\r\n\t\t<tr>\r\n\t\t\t<td class=\"tcat\" $align = \"center\">\r\n\t\t\t\t" . $Language[2] . "\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t</table>" . $List;
+    echo "\r\n\t" . showAlertMessage("<a $href = \"index.php?do=smilies&$act = new\">" . $Language[18] . "</a>") . "\r\n\t" . $Message . "\r\n\t<table $cellpadding = \"0\" $cellspacing = \"0\" class=\"mainTable\">\r\n\t\t<tr>\r\n\t\t\t<td class=\"tcat\" $align = \"center\">\r\n\t\t\t\t" . $Language[2] . "\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t</table>" . $List;
 } else {
     echo $List;
 }
-function function_75()
+function getStaffLanguage()
 {
     if (isset($_COOKIE["staffcplanguage"]) && is_dir("languages/" . $_COOKIE["staffcplanguage"]) && is_file("languages/" . $_COOKIE["staffcplanguage"] . "/staffcp.lang")) {
         return $_COOKIE["staffcplanguage"];
     }
     return "english";
 }
-function function_77()
+function checkStaffAuthentication()
 {
     if (!defined("IN-TSSE-STAFF-PANEL")) {
         var_236("../index.php");
     }
 }
-function function_78($url, $timeout = false)
+function redirectTo($url, $timeout = false)
 {
     if (!headers_sent()) {
         if (!$timeout) {
@@ -116,11 +116,11 @@ function function_78($url, $timeout = false)
     }
     exit;
 }
-function function_76($Error)
+function showAlertError($Error)
 {
     return "<div class=\"alert\"><div>" . $Error . "</div></div>";
 }
-function function_79($log)
+function logStaffAction($log)
 {
     mysqli_query($GLOBALS["DatabaseConnect"], "INSERT INTO ts_staffcp_logs (uid, date, log) VALUES ('" . $_SESSION["ADMIN_ID"] . "', '" . time() . "', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $log) . "')");
 }
@@ -145,14 +145,14 @@ function function_161($array = [])
     $var_442 = "<?php\n/** TS Generated Cache#14 - Do Not Alter\n * Cache Name: Smilies\n * Generated: " . gmdate("r") . "\n*/\n";
     $var_442 .= $var_456 . "\n?>";
     if (!file_put_contents($var_440, $var_442)) {
-        function_79("I can't update Smilies cache.. Please check permission of " . $var_440 . " file..");
+        logStaffAction("I can't update Smilies cache.. Please check permission of " . $var_440 . " file..");
     }
 }
 function function_149($file)
 {
     return strtolower(substr(strrchr($file, "."), 1));
 }
-function function_81($message = "")
+function showAlertMessage($message = "")
 {
     return "<div class=\"alert\"><div>" . $message . "</div></div>";
 }

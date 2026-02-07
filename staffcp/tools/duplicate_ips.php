@@ -7,7 +7,7 @@
  */
 
 var_235();
-$Language = file("languages/" . function_75() . "/duplicate_ips.lang");
+$Language = file("languages/" . getStaffLanguage() . "/duplicate_ips.lang");
 $Message = "";
 $ids = [];
 if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
@@ -22,13 +22,13 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
         mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET $enabled = 'no', $usergroup = '" . $usergroupid . "', $notifs = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $SysMsg) . "', $modcomment = CONCAT('" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $modcomment) . "', modcomment) WHERE id IN (" . $userids . ")");
         if (mysqli_affected_rows($GLOBALS["DatabaseConnect"])) {
             $SysMsg = str_replace(["{1}", "{2}"], [$userids, $_SESSION["ADMIN_USERNAME"]], $Language[14]);
-            function_79($SysMsg);
+            logStaffAction($SysMsg);
         }
     }
 }
 $counter = mysqli_query($GLOBALS["DatabaseConnect"], "\r\n\t\tSELECT ip, count(*) as tot \r\n\t\tFROM users\r\n\t\tGROUP BY ip \r\n\t\tHAVING tot > 1 \r\n\t\tORDER BY ip");
 if (!mysqli_num_rows($counter)) {
-    echo "\r\n\t\r\n\t" . function_76($Language[1]);
+    echo "\r\n\t\r\n\t" . showAlertError($Language[1]);
 } else {
     $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT u.id, g.cansettingspanel, g.canstaffpanel, g.issupermod FROM users u LEFT JOIN usergroups g ON (u.$usergroup = g.gid) WHERE u.$id = '" . $_SESSION["ADMIN_ID"] . "' LIMIT 1");
     $LoggedAdminDetails = mysqli_fetch_assoc($query);
@@ -72,11 +72,11 @@ if (!mysqli_num_rows($counter)) {
             $face = "100";
             $bg = "";
         }
-        $Username = "<a $href = \"index.php?do=edit_user&amp;$username = " . $arr["username"] . "\">" . function_83($arr["username"], $arr["namestyle"]) . "</a>";
+        $Username = "<a $href = \"index.php?do=edit_user&amp;$username = " . $arr["username"] . "\">" . applyUsernameStyle($arr["username"], $arr["namestyle"]) . "</a>";
         if ($arr["cansettingspanel"] == "yes" && $LoggedAdminDetails["cansettingspanel"] != "yes" || $arr["canstaffpanel"] == "yes" && $LoggedAdminDetails["canstaffpanel"] != "yes" || $arr["issupermod"] == "yes" && $LoggedAdminDetails["issupermod"] != "yes") {
             $Username = "<i>" . $Language[18] . "</i>";
         }
-        $Found .= "\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\" $style = \"font-weight:" . $face . "; " . $bg . "\">\r\n\t\t\t\t" . $Username . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\" $style = \"font-weight:" . $face . "; " . $bg . "\">\r\n\t\t\t\t" . htmlspecialchars($arr["ip"]) . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\" $style = \"font-weight:" . $face . "; " . $bg . "\">\r\n\t\t\t\t" . htmlspecialchars($arr["email"]) . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\" $style = \"font-weight:" . $face . "; " . $bg . "\">\r\n\t\t\t\t" . function_84($arr["added"]) . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\" $style = \"font-weight:" . $face . "; " . $bg . "\">\r\n\t\t\t\t" . function_84($arr["last_access"]) . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\" $style = \"font-weight:" . $face . "; " . $bg . "\">\r\n\t\t\t\t" . var_238($arr["uploaded"]) . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\" $style = \"font-weight:" . $face . "; " . $bg . "\">\r\n\t\t\t\t" . var_238($arr["downloaded"]) . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\" $style = \"font-weight:" . $face . "; " . $bg . "\">\r\n\t\t\t\t" . number_format($arr["invites"]) . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\" $style = \"font-weight:" . $face . "; " . $bg . "\">\r\n\t\t\t\t" . $arr["seedbonus"] . "\r\n\t\t\t</td>\t\t\t\t\t\r\n\t\t\t<td class=\"alt1\" $style = \"font-weight:" . $face . "; " . $bg . "\" $align = \"center\">\r\n\t\t\t\t<input $type = \"checkbox\" $name = \"ids[]\" $value = \"" . $arr["id"] . "\" $checkme = \"group\" />\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t";
+        $Found .= "\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\" $style = \"font-weight:" . $face . "; " . $bg . "\">\r\n\t\t\t\t" . $Username . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\" $style = \"font-weight:" . $face . "; " . $bg . "\">\r\n\t\t\t\t" . htmlspecialchars($arr["ip"]) . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\" $style = \"font-weight:" . $face . "; " . $bg . "\">\r\n\t\t\t\t" . htmlspecialchars($arr["email"]) . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\" $style = \"font-weight:" . $face . "; " . $bg . "\">\r\n\t\t\t\t" . formatTimestamp($arr["added"]) . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\" $style = \"font-weight:" . $face . "; " . $bg . "\">\r\n\t\t\t\t" . formatTimestamp($arr["last_access"]) . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\" $style = \"font-weight:" . $face . "; " . $bg . "\">\r\n\t\t\t\t" . var_238($arr["uploaded"]) . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\" $style = \"font-weight:" . $face . "; " . $bg . "\">\r\n\t\t\t\t" . var_238($arr["downloaded"]) . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\" $style = \"font-weight:" . $face . "; " . $bg . "\">\r\n\t\t\t\t" . number_format($arr["invites"]) . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\" $style = \"font-weight:" . $face . "; " . $bg . "\">\r\n\t\t\t\t" . $arr["seedbonus"] . "\r\n\t\t\t</td>\t\t\t\t\t\r\n\t\t\t<td class=\"alt1\" $style = \"font-weight:" . $face . "; " . $bg . "\" $align = \"center\">\r\n\t\t\t\t<input $type = \"checkbox\" $name = \"ids[]\" $value = \"" . $arr["id"] . "\" $checkme = \"group\" />\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t";
         $ip1 = $arr["ip"];
     }
     $options = [];
@@ -86,20 +86,20 @@ if (!mysqli_num_rows($counter)) {
     $pages = "<select $name = \"page\" $onchange = \"window.$location = 'index.php?do=duplicate_ips&$perpage = " . $perpage . "&$page = ' + this.value\" class=\"bginput\">\n" . function_317($options, $page) . "\t</select>";
     echo "\r\n\t<script $type = \"text/javascript\">\r\n\t\tfunction select_deselectAll(formname,elm,group)\r\n\t\t{\r\n\t\t\tvar $frm = document.forms[formname];\r\n\t\t\tfor($i = 0;i<frm.length;i++)\r\n\t\t\t{\r\n\t\t\t\tif(elm.attributes[\"checkall\"] != null && elm.attributes[\"checkall\"].$value = = group)\r\n\t\t\t\t{\r\n\t\t\t\t\tif(frm.elements[i].attributes[\"checkme\"] != null && frm.elements[i].attributes[\"checkme\"].$value = = group)\r\n\t\t\t\t\t{\r\n\t\t\t\t\t\tfrm.elements[i].$checked = elm.checked;\r\n\t\t\t\t\t}\r\n\t\t\t\t}\r\n\t\t\t\telse if(frm.elements[i].attributes[\"checkme\"] != null && frm.elements[i].attributes[\"checkme\"].$value = = group)\r\n\t\t\t\t{\r\n\t\t\t\t\tif(frm.elements[i].$checked = = false)\r\n\t\t\t\t\t{\r\n\t\t\t\t\t\tfrm.elements[1].$checked = false;\r\n\t\t\t\t\t}\r\n\t\t\t\t}\r\n\t\t\t}\r\n\t\t}\r\n\t</script>\r\n\t<form $action = \"" . $_SERVER["SCRIPT_NAME"] . "?do=duplicate_ips" . (isset($_GET["page"]) ? "&$page = " . intval($_GET["page"]) : "") . "\" $method = \"post\" $name = \"dublicate_ips\">\r\n\t\r\n\t" . $Message . "\t\r\n\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t<tr>\r\n\t\t\t<td class=\"tcat\" $align = \"center\" $colspan = \"10\"><b>" . $Language[3] . "</b></td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt2\"><b>" . $Language[4] . "</b></td>\r\n\t\t\t<td class=\"alt2\"><b>" . $Language[5] . "</b></td>\r\n\t\t\t<td class=\"alt2\"><b>" . $Language[6] . "</b></td>\r\n\t\t\t<td class=\"alt2\"><b>" . $Language[13] . "</b></td>\r\n\t\t\t<td class=\"alt2\"><b>" . $Language[7] . "</b></td>\r\n\t\t\t<td class=\"alt2\"><b>" . $Language[8] . "</b></td>\r\n\t\t\t<td class=\"alt2\"><b>" . $Language[9] . "</b></td>\r\n\t\t\t<td class=\"alt2\"><b>" . $Language[10] . "</b></td>\r\n\t\t\t<td class=\"alt2\"><b>" . $Language[11] . "</b></td>\t\t\t\r\n\t\t\t<td class=\"alt2\" $align = \"center\"><input $type = \"checkbox\" $checkall = \"group\" $onclick = \"javascript: return select_deselectAll ('dublicate_ips', this, 'group');\"></td>\r\n\t\t</tr>\r\n\t\t" . (isset($Found) ? $Found : "") . "\r\n\t\t<tr>\r\n\t\t\t<td class=\"tcat2\" $align = \"right\" $colspan = \"11\">\t\t\t\t\r\n\t\t\t\t<input $type = \"submit\" $value = \"" . $Language[12] . "\" />\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td $colspan = \"11\" $align = \"center\">\r\n\t\t\t\t" . $total . " - " . $Language[17] . "  " . (isset($firstpage) ? $firstpage : "") . " " . (isset($prevpage) ? $prevpage : "") . " &nbsp; " . $pages . " &nbsp; " . (isset($nextpage) ? $nextpage : "") . " " . (isset($lastpage) ? $lastpage : "") . "\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t</table>";
 }
-function function_75()
+function getStaffLanguage()
 {
     if (isset($_COOKIE["staffcplanguage"]) && is_dir("languages/" . $_COOKIE["staffcplanguage"]) && is_file("languages/" . $_COOKIE["staffcplanguage"] . "/staffcp.lang")) {
         return $_COOKIE["staffcplanguage"];
     }
     return "english";
 }
-function function_77()
+function checkStaffAuthentication()
 {
     if (!defined("IN-TSSE-STAFF-PANEL")) {
         var_236("../index.php");
     }
 }
-function function_78($url)
+function redirectTo($url)
 {
     if (!headers_sent()) {
         header("Location: " . $url);
@@ -108,11 +108,11 @@ function function_78($url)
     }
     exit;
 }
-function function_79($log)
+function logStaffAction($log)
 {
     mysqli_query($GLOBALS["DatabaseConnect"], "INSERT INTO ts_staffcp_logs (uid, date, log) VALUES ('" . $_SESSION["ADMIN_ID"] . "', '" . time() . "', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $log) . "')");
 }
-function function_88($bytes = 0)
+function formatBytes($bytes = 0)
 {
     if ($bytes < 1024000) {
         return number_format($bytes / 1024, 2) . " KB";
@@ -125,11 +125,11 @@ function function_88($bytes = 0)
     }
     return number_format($bytes / 0, 2) . " TB";
 }
-function function_76($Error)
+function showAlertError($Error)
 {
     return "<div class=\"alert\"><div>" . $Error . "</div></div>";
 }
-function function_84($timestamp = "")
+function formatTimestamp($timestamp = "")
 {
     $var_265 = "m-d-Y h:i A";
     if (empty($timestamp)) {
@@ -141,7 +141,7 @@ function function_84($timestamp = "")
     }
     return date($var_265, $timestamp);
 }
-function function_83($username, $namestyle)
+function applyUsernameStyle($username, $namestyle)
 {
     return str_replace("{username}", $username, $namestyle);
 }

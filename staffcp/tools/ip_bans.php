@@ -7,7 +7,7 @@
  */
 
 var_235();
-$Language = file("languages/" . function_75() . "/ip_bans.lang");
+$Language = file("languages/" . getStaffLanguage() . "/ip_bans.lang");
 $Message = "";
 $value = "";
 if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
@@ -15,26 +15,26 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
     mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE ipbans SET $value = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $value) . "', $date = NOW(), $modifier = '" . $_SESSION["ADMIN_ID"] . "' WHERE $id = 1");
     if (mysqli_affected_rows($GLOBALS["DatabaseConnect"])) {
         $SysMsg = str_replace("{1}", $_SESSION["ADMIN_USERNAME"], $Language[5]);
-        function_79($SysMsg);
+        logStaffAction($SysMsg);
     }
 }
 $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT value FROM ipbans WHERE $id = 1");
 $IPBANS = mysqli_fetch_assoc($query);
 echo "\t\t\t\t\r\n\r\n" . $Message . "\r\n<form $method = \"post\" $action = \"index.php?do=ip_bans\">\r\n<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t<tr>\r\n\t\t<td class=\"tcat\" $align = \"center\">\r\n\t\t\t" . $Language[2] . "\r\n\t\t</td>\r\n\t</tr>\r\n\t<tr>\r\n\t\t<td class=\"alt1\">\r\n\t\t\t<textarea $style = \"width: 99%; height: 400px;\" $name = \"value\">" . $IPBANS["value"] . "</textarea>\r\n\t\t\t<small>" . $Language[8] . "</small>\r\n\t\t</td>\r\n\t</tr>\r\n\t<tr>\r\n\t\t<td class=\"tcat2\"><input $type = \"submit\" $value = \"" . $Language[6] . "\" /> <input $type = \"reset\" $value = \"" . $Language[7] . "\" /></td>\r\n\t</tr>\r\n</table>\r\n</form>";
-function function_75()
+function getStaffLanguage()
 {
     if (isset($_COOKIE["staffcplanguage"]) && is_dir("languages/" . $_COOKIE["staffcplanguage"]) && is_file("languages/" . $_COOKIE["staffcplanguage"] . "/staffcp.lang")) {
         return $_COOKIE["staffcplanguage"];
     }
     return "english";
 }
-function function_77()
+function checkStaffAuthentication()
 {
     if (!defined("IN-TSSE-STAFF-PANEL")) {
         var_236("../index.php");
     }
 }
-function function_78($url)
+function redirectTo($url)
 {
     if (!headers_sent()) {
         header("Location: " . $url);
@@ -43,11 +43,11 @@ function function_78($url)
     }
     exit;
 }
-function function_76($Error)
+function showAlertError($Error)
 {
     return "<div class=\"alert\"><div>" . $Error . "</div></div>";
 }
-function function_79($log)
+function logStaffAction($log)
 {
     mysqli_query($GLOBALS["DatabaseConnect"], "INSERT INTO ts_staffcp_logs (uid, date, log) VALUES ('" . $_SESSION["ADMIN_ID"] . "', '" . time() . "', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $log) . "')");
 }

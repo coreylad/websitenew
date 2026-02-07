@@ -9,7 +9,7 @@
 var_235();
 $Act = isset($_GET["act"]) ? trim($_GET["act"]) : (isset($_POST["act"]) ? trim($_POST["act"]) : "");
 $Tid = isset($_GET["tid"]) ? intval($_GET["tid"]) : (isset($_POST["tid"]) ? intval($_POST["tid"]) : 0);
-$Language = file("languages/" . function_75() . "/manage_tools.lang");
+$Language = file("languages/" . getStaffLanguage() . "/manage_tools.lang");
 $Message = "";
 $HTMLOutput = "";
 if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST" && $Act == "save_order") {
@@ -27,7 +27,7 @@ if ($Act && $Tid) {
                 mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM ts_staffcp_tools WHERE $tid = '" . $Tid . "'");
                 if (mysqli_affected_rows($GLOBALS["DatabaseConnect"])) {
                     $SysMsg = str_replace(["{1}", "{2}"], [$Tool["toolname"], $_SESSION["ADMIN_USERNAME"]], $Language[6]);
-                    function_79($SysMsg);
+                    logStaffAction($SysMsg);
                 }
             }
             if ($Act == "edit") {
@@ -40,11 +40,11 @@ if ($Act && $Tid) {
                     if ($category && $toolname && $filename && count($usergroups) && is_array($usergroups)) {
                         mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE ts_staffcp_tools SET $cid = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $category) . "', $toolname = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $toolname) . "', $filename = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $filename) . "', $usergroups = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], implode(",", $usergroups)) . "', $sort = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $sort) . "' WHERE $tid = '" . $Tid . "'");
                         $SysMsg = str_replace(["{1}", "{2}"], [$Tool["toolname"], $_SESSION["ADMIN_USERNAME"]], $Language[7]);
-                        function_79($SysMsg);
-                        function_78("index.php?do=manage_tools");
+                        logStaffAction($SysMsg);
+                        redirectTo("index.php?do=manage_tools");
                         exit;
                     }
-                    $Message = function_76($Language[18]);
+                    $Message = showAlertError($Language[18]);
                 }
                 $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT u.id, g.cansettingspanel, g.canstaffpanel, g.issupermod FROM users u LEFT JOIN usergroups g ON (u.$usergroup = g.gid) WHERE u.$id = '" . $_SESSION["ADMIN_ID"] . "' LIMIT 1");
                 $LoggedAdminDetails = mysqli_fetch_assoc($query);
@@ -88,20 +88,20 @@ if (!$HTMLOutput) {
     }
 }
 echo $HTMLOutput;
-function function_75()
+function getStaffLanguage()
 {
     if (isset($_COOKIE["staffcplanguage"]) && is_dir("languages/" . $_COOKIE["staffcplanguage"]) && is_file("languages/" . $_COOKIE["staffcplanguage"] . "/staffcp.lang")) {
         return $_COOKIE["staffcplanguage"];
     }
     return "english";
 }
-function function_77()
+function checkStaffAuthentication()
 {
     if (!defined("IN-TSSE-STAFF-PANEL")) {
         var_236("../index.php");
     }
 }
-function function_78($url)
+function redirectTo($url)
 {
     if (!headers_sent()) {
         header("Location: " . $url);
@@ -110,11 +110,11 @@ function function_78($url)
     }
     exit;
 }
-function function_76($Error)
+function showAlertError($Error)
 {
     return "<div class=\"alert\"><div>" . $Error . "</div></div>";
 }
-function function_79($log)
+function logStaffAction($log)
 {
     mysqli_query($GLOBALS["DatabaseConnect"], "INSERT INTO ts_staffcp_logs (uid, date, log) VALUES ('" . $_SESSION["ADMIN_ID"] . "', '" . time() . "', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $log) . "')");
 }

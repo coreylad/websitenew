@@ -1,0 +1,1311 @@
+FUNCTION ANALYSIS AND SUGGESTED MAPPINGS
+========================================
+
+function_75          | Count: 107  | Suggested: getStaffLanguage              
+  Files: tweak_tracker.php, hit_and_run.php, bonus_gift.php, duplicate_ips.php, server_info.php ...
+  Sample: {     if (isset($_COOKIE["staffcplanguage"]) && is_dir("languages/" . $_COOKIE["staffcplanguage"]) &...
+
+function_77          | Count: 107  | Suggested: utility                       
+  Files: tweak_tracker.php, hit_and_run.php, bonus_gift.php, duplicate_ips.php, server_info.php ...
+  Sample: {     if (!defined("IN-TSSE-STAFF-PANEL")) {         var_236("../index.php");     } }...
+
+function_78          | Count: 107  | Suggested: redirect_output               
+  Files: tweak_tracker.php, hit_and_run.php, bonus_gift.php, duplicate_ips.php, server_info.php ...
+  Sample: {     if (!headers_sent()) {         header("Location: " . $url);     } else {         echo "\r\n\t\...
+
+function_76          | Count: 105  | Suggested: string                        
+  Files: tweak_tracker.php, hit_and_run.php, bonus_gift.php, duplicate_ips.php, server_info.php ...
+  Sample: {     return "<div class=\"alert\"><div>" . $Error . "</div></div>"; }...
+
+function_79          | Count: 86   | Suggested: database_save_session         
+  Files: tweak_tracker.php, hit_and_run.php, bonus_gift.php, duplicate_ips.php, twitter.php ...
+  Sample: {     mysqli_query($GLOBALS["DatabaseConnect"], "INSERT INTO ts_staffcp_logs (uid, date, log) VALUES...
+
+function_81          | Count: 41   | Suggested: string                        
+  Files: hit_and_run.php, manage_applications.php, forums.php, manage_reports.php, manage_countries.php ...
+  Sample: {     return "<div class=\"alert\"><div>" . $message . "</div></div>"; }...
+
+function_84          | Count: 37   | Suggested: utility                       
+  Files: hit_and_run.php, duplicate_ips.php, manage_applications.php, manage_reports.php, restore_database.php ...
+  Sample: {     $var_265 = "m-d-Y h:i A";     if (empty($timestamp)) {         $timestamp = time();     } else...
+
+function_88          | Count: 30   | Suggested: utility                       
+  Files: hit_and_run.php, duplicate_ips.php, forums.php, restore_database.php, torrent_info.php ...
+  Sample: {     if ($bytes < 1024000) {         return number_format($bytes / 1024, 2) . " KB";     }     if (...
+
+function_83          | Count: 28   | Suggested: utility                       
+  Files: hit_and_run.php, duplicate_ips.php, manage_applications.php, manage_reports.php, staff_messages.php ...
+  Sample: {     return str_replace("{username}", $username, $namestyle); }...
+
+function_86          | Count: 24   | Suggested: utility                       
+  Files: hit_and_run.php, manage_applications.php, manage_reports.php, staff_messages.php, banned_users.php ...
+  Sample: {     $perpage = intval($perpage);     if ($perpage < 1) {         $perpage = $defaultperpage;     }...
+
+function_87          | Count: 24   | Suggested: utility                       
+  Files: hit_and_run.php, manage_applications.php, manage_reports.php, staff_messages.php, banned_users.php ...
+  Sample: {     $var_241 = $perpage * ($pagenumber - 1);     $var_89 = $var_241 + $perpage;     if ($total < $...
+
+function_82          | Count: 24   | Suggested: utility                       
+  Files: hit_and_run.php, manage_applications.php, manage_reports.php, staff_messages.php, banned_users.php ...
+  Sample: ...
+
+function_90          | Count: 15   | Suggested: utility                       
+  Files: manage_applications.php, forums.php, mass_pm.php, staff_messages.php, sent_invite.php ...
+  Sample: {     define("EDITOR_TYPE", $type);     define("TINYMCE_MODE", $mode);     define("TINYMCE_ELEMENTS"...
+
+function_80          | Count: 13   | Suggested: database_save                 
+  Files: hit_and_run.php, manage_applications.php, reset_passkey.php, mass_pm.php, staff_messages.php ...
+  Sample: {     if (!($sender != 0 && !$sender || !$receiver || empty($msg))) {         mysqli_query($GLOBALS[...
+
+function_169         | Count: 12   | Suggested: string                        
+  Files: torrent_info.php ...
+  Sample: {         return "end";     }...
+
+function_98          | Count: 9    | Suggested: utility                       
+  Files: twitter.php, unban_user.php, banned_users.php, sent_invite.php, sent_mail.php ...
+  Sample: {         return $this->function_250("statuses/update", "POST", ["status" => $message]);     }...
+
+function_149         | Count: 9    | Suggested: utility                       
+  Files: forums.php, restore_database.php, manage_awards.php, cache.php, smilies.php ...
+  Sample: {     return strtolower(substr(strrchr($file, "."), 1)); }...
+
+function_194         | Count: 9    | Suggested: string                        
+  Files: torrent_info.php, fix_hash.php ...
+  Sample: {         return "i" . $this->value . "e";     }...
+
+function_91          | Count: 8    | Suggested: utility                       
+  Files: unban_user.php, banned_users.php, sent_invite.php, sent_mail.php, reset_password.php ...
+  Sample: ...
+
+function_95          | Count: 8    | Suggested: utility                       
+  Files: unban_user.php, banned_users.php, sent_invite.php, sent_mail.php, reset_password.php ...
+  Sample: {         if ($msg !== false && !empty($msg)) {             fputs($this->smtpSocket, $msg . "\r\n");...
+
+function_96          | Count: 8    | Suggested: utility                       
+  Files: unban_user.php, banned_users.php, sent_invite.php, sent_mail.php, reset_password.php ...
+  Sample: {         if ($this->debug) {             trigger_error($msg, 512);         }         return false; ...
+
+function_97          | Count: 8    | Suggested: utility                       
+  Files: unban_user.php, banned_users.php, sent_invite.php, sent_mail.php, reset_password.php ...
+  Sample: {         if (!$this->smtpSocket) {             return false;         }         if (!$this->function...
+
+function_92          | Count: 8    | Suggested: utility                       
+  Files: unban_user.php, banned_users.php, sent_invite.php, sent_mail.php, reset_password.php ...
+  Sample: {         $text = preg_replace("/(\r\n|\r|\n)/s", "\r\n", trim($text));         $pos = strpos($text,...
+
+function_93          | Count: 8    | Suggested: utility                       
+  Files: unban_user.php, banned_users.php, sent_invite.php, sent_mail.php, reset_password.php ...
+  Sample: {         if ($doUniCode) {             $text = preg_replace_callback("/&#([0-9]+);/siU", function (...
+
+function_94          | Count: 8    | Suggested: string                        
+  Files: unban_user.php, banned_users.php, sent_invite.php, sent_mail.php, reset_password.php ...
+  Sample: {         $text = trim($text);         if (!$charset) {             return $text;         }         ...
+
+function_100         | Count: 8    | Suggested: utility                       
+  Files: unban_user.php, banned_users.php, sent_invite.php, sent_mail.php, reset_password.php ...
+  Sample: ...
+
+function_170         | Count: 8    | Suggested: utility                       
+  Files: torrent_info.php, fix_hash.php ...
+  Sample: {         return $this->error;     }...
+
+function_168         | Count: 8    | Suggested: utility                       
+  Files: torrent_info.php, fix_hash.php ...
+  Sample: {         $end = strpos($raw, "e", $offset);         $offset++;         $this->$value = substr($raw,...
+
+function_119         | Count: 6    | Suggested: utility                       
+  Files: staff_messages.php, manage_visitor_comments.php, manage_comments.php, manage_album_comments.php, read_pms.php ...
+  Sample: ...
+
+function_126         | Count: 6    | Suggested: utility                       
+  Files: staff_messages.php, manage_visitor_comments.php, manage_comments.php, manage_album_comments.php, read_pms.php ...
+  Sample: {         $limit = 136;         if (!empty($this->message)) {             $this->$message = preg_rep...
+
+function_122         | Count: 6    | Suggested: utility                       
+  Files: staff_messages.php, manage_visitor_comments.php, manage_comments.php, manage_album_comments.php, read_pms.php ...
+  Sample: {         $this->function_129();         if ($this->options["auto_url"]) {             $this->functi...
+
+function_130         | Count: 6    | Suggested: utility                       
+  Files: staff_messages.php, manage_visitor_comments.php, manage_comments.php, manage_album_comments.php, read_pms.php ...
+  Sample: {         $this->$message = " " . $this->message;         $this->$message = preg_replace("#([\\>\\s\...
+
+function_133         | Count: 6    | Suggested: utility                       
+  Files: staff_messages.php, manage_visitor_comments.php, manage_comments.php, manage_album_comments.php, read_pms.php ...
+  Sample: {         $var_354 = explode("[*]", $message);         $var_299 = $isOL ? "<ol>" : "<ul>";         f...
+
+function_134         | Count: 6    | Suggested: hash_string                   
+  Files: staff_messages.php, manage_visitor_comments.php, manage_comments.php, manage_album_comments.php, read_pms.php ...
+  Sample: {         $url = str_replace(["  ", "\"", "\\n", "\\r"], "", trim($url));         if ($this->options...
+
+function_120         | Count: 6    | Suggested: utility                       
+  Files: staff_messages.php, manage_visitor_comments.php, manage_comments.php, manage_album_comments.php, read_pms.php ...
+  Sample: {         $var_359 = ["#(&\\#(0*)106;|&\\#(0*)74;|j)((&\\#(0*)97;|&\\#(0*)65;|a)(&\\#(0*)118;|&\\#(0...
+
+function_117         | Count: 6    | Suggested: utility                       
+  Files: staff_messages.php, manage_visitor_comments.php, manage_comments.php, manage_album_comments.php, read_pms.php ...
+  Sample: ...
+
+function_131         | Count: 6    | Suggested: utility                       
+  Files: staff_messages.php, manage_visitor_comments.php, manage_comments.php, manage_album_comments.php, read_pms.php ...
+  Sample: {         $var_364 = false;         if ($name) {             $var_364 = true;             $name = st...
+
+function_135         | Count: 6    | Suggested: utility                       
+  Files: staff_messages.php, manage_visitor_comments.php, manage_comments.php, manage_album_comments.php, read_pms.php ...
+  Sample: {         $size = intval($size) + 10;         if (50 < $size) {             $size = 50;         }   ...
+
+function_186         | Count: 6    | Suggested: utility                       
+  Files: torrent_info.php, fix_hash.php ...
+  Sample: {         $this->$value = $value;     }...
+
+function_115         | Count: 5    | Suggested: database_query                
+  Files: staff_messages.php, manage_visitor_comments.php, manage_comments.php, manage_album_comments.php, read_pms.php
+  Sample: {         $var_281 = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WH...
+
+function_118         | Count: 5    | Suggested: utility                       
+  Files: staff_messages.php, manage_visitor_comments.php, manage_comments.php, manage_album_comments.php, read_pms.php
+  Sample: {         return str_replace(["<", ">", "\"", "'"], ["&lt;", "&gt;", "&quot;", "&#039;"], preg_repla...
+
+function_124         | Count: 5    | Suggested: string                        
+  Files: staff_messages.php, manage_visitor_comments.php, manage_comments.php, manage_album_comments.php, read_pms.php
+  Sample: {         $code = $this->function_127($code, 1);         $var_343 = ["<br>", "<br />"];         $var...
+
+function_125         | Count: 5    | Suggested: utility                       
+  Files: staff_messages.php, manage_visitor_comments.php, manage_comments.php, manage_album_comments.php, read_pms.php
+  Sample: ...
+
+function_123         | Count: 5    | Suggested: string                        
+  Files: staff_messages.php, manage_visitor_comments.php, manage_comments.php, manage_album_comments.php, read_pms.php
+  Sample: {         $code = str_replace(["<br>", "<br />", "\\\""], ["", "", "\""], $code);         $code = $t...
+
+function_127         | Count: 5    | Suggested: utility                       
+  Files: staff_messages.php, manage_visitor_comments.php, manage_comments.php, manage_album_comments.php, read_pms.php
+  Sample: {         $max_amount = intval($max_amount);         if ($strip_front) {             $text = preg_re...
+
+function_128         | Count: 5    | Suggested: utility                       
+  Files: staff_messages.php, manage_visitor_comments.php, manage_comments.php, manage_album_comments.php, read_pms.php
+  Sample: {         $var_352 = count(explode("\n", $code));         if (30 < $var_352) {             $var_352 ...
+
+function_129         | Count: 5    | Suggested: utility                       
+  Files: staff_messages.php, manage_visitor_comments.php, manage_comments.php, manage_album_comments.php, read_pms.php
+  Sample: {         $var_353 = ["#\\[$quote = (?:&quot;|\"|')?(.*?)[\"']?(?:&quot;|\"|')?\\](.*?)\\[\\/quote\\...
+
+function_116         | Count: 5    | Suggested: utility                       
+  Files: staff_messages.php, manage_visitor_comments.php, manage_comments.php, manage_album_comments.php, read_pms.php
+  Sample: {         $var_357 = "./../../" . $this->Settings["cache"] . "/";         if (is_file($var_357 . "sm...
+
+function_121         | Count: 5    | Suggested: utility                       
+  Files: staff_messages.php, manage_visitor_comments.php, manage_comments.php, manage_album_comments.php, read_pms.php
+  Sample: {         if (count($this->smilies_cache)) {             $var_360 = 0;             foreach ($this->s...
+
+function_132         | Count: 5    | Suggested: string                        
+  Files: staff_messages.php, manage_visitor_comments.php, manage_comments.php, manage_album_comments.php, read_pms.php
+  Sample: {         $name = str_replace("\\'", "'", $name);         $email = str_replace("\\'", "'", $email); ...
+
+function_114         | Count: 5    | Suggested: utility                       
+  Files: staff_messages.php, manage_visitor_comments.php, manage_comments.php, manage_album_comments.php, read_pms.php
+  Sample: {     $options = ["use_smilies" => $show_smilies, "max_smilies" => 30, "remove_badwords" => 1, "html...
+
+function_209         | Count: 4    | Suggested: hash                          
+  Files: twitter.php
+  Sample: {         $var_510 = $request->function_211();         $request->$base_string = $base_string;       ...
+
+function_85          | Count: 3    | Suggested: utility                       
+  Files: hit_and_run.php, announce_actions.php, cheat_attempts.php
+  Sample: {     $var_266 = "";     $var_267 = intval(intval($sec) / 3600);     $var_266 .= $padHours ? str_pad...
+
+function_210         | Count: 3    | Suggested: utility                       
+  Files: twitter.php
+  Sample: {         $var_509 = $this->function_209($request, $consumer, $token);         return $var_509 == $s...
+
+function_208         | Count: 3    | Suggested: string                        
+  Files: twitter.php
+  Sample: {         return "HMAC-SHA1";     }...
+
+function_165         | Count: 3    | Suggested: utility                       
+  Files: twitter.php, torrent_info.php, fix_hash.php
+  Sample: {         if (!isset($var_551[$flags & 3])) {             throw new var_552();         }         ret...
+
+function_148         | Count: 3    | Suggested: database_query_session        
+  Files: manage_applications.php, manage_announcements.php, manage_rules.php
+  Sample: {     if (!is_array($selected) && preg_match("@,@Uis", $selected)) {         $selected = explode(","...
+
+function_102         | Count: 3    | Suggested: utility                       
+  Files: add_user.php, reset_password.php, edit_user.php
+  Sample: {     $var_308 = ["a", "A", "b", "B", "c", "C", "d", "D", "e", "E", "f", "F", "g", "G", "h", "H", "i...
+
+function_89          | Count: 3    | Suggested: utility                       
+  Files: manage_cronjobs.php, cheat_attempts.php, view_peers.php
+  Sample: ...
+
+function_17          | Count: 2    | Suggested: utility                       
+  Files: check_tool.php, index.php
+  Sample: {         $result = "";         for ($i = 0; $i < strlen($NEYI); $i++) {             $currentChar = ...
+
+function_18          | Count: 2    | Suggested: utility                       
+  Files: check_tool.php, index.php
+  Sample: {         $result = "";         $NEYI = base64_decode(urldecode($NEYI));         for ($i = 0; $i < s...
+
+function_318         | Count: 2    | Suggested: utility                       
+  Files: duplicate_ips.php, manage_cronjobs.php
+  Sample: {     return $expression ? $returntrue : $returnfalse; }...
+
+function_154         | Count: 2    | Suggested: utility                       
+  Files: manage_countries.php, manage_torrent_categories.php
+  Sample: {     return strtolower(substr(strrchr($file, "."), 1)); }...
+
+function_113         | Count: 2    | Suggested: database_query_save_session   
+  Files: unban_user.php, banned_users.php
+  Sample: {     $var_335 = [];     $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT ip FROM iplog WH...
+
+function_136         | Count: 2    | Suggested: utility                       
+  Files: performance_mode.php, manage_settings.php
+  Sample: ...
+
+function_172         | Count: 2    | Suggested: utility                       
+  Files: torrent_info.php, fix_hash.php
+  Sample: {         return $this->torrent->function_171($Whatever) ? $this->torrent->function_171($Whatever)->...
+
+function_173         | Count: 2    | Suggested: utility                       
+  Files: torrent_info.php, fix_hash.php
+  Sample: {         return $this->torrent->function_171("comment") ? $this->torrent->function_171("comment")->...
+
+function_174         | Count: 2    | Suggested: utility                       
+  Files: torrent_info.php, fix_hash.php
+  Sample: {         return $this->torrent->function_171("creation date") ? $this->torrent->function_171("creat...
+
+function_175         | Count: 2    | Suggested: utility                       
+  Files: torrent_info.php, fix_hash.php
+  Sample: {         return $this->torrent->function_171("created by") ? $this->torrent->function_171("created ...
+
+function_176         | Count: 2    | Suggested: utility                       
+  Files: torrent_info.php, fix_hash.php
+  Sample: {         return $this->info->function_171("name")->function_170();     }...
+
+function_177         | Count: 2    | Suggested: utility                       
+  Files: torrent_info.php, fix_hash.php
+  Sample: {         return $this->info->function_171("piece length")->function_170();     }...
+
+function_178         | Count: 2    | Suggested: utility                       
+  Files: torrent_info.php, fix_hash.php
+  Sample: {         return $this->info->function_171("pieces")->function_170();     }...
+
+function_179         | Count: 2    | Suggested: utility                       
+  Files: torrent_info.php, fix_hash.php
+  Sample: {         if ($this->info->function_171("private")) {             return $this->info->function_171("...
+
+function_180         | Count: 2    | Suggested: utility                       
+  Files: torrent_info.php, fix_hash.php
+  Sample: {         $var_477 = [];         $length = $this->info->function_171("length");         if ($length)...
+
+function_181         | Count: 2    | Suggested: utility                       
+  Files: torrent_info.php, fix_hash.php
+  Sample: {         $var_482 = [];         if ($this->torrent->function_171("announce-list")) {             $t...
+
+function_182         | Count: 2    | Suggested: utility                       
+  Files: torrent_info.php, fix_hash.php
+  Sample: {         $trackers = $this->function_181();         $trackers[] = $tracker_url;         $this->func...
+
+function_184         | Count: 2    | Suggested: utility                       
+  Files: torrent_info.php, fix_hash.php
+  Sample: {         if ($this->torrent->function_171($Whatever)) {             $this->torrent->function_185($W...
+
+function_183         | Count: 2    | Suggested: utility                       
+  Files: torrent_info.php, fix_hash.php
+  Sample: {         if (1 <= count($trackerlist)) {             $this->torrent->function_185("announce-list");...
+
+function_188         | Count: 2    | Suggested: utility                       
+  Files: torrent_info.php, fix_hash.php
+  Sample: {         $length = $this->info->function_171("length");         if ($length) {             $filelis...
+
+function_189         | Count: 2    | Suggested: utility                       
+  Files: torrent_info.php, fix_hash.php
+  Sample: {         $type = "comment";         $key = $this->torrent->function_171($type);         if ($value ...
+
+function_190         | Count: 2    | Suggested: utility                       
+  Files: torrent_info.php, fix_hash.php
+  Sample: {         $type = "created by";         $key = $this->torrent->function_171($type);         if ($val...
+
+function_191         | Count: 2    | Suggested: utility                       
+  Files: torrent_info.php, fix_hash.php
+  Sample: {         $type = "source";         $key = $this->torrent->function_171($type);         if ($value =...
+
+function_192         | Count: 2    | Suggested: utility                       
+  Files: torrent_info.php, fix_hash.php
+  Sample: {         $type = "creation date";         $key = $this->torrent->function_171($type);         if ($...
+
+function_193         | Count: 2    | Suggested: utility                       
+  Files: torrent_info.php, fix_hash.php
+  Sample: {         if ($value == -1) {             $this->info->function_185("private");         } else {    ...
+
+function_167         | Count: 2    | Suggested: utility                       
+  Files: torrent_info.php, fix_hash.php
+  Sample: {         return $this->torrent->function_194();     }...
+
+function_166         | Count: 2    | Suggested: hash                          
+  Files: torrent_info.php, fix_hash.php
+  Sample: {         return pack("H*", sha1($this->info->function_194()));     }...
+
+function_171         | Count: 2    | Suggested: utility                       
+  Files: torrent_info.php, fix_hash.php
+  Sample: {         if (isset($this->value[$key])) {             return $this->value[$key];         }         ...
+
+function_185         | Count: 2    | Suggested: utility                       
+  Files: torrent_info.php, fix_hash.php
+  Sample: {         unset($this->value[$key]);     }...
+
+function_195         | Count: 2    | Suggested: utility                       
+  Files: torrent_info.php, fix_hash.php
+  Sample: {         ksort($this->value);     }...
+
+function_196         | Count: 2    | Suggested: utility                       
+  Files: torrent_info.php, fix_hash.php
+  Sample: {         return count($this->value);     }...
+
+function_187         | Count: 2    | Suggested: utility                       
+  Files: torrent_info.php, fix_hash.php
+  Sample: {         array_push($this->value, $bval);     }...
+
+function_151         | Count: 2    | Suggested: utility                       
+  Files: delete_torrent.php, manage_torrents.php
+  Sample: ...
+
+function_110         | Count: 2    | Suggested: database_query                
+  Files: promotions.php, ranks.php
+  Sample: {     $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT title, namestyle FROM usergroups WH...
+
+function_109         | Count: 2    | Suggested: database_query                
+  Files: promotions.php, ranks.php
+  Sample: {     $var_320 = "<select $name = \"" . $name . "\">";     $query = mysqli_query($GLOBALS["DatabaseC...
+
+function_107         | Count: 2    | Suggested: utility                       
+  Files: usergroups.php, edit_user.php
+  Sample: {     global $usergroupcache;     $var_304 = ["changeusername" => "0", "changepassword" => "1", "cha...
+
+function_144         | Count: 2    | Suggested: utility                       
+  Files: manage_settings.php, rss_feed_manager.php
+  Sample: ...
+
+function_272         | Count: 2    | Suggested: utility                       
+  Files: rss_feed_manager.php
+  Sample: {         $xml_string = var_584($url);         if ($xml_string === false || empty($xml_string["body"...
+
+function_281         | Count: 2    | Suggested: utility                       
+  Files: rss_feed_manager.php
+  Sample: {         $xml = preg_replace("#[\\x00-\\x08\\x0B\\x0C\\x0E-\\x1F]#", "", $xml);         return str_...
+
+function_273         | Count: 2    | Suggested: utility                       
+  Files: rss_feed_manager.php
+  Sample: {         $this->$xml_object = new Class_29($this->xml_string);         $this->xml_object->function_...
+
+function_52          | Count: 1    | Suggested: utility                       
+  Files: magic_quotes_off.php
+  Sample: {     if (!defined("IN-TSSE-STAFF-PANEL")) {         var_217("../index.php");     } }...
+
+function_53          | Count: 1    | Suggested: redirect_output               
+  Files: magic_quotes_off.php
+  Sample: {     if (!headers_sent()) {         header("Location: " . $url);     } else {         echo "\r\n\t\...
+
+function_51          | Count: 1    | Suggested: utility                       
+  Files: magic_quotes_off.php
+  Sample: {     if (is_array($value)) {         foreach ($value as $key => $val) {             if (is_string($...
+
+function_3           | Count: 1    | Suggested: utility                       
+  Files: admin_login.php
+  Sample: {     if (!defined("IN-TSSE-STAFF-PANEL")) {         var_3("../index.php");     } }...
+
+function_4           | Count: 1    | Suggested: redirect_output               
+  Files: admin_login.php
+  Sample: {     if (!headers_sent()) {         header("Location: " . $url);     } else {         echo "\r\n\t\...
+
+function_5           | Count: 1    | Suggested: hash_session                  
+  Files: admin_login.php
+  Sample: {     $_SESSION["form_hash"] = md5(time() . var_4() . rand()); }...
+
+function_6           | Count: 1    | Suggested: string                        
+  Files: admin_login.php
+  Sample: {     if (!is_dir($dir)) {         return "";     }     $dl = [];     if ($var_5 = scandir($dir)) { ...
+
+function_7           | Count: 1    | Suggested: getStaffLanguage              
+  Files: admin_login.php
+  Sample: {     $var_7 = function_6("./languages/");     if (is_array($var_7)) {         $var_8 = "\r\n\t\t<se...
+
+function_8           | Count: 1    | Suggested: utility                       
+  Files: admin_login.php
+  Sample: {     $ip = false;     if (!empty($_SERVER["HTTP_CLIENT_IP"])) {         $ip = $_SERVER["HTTP_CLIENT...
+
+function_9           | Count: 1    | Suggested: utility                       
+  Files: admin_login.php
+  Sample: {     return str_replace(["<", ">", "\"", "'"], ["&lt;", "&gt;", "&quot;", "&#039;"], preg_replace("...
+
+function_10          | Count: 1    | Suggested: database_save_session         
+  Files: admin_login.php
+  Sample: {     mysqli_query($GLOBALS["DatabaseConnect"], "INSERT INTO ts_staffcp_logs (uid, date, log) VALUES...
+
+function_11          | Count: 1    | Suggested: getStaffLanguage              
+  Files: admin_login.php
+  Sample: {     if (isset($_COOKIE["staffcplanguage"]) && is_dir("./languages/" . $_COOKIE["staffcplanguage"])...
+
+function_12          | Count: 1    | Suggested: json                          
+  Files: admin_login.php
+  Sample: {     $var_10 = "UTF-8";     if (is_array($Output)) {         foreach ($Output as $var_11 => $var_12...
+
+function_13          | Count: 1    | Suggested: getStaffLanguage              
+  Files: admin_login.php
+  Sample: {     mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET $last_access = NOW() WHERE $id = \...
+
+function_1           | Count: 1    | Suggested: utility                       
+  Files: admin_login.php
+  Sample: ...
+
+function_14          | Count: 1    | Suggested: utility                       
+  Files: admin_login.php
+  Sample: ...
+
+function_2           | Count: 1    | Suggested: utility                       
+  Files: admin_login.php
+  Sample: ...
+
+function_63          | Count: 1    | Suggested: utility                       
+  Files: check_tool.php
+  Sample: {     require_once "./../version.php";     if (!ini_get("allow_url_fopen") && (!function_exists("cur...
+
+function_65          | Count: 1    | Suggested: utility                       
+  Files: check_tool.php
+  Sample: {     $var_228 = "./../../cache/ip.srv";     if (isset($_SERVER["SERVER_ADDR"]) && !empty($_SERVER["...
+
+function_66          | Count: 1    | Suggested: utility                       
+  Files: check_tool.php
+  Sample: {     return $ip != "127.0.0.1" && $ip != "::1" && filter_var($ip, FILTER_VALIDATE_IP); }...
+
+function_67          | Count: 1    | Suggested: utility                       
+  Files: check_tool.php
+  Sample: {     define("INSTALL_URL", !empty($_SERVER["SERVER_NAME"]) ? var_229($_SERVER["SERVER_NAME"]) : (!e...
+
+function_68          | Count: 1    | Suggested: utility                       
+  Files: check_tool.php
+  Sample: {     if (!defined("IN-TSSE-STAFF-PANEL")) {         function_64("Invalid Access!");     } else {   ...
+
+function_69          | Count: 1    | Suggested: database_save                 
+  Files: check_tool.php
+  Sample: {     mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE ts_config SET $content = \"\" WHERE $confign...
+
+function_70          | Count: 1    | Suggested: hash                          
+  Files: check_tool.php
+  Sample: {     $var_230 = var_231();     @preg_match("#{LISENCE_KEY_RESPONSE}(.*){LISENCE_KEY_RESPONSE}#is", ...
+
+function_72          | Count: 1    | Suggested: utility                       
+  Files: check_tool.php
+  Sample: {     $GLOBALS["Sifrele"] = new Class_4("TSSE8.02020httpstemplateshares.net!");     $var_233 = "0=4&...
+
+function_71          | Count: 1    | Suggested: utility                       
+  Files: check_tool.php
+  Sample: {     $var_97 = "{########-####-####-####-############}";     $var_97 = @str_replace("#", "[0-9,A-F]...
+
+function_64          | Count: 1    | Suggested: html_output                   
+  Files: check_tool.php
+  Sample: {     var_234();     echo "\r\n\t<html>\r\n\t\t<head>\r\n\t\t\t<title>TS SE: Critical Error!</title>...
+
+function_74          | Count: 1    | Suggested: utility                       
+  Files: check_tool.php
+  Sample: {     return str_replace(["http://www.", "https://www.", "http://", "https://", "www."], "", $url); ...
+
+function_73          | Count: 1    | Suggested: utility                       
+  Files: check_tool.php
+  Sample: {     return $GLOBALS["Sifrele"]->function_17($data); }...
+
+function_58          | Count: 1    | Suggested: utility                       
+  Files: ts_db_connect.php
+  Sample: {     if (!defined("IN-TSSE-STAFF-PANEL")) {         exit;     } }...
+
+function_59          | Count: 1    | Suggested: utility                       
+  Files: ts_db_connect.php
+  Sample: {     $var_223 = "./../include/config_database.php";     if (!var_224($var_223)) {         function_...
+
+function_61          | Count: 1    | Suggested: utility                       
+  Files: ts_db_connect.php
+  Sample: {     if (is_file($PathToConfig)) {         require $PathToConfig;         $GLOBALS["DatabaseConnect...
+
+function_62          | Count: 1    | Suggested: database                      
+  Files: ts_db_connect.php
+  Sample: {     if (MYSQL_CHARSET != "") {         if (function_exists("mysqli_set_charset")) {             my...
+
+function_60          | Count: 1    | Suggested: html_output                   
+  Files: ts_db_connect.php
+  Sample: {     echo "\r\n\t<html>\r\n\t\t<head>\r\n\t\t\t<title>TS SE: Critical Error!</title>\r\n\t\t\t<meta...
+
+function_156         | Count: 1    | Suggested: output                        
+  Files: tweak_tracker.php
+  Sample: {     global $Language;     echo "\r\n\t<table>\r\n\t\t<tr>\r\n\t\t\t<td>\r\n\t\t\t\t" . str_replace...
+
+function_317         | Count: 1    | Suggested: utility                       
+  Files: duplicate_ips.php
+  Sample: {     if (is_array($array)) {         $options = "";         foreach ($array as $key => $val) {     ...
+
+function_206         | Count: 1    | Suggested: string                        
+  Files: twitter.php
+  Sample: {         return "oauth_token=" . Class_19::function_207($this->key) . "&$oauth_token_secret = " . C...
+
+function_215         | Count: 1    | Suggested: utility                       
+  Files: twitter.php
+  Sample: {         $var_38 = !isset($_SERVER["HTTPS"]) || $_SERVER["HTTPS"] != "on" ? "http" : "https";      ...
+
+function_218         | Count: 1    | Suggested: utility                       
+  Files: twitter.php
+  Sample: {         $parameters = $parameters ? $parameters : [];         $var_525 = ["oauth_version" => Class...
+
+function_221         | Count: 1    | Suggested: utility                       
+  Files: twitter.php
+  Sample: {         if ($allow_duplicates && isset($this->parameters[$name])) {             if (is_scalar($thi...
+
+function_222         | Count: 1    | Suggested: utility                       
+  Files: twitter.php
+  Sample: {         return isset($this->parameters[$name]) ? $this->parameters[$name] : NULL;     }...
+
+function_223         | Count: 1    | Suggested: utility                       
+  Files: twitter.php
+  Sample: {         return $this->parameters;     }...
+
+function_224         | Count: 1    | Suggested: utility                       
+  Files: twitter.php
+  Sample: {         unset($this->parameters[$name]);     }...
+
+function_225         | Count: 1    | Suggested: utility                       
+  Files: twitter.php
+  Sample: {         $var_310 = $this->parameters;         if (isset($var_310["oauth_signature"])) {           ...
+
+function_211         | Count: 1    | Suggested: utility                       
+  Files: twitter.php
+  Sample: {         $var_526 = [$this->function_227(), $this->function_228(), $this->function_225()];         ...
+
+function_227         | Count: 1    | Suggested: utility                       
+  Files: twitter.php
+  Sample: {         return strtoupper($this->http_method);     }...
+
+function_228         | Count: 1    | Suggested: utility                       
+  Files: twitter.php
+  Sample: {         $var_526 = parse_url($this->http_url);         $var_38 = isset($var_526["scheme"]) ? $var_...
+
+function_229         | Count: 1    | Suggested: utility                       
+  Files: twitter.php
+  Sample: {         $var_523 = $this->function_230();         $var_527 = $this->function_228();         if ($v...
+
+function_230         | Count: 1    | Suggested: utility                       
+  Files: twitter.php
+  Sample: {         return Class_19::function_226($this->parameters);     }...
+
+function_231         | Count: 1    | Suggested: utility                       
+  Files: twitter.php
+  Sample: {         $var_241 = true;         if ($realm) {             $var_527 = "Authorization: OAuth $realm...
+
+function_232         | Count: 1    | Suggested: utility                       
+  Files: twitter.php
+  Sample: {         $this->function_221("oauth_signature_method", $signature_method->function_208(), false);  ...
+
+function_220         | Count: 1    | Suggested: utility                       
+  Files: twitter.php
+  Sample: {         return time();     }...
+
+function_219         | Count: 1    | Suggested: hash                          
+  Files: twitter.php
+  Sample: {         $var_529 = microtime();         $rand = mt_rand();         return md5($var_529 . $rand);  ...
+
+function_233         | Count: 1    | Suggested: utility                       
+  Files: twitter.php
+  Sample: {         $this->signature_methods[$signature_method->function_208()] = $signature_method;     }...
+
+function_234         | Count: 1    | Suggested: utility                       
+  Files: twitter.php
+  Sample: {         $this->function_235($request);         $consumer = $this->function_236($request);         ...
+
+function_238         | Count: 1    | Suggested: utility                       
+  Files: twitter.php
+  Sample: {         $this->function_235($request);         $consumer = $this->function_236($request);         ...
+
+function_241         | Count: 1    | Suggested: utility                       
+  Files: twitter.php
+  Sample: {         $this->function_235($request);         $consumer = $this->function_236($request);         ...
+
+function_235         | Count: 1    | Suggested: utility                       
+  Files: twitter.php
+  Sample: {         $version = $request->function_222("oauth_version");         if (!$version) {             $...
+
+function_242         | Count: 1    | Suggested: utility                       
+  Files: twitter.php
+  Sample: {         $signature_method = $request instanceof Twitter_OAuthRequest ? $request->function_222("oau...
+
+function_236         | Count: 1    | Suggested: utility                       
+  Files: twitter.php
+  Sample: {         $var_533 = $request instanceof Twitter_OAuthRequest ? $request->function_222("oauth_consum...
+
+function_239         | Count: 1    | Suggested: utility                       
+  Files: twitter.php
+  Sample: {         $var_534 = $request instanceof Twitter_OAuthRequest ? $request->function_222("oauth_token"...
+
+function_245         | Count: 1    | Suggested: utility                       
+  Files: twitter.php
+  Sample: {         if (!$timestamp) {             throw new Class_15("Missing timestamp parameter. The parame...
+
+function_246         | Count: 1    | Suggested: utility                       
+  Files: twitter.php
+  Sample: {         if (!$nonce) {             throw new Class_15("Missing nonce parameter. The parameter is r...
+
+function_243         | Count: 1    | Suggested: utility                       
+  Files: twitter.php
+  Sample: {     }...
+
+function_244         | Count: 1    | Suggested: utility                       
+  Files: twitter.php
+  Sample: {     }...
+
+function_247         | Count: 1    | Suggested: utility                       
+  Files: twitter.php
+  Sample: {     }...
+
+function_237         | Count: 1    | Suggested: utility                       
+  Files: twitter.php
+  Sample: {     }...
+
+function_240         | Count: 1    | Suggested: utility                       
+  Files: twitter.php
+  Sample: {     }...
+
+function_207         | Count: 1    | Suggested: string                        
+  Files: twitter.php
+  Sample: {         if (is_array($input)) {             return array_map(["Twitter_OAuthUtil", "urlencode_rfc3...
+
+function_248         | Count: 1    | Suggested: utility                       
+  Files: twitter.php
+  Sample: {         return urldecode($string);     }...
+
+function_217         | Count: 1    | Suggested: utility                       
+  Files: twitter.php
+  Sample: {         $var_310 = [];         if (preg_match_all("/(" . ($only_allow_oauth_parameters ? "oauth_" ...
+
+function_216         | Count: 1    | Suggested: utility                       
+  Files: twitter.php
+  Sample: {         if (function_exists("apache_request_headers")) {             $var_541 = apache_request_hea...
+
+function_214         | Count: 1    | Suggested: utility                       
+  Files: twitter.php
+  Sample: {         if (!isset($input) || !$input) {             return [];         }         $var_542 = explo...
+
+function_226         | Count: 1    | Suggested: string                        
+  Files: twitter.php
+  Sample: {         if (!$params) {             return "";         }         $var_546 = Class_19::function_207...
+
+function_249         | Count: 1    | Suggested: utility                       
+  Files: twitter.php
+  Sample: {         try {             $res = $this->function_250("account/verify_credentials", "GET");        ...
+
+function_252         | Count: 1    | Suggested: utility                       
+  Files: twitter.php
+  Sample: {         return $this->function_251("users/show", ["screen_name" => $user]);     }...
+
+function_253         | Count: 1    | Suggested: utility                       
+  Files: twitter.php
+  Sample: {         $res = $this->function_250("statuses/destroy/" . $id, "GET");         return $res->id ? $r...
+
+function_254         | Count: 1    | Suggested: utility                       
+  Files: twitter.php
+  Sample: {         return $this->function_250("search/tweets", "GET", is_array($query) ? $query : ["q" => $qu...
+
+function_250         | Count: 1    | Suggested: utility                       
+  Files: twitter.php
+  Sample: {         if (!strpos($resource, "://")) {             if (!strpos($resource, ".")) {               ...
+
+function_251         | Count: 1    | Suggested: hash_json                     
+  Files: twitter.php
+  Sample: {         if (!self::$cacheDir) {             return $this->function_250($resource, "GET", $data);  ...
+
+function_255         | Count: 1    | Suggested: utility                       
+  Files: twitter.php
+  Sample: {         if (!is_object($status)) {             trigger_error("Twitter::clickable() has been change...
+
+function_256         | Count: 1    | Suggested: string                        
+  Files: twitter.php
+  Sample: {         $m = htmlspecialchars($m[0]);         if ($m[0] === "#") {             $m = substr($m, 1);...
+
+function_160         | Count: 1    | Suggested: database_query                
+  Files: forums.php
+  Sample: {     $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT name,fid,pid FROM " . TSF_PREFIX . ...
+
+function_157         | Count: 1    | Suggested: string                        
+  Files: manage_countries.php
+  Sample: {     global $MAIN;     if (is_dir("../images")) {         $var_443 = "../images/flag/";     } else ...
+
+function_319         | Count: 1    | Suggested: output                        
+  Files: restore_database.php
+  Sample: {     $var_567 = "admin/backup";     $var_622 = getdate();     $var_623 = $var_622["mday"];     if (...
+
+function_327         | Count: 1    | Suggested: utility                       
+  Files: torrent_info.php
+  Sample: {     return ($title ? "\r\n\t<h2>" . $title . "</h2>" : "") . "\r\n\t<div class=\"row\">\r\n\t\t<di...
+
+function_153         | Count: 1    | Suggested: database_query                
+  Files: manage_torrent_categories.php
+  Sample: {     $var_281 = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE ...
+
+function_155         | Count: 1    | Suggested: database_query_string         
+  Files: manage_torrent_categories.php
+  Sample: {     $var_281 = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE ...
+
+function_264         | Count: 1    | Suggested: hash                          
+  Files: manage_database.php
+  Sample: {     $hash = md5(uniqid(rand(), true));     return $hash; }...
+
+function_263         | Count: 1    | Suggested: database_query_save_sanitize  
+  Files: manage_database.php
+  Sample: {     $var_567 = "../admin/backup/";     if (is_dir($var_567) && is_writable($var_567)) {         $f...
+
+function_265         | Count: 1    | Suggested: database                      
+  Files: manage_database.php
+  Sample: {     $var_580 = [];     $query = mysqli_query($GLOBALS["DatabaseConnect"], "SHOW FIELDS FROM " . $t...
+
+function_266         | Count: 1    | Suggested: database                      
+  Files: manage_database.php
+  Sample: {     $query = mysqli_query($GLOBALS["DatabaseConnect"], "SHOW CREATE TABLE " . $table);     $var_57...
+
+function_267         | Count: 1    | Suggested: utility                       
+  Files: manage_database.php
+  Sample: {     if (function_exists("gzopen")) {         gzwrite($fp, $contents);     } else {         fwrite(...
+
+function_324         | Count: 1    | Suggested: database_query                
+  Files: cache.php
+  Sample: {     $Q = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT COUNT(" . $C . ") FROM " . $T . ($E ? "...
+
+function_322         | Count: 1    | Suggested: string                        
+  Files: cache.php
+  Sample: {     global $Language;     return "<br />&nbsp;&nbsp;&nbsp;" . $Language[8] . " (" . $cachename . "...
+
+function_323         | Count: 1    | Suggested: string                        
+  Files: cache.php
+  Sample: {     return "&nbsp;&nbsp;&nbsp;<img $src = \"images/accept.png\" $border = \"0\" $alt = \"\" $title...
+
+function_325         | Count: 1    | Suggested: string                        
+  Files: cache.php
+  Sample: {     return "&nbsp;&nbsp;&nbsp;<img $src = \"images/alert.png\" $border = \"0\" $alt = \"\" $title ...
+
+function_161         | Count: 1    | Suggested: database_query                
+  Files: smilies.php
+  Sample: {     $Q = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $confi...
+
+function_316         | Count: 1    | Suggested: database_query                
+  Files: plugins.php
+  Sample: {     $plugins = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM ts_plugins ORDER BY sort A...
+
+function_315         | Count: 1    | Suggested: utility                       
+  Files: plugins.php
+  Sample: {     global $Language;     $var_451 = [];     foreach ($PluginArray as $Plugin) {         $var_451[...
+
+function_326         | Count: 1    | Suggested: utility                       
+  Files: manage_cronjobs.php
+  Sample: {     $var_270 = 31536000;     $mosecs = 2678400;     $wsecs = 604800;     $dsecs = 86400;     $hsec...
+
+function_202         | Count: 1    | Suggested: string                        
+  Files: usergroups.php
+  Sample: {     $var_508 = "";     if ($GLOBALS["yesnocount"] % 2 == 1) {         $var_508 = " altSaperator"; ...
+
+function_205         | Count: 1    | Suggested: utility                       
+  Files: usergroups.php
+  Sample: {     global $usergroupcache;     $var_304 = ["canview" => "0", "cancreate" => "1", "canpost" => "2"...
+
+function_203         | Count: 1    | Suggested: utility                       
+  Files: usergroups.php
+  Sample: {     global $usergroupcache;     $var_304 = ["canview" => "0", "cancreate" => "1", "caneditb" => "2...
+
+function_204         | Count: 1    | Suggested: utility                       
+  Files: usergroups.php
+  Sample: {     global $usergroupcache;     $var_304 = ["cancustomizeprofile" => "0", "caneditfontfamily" => "...
+
+function_321         | Count: 1    | Suggested: utility                       
+  Files: themes.php
+  Sample: {     $var_629 = "";     $var_630 = xml_parser_create();     xml_parser_set_option($var_630, XML_OPT...
+
+function_320         | Count: 1    | Suggested: database_query                
+  Files: themes.php
+  Sample: {     $var_632 = [];     $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM ts_themes...
+
+function_103         | Count: 1    | Suggested: string                        
+  Files: iptocountry.php
+  Sample: {     $var_310 = ["http" => ["method" => "POST", "content" => $data]];     if ($optional_headers !==...
+
+function_150         | Count: 1    | Suggested: utility                       
+  Files: directory_listing.php
+  Sample: {     $var_426 = fileperms($file);     if (($var_426 & 49152) == 49152) {         $info = "s";     }...
+
+function_268         | Count: 1    | Suggested: utility                       
+  Files: latest_news.php
+  Sample: {     @ini_set("user_agent", "TS_SE via cURL/PHP");     $data = false;     $timeout = 10;     if (fu...
+
+function_104         | Count: 1    | Suggested: setTimezone                   
+  Files: edit_user.php
+  Sample: {     $var_313 = ["4294967284" => "timezone_gmt_minus_1200", "4294967285" => "timezone_gmt_minus_110...
+
+function_105         | Count: 1    | Suggested: setTimezone                   
+  Files: edit_user.php
+  Sample: {     $Language = file("languages/" . function_75() . "/timezone.lang");     $var_314 = "";     $cou...
+
+function_106         | Count: 1    | Suggested: utility                       
+  Files: edit_user.php
+  Sample: {     if (!($options = strtoupper($options)) || !($field = strtolower($field))) {         return fal...
+
+function_108         | Count: 1    | Suggested: utility                       
+  Files: edit_user.php
+  Sample: {     $str = str_replace("&amp;", "&", $str);     $str = str_replace("&apos", "'", $str);     $str =...
+
+function_138         | Count: 1    | Suggested: utility                       
+  Files: manage_settings.php
+  Sample: {     return str_replace(["http://www.", "https://www.", "http://", "https://", "www."], "", $url); ...
+
+function_139         | Count: 1    | Suggested: database_query                
+  Files: manage_settings.php
+  Sample: {     $var_368 = "<select $name = \"" . $name . "\">";     $var_67 = mysqli_query($GLOBALS["Database...
+
+function_140         | Count: 1    | Suggested: setTimezone                   
+  Files: manage_settings.php
+  Sample: {     $var_313 = ["4294967284" => "timezone_gmt_minus_1200", "4294967285" => "timezone_gmt_minus_110...
+
+function_141         | Count: 1    | Suggested: utility                       
+  Files: manage_settings.php
+  Sample: ...
+
+function_142         | Count: 1    | Suggested: utility                       
+  Files: manage_settings.php
+  Sample: {     $var_368 = "";     $var_371 = scandir("../include/languages");     foreach ($var_371 as $langu...
+
+function_143         | Count: 1    | Suggested: database_query                
+  Files: manage_settings.php
+  Sample: {     $var_368 = "";     $var_67 = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `name` FROM ts_...
+
+function_137         | Count: 1    | Suggested: utility                       
+  Files: manage_settings.php
+  Sample: ...
+
+function_145         | Count: 1    | Suggested: utility                       
+  Files: manage_settings.php
+  Sample: {     $var_412 = "<select $name = \"SECURITY[reCAPTCHALanguage]\">";     $var_413 = file("./../cache...
+
+function_146         | Count: 1    | Suggested: utility                       
+  Files: manage_settings.php
+  Sample: ...
+
+function_261         | Count: 1    | Suggested: utility                       
+  Files: manage_avatars.php
+  Sample: {     if (!($image = trim(file_get_contents($image)))) {         return false;     }     if (preg_ma...
+
+function_262         | Count: 1    | Suggested: utility                       
+  Files: manage_avatars.php
+  Sample: {     if (!($image = getimagesize($image))) {         return false;     }     return ["width" => $im...
+
+function_269         | Count: 1    | Suggested: utility                       
+  Files: version_check.php
+  Sample: {     if (function_exists("curl_init")) {         $ch = curl_init();         curl_setopt($ch, CURLOP...
+
+function_201         | Count: 1    | Suggested: database_query_sanitize       
+  Files: manage_menu.php
+  Sample: {     global $lang;     $MainMenus = [];     $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SEL...
+
+function_197         | Count: 1    | Suggested: database_query_sanitize       
+  Files: manage_menu.php
+  Sample: {     global $lang;     $MainMenus = [];     $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SEL...
+
+function_199         | Count: 1    | Suggested: utility                       
+  Files: manage_menu.php
+  Sample: ...
+
+function_200         | Count: 1    | Suggested: database_query_sanitize       
+  Files: manage_menu.php
+  Sample: {     global $lang;     $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT language FROM ts_...
+
+function_198         | Count: 1    | Suggested: database_query_session        
+  Files: manage_menu.php
+  Sample: {     $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT u.id, g.cansettingspanel, g.canstaf...
+
+function_270         | Count: 1    | Suggested: utility                       
+  Files: manage_news.php
+  Sample: {     global $MAIN;     $var_393 = $MAIN["cache"];     if (file_exists("../" . $var_393 . "/news.htm...
+
+function_112         | Count: 1    | Suggested: utility                       
+  Files: stats_center.php
+  Sample: {     global $Language;     $var_322 = "";     $var_323 = [];     while ($var_324 = mysqli_fetch_ass...
+
+function_111         | Count: 1    | Suggested: utility                       
+  Files: stats_center.php
+  Sample: {     $var_323 = [];     while ($var_324 = mysqli_fetch_assoc($query)) {         if (isset($var_323[...
+
+function_163         | Count: 1    | Suggested: utility                       
+  Files: manage_torrents.php
+  Sample: ...
+
+function_164         | Count: 1    | Suggested: database_query                
+  Files: manage_torrents.php
+  Sample: {     $var_417 = [];     $var_67 = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM categori...
+
+function_162         | Count: 1    | Suggested: string                        
+  Files: manage_torrents.php
+  Sample: {     global $Links;     global $sort;     global $order;     $var_474 = [];     foreach ($Links as ...
+
+function_101         | Count: 1    | Suggested: database_query                
+  Files: subscription_manager.php
+  Sample: {     $var_302 = [];     $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT currency FROM ts...
+
+function_147         | Count: 1    | Suggested: utility                       
+  Files: unconnectable_peers.php
+  Sample: {     return !($var_422 = @fsockopen($ip, $port, fsockError, fsockErrorStr, $timeout)) ? false : (@f...
+
+function_158         | Count: 1    | Suggested: database_query                
+  Files: manage_games.php
+  Sample: {     $var_451 = "<select $name = \"cid\">";     $Query = mysqli_query($GLOBALS["DatabaseConnect"], ...
+
+function_159         | Count: 1    | Suggested: database_query                
+  Files: manage_games.php
+  Sample: {     $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT cname FROM ts_games_categories WHER...
+
+function_259         | Count: 1    | Suggested: utility                       
+  Files: who_is_online.php
+  Sample: ...
+
+function_260         | Count: 1    | Suggested: string                        
+  Files: who_is_online.php
+  Sample: {     global $Language;     $var_562 = ["msnbot" => "MSN Bot", "google" => "Google Bot", "yahoo" => ...
+
+function_280         | Count: 1    | Suggested: utility                       
+  Files: rss_feed_manager.php
+  Sample: {         $this->$xml_string = & $xml_string;     }...
+
+function_285         | Count: 1    | Suggested: utility                       
+  Files: rss_feed_manager.php
+  Sample: {         switch ($this->feedtype) {             case "atom":                 return var_586($id);  ...
+
+function_286         | Count: 1    | Suggested: utility                       
+  Files: rss_feed_manager.php
+  Sample: {         if (is_array($this->xml_array["entry"][0])) {             $item =& $this->xml_array["entry...
+
+function_287         | Count: 1    | Suggested: utility                       
+  Files: rss_feed_manager.php
+  Sample: {         if (is_array($this->xml_array["channel"]["item"][0])) {             $item =& $this->xml_ar...
+
+function_276         | Count: 1    | Suggested: utility                       
+  Files: rss_feed_manager.php
+  Sample: {         switch ($this->feedtype) {             case "atom":                 $var_588 = "entry";   ...
+
+function_288         | Count: 1    | Suggested: utility                       
+  Files: rss_feed_manager.php
+  Sample: {         $items = $this->function_276();         if (empty($items)) {             return false;    ...
+
+function_291         | Count: 1    | Suggested: utility                       
+  Files: rss_feed_manager.php
+  Sample: {         return preg_replace($var_592, $preg_replace, htmlspecialchars(trim($var)));     }...
+
+function_290         | Count: 1    | Suggested: utility                       
+  Files: rss_feed_manager.php
+  Sample: {         if ($query = parse_url($url, PHP_URL_QUERY)) {             $url = substr($url, 0, strpos($...
+
+function_278         | Count: 1    | Suggested: utility                       
+  Files: rss_feed_manager.php
+  Sample: {         if (preg_match_all("#\\{(?:feed|rss):([\\w:\\[\\]]+)\\}#siU", $template, $matches)) {     ...
+
+function_289         | Count: 1    | Suggested: utility                       
+  Files: rss_feed_manager.php
+  Sample: ...
+
+function_295         | Count: 1    | Suggested: utility                       
+  Files: rss_feed_manager.php
+  Sample: {         if ("" === $in || false === $in || is_null($in)) {             return $in;         }      ...
+
+function_294         | Count: 1    | Suggested: utility                       
+  Files: rss_feed_manager.php
+  Sample: {         if (preg_match("#(<?xml.*$encoding = ['\"])(.*?)(['\"].*?>)#m", $this->xmldata, $var_585))...
+
+function_296         | Count: 1    | Suggested: utility                       
+  Files: rss_feed_manager.php
+  Sample: {         $this->cdata .= $data;     }...
+
+function_297         | Count: 1    | Suggested: utility                       
+  Files: rss_feed_manager.php
+  Sample: {         $this->$cdata = "";         foreach ($attribs as $key => $val) {             if (preg_matc...
+
+function_298         | Count: 1    | Suggested: utility                       
+  Files: rss_feed_manager.php
+  Sample: {         $var_603 = array_shift($this->stack);         if ($var_603["name"] != $name) {            ...
+
+function_274         | Count: 1    | Suggested: string                        
+  Files: rss_feed_manager.php
+  Sample: {         if ($var_604 = @xml_error_string(@$this->function_301())) {             return $var_604;  ...
+
+function_275         | Count: 1    | Suggested: utility                       
+  Files: rss_feed_manager.php
+  Sample: {         if ($this->error_line) {             return $this->error_line;         }         return 0;...
+
+function_301         | Count: 1    | Suggested: utility                       
+  Files: rss_feed_manager.php
+  Sample: {         if ($this->error_code) {             return $this->error_code;         }         return 0;...
+
+function_300         | Count: 1    | Suggested: utility                       
+  Files: rss_feed_manager.php
+  Sample: {         if (!is_array($children) || !in_array($name, array_keys($children))) {             $childr...
+
+function_299         | Count: 1    | Suggested: utility                       
+  Files: rss_feed_manager.php
+  Sample: {         if (!is_array($var_433)) {             $var_433 = ["�![CDATA[", "]]�", "\r\n", "\n"]; ...
+
+function_284         | Count: 1    | Suggested: utility                       
+  Files: rss_feed_manager.php
+  Sample: {         $this->$encoding = $encoding;     }...
+
+function_283         | Count: 1    | Suggested: utility                       
+  Files: rss_feed_manager.php
+  Sample: {         $this->$target_encoding = $target_encoding;         $this->$ncr_encode = $ncr_encode;     ...
+
+function_293         | Count: 1    | Suggested: utility                       
+  Files: rss_feed_manager.php
+  Sample: {         if (!$this->target_encoding) {             $this->$target_encoding = "UTF-8";         }   ...
+
+function_282         | Count: 1    | Suggested: utility                       
+  Files: rss_feed_manager.php
+  Sample: {         $this->$legacy_mode = !$disable;     }...
+
+function_302         | Count: 1    | Suggested: string                        
+  Files: rss_feed_manager.php
+  Sample: {         return "Content-Type: " . $this->content_type . ($this->$charset = = "" ? "" : "; $charset...
+
+function_303         | Count: 1    | Suggested: string                        
+  Files: rss_feed_manager.php
+  Sample: {         return "Content-Length: " . $this->function_304();     }...
+
+function_305         | Count: 1    | Suggested: utility                       
+  Files: rss_feed_manager.php
+  Sample: {         @header("Content-Type: " . $this->content_type . ($this->$charset = = "" ? "" : "; $charse...
+
+function_306         | Count: 1    | Suggested: utility                       
+  Files: rss_feed_manager.php
+  Sample: {         @header("Content-Length: " . @$this->function_304());     }...
+
+function_307         | Count: 1    | Suggested: string                        
+  Files: rss_feed_manager.php
+  Sample: {         return "<?xml $version = \"1.0\" $encoding = \"" . $this->charset . "\"?>" . "\n";     }...
+
+function_304         | Count: 1    | Suggested: utility                       
+  Files: rss_feed_manager.php
+  Sample: {         return strlen($this->doc) + strlen($this->function_307());     }...
+
+function_308         | Count: 1    | Suggested: utility                       
+  Files: rss_feed_manager.php
+  Sample: {         $this->open_tags[] = $tag;         $this->doc .= $this->tabs . $this->function_309($tag, $...
+
+function_310         | Count: 1    | Suggested: utility                       
+  Files: rss_feed_manager.php
+  Sample: {         $tag = array_pop($this->open_tags);         $this->$tabs = substr($this->tabs, 0, -1);    ...
+
+function_311         | Count: 1    | Suggested: utility                       
+  Files: rss_feed_manager.php
+  Sample: {         $this->doc .= $this->tabs . $this->function_309($tag, $attr, $content === "");         if ...
+
+function_309         | Count: 1    | Suggested: utility                       
+  Files: rss_feed_manager.php
+  Sample: {         $var_140 = "<" . $tag;         if (!empty($attr)) {             foreach ($attr as $var_606...
+
+function_312         | Count: 1    | Suggested: utility                       
+  Files: rss_feed_manager.php
+  Sample: {         if (!empty($this->open_tags)) {             trigger_error("There are still open tags withi...
+
+function_313         | Count: 1    | Suggested: output                        
+  Files: rss_feed_manager.php
+  Sample: {         $this->function_305();         if (strpos($_SERVER["SERVER_SOFTWARE"], "Microsoft-IIS") !=...
+
+function_271         | Count: 1    | Suggested: utility                       
+  Files: rss_feed_manager.php
+  Sample: {     $value = trim($value);     $var_608 = intval($value);     strtolower($value[strlen($value) - 1...
+
+function_292         | Count: 1    | Suggested: utility                       
+  Files: rss_feed_manager.php
+  Sample: {     if ($doUniCode) {         $text = preg_replace_callback("/&#([0-9]+);/siU", function ($matches...
+
+function_277         | Count: 1    | Suggested: utility                       
+  Files: rss_feed_manager.php
+  Sample: {     return strip_tags($text); }...
+
+function_314         | Count: 1    | Suggested: utility                       
+  Files: rss_feed_manager.php
+  Sample: ...
+
+function_279         | Count: 1    | Suggested: utility                       
+  Files: rss_feed_manager.php
+  Sample: {     return is_array($item) ? $item["value"] : $item; }...
+
+function_257         | Count: 1    | Suggested: sanitize_string               
+  Files: manage_polls.php
+  Sample: {     return "'" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $data) . "'"; }...
+
+function_258         | Count: 1    | Suggested: utility                       
+  Files: manage_polls.php
+  Sample: {     return is_numeric($id) && 0 < $id && floor($id) == $id; }...
+
+function_152         | Count: 1    | Suggested: utility                       
+  Files: tracker_logs.php
+  Sample: {     $var_432 = strlen($search);     if ($var_432 == 0) {         return $subject;     }     $var_4...
+
+function_99          | Count: 1    | Suggested: output                        
+  Files: manage_inactive_users.php
+  Sample: {     global $Language;     echo "<br />" . var_294(str_replace("{1}", $seconds, $Language[39])) . "...
+
+function_38          | Count: 1    | Suggested: utility                       
+  Files: class.upload.php
+  Sample: ...
+
+function_39          | Count: 1    | Suggested: utility                       
+  Files: class.upload.php
+  Sample: {         if ($var_96 === NULL) {             if (function_exists("gd_info")) {                 $gd ...
+
+function_41          | Count: 1    | Suggested: utility                       
+  Files: class.upload.php
+  Sample: {         return is_dir($path) || $this->function_41(dirname($path), $mode) && $this->function_42($p...
+
+function_42          | Count: 1    | Suggested: utility                       
+  Files: class.upload.php
+  Sample: {         $var_99 = umask(0);         $res = @mkdir($path, $mode);         umask($var_99);         r...
+
+function_40          | Count: 1    | Suggested: output                        
+  Files: class.upload.php
+  Sample: {         if (array_key_exists($str, $this->translation)) {             $str = $this->translation[$s...
+
+function_43          | Count: 1    | Suggested: utility                       
+  Files: class.upload.php
+  Sample: {         $var_100 = sscanf($color, "#%2x%2x%2x");         $var_101 = array_key_exists(0, $var_100) ...
+
+function_44          | Count: 1    | Suggested: utility                       
+  Files: class.upload.php
+  Sample: {         if ($x < 1) {             $x = 1;         }         if ($y < 1) {             $y = 1;     ...
+
+function_45          | Count: 1    | Suggested: utility                       
+  Files: class.upload.php
+  Sample: {         if (is_resource($dst_im)) {             imagedestroy($dst_im);         }         $dst_im =...
+
+function_46          | Count: 1    | Suggested: utility                       
+  Files: class.upload.php
+  Sample: ...
+
+function_47          | Count: 1    | Suggested: utility                       
+  Files: class.upload.php
+  Sample: ...
+
+function_50          | Count: 1    | Suggested: utility                       
+  Files: class.upload.php
+  Sample: {         $this->log .= "<b>cleanup</b><br />";         $this->log .= "- delete temp file " . $this-...
+
+function_48          | Count: 1    | Suggested: utility                       
+  Files: class.upload.php
+  Sample: ...
+
+function_49          | Count: 1    | Suggested: output                        
+  Files: class.upload.php
+  Sample: {         if (!$im) {             return false;         }         $var_178 = imagesx($im);         $...
+
+function_19          | Count: 1    | Suggested: utility                       
+  Files: index.php
+  Sample: ...
+
+function_20          | Count: 1    | Suggested: utility                       
+  Files: index.php
+  Sample: ...
+
+function_21          | Count: 1    | Suggested: utility                       
+  Files: index.php
+  Sample: {     $port = isset($_SERVER["SERVER_PORT"]) && $_SERVER["SERVER_PORT"] ? intval($_SERVER["SERVER_PO...
+
+function_22          | Count: 1    | Suggested: utility                       
+  Files: index.php
+  Sample: {     if (isset($_SERVER[$name]) && $_SERVER[$name]) {         return $_SERVER[$name];     }     if ...
+
+function_23          | Count: 1    | Suggested: utility                       
+  Files: index.php
+  Sample: {     @session_name(@function_24());     @session_start();     define("IN-TSSE-STAFF-PANEL", true); ...
+
+function_24          | Count: 1    | Suggested: utility                       
+  Files: index.php
+  Sample: {     $serverName = isset($_SERVER["SERVER_NAME"]) && !empty($_SERVER["SERVER_NAME"]) ? trim($_SERVE...
+
+function_25          | Count: 1    | Suggested: database_save_hash            
+  Files: index.php
+  Sample: {     if (isset($_GET["forceLicenseCheck"])) {         $forceLicenseCheck = true;     }     $sha1_fi...
+
+function_26          | Count: 1    | Suggested: database_query_save           
+  Files: index.php
+  Sample: {     $var_49 = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT content FROM ts_config WHERE $conf...
+
+function_27          | Count: 1    | Suggested: database_query_hash           
+  Files: index.php
+  Sample: {     $Result = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $...
+
+function_28          | Count: 1    | Suggested: utility                       
+  Files: index.php
+  Sample: {     return str_replace(["http://www.", "https://www.", "http://", "https://", "www."], "", $url); ...
+
+function_29          | Count: 1    | Suggested: getStaffLanguage              
+  Files: index.php
+  Sample: {     if (isset($_COOKIE["staffcplanguage"]) && is_dir(REALPATH . "languages/" . $_COOKIE["staffcpla...
+
+function_30          | Count: 1    | Suggested: setTimezone                   
+  Files: index.php
+  Sample: {     require "./../include/php_default_timezone_set.php"; }...
+
+function_16          | Count: 1    | Suggested: utility                       
+  Files: index.php
+  Sample: ...
+
+function_31          | Count: 1    | Suggested: utility                       
+  Files: index.php
+  Sample: {     define("EDITOR_TYPE", $type);     define("TINYMCE_MODE", $mode);     define("TINYMCE_ELEMENTS"...
+
+function_32          | Count: 1    | Suggested: utility                       
+  Files: index.php
+  Sample: ...
+
+function_33          | Count: 1    | Suggested: string                        
+  Files: index.php
+  Sample: {     return "\r\n\t\t</body>\r\n\t</html>"; }...
+
+function_34          | Count: 1    | Suggested: string                        
+  Files: index.php
+  Sample: {     return "<p $align = \"center\">Powered by Templateshares Special Edition | Copyright &copy;200...
+
+function_35          | Count: 1    | Suggested: redirect_output               
+  Files: index.php
+  Sample: {     if (!headers_sent()) {         header("Location: " . $url);     } else {         echo "\r\n\t\...
+
+function_36          | Count: 1    | Suggested: string                        
+  Files: index.php
+  Sample: {     return "\r\n\t<div class=\"alert\">\r\n\t\t" . $message . "\r\n\t</div>\r\n\t"; }...
+
+function_15          | Count: 1    | Suggested: html_output                   
+  Files: index.php
+  Sample: {     echo "\r\n\t<html>\r\n\t\t<head>\r\n\t\t\t<title>TS SE: Critical Error!</title>\r\n\t\t\t<meta...
+
+function_37          | Count: 1    | Suggested: hash                          
+  Files: index.php
+  Sample: {     $var_82 = md5("client|" . $INSTALL_URL . "|bf|success");     $var_83 = "";     $var_84 = [];  ...
+
+function_54          | Count: 1    | Suggested: utility                       
+  Files: save_stats.php
+  Sample: {     ini_set("display_errors", 0);     ini_set("display_startup_errors", 0);     error_reporting(32...
+
+function_55          | Count: 1    | Suggested: setTimezone                   
+  Files: save_stats.php
+  Sample: {     require "./../include/php_default_timezone_set.php"; }...
+
+function_56          | Count: 1    | Suggested: utility                       
+  Files: save_stats.php
+  Sample: {     $p = $k * $t;     $pp = $p + 333;     return $p; }...
+
+function_57          | Count: 1    | Suggested: utility                       
+  Files: save_stats.php
+  Sample: {     $var_219 = $_SERVER["REMOTE_ADDR"];     if (isset($_SERVER["HTTP_CLIENT_IP"])) {         $var_...
+
+function_328         | Count: 1    | Suggested: utility                       
+  Files: upgrade.php
+  Sample: {     if (file_exists($_SERVER["DOCUMENT_ROOT"] . "/" . decodeLicenseApiString("NTR1NGs0ZzRtNXY1cDRo...
+
+function_329         | Count: 1    | Suggested: utility                       
+  Files: upgrade.php
+  Sample: {     if (!ini_get("allow_url_fopen") && (!function_exists("curl_init") || !($ch = curl_init()))) { ...
+

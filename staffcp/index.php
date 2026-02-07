@@ -45,13 +45,13 @@ $Result = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_c
 $Row = mysqli_fetch_assoc($Result);
 $MAIN = @unserialize($Row["content"]);
 if ($MAIN["site_online"] != "yes" && $_SESSION["ADMIN_CANSETTINGSPANEL"] != "yes") {
-    function_15($Language543543[26]);
+    showFatalError($Language543543[26]);
 }
 if (isset($_SESSION["ADMIN_CANSETTINGSPANEL"]) && $_SESSION["ADMIN_CANSETTINGSPANEL"] == "yes" && (file_exists(ROOTPATH . "install/install.php") || file_exists(ROOTPATH . "install/upgrade.php"))) {
-    function_15("<b>Security Alert!</b>\r\n\t<br />\r\n\tinstall.php or upgrade.php still remains in the /install/ directory.\r\n\t<br />\r\n\tThis poses a security risk, so please delete that files immediately. You cannot access the control panel until you do so.");
+    showFatalError("<b>Security Alert!</b>\r\n\t<br />\r\n\tinstall.php or upgrade.php still remains in the /install/ directory.\r\n\t<br />\r\n\tThis poses a security risk, so please delete that files immediately. You cannot access the control panel until you do so.");
 }
 if (isset($_SESSION["ADMIN_CANSETTINGSPANEL"]) && $_SESSION["ADMIN_CANSETTINGSPANEL"] == "yes" && (is_dir(ROOTPATH . "config/") || file_exists(ROOTPATH . "config/DATABASE"))) {
-    function_15("<b>Security Alert!</b>\r\n\t<br />\r\n\tConfig folder and/or Configuration files still remains in the " . ROOTPATH . "config/ directory.\r\n\t<br />\r\n\tThis poses a security risk, so please delete that files immediately and the config folder. You cannot access the control panel until you do so.");
+    showFatalError("<b>Security Alert!</b>\r\n\t<br />\r\n\tConfig folder and/or Configuration files still remains in the " . ROOTPATH . "config/ directory.\r\n\t<br />\r\n\tThis poses a security risk, so please delete that files immediately and the config folder. You cannot access the control panel until you do so.");
 }
 $StaffTools = [];
 $Result = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT cid, toolname, filename, usergroups FROM ts_staffcp_tools WHERE $hidden = \"0\" ORDER by sort ASC, toolname DESC");
@@ -100,7 +100,7 @@ if ($DO != "") {
         $toolContent = $_toolLanguage[2];
     }
 } else {
-    $toolContent = function_16();
+    $toolContent = buildDashboard();
 }
 $_staffmessages = mysqli_num_rows(mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id FROM staffmessages WHERE $answeredby = 0"));
 $_ts_reports = mysqli_num_rows(mysqli_query($GLOBALS["DatabaseConnect"], "SELECT rid FROM ts_reports WHERE $confirmed = 0"));
@@ -199,10 +199,10 @@ function function_25($forceLicenseCheck = false)
     $md5_file = "296260076ea5ecbe72408012753702d0";
     $var_43 = REALPATH . "check_tool.php";
     if (!file_exists($var_43) || !is_file($var_43)) {
-        function_15("E1: Corrupted file detected! Please re-upload all Staff Panel files in-binary mode.");
+        showFatalError("E1: Corrupted file detected! Please re-upload all Staff Panel files in-binary mode.");
     }
     if ($sha1_file != @sha1_file($var_43) || $md5_file != @md5_file($var_43)) {
-        function_15("E2: Corrupted file detected! Please re-upload all Staff Panel files in-binary mode.");
+        showFatalError("E2: Corrupted file detected! Please re-upload all Staff Panel files in-binary mode.");
     }
     require_once ROOTPATH . "version.php";
     $var_44 = !empty($_SERVER["SERVER_NAME"]) ? var_45($_SERVER["SERVER_NAME"]) : (!empty($_SERVER["HTTP_HOST"]) ? var_45($_SERVER["HTTP_HOST"]) : "");
@@ -210,7 +210,7 @@ function function_25($forceLicenseCheck = false)
     if ($forceLicenseCheck || var_47()) {
         require $var_43;
         if (!defined("TSSE2020CHECKTOOLPHP")) {
-            function_15("E3: Corrupted file detected! Please re-upload all Staff Panel files in-binary mode.");
+            showFatalError("E3: Corrupted file detected! Please re-upload all Staff Panel files in-binary mode.");
         }
         $var_48 = 604800;
         $var_49 = TIMENOW + $var_48 . "|" . SCRIPT_VERSION . "|" . $var_44;
@@ -261,30 +261,30 @@ function function_27()
     $MAIN = @unserialize($Row["content"]);
     $var_54 = ROOTPATH . $MAIN["cache"] . "/systemcache.dat";
     if (!file_exists($var_54) || !is_file($var_54)) {
-        function_15("E4: I can not read the systemcache file in cache folder. Please re-run the installation.");
+        showFatalError("E4: I can not read the systemcache file in cache folder. Please re-run the installation.");
     }
     require_once ROOTPATH . "version.php";
     $var_44 = !empty($_SERVER["SERVER_NAME"]) ? var_45($_SERVER["SERVER_NAME"]) : (!empty($_SERVER["HTTP_HOST"]) ? var_45($_SERVER["HTTP_HOST"]) : "");
     if (file_get_contents($var_54) != sha1(md5(SCRIPT_VERSION . $var_44))) {
-        function_15("E5: Corrupted hash detected. Please re-run the installation.");
+        showFatalError("E5: Corrupted hash detected. Please re-run the installation.");
     }
 }
 function function_28($url)
 {
     return str_replace(["http://www.", "https://www.", "http://", "https://", "www."], "", $url);
 }
-function function_29()
+function getStaffLanguage()
 {
     if (isset($_COOKIE["staffcplanguage"]) && is_dir(REALPATH . "languages/" . $_COOKIE["staffcplanguage"]) && is_file(REALPATH . "languages/" . $_COOKIE["staffcplanguage"] . "/staffcp.lang")) {
         return $_COOKIE["staffcplanguage"];
     }
     return "english";
 }
-function function_30()
+function setDefaultTimezone()
 {
     require "./../include/php_default_timezone_set.php";
 }
-function function_16()
+function buildDashboard()
 {
     global $MAIN;
     global $Language543543;
@@ -345,7 +345,7 @@ function function_16()
     $var_80 = $MAIN["site_online"] != "yes" ? var_79("<a $href = \"" . ADMINCPURL . "?do=manage_settings\">" . $Language543543[27] . "</a>") : "";
     return $var_80 . "\r\n\t" . $var_78 . "\r\n\t" . $var_55 . "\r\n\t" . $var_73 . "\r\n\t" . $var_76 . "\r\n\t" . $var_77 . "\r\n\t";
 }
-function function_31($type = 1, $mode = "textareas", $elements = "")
+function loadEditor($type = 1, $mode = "textareas", $elements = "")
 {
     define("EDITOR_TYPE", $type);
     define("TINYMCE_MODE", $mode);
@@ -358,7 +358,7 @@ function function_31($type = 1, $mode = "textareas", $elements = "")
     ob_end_clean();
     return $var_81;
 }
-function function_32()
+function outputHTMLHeader()
 {
     global $Language543543;
     global $loadYAHOO;
@@ -368,15 +368,15 @@ function function_32()
     $var_28 = @unserialize($Row["content"]);
     return "\r\n\t<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\r\n\t<html $xmlns = \"https://www.w3.org/1999/xhtml\" $dir = \"ltr\" $lang = \"en\">\r\n\t\t<head>\r\n\t\t\t<title>" . $Language543543[3] . "</title>\r\n\t\t\t<meta http-$equiv = \"Content-Type\" $content = \"text/html; $charset = " . $var_28["charset"] . "\" />\r\n\t\t\t\r\n\t\t\t<link $rel = \"stylesheet\" $type = \"text/css\" $href = \"" . ADMINCPURL . "style/style.css?$v = 2\" />\r\n\t\t\t<link $rel = \"stylesheet\" $type = \"text/css\" $href = \"" . WEBSITEURL . "scripts/jquery-ui-1.10.4.custom/css/flick/jquery-ui-1.10.4.custom.min.css\" />\r\n\t\t\t\r\n\t\t\t<script $type = \"text/javascript\" $src = \"" . WEBSITEURL . "scripts/jquery-1.11.2.min.js\"></script>\r\n\t\t\t<script $type = \"text/javascript\" $src = \"" . WEBSITEURL . "scripts/jquery-ui-1.10.4.custom/js/jquery-ui-1.10.4.custom.min.js\" /></script>\r\n\t\t\t<script $type = \"text/javascript\" $src = \"" . WEBSITEURL . "scripts/jquery.easing.1.3.js\" /></script>\r\n\r\n\t\t\t" . ($loadYAHOO ? "\r\n\t\t\t<!-- Sam Skin CSS for TabView -->\r\n\t\t\t<link $rel = \"stylesheet\" $type = \"text/css\" $href = \"" . ADMINCPURL . "yui/tabview.css\">\r\n\r\n\t\t\t<!-- JavaScript Dependencies for Tabview: -->\r\n\t\t\t<script $src = \"" . ADMINCPURL . "yui/yahoo-dom-event.js\"></script>\r\n\t\t\t<script $src = \"" . ADMINCPURL . "yui/element-min.js\"></script>\r\n\r\n\t\t\t<!-- OPTIONAL: Connection (required for dynamic loading of data) -->\r\n\t\t\t<script $src = \"" . ADMINCPURL . "yui/connection-min.js\"></script>\r\n\r\n\t\t\t<!-- Source file for TabView -->\r\n\t\t\t<script $src = \"" . ADMINCPURL . "yui/tabview-min.js\"></script>\r\n\t\t\t\r\n\t\t\t<script $type = \"text/javascript\">\r\n\t\t\t\tjQuery(document).ready(function()\r\n\t\t\t\t{\r\n\t\t\t\t\tvar $tabView = new YAHOO.widget.TabView(\"manage_settings\");\r\n\t\t\t\t\tvar $tabView = new YAHOO.widget.TabView(\"general_settings\");\r\n\t\t\t\t});\r\n\t\t\t</script>" : "") . "\r\n\r\n\t\t\t" . ($loadPrototype ? "\r\n\t\t\t<script $type = \"text/javascript\" $src = \"scripts/assets/js/prototype.js\"></script>\r\n\t\t\t<script $type = \"text/javascript\" $src = \"scripts/assets/js/scriptaculous.js\"></script>\r\n\t\t\t<script $type = \"text/javascript\" $src = \"scripts/assets/js/portal.js\"></script>\r\n\r\n\t\t\t<link $rel = \"stylesheet\" $href = \"scripts/assets/css/style.css\"  $type = \"text/css\" $media = \"screen\" />\r\n\t\t\t<link $rel = \"stylesheet\" $href = \"scripts/assets/css/portal.css\"  $type = \"text/css\" $media = \"screen\" />" : "") . "\r\n\r\n\t\t\t<script $type = \"text/javascript\">\r\n\t\t\t\tfunction TSJump(url)\r\n\t\t\t\t{\r\n\t\t\t\t\twindow.$location = url;\r\n\t\t\t\t}\r\n\t\t\t\tfunction TSGetID(IDName)\r\n\t\t\t\t{\r\n\t\t\t\t\tif(document.getElementById)\r\n\t\t\t\t\t{\r\n\t\t\t\t\t\treturn document.getElementById(IDName);\r\n\t\t\t\t\t}\r\n\t\t\t\t\telse if(document.all)\r\n\t\t\t\t\t{\r\n\t\t\t\t\t\treturn document.all[IDName];\r\n\t\t\t\t\t}\r\n\t\t\t\t\telse if(document.layers)\r\n\t\t\t\t\t{\r\n\t\t\t\t\t\treturn document.layers[IDName];\r\n\t\t\t\t\t}\r\n\t\t\t\t\telse\r\n\t\t\t\t\t{\r\n\t\t\t\t\t\treturn null;\r\n\t\t\t\t\t}\r\n\t\t\t\t}\r\n\r\n\t\t\t\tjQuery(document).ready(function()\r\n\t\t\t\t{\r\n\t\t\t\t\tjQuery('input[$type = \"text\"],input[$type = \"password\"]').each(function()\r\n\t\t\t\t\t{\r\n\t\t\t\t\t\t\$(this).attr(\"autocomplete\", \"new-password\");\r\n\t\t\t\t\t});\r\n\t\t\t\t});\r\n\r\n\t\t\t\tjQuery(document).ajaxStart(function(){jQuery(\"#ajaxLoader\").fadeIn(\"fast\")}).ajaxStop(function(){jQuery(\"#ajaxLoader\").fadeOut(\"fast\")});\r\n\t\t\t</script>\r\n\t\t</head>\r\n\t\t<body" . ($loadYAHOO ? " class=\"yui-skin-sam\"" : "") . ">\r\n\t\t\t<div $id = \"ajaxLoader\"><div><img $src = \"./images/ajax_loading.gif\" $alt = \"\" $title = \"\" /> Loading...</div></div>";
 }
-function function_33()
+function outputHTMLFooter()
 {
     return "\r\n\t\t</body>\r\n\t</html>";
 }
-function function_34()
+function outputCopyrightFooter()
 {
     return "<p $align = \"center\">Powered by Templateshares Special Edition | Copyright &copy;2006-" . date("Y") . " | <a $href = \"https://templateshares.net\" $target = \"_blank\">www.templateshares.net</a></p>";
 }
-function function_35($url)
+function redirectTo($url)
 {
     if (!headers_sent()) {
         header("Location: " . $url);
@@ -385,16 +385,16 @@ function function_35($url)
     }
     exit;
 }
-function function_36($message = "")
+function showAlert($message = "")
 {
     return "\r\n\t<div class=\"alert\">\r\n\t\t" . $message . "\r\n\t</div>\r\n\t";
 }
-function function_15($message = "")
+function showFatalError($message = "")
 {
     echo "\r\n\t<html>\r\n\t\t<head>\r\n\t\t\t<title>TS SE: Critical Error!</title>\r\n\t\t\t<meta http-$equiv = \"Content-Type\" $content = \"text/html; $charset = UTF-8\" />\r\n\t\t\t<style>\r\n\t\t\t\t*{padding: 0; margin: 0}\r\n\t\t\t\t.alert\r\n\t\t\t\t{\r\n\t\t\t\t\tfont-weight: bold;\r\n\t\t\t\t\tcolor: #fff;\r\n\t\t\t\t\tfont: 14px verdana, geneva, lucida, \"lucida grande\", arial, helvetica, sans-serif;\r\n\t\t\t\t\tbackground: #ffacac;\r\n\t\t\t\t\ttext-align: center;\t\t\t\t\t\r\n\t\t\t\t\tborder-bottom: 4px solid #000;\r\n\t\t\t\t\tpadding: 20px;\r\n\t\t\t\t}\r\n\t\t\t</style>\r\n\t\t</head>\r\n\t\t<body>\r\n\t\t\t<div class=\"alert\">\r\n\t\t\t\t" . $message . "\r\n\t\t\t</div>\r\n\t\t</body>\r\n\t</html>\r\n\t";
     exit;
 }
-function function_37($INSTALL_URL)
+function checkBrandingLicense($INSTALL_URL)
 {
     $var_82 = md5("client|" . $INSTALL_URL . "|bf|success");
     $var_83 = "";
@@ -421,7 +421,7 @@ function function_37($INSTALL_URL)
             $var_84[] = "<b>" . $var_86 . "</b> directory does not exists or is not writable!";
         }
         if (count($var_84)) {
-            function_15(implode("<br />", $var_84));
+            showFatalError(implode("<br />", $var_84));
         }
     }
 }

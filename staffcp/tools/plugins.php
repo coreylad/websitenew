@@ -7,20 +7,20 @@
  */
 
 var_235();
-$Language = file("languages/" . function_75() . "/plugins.lang");
+$Language = file("languages/" . getStaffLanguage() . "/plugins.lang");
 $Act = isset($_GET["act"]) ? trim($_GET["act"]) : (isset($_POST["act"]) ? trim($_POST["act"]) : "");
 $Message = "";
 if ($Act == "delete" && ($pid = intval($_GET["pid"]))) {
     mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM ts_plugins WHERE $pid = " . $pid);
     $Message = str_replace("{1}", $_SESSION["ADMIN_USERNAME"], $Language[3]);
-    function_79($Message);
-    $Message = function_76($Message);
+    logStaffAction($Message);
+    $Message = showAlertError($Message);
 }
 if ($Act == "change_status" && ($pid = intval($_GET["pid"]))) {
     mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE ts_plugins SET $active = IF($active = 1,0,1) WHERE $pid = " . $pid);
     $Message = str_replace("{1}", $_SESSION["ADMIN_USERNAME"], $Language[3]);
-    function_79($Message);
-    $Message = function_76($Message);
+    logStaffAction($Message);
+    $Message = showAlertError($Message);
 }
 if ($Act == "edit" && ($pid = intval($_GET["pid"])) || $Act == "new") {
     if ($Act == "edit") {
@@ -59,8 +59,8 @@ if ($Act == "edit" && ($pid = intval($_GET["pid"])) || $Act == "new") {
         }
         $UPDATED = true;
         $Message = str_replace("{1}", $_SESSION["ADMIN_USERNAME"], $Language[3]);
-        function_79($Message);
-        $Message = function_76($Message);
+        logStaffAction($Message);
+        $Message = showAlertError($Message);
     }
     if (!isset($UPDATED)) {
         $squery = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT gid, title, namestyle FROM usergroups");
@@ -70,7 +70,7 @@ if ($Act == "edit" && ($pid = intval($_GET["pid"])) || $Act == "new") {
         }
         $sgids .= "\r\n\t\t\t<div $style = \"margin-bottom: 3px;\">\r\n\t\t\t\t<label><input $type = \"checkbox\" $name = \"usergroups[]\" $value = \"[guest]\"" . ($permission && strstr($permission, "[guest]") ? " $checked = \"checked\"" : "") . " $style = \"vertical-align: middle;\" /> -" . $Language[33] . "-</label>\r\n\t\t\t</div>";
         $sgids .= "\r\n\t\t\t<div $style = \"margin-bottom: 3px;\">\r\n\t\t\t\t<label><input $type = \"checkbox\" $name = \"usergroups[]\" $value = \"[all]\"" . ($permission && strstr($permission, "[all]") ? " $checked = \"checked\"" : "") . " $style = \"vertical-align: middle;\" /> -" . $Language[34] . "-</label>\r\n\t\t\t</div>";
-        $List = function_90() . "\r\n\t\t<form $method = \"post\" $action = \"index.php?do=plugins&$act = " . $Act . "&$pid = " . $pid . "\">\r\n\t\t" . function_81("<a $href = \"index.php?do=plugins\">" . $Language[23] . "</a>") . "\r\n\t\t" . $Message . "\r\n\t\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"tcat\" $align = \"center\">\r\n\t\t\t\t\t" . $Language[2] . "\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt2\">" . $Language[16] . "<div class=\"alt2Div\">" . $Language[17] . "</div></td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt1\" $valign = \"top\">\r\n\t\t\t\t\t<input $type = \"text\" $name = \"name\" $value = \"" . $name . "\" $style = \"width: 97%;\" />\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt2\">" . $Language[18] . "<div class=\"alt2Div\">" . $Language[19] . "</div></td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt1\" $valign = \"top\">\r\n\t\t\t\t\t<input $type = \"text\" $name = \"description\" $value = \"" . $description . "\" $style = \"width: 97%;\" />\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt2\">" . $Language[20] . "<div class=\"alt2Div\">" . $Language[21] . "</div></td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt1\" $valign = \"top\">\r\n\t\t\t\t\t<textarea $name = \"content\" $style = \"width: 99%; height: 80px;\">" . $content . "</textarea>\r\n\t\t\t\t\t<p><a $href = \"javascript:toggleEditor('content');\"><img $src = \"images/tool_refresh.png\" $border = \"0\" /></a></p>\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt2\">" . $Language[10] . "<div class=\"alt2Div\">" . $Language[24] . "</div></td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt1\" $valign = \"top\">\r\n\t\t\t\t\t<select $name = \"position\">\r\n\t\t\t\t\t\t<option $value = \"1\"" . ($position == 1 ? " $selected = \"selected\"" : "") . ">" . $Language[11] . "</option>\r\n\t\t\t\t\t\t<option $value = \"2\"" . ($position == 2 ? " $selected = \"selected\"" : "") . ">" . $Language[12] . "</option>\r\n\t\t\t\t\t\t<option $value = \"3\"" . ($position == 3 ? " $selected = \"selected\"" : "") . ">" . $Language[13] . "</option>\r\n\t\t\t\t\t</select>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt2\">" . $Language[25] . "<div class=\"alt2Div\">" . $Language[28] . "</div></td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt1\" $valign = \"top\">\r\n\t\t\t\t\t<select $name = \"active\">\r\n\t\t\t\t\t\t<option $value = \"1\"" . ($active == 1 ? " $selected = \"selected\"" : "") . ">" . $Language[26] . "</option>\r\n\t\t\t\t\t\t<option $value = \"0\"" . ($active == 0 ? " $selected = \"selected\"" : "") . ">" . $Language[27] . "</option>\r\n\t\t\t\t\t</select>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt2\">" . $Language[7] . "<div class=\"alt2Div\">" . $Language[29] . "</div></td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt1\" $valign = \"top\">\r\n\t\t\t\t\t<input $type = \"text\" $name = \"sort\" $value = \"" . $sort . "\" $size = \"10\" />\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt2\">" . $Language[30] . "<div class=\"alt2Div\">" . $Language[31] . "</div></td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt1\" $valign = \"top\">\r\n\t\t\t\t\t" . $sgids . "\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"tcat2\">\r\n\t\t\t\t\t<input $type = \"submit\" $value = \"" . $Language[8] . "\" /> <input $type = \"reset\" $value = \"" . $Language[22] . "\" />\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t</table>\r\n\t\t</form>";
+        $List = loadTinyMCEEditor() . "\r\n\t\t<form $method = \"post\" $action = \"index.php?do=plugins&$act = " . $Act . "&$pid = " . $pid . "\">\r\n\t\t" . showAlertMessage("<a $href = \"index.php?do=plugins\">" . $Language[23] . "</a>") . "\r\n\t\t" . $Message . "\r\n\t\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"tcat\" $align = \"center\">\r\n\t\t\t\t\t" . $Language[2] . "\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt2\">" . $Language[16] . "<div class=\"alt2Div\">" . $Language[17] . "</div></td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt1\" $valign = \"top\">\r\n\t\t\t\t\t<input $type = \"text\" $name = \"name\" $value = \"" . $name . "\" $style = \"width: 97%;\" />\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt2\">" . $Language[18] . "<div class=\"alt2Div\">" . $Language[19] . "</div></td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt1\" $valign = \"top\">\r\n\t\t\t\t\t<input $type = \"text\" $name = \"description\" $value = \"" . $description . "\" $style = \"width: 97%;\" />\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt2\">" . $Language[20] . "<div class=\"alt2Div\">" . $Language[21] . "</div></td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt1\" $valign = \"top\">\r\n\t\t\t\t\t<textarea $name = \"content\" $style = \"width: 99%; height: 80px;\">" . $content . "</textarea>\r\n\t\t\t\t\t<p><a $href = \"javascript:toggleEditor('content');\"><img $src = \"images/tool_refresh.png\" $border = \"0\" /></a></p>\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt2\">" . $Language[10] . "<div class=\"alt2Div\">" . $Language[24] . "</div></td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt1\" $valign = \"top\">\r\n\t\t\t\t\t<select $name = \"position\">\r\n\t\t\t\t\t\t<option $value = \"1\"" . ($position == 1 ? " $selected = \"selected\"" : "") . ">" . $Language[11] . "</option>\r\n\t\t\t\t\t\t<option $value = \"2\"" . ($position == 2 ? " $selected = \"selected\"" : "") . ">" . $Language[12] . "</option>\r\n\t\t\t\t\t\t<option $value = \"3\"" . ($position == 3 ? " $selected = \"selected\"" : "") . ">" . $Language[13] . "</option>\r\n\t\t\t\t\t</select>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt2\">" . $Language[25] . "<div class=\"alt2Div\">" . $Language[28] . "</div></td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt1\" $valign = \"top\">\r\n\t\t\t\t\t<select $name = \"active\">\r\n\t\t\t\t\t\t<option $value = \"1\"" . ($active == 1 ? " $selected = \"selected\"" : "") . ">" . $Language[26] . "</option>\r\n\t\t\t\t\t\t<option $value = \"0\"" . ($active == 0 ? " $selected = \"selected\"" : "") . ">" . $Language[27] . "</option>\r\n\t\t\t\t\t</select>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt2\">" . $Language[7] . "<div class=\"alt2Div\">" . $Language[29] . "</div></td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt1\" $valign = \"top\">\r\n\t\t\t\t\t<input $type = \"text\" $name = \"sort\" $value = \"" . $sort . "\" $size = \"10\" />\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt2\">" . $Language[30] . "<div class=\"alt2Div\">" . $Language[31] . "</div></td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt1\" $valign = \"top\">\r\n\t\t\t\t\t" . $sgids . "\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"tcat2\">\r\n\t\t\t\t\t<input $type = \"submit\" $value = \"" . $Language[8] . "\" /> <input $type = \"reset\" $value = \"" . $Language[22] . "\" />\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t</table>\r\n\t\t</form>";
     }
 }
 if ($Act == "save_order") {
@@ -90,7 +90,7 @@ if ($Act == "save_order") {
         }
     }
     $Message = str_replace("{1}", $_SESSION["ADMIN_USERNAME"], $Language[3]);
-    function_79($Message);
+    logStaffAction($Message);
     exit;
 } else {
     if (!isset($List)) {
@@ -112,12 +112,12 @@ if ($Act == "save_order") {
         $List1 = implode(" ", function_315($LeftPlugins));
         $List2 = implode(" ", function_315($MiddlePlugins));
         $List3 = implode(" ", function_315($RightPlugins));
-        echo "\r\n\t<script $type = \"text/javascript\">\r\n\t\tvar settings \$t = \r\n\t\t{\r\n\t\t\t" . var_615() . "\r\n\t\t};\r\n\t\tvar $options = \r\n\t\t{\r\n\t\t\tportal \t: \"columns\",\r\n\t\t\teditorEnabled : true,\r\n\t\t\tsaveurl : \"index.php?do=plugins&$act = save_order\",\r\n\t\t\tTSDebug : true\r\n\t\t};\r\n\t\tvar $data = {};\r\n\t\tvar portal;\r\n\t\tEvent.observe(window, \"load\", function()\r\n\t\t{\r\n\t\t\$tportal = new Portal(settings, options, data);\r\n\t\t});\r\n\t</script>\r\n\t" . function_81("<a $href = \"index.php?do=plugins&$act = new\">" . $Language[9] . "</a>") . "\r\n\t" . $Message . "\r\n\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t<tr>\r\n\t\t\t<td class=\"tcat\" $align = \"center\">\r\n\t\t\t\t" . $Language[2] . "\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\" $align = \"center\">\r\n\t\t\t\t<div $id = \"wrapper\">\r\n\t\t\t\t\t<div $id = \"columns\">\r\n\t\t\t\t\t\t<div $id = \"column-1\" class=\"column menu\"></div>\r\n\t\t\t\t\t\t<div $id = \"column-2\" class=\"column blocks\"></div>\r\n\t\t\t\t\t\t<div $id = \"column-3\" class=\"column sidebar\"></div>\r\n\t\t\t\t\t\t<div class=\"portal-column\" $id = \"portal-column-block-list\" $style = \"display: none;\">\r\n\t\t\t\t\t\t\t" . $List1 . "\r\n\t\t\t\t\t\t\t" . $List2 . "\r\n\t\t\t\t\t\t\t" . $List3 . "\r\n\t\t\t\t\t\t</div>\r\n\t\t\t\t\t</div>\r\n\t\t\t\t\t<div $style = \"clear:both;\"></div>\r\n\t\t\t\t\t<div $id = \"debug\" $style = \"display: none;\">\r\n\t\t\t\t\t\t<p $style = \"margin:0px;\" $id = \"data\"></p>\r\n\t\t\t\t\t</div>\r\n\t\t\t\t</div>\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t</table>";
+        echo "\r\n\t<script $type = \"text/javascript\">\r\n\t\tvar settings \$t = \r\n\t\t{\r\n\t\t\t" . var_615() . "\r\n\t\t};\r\n\t\tvar $options = \r\n\t\t{\r\n\t\t\tportal \t: \"columns\",\r\n\t\t\teditorEnabled : true,\r\n\t\t\tsaveurl : \"index.php?do=plugins&$act = save_order\",\r\n\t\t\tTSDebug : true\r\n\t\t};\r\n\t\tvar $data = {};\r\n\t\tvar portal;\r\n\t\tEvent.observe(window, \"load\", function()\r\n\t\t{\r\n\t\t\$tportal = new Portal(settings, options, data);\r\n\t\t});\r\n\t</script>\r\n\t" . showAlertMessage("<a $href = \"index.php?do=plugins&$act = new\">" . $Language[9] . "</a>") . "\r\n\t" . $Message . "\r\n\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t<tr>\r\n\t\t\t<td class=\"tcat\" $align = \"center\">\r\n\t\t\t\t" . $Language[2] . "\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\" $align = \"center\">\r\n\t\t\t\t<div $id = \"wrapper\">\r\n\t\t\t\t\t<div $id = \"columns\">\r\n\t\t\t\t\t\t<div $id = \"column-1\" class=\"column menu\"></div>\r\n\t\t\t\t\t\t<div $id = \"column-2\" class=\"column blocks\"></div>\r\n\t\t\t\t\t\t<div $id = \"column-3\" class=\"column sidebar\"></div>\r\n\t\t\t\t\t\t<div class=\"portal-column\" $id = \"portal-column-block-list\" $style = \"display: none;\">\r\n\t\t\t\t\t\t\t" . $List1 . "\r\n\t\t\t\t\t\t\t" . $List2 . "\r\n\t\t\t\t\t\t\t" . $List3 . "\r\n\t\t\t\t\t\t</div>\r\n\t\t\t\t\t</div>\r\n\t\t\t\t\t<div $style = \"clear:both;\"></div>\r\n\t\t\t\t\t<div $id = \"debug\" $style = \"display: none;\">\r\n\t\t\t\t\t\t<p $style = \"margin:0px;\" $id = \"data\"></p>\r\n\t\t\t\t\t</div>\r\n\t\t\t\t</div>\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t</table>";
     } else {
         echo $List;
     }
 }
-function function_90($type = 1, $mode = "textareas", $elements = "")
+function loadTinyMCEEditor($type = 1, $mode = "textareas", $elements = "")
 {
     define("EDITOR_TYPE", $type);
     define("TINYMCE_MODE", $mode);
@@ -130,20 +130,20 @@ function function_90($type = 1, $mode = "textareas", $elements = "")
     ob_end_clean();
     return $var_81;
 }
-function function_75()
+function getStaffLanguage()
 {
     if (isset($_COOKIE["staffcplanguage"]) && is_dir("languages/" . $_COOKIE["staffcplanguage"]) && is_file("languages/" . $_COOKIE["staffcplanguage"] . "/staffcp.lang")) {
         return $_COOKIE["staffcplanguage"];
     }
     return "english";
 }
-function function_77()
+function checkStaffAuthentication()
 {
     if (!defined("IN-TSSE-STAFF-PANEL")) {
         var_236("../index.php");
     }
 }
-function function_78($url, $timeout = false)
+function redirectTo($url, $timeout = false)
 {
     if (!headers_sent()) {
         if (!$timeout) {
@@ -160,15 +160,15 @@ function function_78($url, $timeout = false)
     }
     exit;
 }
-function function_76($Error)
+function showAlertError($Error)
 {
     return "<div class=\"alert\"><div>" . $Error . "</div></div>";
 }
-function function_79($log)
+function logStaffAction($log)
 {
     mysqli_query($GLOBALS["DatabaseConnect"], "INSERT INTO ts_staffcp_logs (uid, date, log) VALUES (\"" . $_SESSION["ADMIN_ID"] . "\", \"" . time() . "\", \"" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $log) . "\")");
 }
-function function_81($message = "")
+function showAlertMessage($message = "")
 {
     return "<div class=\"alert\"><div>" . $message . "</div></div>";
 }

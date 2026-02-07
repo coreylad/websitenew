@@ -7,7 +7,7 @@
  */
 
 var_235();
-$Language = file("languages/" . function_75() . "/performance_mode.lang");
+$Language = file("languages/" . getStaffLanguage() . "/performance_mode.lang");
 $Message = "";
 $Act = isset($_GET["act"]) ? trim($_GET["act"]) : (isset($_POST["act"]) ? trim($_POST["act"]) : "");
 $RequiredConfig = "'SECURITY','TWEAK','SHOUTBOX','MAIN','CLEANUP','ANNOUNCE'";
@@ -55,7 +55,7 @@ if ($Act == "enable") {
     }
     $Message = function_136();
     if (empty($Message)) {
-        $Message = function_76(nl2br("Aggressive IP Ban Check: No\r\nLog PHP Errors: No\r\nSave User Location: No\r\nSave User IP: No\r\nGZIP Compress: Enabled\r\nCache System: Enabled (30 Minutes)\r\nTorrent Speed Mod: Disabled\r\nProgress Bar Mod: Disabled\r\nCheck & Show Connectable: No\r\nShow Smiliar Torrents: No\r\nShow Subtitles: No\r\nSave Referrals: No\r\nTS Per Page Limit: 30\r\nShoutbox Refresh Time: 22\r\nDelete OLD Snatched Torrent Data: 90 days\r\nScrape System: Disabled\r\nNot Connectable SYstem Check: Disabled\r\nCheck Connectable Status: Disabled\r\nAnnounce Interval Value: 45 minutes.\r\nMin. Announce Refresh Time: 90 seconds."));
+        $Message = showAlertError(nl2br("Aggressive IP Ban Check: No\r\nLog PHP Errors: No\r\nSave User Location: No\r\nSave User IP: No\r\nGZIP Compress: Enabled\r\nCache System: Enabled (30 Minutes)\r\nTorrent Speed Mod: Disabled\r\nProgress Bar Mod: Disabled\r\nCheck & Show Connectable: No\r\nShow Smiliar Torrents: No\r\nShow Subtitles: No\r\nSave Referrals: No\r\nTS Per Page Limit: 30\r\nShoutbox Refresh Time: 22\r\nDelete OLD Snatched Torrent Data: 90 days\r\nScrape System: Disabled\r\nNot Connectable SYstem Check: Disabled\r\nCheck Connectable Status: Disabled\r\nAnnounce Interval Value: 45 minutes.\r\nMin. Announce Refresh Time: 90 seconds."));
     }
 }
 if ($Act == "disable") {
@@ -102,27 +102,27 @@ if ($Act == "disable") {
     }
     $Message = function_136();
     if (empty($Message)) {
-        $Message = function_76(nl2br("Aggressive IP Ban Check: Yes\r\nLog PHP Errors: Yes\r\nSave User Location: Yes\r\nSave User IP: Yes\r\nGZIP Compress: Enabled\r\nCache System: Enabled (15 minutes)\r\nTorrent Speed Mod: Enabled\r\nProgress Bar Mod: Enabled\r\nCheck & Show Connectable: No\r\nShow Smiliar Torrents: Yes\r\nShow Subtitles: Yes\r\nSave Referrals: No\r\nTS Per Page Limit: 15\r\nShoutbox Refresh Time: 15\r\nDelete OLD Snatched Torrent Data: 365 days\r\nScrape System: Enabled\r\nNot Connectable SYstem Check: Disabled\r\nCheck Connectable Status: Disabled\r\nAnnounce Interval Value: 30 minutes.\r\nMin. Announce Refresh Time: 30 seconds."));
+        $Message = showAlertError(nl2br("Aggressive IP Ban Check: Yes\r\nLog PHP Errors: Yes\r\nSave User Location: Yes\r\nSave User IP: Yes\r\nGZIP Compress: Enabled\r\nCache System: Enabled (15 minutes)\r\nTorrent Speed Mod: Enabled\r\nProgress Bar Mod: Enabled\r\nCheck & Show Connectable: No\r\nShow Smiliar Torrents: Yes\r\nShow Subtitles: Yes\r\nSave Referrals: No\r\nTS Per Page Limit: 15\r\nShoutbox Refresh Time: 15\r\nDelete OLD Snatched Torrent Data: 365 days\r\nScrape System: Enabled\r\nNot Connectable SYstem Check: Disabled\r\nCheck Connectable Status: Disabled\r\nAnnounce Interval Value: 30 minutes.\r\nMin. Announce Refresh Time: 30 seconds."));
     }
 }
 $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT options FROM ts_staffcp_tools WHERE $filename = 'performance_mode'");
 $Result = mysqli_fetch_assoc($Query);
 $Options = $Result["options"];
 echo "\r\n\r\n" . $Message . "\r\n<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t<tr>\r\n\t\t<td class=\"tcat\" $align = \"center\"><b>" . $Language[2] . "</b></td>\r\n\t</tr>\r\n\t<tr>\r\n\t\t<td class=\"alt2\" $align = \"left\">" . $Language[3] . "</td>\r\n\t</tr>\r\n\t<tr>\r\n\t\t<td class=\"alt1\">" . $Language[4] . ": " . (empty($Options) ? "<font $color = \"red\">" . $Language[6] . "</font> <a $href = \"index.php?do=performance_mode&amp;$act = enable\">" . $Language[7] . "</a>" : "<font $color = \"green\">" . $Language[5] . "</font> <a $href = \"index.php?do=performance_mode&amp;$act = disable\">" . $Language[8] . "</a>") . "</td>\r\n\t</tr>\r\n</table>";
-function function_75()
+function getStaffLanguage()
 {
     if (isset($_COOKIE["staffcplanguage"]) && is_dir("languages/" . $_COOKIE["staffcplanguage"]) && is_file("languages/" . $_COOKIE["staffcplanguage"] . "/staffcp.lang")) {
         return $_COOKIE["staffcplanguage"];
     }
     return "english";
 }
-function function_77()
+function checkStaffAuthentication()
 {
     if (!defined("IN-TSSE-STAFF-PANEL")) {
         var_236("../index.php");
     }
 }
-function function_78($url)
+function redirectTo($url)
 {
     if (!headers_sent()) {
         header("Location: " . $url);
@@ -131,11 +131,11 @@ function function_78($url)
     }
     exit;
 }
-function function_76($Error)
+function showAlertError($Error)
 {
     return "<div class=\"alert\"><div>" . $Error . "</div></div>";
 }
-function function_79($log)
+function logStaffAction($log)
 {
     mysqli_query($GLOBALS["DatabaseConnect"], "INSERT INTO ts_staffcp_logs (uid, date, log) VALUES ('" . $_SESSION["ADMIN_ID"] . "', '" . time() . "', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $log) . "')");
 }
@@ -233,7 +233,7 @@ function function_136()
     if (file_put_contents("../include/config_announce.php", "<?php\r\n/* Please use Setting Panel to Modify this file! */\r\n" . $var_375 . "\r\n/* Please use Setting Panel to Modify this file! */\r\n?>")) {
         return "";
     }
-    return function_76("<b>include/config_announce.php</b> isn't writable. Plesae check permissions.");
+    return showAlertError("<b>include/config_announce.php</b> isn't writable. Plesae check permissions.");
 }
 
 ?>

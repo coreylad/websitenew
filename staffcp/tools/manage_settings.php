@@ -7,7 +7,7 @@
  */
 
 var_235();
-$Language = file("languages/" . function_75() . "/manage_settings.lang");
+$Language = file("languages/" . getStaffLanguage() . "/manage_settings.lang");
 $Message = "";
 $Act = isset($_GET["act"]) ? trim($_GET["act"]) : (isset($_POST["act"]) ? trim($_POST["act"]) : "");
 define("TSDIR", "../");
@@ -84,7 +84,7 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST" && isset($_POST["configname
         $_cachecontents .= "\$__F_START = '" . $_POST["__F_START"] . " 00:00:00';\n";
         $_cachecontents .= "\$__F_END = '" . $_POST["__F_END"] . " 00:00:00';\n?>";
         if (!file_put_contents("../" . $MAIN["cache"] . "/freeleech.php", $_cachecontents)) {
-            $Message = function_76("<b>cache/freeleech.php</b> isn't writable. Plesae check permissions.");
+            $Message = showAlertError("<b>cache/freeleech.php</b> isn't writable. Plesae check permissions.");
         }
     }
     if ($CONFIGNAME == "SHOUTBOX") {
@@ -166,7 +166,7 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST" && isset($_POST["configname
             }
         }
         $STATUS[$_GET["stab"]] = "<div class=\"icon-ok\">{" . $CONFIGNAME . "} Settings has been saved.</div>";
-        function_79(str_replace(["{1}", "{2}"], [$CONFIGNAME, $_SESSION["ADMIN_USERNAME"]], $Language[6]));
+        logStaffAction(str_replace(["{1}", "{2}"], [$CONFIGNAME, $_SESSION["ADMIN_USERNAME"]], $Language[6]));
         if ($CONFIGNAME == "MAIN" && $_POST["MAIN"]["ts_seo"] == "yes") {
             $Message .= function_137();
         }
@@ -174,8 +174,8 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST" && isset($_POST["configname
         $STATUS[$_GET["stab"]] = "<div class=\"icon-error\">An error occurded!</div>";
     }
 }
-echo function_90(1, "exact", "wire_form,S_ANNOUNCEMENT,send_welcome_pm_body,upload_page_notice") . "\r\n<script $type = \"text/javascript\">\r\n\tfunction enableDateFields()\r\n\t{\r\n\t\tjQuery(\"#minfinishdate,#lottery_begin_date,#lottery_end_date,#__F_START,#__F_END\").datepicker({dateFormat: \"yy-mm-dd\", changeMonth: true, changeYear: true, closeText: \"X\", showButtonPanel: true});\r\n\t}\r\n\r\n\tjQuery(document).ready(function()\r\n\t{\r\n\t\tenableDateFields()\r\n\t});\r\n</script>\r\n" . $Message . "\r\n<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t<tr>\r\n\t\t<td class=\"tcat\" $align = \"center\" $colspan = \"2\">" . $Language[2] . "</td>\r\n\t</tr>\r\n\t<tr>\r\n\t\t<td class=\"alt0\">\r\n\t\t\t" . var_367() . "\r\n\t\t</td>\r\n\t</tr>\r\n</table>";
-function function_90($type = 1, $mode = "textareas", $elements = "")
+echo loadTinyMCEEditor(1, "exact", "wire_form,S_ANNOUNCEMENT,send_welcome_pm_body,upload_page_notice") . "\r\n<script $type = \"text/javascript\">\r\n\tfunction enableDateFields()\r\n\t{\r\n\t\tjQuery(\"#minfinishdate,#lottery_begin_date,#lottery_end_date,#__F_START,#__F_END\").datepicker({dateFormat: \"yy-mm-dd\", changeMonth: true, changeYear: true, closeText: \"X\", showButtonPanel: true});\r\n\t}\r\n\r\n\tjQuery(document).ready(function()\r\n\t{\r\n\t\tenableDateFields()\r\n\t});\r\n</script>\r\n" . $Message . "\r\n<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t<tr>\r\n\t\t<td class=\"tcat\" $align = \"center\" $colspan = \"2\">" . $Language[2] . "</td>\r\n\t</tr>\r\n\t<tr>\r\n\t\t<td class=\"alt0\">\r\n\t\t\t" . var_367() . "\r\n\t\t</td>\r\n\t</tr>\r\n</table>";
+function loadTinyMCEEditor($type = 1, $mode = "textareas", $elements = "")
 {
     define("EDITOR_TYPE", $type);
     define("TINYMCE_MODE", $mode);
@@ -192,20 +192,20 @@ function function_138($url)
 {
     return str_replace(["http://www.", "https://www.", "http://", "https://", "www."], "", $url);
 }
-function function_75()
+function getStaffLanguage()
 {
     if (isset($_COOKIE["staffcplanguage"]) && is_dir("languages/" . $_COOKIE["staffcplanguage"]) && is_file("languages/" . $_COOKIE["staffcplanguage"] . "/staffcp.lang")) {
         return $_COOKIE["staffcplanguage"];
     }
     return "english";
 }
-function function_77()
+function checkStaffAuthentication()
 {
     if (!defined("IN-TSSE-STAFF-PANEL")) {
         var_236("../index.php");
     }
 }
-function function_78($url, $timeout = false)
+function redirectTo($url, $timeout = false)
 {
     if (!headers_sent()) {
         if (!$timeout) {
@@ -222,15 +222,15 @@ function function_78($url, $timeout = false)
     }
     exit;
 }
-function function_76($Error)
+function showAlertError($Error)
 {
     return "<div class=\"alert\"><div>" . $Error . "</div></div>";
 }
-function function_79($log)
+function logStaffAction($log)
 {
     mysqli_query($GLOBALS["DatabaseConnect"], "INSERT INTO ts_staffcp_logs (uid, date, log) VALUES ('" . $_SESSION["ADMIN_ID"] . "', '" . time() . "', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $log) . "')");
 }
-function function_88($bytes = 0)
+function formatBytes($bytes = 0)
 {
     if ($bytes < 1024000) {
         return number_format($bytes / 1024, 2) . " KB";
@@ -300,7 +300,7 @@ function function_137()
         }
         file_put_contents(TSDIR . "/.htaccess", $var_374 . $var_373);
     } else {
-        return function_76("Error, .htaccess isn't writable! <b>Copy/Paste the following code at end of a .htaccess file in your tracker root directory:</b><br /><br /><textarea $cols = '80' $rows = '15'>" . str_replace("%extra_code%", "RewriteEngine On\r\n", $var_373) . "</textarea>");
+        return showAlertError("Error, .htaccess isn't writable! <b>Copy/Paste the following code at end of a .htaccess file in your tracker root directory:</b><br /><br /><textarea $cols = '80' $rows = '15'>" . str_replace("%extra_code%", "RewriteEngine On\r\n", $var_373) . "</textarea>");
     }
 }
 function function_136()
@@ -403,7 +403,7 @@ function function_136()
     if (file_put_contents("../include/config_announce.php", "<?php\r\n/* Please use Setting Panel to Modify this file! */\r\n" . $var_375 . "\r\n/* Please use Setting Panel to Modify this file! */\r\n?>")) {
         return "";
     }
-    return function_76("<b>include/config_announce.php</b> isn't writable. Plesae check permissions.");
+    return showAlertError("<b>include/config_announce.php</b> isn't writable. Plesae check permissions.");
 }
 function function_144()
 {

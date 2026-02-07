@@ -7,7 +7,7 @@
  */
 
 var_235();
-$Language = file("languages/" . function_75() . "/ban_user.lang");
+$Language = file("languages/" . getStaffLanguage() . "/ban_user.lang");
 $Message = "";
 $username = isset($_GET["username"]) ? trim($_GET["username"]) : "";
 $usergroup = "";
@@ -19,19 +19,19 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
     if ($username && $usergroup && $reason) {
         $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT ip, g.cansettingspanel, g.canstaffpanel, g.issupermod FROM users LEFT JOIN usergroups g ON (users.$usergroup = g.gid) WHERE $username = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $username) . "'");
         if (mysqli_num_rows($Query) == 0) {
-            $Message = function_76($Language[2]);
+            $Message = showAlertError($Language[2]);
         } else {
             $User = mysqli_fetch_assoc($Query);
             $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT u.id, g.cansettingspanel, g.canstaffpanel, g.issupermod FROM users u LEFT JOIN usergroups g ON (u.$usergroup = g.gid) WHERE u.$id = '" . $_SESSION["ADMIN_ID"] . "' LIMIT 1");
             $LoggedAdminDetails = mysqli_fetch_assoc($query);
             if ($User["cansettingspanel"] == "yes" && $LoggedAdminDetails["cansettingspanel"] != "yes" || $User["canstaffpanel"] == "yes" && $LoggedAdminDetails["canstaffpanel"] != "yes" || $User["issupermod"] == "yes" && $LoggedAdminDetails["issupermod"] != "yes") {
-                $Message = function_76($Language[14]);
+                $Message = showAlertError($Language[14]);
             } else {
                 $SysMsg = str_replace(["{1}", "{2}"], [$username, $_SESSION["ADMIN_USERNAME"]], $Language[15]);
                 $modcomment = gmdate("Y-m-d") . " - " . trim($SysMsg) . " Reason: " . $reason . "\n";
                 mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET $enabled = 'no', $usergroup = '" . $usergroup . "', $notifs = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $reason) . "', $modcomment = CONCAT('" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $modcomment) . "', modcomment) WHERE $username = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $username) . "'");
                 if (mysqli_affected_rows($GLOBALS["DatabaseConnect"])) {
-                    function_79($SysMsg);
+                    logStaffAction($SysMsg);
                     if ($_POST["banip"] == "1") {
                         $bans = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT value FROM ipbans WHERE $id = 1");
                         if (mysqli_num_rows($bans)) {
@@ -51,14 +51,14 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
                             mysqli_query($GLOBALS["DatabaseConnect"], "INSERT INTO xbt_deny_from_hosts (begin,end) VALUES ('" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $IP) . "','" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $IP) . "')");
                         }
                     }
-                    $Message = function_76($Language[3]);
+                    $Message = showAlertError($Language[3]);
                 } else {
-                    $Message = function_76($Language[4]);
+                    $Message = showAlertError($Language[4]);
                 }
             }
         }
     } else {
-        $Message = function_76($Language[1]);
+        $Message = showAlertError($Language[1]);
     }
 }
 $showusergroups = "\r\n<select $name = \"usergroup\">";
@@ -96,20 +96,20 @@ echo $Language[8];
 echo "\" $accesskey = \"s\" />\r\n\t\t\t<input $type = \"reset\" class=\"button\" $tabindex = \"1\" $value = \"";
 echo $Language[9];
 echo "\" $accesskey = \"r\" />\r\n\t\t</td>\r\n\t</tr>\r\n</table>\r\n</form>";
-function function_75()
+function getStaffLanguage()
 {
     if (isset($_COOKIE["staffcplanguage"]) && is_dir("languages/" . $_COOKIE["staffcplanguage"]) && is_file("languages/" . $_COOKIE["staffcplanguage"] . "/staffcp.lang")) {
         return $_COOKIE["staffcplanguage"];
     }
     return "english";
 }
-function function_77()
+function checkStaffAuthentication()
 {
     if (!defined("IN-TSSE-STAFF-PANEL")) {
         var_236("../index.php");
     }
 }
-function function_78($url)
+function redirectTo($url)
 {
     if (!headers_sent()) {
         header("Location: " . $url);
@@ -118,11 +118,11 @@ function function_78($url)
     }
     exit;
 }
-function function_76($Error)
+function showAlertError($Error)
 {
     return "<div class=\"alert\"><div>" . $Error . "</div></div>";
 }
-function function_79($log)
+function logStaffAction($log)
 {
     mysqli_query($GLOBALS["DatabaseConnect"], "INSERT INTO ts_staffcp_logs (uid, date, log) VALUES ('" . $_SESSION["ADMIN_ID"] . "', '" . time() . "', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $log) . "')");
 }

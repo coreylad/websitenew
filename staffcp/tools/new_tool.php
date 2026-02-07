@@ -7,7 +7,7 @@
  */
 
 var_235();
-$Language = file("languages/" . function_75() . "/new_tool.lang");
+$Language = file("languages/" . getStaffLanguage() . "/new_tool.lang");
 $Message = "";
 $category = isset($_GET["cid"]) ? intval($_GET["cid"]) : 0;
 $toolname = isset($_GET["toolname"]) ? trim($_GET["toolname"]) : "";
@@ -24,13 +24,13 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
         mysqli_query($GLOBALS["DatabaseConnect"], "INSERT INTO ts_staffcp_tools (cid, toolname, filename, usergroups, sort) VALUES ('" . $category . "', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $toolname) . "', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $filename) . "', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], implode(",", $usergroups)) . "', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $sort) . "')");
         if (mysqli_affected_rows($GLOBALS["DatabaseConnect"])) {
             $SysMsg = str_replace(["{1}", "{2}"], [$toolname, $_SESSION["ADMIN_USERNAME"]], $Language[3]);
-            function_79($SysMsg);
-            function_78("index.php?do=manage_tools");
+            logStaffAction($SysMsg);
+            redirectTo("index.php?do=manage_tools");
             exit;
         }
-        $Message = function_76($Language[12]);
+        $Message = showAlertError($Language[12]);
     } else {
-        $Message = function_76($Language[11]);
+        $Message = showAlertError($Language[11]);
     }
 }
 $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT u.id, g.cansettingspanel, g.canstaffpanel, g.issupermod FROM users u LEFT JOIN usergroups g ON (u.$usergroup = g.gid) WHERE u.$id = '" . $_SESSION["ADMIN_ID"] . "' LIMIT 1");
@@ -49,20 +49,20 @@ while ($cats = mysqli_fetch_assoc($query)) {
 }
 $showcategories .= "</select>";
 echo "\r\n" . $Message . "\r\n<form $method = \"post\" $action = \"index.php?do=new_tool\">\r\n<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"tborder\">\r\n\t<tr>\r\n\t\t<td class=\"tcat\" $colspan = \"2\" $align = \"center\">\r\n\t\t\t" . $Language[2] . "\r\n\t\t</td>\r\n\t</tr>\r\n\t<tr>\r\n\t\t<td class=\"alt1\">" . $Language[5] . "</td>\r\n\t\t<td class=\"alt1\"><input $type = \"text\" $name = \"toolname\" $value = \"" . htmlspecialchars($toolname) . "\" $size = \"40\" /></td>\r\n\t</tr>\r\n\t<tr>\r\n\t\t<td class=\"alt1\">" . $Language[6] . "</td>\r\n\t\t<td class=\"alt1\"><input $type = \"text\" $name = \"filename\" $value = \"" . htmlspecialchars($filename) . "\" $size = \"40\" /></td>\r\n\t</tr>\r\n\t<tr>\r\n\t\t<td class=\"alt1\">" . $Language[7] . "</td>\r\n\t\t<td class=\"alt1\"><input $type = \"text\" $name = \"sort\" $value = \"" . intval($sort) . "\" $size = \"40\" /></td>\r\n\t</tr>\r\n\t<tr>\r\n\t\t<td class=\"alt1\">" . $Language[13] . "</td>\r\n\t\t<td class=\"alt1\">" . $showcategories . "</td>\r\n\t</tr>\r\n\t<tr>\r\n\t\t<td class=\"alt1\" $valign = \"top\">" . $Language[8] . "</td>\r\n\t\t<td class=\"alt1\">" . $showusergroups . "</td>\r\n\t</tr>\r\n\t<tr>\r\n\t\t<td class=\"tcat2\"></td>\r\n\t\t<td class=\"tcat2\"><input $type = \"submit\" $value = \"" . $Language[9] . "\" /> <input $type = \"reset\" $value = \"" . $Language[10] . "\" /></td>\r\n\t</tr>\r\n</table>\r\n</form>";
-function function_75()
+function getStaffLanguage()
 {
     if (isset($_COOKIE["staffcplanguage"]) && is_dir("languages/" . $_COOKIE["staffcplanguage"]) && is_file("languages/" . $_COOKIE["staffcplanguage"] . "/staffcp.lang")) {
         return $_COOKIE["staffcplanguage"];
     }
     return "english";
 }
-function function_77()
+function checkStaffAuthentication()
 {
     if (!defined("IN-TSSE-STAFF-PANEL")) {
         var_236("../index.php");
     }
 }
-function function_78($url)
+function redirectTo($url)
 {
     if (!headers_sent()) {
         header("Location: " . $url);
@@ -71,11 +71,11 @@ function function_78($url)
     }
     exit;
 }
-function function_76($Error)
+function showAlertError($Error)
 {
     return "<div class=\"alert\"><div>" . $Error . "</div></div>";
 }
-function function_79($log)
+function logStaffAction($log)
 {
     mysqli_query($GLOBALS["DatabaseConnect"], "INSERT INTO ts_staffcp_logs (uid, date, log) VALUES ('" . $_SESSION["ADMIN_ID"] . "', '" . time() . "', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $log) . "')");
 }

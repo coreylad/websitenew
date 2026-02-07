@@ -7,7 +7,7 @@
  */
 
 var_235();
-$Language = file("languages/" . function_75() . "/directory_listing.lang");
+$Language = file("languages/" . getStaffLanguage() . "/directory_listing.lang");
 $Message = "";
 $FileList = "";
 $Files = [];
@@ -44,23 +44,23 @@ foreach ($Files as $File) {
     if (isset($FileTypes[$Ext])) {
         $Icon = $FileTypes[$Ext];
     }
-    $FileList .= "\r\n\t<tr>\r\n\t\t<td class=\"alt1\">\r\n\t\t\t<img $src = \"images/filetypes/" . $Icon . "\" $alt = \"\" $title = \"\" $border = \"0\" $style = \"vertical-align: middle;\" /> <a $href = \"index.php?do=directory_listing&amp;$f = " . $CurrentDirectory . $File . "\">" . $File . "</a>\r\n\t\t</td>\r\n\t\t<td class=\"alt1\">\r\n\t\t\t" . var_238(filesize($CurrentDirectory . $File)) . "\r\n\t\t</td>\r\n\t\t<td class=\"alt1\">\r\n\t\t\t" . function_84(filemtime($CurrentDirectory . $File)) . "\r\n\t\t</td>\r\n\t\t<td class=\"alt1\">\r\n\t\t\t" . var_425($CurrentDirectory . $File) . "\r\n\t\t</td>\r\n\t</tr>";
+    $FileList .= "\r\n\t<tr>\r\n\t\t<td class=\"alt1\">\r\n\t\t\t<img $src = \"images/filetypes/" . $Icon . "\" $alt = \"\" $title = \"\" $border = \"0\" $style = \"vertical-align: middle;\" /> <a $href = \"index.php?do=directory_listing&amp;$f = " . $CurrentDirectory . $File . "\">" . $File . "</a>\r\n\t\t</td>\r\n\t\t<td class=\"alt1\">\r\n\t\t\t" . var_238(filesize($CurrentDirectory . $File)) . "\r\n\t\t</td>\r\n\t\t<td class=\"alt1\">\r\n\t\t\t" . formatTimestamp(filemtime($CurrentDirectory . $File)) . "\r\n\t\t</td>\r\n\t\t<td class=\"alt1\">\r\n\t\t\t" . var_425($CurrentDirectory . $File) . "\r\n\t\t</td>\r\n\t</tr>";
 }
 echo "\t\t\t\r\n" . $Message . "\r\n<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t<tr>\r\n\t\t<td class=\"tcat\" $colspan = \"4\" $align = \"center\">\r\n\t\t\t<span $style = \"float: right;\"><small>" . $CurrentDirectory . "</small></span>\r\n\t\t\t" . $Language[1] . "\r\n\t\t</td>\r\n\t</tr>\r\n\t<tr>\r\n\t\t<td class=\"alt2\">\r\n\t\t\t" . $Language[2] . "\r\n\t\t</td>\r\n\t\t<td class=\"alt2\">\r\n\t\t\t" . $Language[3] . "\r\n\t\t</td>\r\n\t\t<td class=\"alt2\">\r\n\t\t\t" . $Language[4] . "\r\n\t\t</td>\r\n\t\t<td class=\"alt2\">\r\n\t\t\t" . $Language[5] . "\r\n\t\t</td>\r\n\t</tr>\r\n\t" . $FileList . "\r\n</table>\r\n";
-function function_75()
+function getStaffLanguage()
 {
     if (isset($_COOKIE["staffcplanguage"]) && is_dir("languages/" . $_COOKIE["staffcplanguage"]) && is_file("languages/" . $_COOKIE["staffcplanguage"] . "/staffcp.lang")) {
         return $_COOKIE["staffcplanguage"];
     }
     return "english";
 }
-function function_77()
+function checkStaffAuthentication()
 {
     if (!defined("IN-TSSE-STAFF-PANEL")) {
         var_236("../index.php");
     }
 }
-function function_78($url)
+function redirectTo($url)
 {
     if (!headers_sent()) {
         header("Location: " . $url);
@@ -69,15 +69,15 @@ function function_78($url)
     }
     exit;
 }
-function function_76($Error)
+function showAlertError($Error)
 {
     return "<div class=\"alert\"><div>" . $Error . "</div></div>";
 }
-function function_79($log)
+function logStaffAction($log)
 {
     mysqli_query($GLOBALS["DatabaseConnect"], "INSERT INTO ts_staffcp_logs (uid, date, log) VALUES ('" . $_SESSION["ADMIN_ID"] . "', '" . time() . "', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $log) . "')");
 }
-function function_88($bytes = 0)
+function formatBytes($bytes = 0)
 {
     if ($bytes < 1024000) {
         return number_format($bytes / 1024, 2) . " KB";
@@ -90,7 +90,7 @@ function function_88($bytes = 0)
     }
     return number_format($bytes / 0, 2) . " TB";
 }
-function function_84($timestamp = "")
+function formatTimestamp($timestamp = "")
 {
     $var_265 = "m-d-Y h:i A";
     if (empty($timestamp)) {

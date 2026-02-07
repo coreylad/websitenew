@@ -7,7 +7,7 @@
  */
 
 var_235();
-$Language = file("languages/" . function_75() . "/download_gift.lang");
+$Language = file("languages/" . getStaffLanguage() . "/download_gift.lang");
 $Message = "";
 $amount = "0";
 $type = "GB";
@@ -45,7 +45,7 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
                     mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET $downloaded = downloaded + " . $damount . $newModCommentSQL . " WHERE $username = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $username) . "'");
                     $SysMsg = str_replace(["{1}", "{2}", "{3}"], [$username, var_238($damount), $_SESSION["ADMIN_USERNAME"]], $Language[13]);
                 } else {
-                    $Message = function_76($Language[12]);
+                    $Message = showAlertError($Language[12]);
                 }
             }
         } else {
@@ -56,11 +56,11 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
             mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET $downloaded = downloaded + " . $damount . $newModCommentSQL . " WHERE usergroup IN (0, " . $work . ")");
         }
         if (!$Message && mysqli_affected_rows($GLOBALS["DatabaseConnect"])) {
-            function_79($SysMsg);
-            $Message = function_76($SysMsg);
+            logStaffAction($SysMsg);
+            $Message = showAlertError($SysMsg);
         }
     } else {
-        $Message = function_76($Language[10]);
+        $Message = showAlertError($Language[10]);
     }
 }
 $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT u.id, g.cansettingspanel, g.canstaffpanel, g.issupermod FROM users u LEFT JOIN usergroups g ON (u.$usergroup = g.gid) WHERE u.$id = '" . $_SESSION["ADMIN_ID"] . "' LIMIT 1");
@@ -79,20 +79,20 @@ while ($UG = mysqli_fetch_assoc($query)) {
 }
 $showusergroups .= "</tr></table>";
 echo "\r\n\r\n" . $Message . "\r\n<form $method = \"post\" $action = \"index.php?do=download_gift\">\r\n<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t<tr>\r\n\t\t<td class=\"tcat\" $colspan = \"2\" $align = \"center\">\r\n\t\t\t" . $Language[2] . "\r\n\t\t</td>\r\n\t</tr>\r\n\t<tr>\r\n\t\t<td class=\"alt1\" $align = \"right\">" . $Language[4] . "</td>\r\n\t\t<td class=\"alt1\"><input $type = \"text\" $name = \"amount\" $value = \"" . htmlspecialchars($amount) . "\" $size = \"10\" />\r\n\t\t\t<select $name = \"type\">\r\n\t\t\t\t<option $value = \"GB\"" . ($type == "GB" ? " $selected = \"selected\"" : "") . ">GB</option>\r\n\t\t\t\t<option $value = \"MB\"" . ($type == "MB" ? " $selected = \"selected\"" : "") . ">MB</option>\r\n\t\t\t</select></td>\r\n\t</tr>\r\n\t<tr>\r\n\t\t<td class=\"alt2\" $align = \"right\">" . $Language[11] . "</td>\r\n\t\t<td class=\"alt2\"><input $type = \"text\" $name = \"username\" $value = \"" . htmlspecialchars($username) . "\" $size = \"45\" /> <small>" . $Language[14] . "</small></td>\r\n\t</tr>\r\n\t<tr>\r\n\t\t<td class=\"alt1\" $valign = \"top\" $align = \"right\">" . $Language[6] . "</td>\r\n\t\t<td class=\"alt1\">" . $showusergroups . "</td>\r\n\t</tr>\r\n\t<tr>\r\n\t\t<td class=\"tcat2\" $align = \"right\"></td>\r\n\t\t<td class=\"tcat2\"><input $type = \"submit\" $value = \"" . $Language[7] . "\" /> <input $type = \"reset\" $value = \"" . $Language[8] . "\" /></td>\r\n\t</tr>\r\n</table>\r\n</form>";
-function function_75()
+function getStaffLanguage()
 {
     if (isset($_COOKIE["staffcplanguage"]) && is_dir("languages/" . $_COOKIE["staffcplanguage"]) && is_file("languages/" . $_COOKIE["staffcplanguage"] . "/staffcp.lang")) {
         return $_COOKIE["staffcplanguage"];
     }
     return "english";
 }
-function function_77()
+function checkStaffAuthentication()
 {
     if (!defined("IN-TSSE-STAFF-PANEL")) {
         var_236("../index.php");
     }
 }
-function function_78($url)
+function redirectTo($url)
 {
     if (!headers_sent()) {
         header("Location: " . $url);
@@ -101,11 +101,11 @@ function function_78($url)
     }
     exit;
 }
-function function_76($Error)
+function showAlertError($Error)
 {
     return "<div class=\"alert\"><div>" . $Error . "</div></div>";
 }
-function function_88($bytes = 0)
+function formatBytes($bytes = 0)
 {
     if ($bytes < 1024000) {
         return number_format($bytes / 1024, 2) . " KB";
@@ -118,7 +118,7 @@ function function_88($bytes = 0)
     }
     return number_format($bytes / 0, 2) . " TB";
 }
-function function_79($log)
+function logStaffAction($log)
 {
     mysqli_query($GLOBALS["DatabaseConnect"], "INSERT INTO ts_staffcp_logs (uid, date, log) VALUES ('" . $_SESSION["ADMIN_ID"] . "', '" . time() . "', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $log) . "')");
 }

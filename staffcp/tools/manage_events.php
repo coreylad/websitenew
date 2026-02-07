@@ -7,7 +7,7 @@
  */
 
 var_235();
-$Language = file("languages/" . function_75() . "/manage_events.lang");
+$Language = file("languages/" . getStaffLanguage() . "/manage_events.lang");
 $Message = "";
 $Found = "";
 $Act = isset($_GET["act"]) ? trim($_GET["act"]) : (isset($_POST["act"]) ? trim($_POST["act"]) : "");
@@ -20,8 +20,8 @@ if ($Act == "delete" && $id) {
         mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM ts_events WHERE $id = '" . $id . "'");
         if (mysqli_affected_rows($GLOBALS["DatabaseConnect"])) {
             $Message = str_replace(["{1}", "{2}"], [$Events["title"], $_SESSION["ADMIN_USERNAME"]], $Language[16]);
-            function_79($Message);
-            $Message = function_81($Message);
+            logStaffAction($Message);
+            $Message = showAlertMessage($Message);
         }
     }
 }
@@ -38,11 +38,11 @@ if ($Act == "edit" && $id) {
             if ($title && $event && $date) {
                 mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE ts_events SET $title = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $title) . "', $event = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $event) . "', $date = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $date) . "' WHERE $id = '" . $id . "'");
                 $Message = str_replace(["{1}", "{2}"], [$Events["title"], $_SESSION["ADMIN_USERNAME"]], $Language[17]);
-                function_79($Message);
-                $Message = function_81($Message);
+                logStaffAction($Message);
+                $Message = showAlertMessage($Message);
                 $Done = true;
             } else {
-                $Message = function_76($Language[19]);
+                $Message = showAlertError($Language[19]);
             }
         }
         if (!isset($Done)) {
@@ -66,11 +66,11 @@ if ($Act == "new") {
         if ($title && $event && $date) {
             mysqli_query($GLOBALS["DatabaseConnect"], "INSERT INTO ts_events (title, event, date) VALUES ('" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $title) . "', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $event) . "', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $date) . "')");
             $Message = str_replace(["{1}", "{2}"], [$title, $_SESSION["ADMIN_USERNAME"]], $Language[18]);
-            function_79($Message);
-            $Message = function_81($Message);
+            logStaffAction($Message);
+            $Message = showAlertMessage($Message);
             $Done = true;
         } else {
-            $Message = function_76($Language[19]);
+            $Message = showAlertError($Language[19]);
         }
     }
     if (!isset($Done)) {
@@ -90,21 +90,21 @@ if (mysqli_num_rows($Query) == 0) {
         $Found .= "\r\n\t\t<tr>\t\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t" . htmlspecialchars($Events["date"]) . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t" . htmlspecialchars($Events["title"]) . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t" . htmlspecialchars($Events["event"]) . "\r\n\t\t\t</td>\t\t\t\r\n\t\t\t<td class=\"alt1\" $align = \"center\">\r\n\t\t\t\t<a $href = \"index.php?do=manage_events&amp;$act = edit&amp;$id = " . $Events["id"] . "\"><img $src = \"images/tool_edit.png\" $alt = \"" . $Language[8] . "\" $title = \"" . $Language[8] . "\" $border = \"0\" /></a> <a $href = \"index.php?do=manage_events&amp;$act = delete&amp;$id = " . $Events["id"] . "\"><img $src = \"images/tool_delete.png\" $alt = \"" . $Language[9] . "\" $title = \"" . $Language[9] . "\" $border = \"0\" /></a> \r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t";
     }
 }
-echo function_81("<a $href = \"index.php?do=manage_events&amp;$act = new\">" . $Language[7] . "</a>") . "\r\n" . $Message . "\r\n<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t<tr>\r\n\t\t<td class=\"tcat\" $align = \"center\" $colspan = \"4\">" . $Language[2] . "</td>\r\n\t</tr>\r\n\t<tr>\r\n\t\t<td class=\"alt2\">\r\n\t\t\t" . $Language[3] . "\r\n\t\t</td>\r\n\t\t<td class=\"alt2\">\r\n\t\t\t" . $Language[4] . "\r\n\t\t</td>\r\n\t\t<td class=\"alt2\">\r\n\t\t\t" . $Language[5] . "\r\n\t\t</td>\r\n\t\t<td class=\"alt2\" $align = \"center\">\r\n\t\t\t" . $Language[6] . "\r\n\t\t</td>\t\t\r\n\t</tr>\r\n\t" . $Found . "\r\n</table>";
-function function_75()
+echo showAlertMessage("<a $href = \"index.php?do=manage_events&amp;$act = new\">" . $Language[7] . "</a>") . "\r\n" . $Message . "\r\n<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t<tr>\r\n\t\t<td class=\"tcat\" $align = \"center\" $colspan = \"4\">" . $Language[2] . "</td>\r\n\t</tr>\r\n\t<tr>\r\n\t\t<td class=\"alt2\">\r\n\t\t\t" . $Language[3] . "\r\n\t\t</td>\r\n\t\t<td class=\"alt2\">\r\n\t\t\t" . $Language[4] . "\r\n\t\t</td>\r\n\t\t<td class=\"alt2\">\r\n\t\t\t" . $Language[5] . "\r\n\t\t</td>\r\n\t\t<td class=\"alt2\" $align = \"center\">\r\n\t\t\t" . $Language[6] . "\r\n\t\t</td>\t\t\r\n\t</tr>\r\n\t" . $Found . "\r\n</table>";
+function getStaffLanguage()
 {
     if (isset($_COOKIE["staffcplanguage"]) && is_dir("languages/" . $_COOKIE["staffcplanguage"]) && is_file("languages/" . $_COOKIE["staffcplanguage"] . "/staffcp.lang")) {
         return $_COOKIE["staffcplanguage"];
     }
     return "english";
 }
-function function_77()
+function checkStaffAuthentication()
 {
     if (!defined("IN-TSSE-STAFF-PANEL")) {
         var_236("../index.php");
     }
 }
-function function_78($url)
+function redirectTo($url)
 {
     if (!headers_sent()) {
         header("Location: " . $url);
@@ -113,15 +113,15 @@ function function_78($url)
     }
     exit;
 }
-function function_79($log)
+function logStaffAction($log)
 {
     mysqli_query($GLOBALS["DatabaseConnect"], "INSERT INTO ts_staffcp_logs (uid, date, log) VALUES ('" . $_SESSION["ADMIN_ID"] . "', '" . time() . "', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $log) . "')");
 }
-function function_76($Error)
+function showAlertError($Error)
 {
     return "<div class=\"alert\"><div>" . $Error . "</div></div>";
 }
-function function_81($message = "")
+function showAlertMessage($message = "")
 {
     return "<div class=\"alert\"><div>" . $message . "</div></div>";
 }

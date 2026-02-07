@@ -7,7 +7,7 @@
  */
 
 var_235();
-$Language = file("languages/" . function_75() . "/traceroute_ip.lang");
+$Language = file("languages/" . getStaffLanguage() . "/traceroute_ip.lang");
 $Message = "";
 $ip = "";
 if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
@@ -31,7 +31,7 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
         @ob_end_clean();
         $Message = "\r\n\t\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"tcat\" $align = \"center\"><b>" . $Language[4] . "</b></td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t<pre>\r\n\t\t\t\t\t\t" . $output . "\r\n\t\t\t\t\t</pre>\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t</table>";
     } else {
-        $Message = function_76($Language[5]);
+        $Message = showAlertError($Language[5]);
     }
     exit($Message);
 }
@@ -52,20 +52,20 @@ echo $Language[7];
 echo "\" $accesskey = \"r\" />\r\n\t\t</td>\r\n\t</tr>\r\n</table>\r\n</form>\r\n<script $type = \"text/javascript\">\r\n\t\$(\"#traceroute_ip\").submit(function(e)\r\n\t{\r\n\t\te.preventDefault();\r\n\t\tvar \$form = \$(this), \$fields = \$form.serialize();\r\n\t\t\r\n\t\t\$.ajax\r\n\t\t({\r\n\t\t\turl: '";
 echo $_SERVER["SCRIPT_NAME"];
 echo "?do=traceroute_ip',\r\n\t\t\ttype: 'POST',\r\n\t\t\tdata: \$fields,\r\n\t\t\tsuccess: function(response)\r\n\t\t\t{\r\n\t\t\t\t\$('<div>'+response+'</div>').insertAfter(\$form);\r\n\t\t\t}\r\n\t\t});\r\n\r\n\t\treturn false;\r\n\t});\r\n</script>";
-function function_75()
+function getStaffLanguage()
 {
     if (isset($_COOKIE["staffcplanguage"]) && is_dir("languages/" . $_COOKIE["staffcplanguage"]) && is_file("languages/" . $_COOKIE["staffcplanguage"] . "/staffcp.lang")) {
         return $_COOKIE["staffcplanguage"];
     }
     return "english";
 }
-function function_77()
+function checkStaffAuthentication()
 {
     if (!defined("IN-TSSE-STAFF-PANEL")) {
         var_236("../index.php");
     }
 }
-function function_78($url)
+function redirectTo($url)
 {
     if (!headers_sent()) {
         header("Location: " . $url);
@@ -74,7 +74,7 @@ function function_78($url)
     }
     exit;
 }
-function function_76($Error)
+function showAlertError($Error)
 {
     return "<div class=\"alert\"><div>" . $Error . "</div></div>";
 }

@@ -7,7 +7,7 @@
  */
 
 var_235();
-$Language = file("languages/" . function_75() . "/unban_ip_requests.lang");
+$Language = file("languages/" . getStaffLanguage() . "/unban_ip_requests.lang");
 $Message = "";
 $Act = isset($_GET["act"]) ? trim($_GET["act"]) : (isset($_POST["act"]) ? trim($_POST["act"]) : "");
 $Cid = isset($_GET["id"]) ? intval($_GET["id"]) : (isset($_POST["id"]) ? intval($_POST["id"]) : 0);
@@ -24,7 +24,7 @@ if ($Act == "viewreply" && $Cid) {
     $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT reply FROM unbanrequests WHERE $id = '" . $Cid . "'");
     if (mysqli_num_rows($query)) {
         $Res = mysqli_fetch_assoc($query);
-        $Message = function_76(nl2br(htmlspecialchars($Res["reply"])));
+        $Message = showAlertError(nl2br(htmlspecialchars($Res["reply"])));
     }
 } else {
     if ($Act == "reply" && $Cid) {
@@ -38,16 +38,16 @@ if ($Act == "viewreply" && $Cid) {
                     $to = htmlspecialchars($Res["email"]);
                     $subject = $Language[3];
                     var_283($to, $subject, nl2br($reply));
-                    $Message = function_76($Language[14]);
+                    $Message = showAlertError($Language[14]);
                     mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE unbanrequests SET $reply = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $reply) . "' WHERE $id = '" . $Cid . "'");
                     if (mysqli_affected_rows($GLOBALS["DatabaseConnect"])) {
                         $Message = str_replace(["{1}", "{2}"], [$Cid, $_SESSION["ADMIN_USERNAME"]], $Language[15]);
-                        function_79($Message);
-                        $Message = function_81($Message);
+                        logStaffAction($Message);
+                        $Message = showAlertMessage($Message);
                         $Done = true;
                     }
                 } else {
-                    $Message = function_76($Language[11]);
+                    $Message = showAlertError($Language[11]);
                 }
             }
             if (!isset($Done)) {
@@ -65,21 +65,21 @@ if ($Act == "viewreply" && $Cid) {
             }
             if (count($ips)) {
                 $Message = str_replace(["{1}", "{2}"], [implode(", ", $ips), $_SESSION["ADMIN_USERNAME"]], $Language[9]);
-                function_79($Message);
-                $Message = function_81($Message);
+                logStaffAction($Message);
+                $Message = showAlertMessage($Message);
             }
         }
     }
 }
 $results = mysqli_num_rows(mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM unbanrequests"));
-list($pagertop, $limit) = function_82(25, $results, $_SERVER["SCRIPT_NAME"] . "?do=unban_ip_requests&amp;");
+list($pagertop, $limit) = buildPaginationLinks(25, $results, $_SERVER["SCRIPT_NAME"] . "?do=unban_ip_requests&amp;");
 $sql = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id, realip, email, added, comment, reply FROM unbanrequests ORDER BY added DESC " . $limit);
 if (mysqli_num_rows($sql) == 0) {
-    echo "\r\n\t\r\n\t" . function_76($Language[1]);
+    echo "\r\n\t\r\n\t" . showAlertError($Language[1]);
 } else {
     $Found = "";
     while ($REQ = mysqli_fetch_assoc($sql)) {
-        $Found .= "\r\n\t\t<tr $id = \"show_id" . $REQ["id"] . "\" $name = \"show_id" . $REQ["id"] . "\">\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t<a $href = \"index.php?do=search_ip&amp;$ip = " . htmlspecialchars($REQ["realip"]) . "\">" . htmlspecialchars($REQ["realip"]) . "</a>\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t<a $href = \"index.php?do=search_user&amp;$email = " . htmlspecialchars($REQ["email"]) . "\">" . htmlspecialchars($REQ["email"]) . "</a>\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t" . function_84($REQ["added"]) . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t" . htmlspecialchars($REQ["comment"]) . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t<a $href = \"index.php?do=unban_ip_requests&amp;$act = reply&amp;$id = " . $REQ["id"] . "" . (isset($_GET["page"]) ? "&amp;$page = " . intval($_GET["page"]) : "") . "\">" . trim($Language[10]) . "</a>\r\n\t\t\t\t" . ($REQ["reply"] == "" ? "" : " / <a $href = \"index.php?do=unban_ip_requests&amp;$act = viewreply&amp;$id = " . $REQ["id"] . "" . (isset($_GET["page"]) ? "&amp;$page = " . intval($_GET["page"]) : "") . "\">" . trim($Language[16]) . "</a>") . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\" $align = \"center\">\r\n\t\t\t\t<input $type = \"checkbox\" $name = \"id[" . $REQ["id"] . "]\" $value = \"" . htmlspecialchars($REQ["realip"]) . "\" $checkme = \"group\" />\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t";
+        $Found .= "\r\n\t\t<tr $id = \"show_id" . $REQ["id"] . "\" $name = \"show_id" . $REQ["id"] . "\">\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t<a $href = \"index.php?do=search_ip&amp;$ip = " . htmlspecialchars($REQ["realip"]) . "\">" . htmlspecialchars($REQ["realip"]) . "</a>\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t<a $href = \"index.php?do=search_user&amp;$email = " . htmlspecialchars($REQ["email"]) . "\">" . htmlspecialchars($REQ["email"]) . "</a>\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t" . formatTimestamp($REQ["added"]) . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t" . htmlspecialchars($REQ["comment"]) . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t<a $href = \"index.php?do=unban_ip_requests&amp;$act = reply&amp;$id = " . $REQ["id"] . "" . (isset($_GET["page"]) ? "&amp;$page = " . intval($_GET["page"]) : "") . "\">" . trim($Language[10]) . "</a>\r\n\t\t\t\t" . ($REQ["reply"] == "" ? "" : " / <a $href = \"index.php?do=unban_ip_requests&amp;$act = viewreply&amp;$id = " . $REQ["id"] . "" . (isset($_GET["page"]) ? "&amp;$page = " . intval($_GET["page"]) : "") . "\">" . trim($Language[16]) . "</a>") . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\" $align = \"center\">\r\n\t\t\t\t<input $type = \"checkbox\" $name = \"id[" . $REQ["id"] . "]\" $value = \"" . htmlspecialchars($REQ["realip"]) . "\" $checkme = \"group\" />\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t";
     }
     $Found .= "\r\n\t\t<tr>\r\n\t\t\t<td class=\"tcat2\" $align = \"right\" $colspan = \"6\"><input $type = \"submit\" $value = \"" . $Language[8] . "\" /></td>\r\n\t\t</tr>";
     echo "\r\n\t<script $type = \"text/javascript\">\r\n\t\tfunction select_deselectAll(formname,elm,group)\r\n\t\t{\r\n\t\t\tvar $frm = document.forms[formname];\r\n\t\t\tfor($i = 0;i<frm.length;i++)\r\n\t\t\t{\r\n\t\t\t\tif(elm.attributes[\"checkall\"] != null && elm.attributes[\"checkall\"].$value = = group)\r\n\t\t\t\t{\r\n\t\t\t\t\tif(frm.elements[i].attributes[\"checkme\"] != null && frm.elements[i].attributes[\"checkme\"].$value = = group)\r\n\t\t\t\t\t{\r\n\t\t\t\t\t\tfrm.elements[i].$checked = elm.checked;\r\n\t\t\t\t\t}\r\n\t\t\t\t}\r\n\t\t\t\telse if(frm.elements[i].attributes[\"checkme\"] != null && frm.elements[i].attributes[\"checkme\"].$value = = group)\r\n\t\t\t\t{\r\n\t\t\t\t\tif(frm.elements[i].$checked = = false)\r\n\t\t\t\t\t{\r\n\t\t\t\t\t\tfrm.elements[1].$checked = false;\r\n\t\t\t\t\t}\r\n\t\t\t\t}\r\n\t\t\t}\r\n\t\t}\r\n\t</script>\r\n\t<form $action = \"" . $_SERVER["SCRIPT_NAME"] . "?do=unban_ip_requests" . (isset($_GET["page"]) ? "&$page = " . intval($_GET["page"]) : "") . "\" $method = \"post\" $name = \"unban_ip_requests\">\r\n\t" . $Message . "\r\n\t" . $pagertop . "\r\n\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t<tr>\r\n\t\t\t<td class=\"tcat\" $align = \"center\" $colspan = \"6\"><b>" . $Language[3] . "</b></td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt2\"><b>" . $Language[4] . "</b></td>\r\n\t\t\t<td class=\"alt2\"><b>" . $Language[5] . "</b></td>\r\n\t\t\t<td class=\"alt2\"><b>" . $Language[6] . "</b></td>\r\n\t\t\t<td class=\"alt2\"><b>" . $Language[7] . "</b></td>\r\n\t\t\t<td class=\"alt2\"><b>" . $Language[10] . "</b></td>\r\n\t\t\t<td class=\"alt2\" $align = \"center\"><input $type = \"checkbox\" $checkall = \"group\" $onclick = \"javascript: return select_deselectAll ('unban_ip_requests', this, 'group');\"></td>\r\n\t\t</tr>\r\n\t\t" . $Found . "\r\n\t</table>\r\n\t</form>\r\n\t" . $pagertop;
@@ -317,20 +317,20 @@ class Class_5
         return preg_replace("#(\\r\\n|\\n|\\r)+#", " ", $text);
     }
 }
-function function_75()
+function getStaffLanguage()
 {
     if (isset($_COOKIE["staffcplanguage"]) && is_dir("languages/" . $_COOKIE["staffcplanguage"]) && is_file("languages/" . $_COOKIE["staffcplanguage"] . "/staffcp.lang")) {
         return $_COOKIE["staffcplanguage"];
     }
     return "english";
 }
-function function_77()
+function checkStaffAuthentication()
 {
     if (!defined("IN-TSSE-STAFF-PANEL")) {
         var_236("../index.php");
     }
 }
-function function_78($url)
+function redirectTo($url)
 {
     if (!headers_sent()) {
         header("Location: " . $url);
@@ -394,15 +394,15 @@ function function_100($to, $subject, $body)
     $var_301 = $var_300->function_98();
     return $var_301;
 }
-function function_79($log)
+function logStaffAction($log)
 {
     mysqli_query($GLOBALS["DatabaseConnect"], "INSERT INTO ts_staffcp_logs (uid, date, log) VALUES ('" . $_SESSION["ADMIN_ID"] . "', '" . time() . "', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $log) . "')");
 }
-function function_76($Error)
+function showAlertError($Error)
 {
     return "<div class=\"alert\"><div>" . $Error . "</div></div>";
 }
-function function_86($numresults, &$page, &$perpage, $maxperpage = 20, $defaultperpage = 20)
+function validatePerPage($numresults, &$page, &$perpage, $maxperpage = 20, $defaultperpage = 20)
 {
     $perpage = intval($perpage);
     if ($perpage < 1) {
@@ -424,7 +424,7 @@ function function_86($numresults, &$page, &$perpage, $maxperpage = 20, $defaultp
         }
     }
 }
-function function_87($pagenumber, $perpage, $total)
+function calculatePagination($pagenumber, $perpage, $total)
 {
     $var_241 = $perpage * ($pagenumber - 1);
     $var_89 = $var_241 + $perpage;
@@ -434,7 +434,7 @@ function function_87($pagenumber, $perpage, $total)
     $var_241++;
     return ["first" => number_format($var_241), "last" => number_format($var_89)];
 }
-function function_82($perpage, $results, $address)
+function buildPaginationLinks($perpage, $results, $address)
 {
     if ($results < $perpage) {
         return ["", ""];
@@ -445,7 +445,7 @@ function function_82($perpage, $results, $address)
         $var_242 = 0;
     }
     $pagenumber = isset($_GET["page"]) ? intval($_GET["page"]) : (isset($_POST["page"]) ? intval($_POST["page"]) : "");
-    function_86($results, $pagenumber, $perpage, 200);
+    validatePerPage($results, $pagenumber, $perpage, 200);
     $var_243 = ($pagenumber - 1) * $perpage;
     $var_244 = $pagenumber * $perpage;
     if ($results < $var_244) {
@@ -471,12 +471,12 @@ function function_82($perpage, $results, $address)
     $var_251["prev"] = $var_251["next"];
     if (1 < $pagenumber) {
         $var_252 = $pagenumber - 1;
-        $var_253 = function_87($var_252, $perpage, $results);
+        $var_253 = calculatePagination($var_252, $perpage, $results);
         $var_251["prev"] = true;
     }
     if ($pagenumber < $var_242) {
         $var_254 = $pagenumber + 1;
-        $var_255 = function_87($var_254, $perpage, $results);
+        $var_255 = calculatePagination($var_254, $perpage, $results);
         $var_251["next"] = true;
     }
     $var_256 = "3";
@@ -491,15 +491,15 @@ function function_82($perpage, $results, $address)
     }
     if ($var_256 <= abs($var_250 - $pagenumber) && $var_256 != 0) {
         if ($var_250 == 1) {
-            $var_260 = function_87(1, $perpage, $results);
+            $var_260 = calculatePagination(1, $perpage, $results);
             $var_251["first"] = true;
         }
         if ($var_250 == $var_242) {
-            $var_261 = function_87($var_242, $perpage, $results);
+            $var_261 = calculatePagination($var_242, $perpage, $results);
             $var_251["last"] = true;
         }
         if (in_array(abs($var_250 - $pagenumber), $var_257) && $var_250 != 1 && $var_250 != $var_242) {
-            $var_262 = function_87($var_250, $perpage, $results);
+            $var_262 = calculatePagination($var_250, $perpage, $results);
             $var_263 = $var_250 - $pagenumber;
             if (0 < $var_263) {
                 $var_263 = "+" . $var_263;
@@ -508,15 +508,15 @@ function function_82($perpage, $results, $address)
         }
     } else {
         if ($var_250 == $pagenumber) {
-            $var_264 = function_87($var_250, $perpage, $results);
+            $var_264 = calculatePagination($var_250, $perpage, $results);
             $var_245 .= "<li><a $name = \"current\" class=\"current\" $title = \"Showing results " . $var_264["first"] . " to " . $var_264["last"] . " of " . $total . "\">" . $var_250 . "</a></li>";
         } else {
-            $var_262 = function_87($var_250, $perpage, $results);
+            $var_262 = calculatePagination($var_250, $perpage, $results);
             $var_245 .= "<li><a $href = \"" . $address . ($var_250 != 1 ? "page=" . $var_250 : "") . "\" $title = \"Show results " . $var_262["first"] . " to " . $var_262["last"] . " of " . $total . "\">" . $var_250 . "</a></li>";
         }
     }
 }
-function function_84($timestamp = "")
+function formatTimestamp($timestamp = "")
 {
     $var_265 = "m-d-Y h:i A";
     if (empty($timestamp)) {
@@ -528,7 +528,7 @@ function function_84($timestamp = "")
     }
     return date($var_265, $timestamp);
 }
-function function_81($message = "")
+function showAlertMessage($message = "")
 {
     return "<div class=\"alert\"><div>" . $message . "</div></div>";
 }

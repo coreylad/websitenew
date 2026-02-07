@@ -7,26 +7,26 @@
  */
 
 var_235();
-$Language = file("languages/" . function_75() . "/server_info.lang");
+$Language = file("languages/" . getStaffLanguage() . "/server_info.lang");
 if (isset($_GET["info"])) {
     phpinfo();
     exit;
 }
 echo "<iframe $style = \"width: 99%; height: 99%; border: 0;\" $frameborders = \"0\" $src = \"" . $_SERVER["SCRIPT_NAME"] . "?do=server_info&$info = 1\"></iframe>";
-function function_75()
+function getStaffLanguage()
 {
     if (isset($_COOKIE["staffcplanguage"]) && is_dir("languages/" . $_COOKIE["staffcplanguage"]) && is_file("languages/" . $_COOKIE["staffcplanguage"] . "/staffcp.lang")) {
         return $_COOKIE["staffcplanguage"];
     }
     return "english";
 }
-function function_77()
+function checkStaffAuthentication()
 {
     if (!defined("IN-TSSE-STAFF-PANEL")) {
         var_236("../index.php");
     }
 }
-function function_78($url)
+function redirectTo($url)
 {
     if (!headers_sent()) {
         header("Location: " . $url);
@@ -35,7 +35,7 @@ function function_78($url)
     }
     exit;
 }
-function function_76($Error)
+function showAlertError($Error)
 {
     return "<div class=\"alert\"><div>" . $Error . "</div></div>";
 }

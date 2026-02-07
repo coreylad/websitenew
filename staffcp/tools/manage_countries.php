@@ -7,7 +7,7 @@
  */
 
 var_235();
-$Language = file("languages/" . function_75() . "/manage_countries.lang");
+$Language = file("languages/" . getStaffLanguage() . "/manage_countries.lang");
 $Act = isset($_GET["act"]) ? trim($_GET["act"]) : (isset($_POST["act"]) ? trim($_POST["act"]) : "");
 $Cid = isset($_GET["id"]) ? intval($_GET["id"]) : (isset($_POST["id"]) ? intval($_POST["id"]) : 0);
 $Q = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'MAIN'");
@@ -21,8 +21,8 @@ if ($Act == "delete" && $Cid) {
         $name = $Result["name"];
         mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM countries WHERE $id = '" . $Cid . "'");
         $Message = str_replace(["{1}", "{2}"], [$name, $_SESSION["ADMIN_USERNAME"]], $Language[13]);
-        function_79($Message);
-        $Message = function_76($Message);
+        logStaffAction($Message);
+        $Message = showAlertError($Message);
     }
 }
 if ($Act == "new") {
@@ -35,12 +35,12 @@ if ($Act == "new") {
             mysqli_query($GLOBALS["DatabaseConnect"], "INSERT INTO countries (name, flagpic) VALUES ('" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $name) . "', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $flagpic) . "')");
             if (mysqli_affected_rows($GLOBALS["DatabaseConnect"])) {
                 $Message = str_replace(["{1}", "{2}"], [$name, $_SESSION["ADMIN_USERNAME"]], $Language[15]);
-                function_79($Message);
-                $Message = function_76($Message);
+                logStaffAction($Message);
+                $Message = showAlertError($Message);
                 $Done = true;
             }
         } else {
-            $Message = function_76($Language[4]);
+            $Message = showAlertError($Language[4]);
         }
     }
     if (!isset($Done)) {
@@ -60,12 +60,12 @@ if ($Act == "edit" && $Cid) {
                 mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE countries SET $name = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $name) . "', $flagpic = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $flagpic) . "' WHERE $id = '" . $Cid . "'");
                 if (mysqli_affected_rows($GLOBALS["DatabaseConnect"])) {
                     $Message = str_replace(["{1}", "{2}"], [$name, $_SESSION["ADMIN_USERNAME"]], $Language[14]);
-                    function_79($Message);
-                    $Message = function_76($Message);
+                    logStaffAction($Message);
+                    $Message = showAlertError($Message);
                     $Done = true;
                 }
             } else {
-                $Message = function_76($Language[4]);
+                $Message = showAlertError($Language[4]);
             }
         }
         if (!isset($Done)) {
@@ -82,21 +82,21 @@ if (0 < mysqli_num_rows($query)) {
 } else {
     $Found .= "<tr><td $colspan = \"5\" class=\"alt1\">" . str_replace("{1}", "index.php?do=manage_countries&amp;$act = new", $Language[16]) . "</td></tr>";
 }
-echo function_81("<a $href = \"index.php?do=manage_countries&amp;$act = new\">" . $Language[10] . "</a>") . "\t\t\r\n\r\n" . $Message . "\r\n<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t<tr>\r\n\t\t<td class=\"tcat\" $colspan = \"3\" $align = \"center\">\r\n\t\t\t" . $Language[2] . "\r\n\t\t</td>\r\n\t</tr>\r\n\t<tr>\r\n\t\t<td class=\"alt2\">" . $Language[5] . "</td>\r\n\t\t<td class=\"alt2\">" . $Language[6] . "</td>\r\n\t\t<td class=\"alt2\" $align = \"center\">" . $Language[7] . "</td>\r\n\t</tr>\r\n\t" . $Found . "\r\n</table>\r\n";
-function function_75()
+echo showAlertMessage("<a $href = \"index.php?do=manage_countries&amp;$act = new\">" . $Language[10] . "</a>") . "\t\t\r\n\r\n" . $Message . "\r\n<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t<tr>\r\n\t\t<td class=\"tcat\" $colspan = \"3\" $align = \"center\">\r\n\t\t\t" . $Language[2] . "\r\n\t\t</td>\r\n\t</tr>\r\n\t<tr>\r\n\t\t<td class=\"alt2\">" . $Language[5] . "</td>\r\n\t\t<td class=\"alt2\">" . $Language[6] . "</td>\r\n\t\t<td class=\"alt2\" $align = \"center\">" . $Language[7] . "</td>\r\n\t</tr>\r\n\t" . $Found . "\r\n</table>\r\n";
+function getStaffLanguage()
 {
     if (isset($_COOKIE["staffcplanguage"]) && is_dir("languages/" . $_COOKIE["staffcplanguage"]) && is_file("languages/" . $_COOKIE["staffcplanguage"] . "/staffcp.lang")) {
         return $_COOKIE["staffcplanguage"];
     }
     return "english";
 }
-function function_77()
+function checkStaffAuthentication()
 {
     if (!defined("IN-TSSE-STAFF-PANEL")) {
         var_236("../index.php");
     }
 }
-function function_78($url)
+function redirectTo($url)
 {
     if (!headers_sent()) {
         header("Location: " . $url);
@@ -105,15 +105,15 @@ function function_78($url)
     }
     exit;
 }
-function function_76($Error)
+function showAlertError($Error)
 {
     return "<div class=\"alert\"><div>" . $Error . "</div></div>";
 }
-function function_81($message = "")
+function showAlertMessage($message = "")
 {
     return "<div class=\"alert\"><div>" . $message . "</div></div>";
 }
-function function_79($log)
+function logStaffAction($log)
 {
     mysqli_query($GLOBALS["DatabaseConnect"], "INSERT INTO ts_staffcp_logs (uid, date, log) VALUES ('" . $_SESSION["ADMIN_ID"] . "', '" . time() . "', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $log) . "')");
 }

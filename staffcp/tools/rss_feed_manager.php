@@ -26,7 +26,7 @@ if (!function_exists("xml_set_element_handler")) {
 if (!function_exists("ini_size_to_bytes") || ($current_memory_limit = function_271(@ini_get("memory_limit"))) < 134217728 && 0 < $current_memory_limit) {
     @ini_set("memory_limit", 134217728);
 }
-$Language = file("languages/" . function_75() . "/rss_feed_manager.lang");
+$Language = file("languages/" . getStaffLanguage() . "/rss_feed_manager.lang");
 $Act = isset($_GET["act"]) ? trim($_GET["act"]) : (isset($_POST["act"]) ? trim($_POST["act"]) : "");
 $Message = "";
 $ListFeeds = "";
@@ -40,7 +40,7 @@ if ($Act == "delete") {
             mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM ts_rssfeed WHERE $rssfeedid = '" . $rssfeedid . "'");
             if (mysqli_affected_rows($GLOBALS["DatabaseConnect"])) {
                 $SysMsg = str_replace(["{1}", "{2}"], [$title, $_SESSION["ADMIN_USERNAME"]], $Language[26]);
-                function_79($SysMsg);
+                logStaffAction($SysMsg);
             }
         }
     }
@@ -49,7 +49,7 @@ if ($Act == "delete") {
 if ($Act == "edit" && ($rssfeedid = intval($_GET["rssfeedid"]))) {
     $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM ts_rssfeed WHERE $rssfeedid = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $rssfeedid) . "'");
     if (!mysqli_num_rows($Query)) {
-        function_78("index.php?do=rss_feed_manager");
+        redirectTo("index.php?do=rss_feed_manager");
         exit;
     }
     $Feed = mysqli_fetch_assoc($Query);
@@ -101,7 +101,7 @@ if ($Act == "edit" && ($rssfeedid = intval($_GET["rssfeedid"]))) {
         if (!$Errors) {
             if (isset($_POST["save"])) {
                 mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE ts_rssfeed SET $title = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $title) . "', $url = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $url) . "', $ttl = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $ttl) . "', $maxresults = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $maxresults) . "', $userid = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $userid) . "', $fid = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $fid) . "', $titletemplate = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $titletemplate) . "', $bodytemplate = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $bodytemplate) . "', $moderate = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $moderate) . "', $active = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $active) . "' WHERE $rssfeedid = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $rssfeedid) . "'");
-                function_78("index.php?do=rss_feed_manager");
+                redirectTo("index.php?do=rss_feed_manager");
                 exit;
             }
             if (isset($_POST["preview"])) {
@@ -129,7 +129,7 @@ if ($Act == "edit" && ($rssfeedid = intval($_GET["rssfeedid"]))) {
                 }
             }
         } else {
-            $Message = function_76(implode("<br />", $Errors));
+            $Message = showAlertError(implode("<br />", $Errors));
         }
     }
     $ForumList = "<select $name = \"fid\"><option $value = \"0\">" . $Language[32] . "</option>";
@@ -140,13 +140,13 @@ if ($Act == "edit" && ($rssfeedid = intval($_GET["rssfeedid"]))) {
         }
     }
     $ForumList .= "</select>";
-    echo "\r\n\t" . function_81("<a $href = \"index.php?do=rss_feed_manager\">" . $Language[27] . "</a>") . "\r\n\t" . (isset($output) ? $output : "") . "\r\n\t" . $Message . "\r\n\t<form $method = \"post\">\r\n\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t<tr>\r\n\t\t\t<td class=\"tcat\" $colspan = \"2\" $align = \"center\">\r\n\t\t\t\t" . $Language[2] . "\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\"><b>" . $Language[12] . "</b></td>\r\n\t\t\t<td class=\"alt1\"><input $type = \"radio\" $name = \"active\" $value = \"1\"" . ($active == 1 ? " $checked = \"checked\"" : "") . " /> " . $Language[28] . " <input $type = \"radio\" $name = \"active\" $value = \"0\"" . ($active == 0 ? " $checked = \"checked\"" : "") . " /> " . $Language[29] . "</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\"><b>" . $Language[13] . "</b></td>\r\n\t\t\t<td class=\"alt1\"><input $type = \"text\" $name = \"title\" $value = \"" . $title . "\" $style = \"width: 400px;\" /></td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\"><b>" . $Language[14] . "</b></td>\r\n\t\t\t<td class=\"alt1\"><input $type = \"text\" $name = \"url\" $value = \"" . $url . "\" $style = \"width: 400px;\" /></td>\r\n\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t<td class=\"alt1\"><b>" . $Language[15] . "</b></td>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t<select $name = \"ttl\" $style = \"width: 100px;\">\r\n\t\t\t\t\t<option $value = \"600\"" . ($ttl == 600 ? " $selected = \"selected\"" : "") . ">10 " . $Language[30] . "</option>\r\n\t\t\t\t\t<option $value = \"1200\"" . ($ttl == 1200 ? " $selected = \"selected\"" : "") . ">20 " . $Language[30] . "</option>\r\n\t\t\t\t\t<option $value = \"1800\"" . ($ttl == 1800 ? " $selected = \"selected\"" : "") . ">30 " . $Language[30] . "</option>\r\n\t\t\t\t\t<option $value = \"3600\"" . ($ttl == 3600 ? " $selected = \"selected\"" : "") . ">60 " . $Language[30] . "</option>\r\n\t\t\t\t\t<option $value = \"7200\"" . ($ttl == 7200 ? " $selected = \"selected\"" : "") . ">2 " . $Language[31] . "</option>\r\n\t\t\t\t\t<option $value = \"14400\"" . ($ttl == 14400 ? " $selected = \"selected\"" : "") . ">4 " . $Language[31] . "</option>\r\n\t\t\t\t\t<option $value = \"21600\"" . ($ttl == 21600 ? " $selected = \"selected\"" : "") . ">6 " . $Language[31] . "</option>\r\n\t\t\t\t\t<option $value = \"28800\"" . ($ttl == 28800 ? " $selected = \"selected\"" : "") . ">8 " . $Language[31] . "</option>\r\n\t\t\t\t\t<option $value = \"36000\"" . ($ttl == 36000 ? " $selected = \"selected\"" : "") . ">10 " . $Language[31] . "</option>\r\n\t\t\t\t\t<option $value = \"43200\"" . ($ttl == 43200 ? " $selected = \"selected\"" : "") . ">12 " . $Language[31] . "</option>\r\n\t\t\t\t</select>\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\"><b>" . $Language[16] . "</b></td>\r\n\t\t\t<td class=\"alt1\"><input $type = \"text\" $name = \"maxresults\" $value = \"" . $maxresults . "\" $style = \"width: 100px;\" /></td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\"><b>" . $Language[5] . "</b></td>\r\n\t\t\t<td class=\"alt1\"><input $type = \"text\" $name = \"username\" $value = \"" . $username . "\" $style = \"width: 100px;\" /></td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\"><b>" . $Language[18] . "</b></td>\r\n\t\t\t<td class=\"alt1\">" . $ForumList . "</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\"><b>" . $Language[33] . "</b></td>\r\n\t\t\t<td class=\"alt1\"><input $type = \"radio\" $name = \"moderate\" $value = \"1\"" . ($moderate == 1 ? " $checked = \"checked\"" : "") . " /> " . $Language[28] . " <input $type = \"radio\" $name = \"moderate\" $value = \"0\"" . ($moderate == 0 ? " $checked = \"checked\"" : "") . " /> " . $Language[29] . "</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt2\" $colspan = \"2\" $align = \"center\">\r\n\t\t\t\t<input $type = \"submit\" $name = \"save\" $value = \"" . $Language[19] . "\" /> <input $type = \"submit\" $name = \"preview\" $value = \"" . $Language[20] . "\" /> <input $type = \"reset\" $value = \"" . $Language[21] . "\" />\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t</table>\r\n\t</form>";
+    echo "\r\n\t" . showAlertMessage("<a $href = \"index.php?do=rss_feed_manager\">" . $Language[27] . "</a>") . "\r\n\t" . (isset($output) ? $output : "") . "\r\n\t" . $Message . "\r\n\t<form $method = \"post\">\r\n\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t<tr>\r\n\t\t\t<td class=\"tcat\" $colspan = \"2\" $align = \"center\">\r\n\t\t\t\t" . $Language[2] . "\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\"><b>" . $Language[12] . "</b></td>\r\n\t\t\t<td class=\"alt1\"><input $type = \"radio\" $name = \"active\" $value = \"1\"" . ($active == 1 ? " $checked = \"checked\"" : "") . " /> " . $Language[28] . " <input $type = \"radio\" $name = \"active\" $value = \"0\"" . ($active == 0 ? " $checked = \"checked\"" : "") . " /> " . $Language[29] . "</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\"><b>" . $Language[13] . "</b></td>\r\n\t\t\t<td class=\"alt1\"><input $type = \"text\" $name = \"title\" $value = \"" . $title . "\" $style = \"width: 400px;\" /></td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\"><b>" . $Language[14] . "</b></td>\r\n\t\t\t<td class=\"alt1\"><input $type = \"text\" $name = \"url\" $value = \"" . $url . "\" $style = \"width: 400px;\" /></td>\r\n\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t<td class=\"alt1\"><b>" . $Language[15] . "</b></td>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t<select $name = \"ttl\" $style = \"width: 100px;\">\r\n\t\t\t\t\t<option $value = \"600\"" . ($ttl == 600 ? " $selected = \"selected\"" : "") . ">10 " . $Language[30] . "</option>\r\n\t\t\t\t\t<option $value = \"1200\"" . ($ttl == 1200 ? " $selected = \"selected\"" : "") . ">20 " . $Language[30] . "</option>\r\n\t\t\t\t\t<option $value = \"1800\"" . ($ttl == 1800 ? " $selected = \"selected\"" : "") . ">30 " . $Language[30] . "</option>\r\n\t\t\t\t\t<option $value = \"3600\"" . ($ttl == 3600 ? " $selected = \"selected\"" : "") . ">60 " . $Language[30] . "</option>\r\n\t\t\t\t\t<option $value = \"7200\"" . ($ttl == 7200 ? " $selected = \"selected\"" : "") . ">2 " . $Language[31] . "</option>\r\n\t\t\t\t\t<option $value = \"14400\"" . ($ttl == 14400 ? " $selected = \"selected\"" : "") . ">4 " . $Language[31] . "</option>\r\n\t\t\t\t\t<option $value = \"21600\"" . ($ttl == 21600 ? " $selected = \"selected\"" : "") . ">6 " . $Language[31] . "</option>\r\n\t\t\t\t\t<option $value = \"28800\"" . ($ttl == 28800 ? " $selected = \"selected\"" : "") . ">8 " . $Language[31] . "</option>\r\n\t\t\t\t\t<option $value = \"36000\"" . ($ttl == 36000 ? " $selected = \"selected\"" : "") . ">10 " . $Language[31] . "</option>\r\n\t\t\t\t\t<option $value = \"43200\"" . ($ttl == 43200 ? " $selected = \"selected\"" : "") . ">12 " . $Language[31] . "</option>\r\n\t\t\t\t</select>\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\"><b>" . $Language[16] . "</b></td>\r\n\t\t\t<td class=\"alt1\"><input $type = \"text\" $name = \"maxresults\" $value = \"" . $maxresults . "\" $style = \"width: 100px;\" /></td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\"><b>" . $Language[5] . "</b></td>\r\n\t\t\t<td class=\"alt1\"><input $type = \"text\" $name = \"username\" $value = \"" . $username . "\" $style = \"width: 100px;\" /></td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\"><b>" . $Language[18] . "</b></td>\r\n\t\t\t<td class=\"alt1\">" . $ForumList . "</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\"><b>" . $Language[33] . "</b></td>\r\n\t\t\t<td class=\"alt1\"><input $type = \"radio\" $name = \"moderate\" $value = \"1\"" . ($moderate == 1 ? " $checked = \"checked\"" : "") . " /> " . $Language[28] . " <input $type = \"radio\" $name = \"moderate\" $value = \"0\"" . ($moderate == 0 ? " $checked = \"checked\"" : "") . " /> " . $Language[29] . "</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt2\" $colspan = \"2\" $align = \"center\">\r\n\t\t\t\t<input $type = \"submit\" $name = \"save\" $value = \"" . $Language[19] . "\" /> <input $type = \"submit\" $name = \"preview\" $value = \"" . $Language[20] . "\" /> <input $type = \"reset\" $value = \"" . $Language[21] . "\" />\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t</table>\r\n\t</form>";
 }
 if ($Act == "run" && ($rssfeedid = intval($_GET["rssfeedid"]))) {
     $timenow = time();
     $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT r.*, f.type, ff.fid as realforumid, u.username FROM ts_rssfeed r INNER JOIN tsf_forums f ON (f.$fid = r.fid) INNER JOIN tsf_forums ff ON (ff.$fid = f.pid) INNER JOIN users u ON (r.$userid = u.id) WHERE r.$rssfeedid = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $rssfeedid) . "'");
     if (!mysqli_num_rows($Query)) {
-        function_78("index.php?do=rss_feed_manager");
+        redirectTo("index.php?do=rss_feed_manager");
         exit;
     }
     mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE ts_rssfeed SET $lastrun = " . $timenow . " WHERE $rssfeedid = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $rssfeedid) . "'");
@@ -267,7 +267,7 @@ if ($Act == "run" && ($rssfeedid = intval($_GET["rssfeedid"]))) {
         $output .= $Language[39];
     }
     $output .= "</ol>";
-    echo "\r\n\t" . function_81("<a $href = \"index.php?do=rss_feed_manager\">" . $Language[27] . "</a>") . "\r\n\t" . (isset($output) ? "\r\n\t<table $cellpadding = \"5\" $cellspacing = \"0\" $border = \"0\" class=\"tborder\">\r\n\t\t<tr>\r\n\t\t\t<td $valign = \"top\" $align = \"left\" class=\"alt1\">\r\n\t\t\t\t<ol>\r\n\t\t\t\t\t" . $output . "\r\n\t\t\t\t</ol>\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t</table>" : "");
+    echo "\r\n\t" . showAlertMessage("<a $href = \"index.php?do=rss_feed_manager\">" . $Language[27] . "</a>") . "\r\n\t" . (isset($output) ? "\r\n\t<table $cellpadding = \"5\" $cellspacing = \"0\" $border = \"0\" class=\"tborder\">\r\n\t\t<tr>\r\n\t\t\t<td $valign = \"top\" $align = \"left\" class=\"alt1\">\r\n\t\t\t\t<ol>\r\n\t\t\t\t\t" . $output . "\r\n\t\t\t\t</ol>\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t</table>" : "");
 }
 if ($Act == "new") {
     $active = isset($_POST["active"]) && $_POST["active"] == 0 ? 0 : 1;
@@ -311,13 +311,13 @@ if ($Act == "new") {
         if (!$Errors) {
             if (isset($_POST["save"])) {
                 mysqli_query($GLOBALS["DatabaseConnect"], "INSERT INTO ts_rssfeed SET $title = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $title) . "', $url = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $url) . "', $ttl = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $ttl) . "', $maxresults = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $maxresults) . "', $userid = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $userid) . "', $fid = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $fid) . "', $titletemplate = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $titletemplate) . "', $bodytemplate = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $bodytemplate) . "', $moderate = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $moderate) . "', $active = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $active) . "'");
-                function_78("index.php?do=rss_feed_manager");
+                redirectTo("index.php?do=rss_feed_manager");
                 exit;
             }
             if (isset($_POST["preview"])) {
             }
         } else {
-            $Message = function_76(implode("<br />", $Errors));
+            $Message = showAlertError(implode("<br />", $Errors));
         }
     }
     $ForumList = "<select $name = \"fid\"><option $value = \"0\">" . $Language[32] . "</option>";
@@ -328,7 +328,7 @@ if ($Act == "new") {
         }
     }
     $ForumList .= "</select>";
-    echo "\r\n\t" . function_81("<a $href = \"index.php?do=rss_feed_manager\">" . $Language[27] . "</a>") . "\r\n\t" . $Message . "\r\n\t<form $method = \"post\">\r\n\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t<tr>\r\n\t\t\t<td class=\"tcat\" $colspan = \"2\" $align = \"center\">\r\n\t\t\t\t" . $Language[2] . "\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\"><b>" . $Language[12] . "</b></td>\r\n\t\t\t<td class=\"alt1\"><input $type = \"radio\" $name = \"active\" $value = \"1\"" . ($active == 1 ? " $checked = \"checked\"" : "") . " /> " . $Language[28] . " <input $type = \"radio\" $name = \"active\" $value = \"0\"" . ($active == 0 ? " $checked = \"checked\"" : "") . " /> " . $Language[29] . "</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\"><b>" . $Language[13] . "</b></td>\r\n\t\t\t<td class=\"alt1\"><input $type = \"text\" $name = \"title\" $value = \"" . $title . "\" $style = \"width: 400px;\" /></td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\"><b>" . $Language[14] . "</b></td>\r\n\t\t\t<td class=\"alt1\"><input $type = \"text\" $name = \"url\" $value = \"" . $url . "\" $style = \"width: 400px;\" /></td>\r\n\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t<td class=\"alt1\"><b>" . $Language[15] . "</b></td>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t<select $name = \"ttl\" $style = \"width: 100px;\">\r\n\t\t\t\t\t<option $value = \"600\"" . ($ttl == 600 ? " $selected = \"selected\"" : "") . ">10 " . $Language[30] . "</option>\r\n\t\t\t\t\t<option $value = \"1200\"" . ($ttl == 1200 ? " $selected = \"selected\"" : "") . ">20 " . $Language[30] . "</option>\r\n\t\t\t\t\t<option $value = \"1800\"" . ($ttl == 1800 ? " $selected = \"selected\"" : "") . ">30 " . $Language[30] . "</option>\r\n\t\t\t\t\t<option $value = \"3600\"" . ($ttl == 3600 ? " $selected = \"selected\"" : "") . ">60 " . $Language[30] . "</option>\r\n\t\t\t\t\t<option $value = \"7200\"" . ($ttl == 7200 ? " $selected = \"selected\"" : "") . ">2 " . $Language[31] . "</option>\r\n\t\t\t\t\t<option $value = \"14400\"" . ($ttl == 14400 ? " $selected = \"selected\"" : "") . ">4 " . $Language[31] . "</option>\r\n\t\t\t\t\t<option $value = \"21600\"" . ($ttl == 21600 ? " $selected = \"selected\"" : "") . ">6 " . $Language[31] . "</option>\r\n\t\t\t\t\t<option $value = \"28800\"" . ($ttl == 28800 ? " $selected = \"selected\"" : "") . ">8 " . $Language[31] . "</option>\r\n\t\t\t\t\t<option $value = \"36000\"" . ($ttl == 36000 ? " $selected = \"selected\"" : "") . ">10 " . $Language[31] . "</option>\r\n\t\t\t\t\t<option $value = \"43200\"" . ($ttl == 43200 ? " $selected = \"selected\"" : "") . ">12 " . $Language[31] . "</option>\r\n\t\t\t\t</select>\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\"><b>" . $Language[16] . "</b></td>\r\n\t\t\t<td class=\"alt1\"><input $type = \"text\" $name = \"maxresults\" $value = \"" . $maxresults . "\" $style = \"width: 100px;\" /></td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\"><b>" . $Language[5] . "</b></td>\r\n\t\t\t<td class=\"alt1\"><input $type = \"text\" $name = \"username\" $value = \"" . $username . "\" $style = \"width: 100px;\" /></td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\"><b>" . $Language[18] . "</b></td>\r\n\t\t\t<td class=\"alt1\">" . $ForumList . "</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\"><b>" . $Language[33] . "</b></td>\r\n\t\t\t<td class=\"alt1\"><input $type = \"radio\" $name = \"moderate\" $value = \"1\"" . ($moderate == 1 ? " $checked = \"checked\"" : "") . " /> " . $Language[28] . " <input $type = \"radio\" $name = \"moderate\" $value = \"0\"" . ($moderate == 0 ? " $checked = \"checked\"" : "") . " /> " . $Language[29] . "</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"tcat2\"></td>\r\n\t\t\t<td class=\"tcat2\">\r\n\t\t\t\t<input $type = \"submit\" $name = \"save\" $value = \"" . $Language[19] . "\" /> <input $type = \"reset\" $value = \"" . $Language[21] . "\" />\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t</table>\r\n\t</form>";
+    echo "\r\n\t" . showAlertMessage("<a $href = \"index.php?do=rss_feed_manager\">" . $Language[27] . "</a>") . "\r\n\t" . $Message . "\r\n\t<form $method = \"post\">\r\n\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t<tr>\r\n\t\t\t<td class=\"tcat\" $colspan = \"2\" $align = \"center\">\r\n\t\t\t\t" . $Language[2] . "\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\"><b>" . $Language[12] . "</b></td>\r\n\t\t\t<td class=\"alt1\"><input $type = \"radio\" $name = \"active\" $value = \"1\"" . ($active == 1 ? " $checked = \"checked\"" : "") . " /> " . $Language[28] . " <input $type = \"radio\" $name = \"active\" $value = \"0\"" . ($active == 0 ? " $checked = \"checked\"" : "") . " /> " . $Language[29] . "</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\"><b>" . $Language[13] . "</b></td>\r\n\t\t\t<td class=\"alt1\"><input $type = \"text\" $name = \"title\" $value = \"" . $title . "\" $style = \"width: 400px;\" /></td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\"><b>" . $Language[14] . "</b></td>\r\n\t\t\t<td class=\"alt1\"><input $type = \"text\" $name = \"url\" $value = \"" . $url . "\" $style = \"width: 400px;\" /></td>\r\n\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t<td class=\"alt1\"><b>" . $Language[15] . "</b></td>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t<select $name = \"ttl\" $style = \"width: 100px;\">\r\n\t\t\t\t\t<option $value = \"600\"" . ($ttl == 600 ? " $selected = \"selected\"" : "") . ">10 " . $Language[30] . "</option>\r\n\t\t\t\t\t<option $value = \"1200\"" . ($ttl == 1200 ? " $selected = \"selected\"" : "") . ">20 " . $Language[30] . "</option>\r\n\t\t\t\t\t<option $value = \"1800\"" . ($ttl == 1800 ? " $selected = \"selected\"" : "") . ">30 " . $Language[30] . "</option>\r\n\t\t\t\t\t<option $value = \"3600\"" . ($ttl == 3600 ? " $selected = \"selected\"" : "") . ">60 " . $Language[30] . "</option>\r\n\t\t\t\t\t<option $value = \"7200\"" . ($ttl == 7200 ? " $selected = \"selected\"" : "") . ">2 " . $Language[31] . "</option>\r\n\t\t\t\t\t<option $value = \"14400\"" . ($ttl == 14400 ? " $selected = \"selected\"" : "") . ">4 " . $Language[31] . "</option>\r\n\t\t\t\t\t<option $value = \"21600\"" . ($ttl == 21600 ? " $selected = \"selected\"" : "") . ">6 " . $Language[31] . "</option>\r\n\t\t\t\t\t<option $value = \"28800\"" . ($ttl == 28800 ? " $selected = \"selected\"" : "") . ">8 " . $Language[31] . "</option>\r\n\t\t\t\t\t<option $value = \"36000\"" . ($ttl == 36000 ? " $selected = \"selected\"" : "") . ">10 " . $Language[31] . "</option>\r\n\t\t\t\t\t<option $value = \"43200\"" . ($ttl == 43200 ? " $selected = \"selected\"" : "") . ">12 " . $Language[31] . "</option>\r\n\t\t\t\t</select>\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\"><b>" . $Language[16] . "</b></td>\r\n\t\t\t<td class=\"alt1\"><input $type = \"text\" $name = \"maxresults\" $value = \"" . $maxresults . "\" $style = \"width: 100px;\" /></td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\"><b>" . $Language[5] . "</b></td>\r\n\t\t\t<td class=\"alt1\"><input $type = \"text\" $name = \"username\" $value = \"" . $username . "\" $style = \"width: 100px;\" /></td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\"><b>" . $Language[18] . "</b></td>\r\n\t\t\t<td class=\"alt1\">" . $ForumList . "</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\"><b>" . $Language[33] . "</b></td>\r\n\t\t\t<td class=\"alt1\"><input $type = \"radio\" $name = \"moderate\" $value = \"1\"" . ($moderate == 1 ? " $checked = \"checked\"" : "") . " /> " . $Language[28] . " <input $type = \"radio\" $name = \"moderate\" $value = \"0\"" . ($moderate == 0 ? " $checked = \"checked\"" : "") . " /> " . $Language[29] . "</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"tcat2\"></td>\r\n\t\t\t<td class=\"tcat2\">\r\n\t\t\t\t<input $type = \"submit\" $name = \"save\" $value = \"" . $Language[19] . "\" /> <input $type = \"reset\" $value = \"" . $Language[21] . "\" />\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t</table>\r\n\t</form>";
 }
 if (empty($Act)) {
     $Query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT feed.*, forum.name as forumname, u.username, g.namestyle FROM ts_rssfeed feed LEFT JOIN tsf_forums forum ON (forum.$fid = feed.fid) LEFT JOIN users u ON (u.$id = feed.userid) LEFT JOIN usergroups g ON (u.$usergroup = g.gid) ORDER by title ASC");
@@ -337,10 +337,10 @@ if (empty($Act)) {
             $class = $Count % 2 == 1 ? "alt2" : "alt1";
             $URL = parse_url($Feed["url"]);
             $host = $URL["host"];
-            $ListFeeds .= "\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"" . $class . "\">" . $Feed["title"] . "<br /><a $href = \"" . htmlspecialchars($Feed["url"]) . "\" $target = \"_blank\">" . htmlspecialchars($host) . "</></td>\r\n\t\t\t\t<td class=\"" . $class . "\">" . $Feed["forumname"] . "</td>\r\n\t\t\t\t<td class=\"" . $class . "\">" . function_83($Feed["username"], $Feed["namestyle"]) . "</td>\r\n\t\t\t\t<td class=\"" . $class . "\">" . ($Feed["lastrun"] ? function_84($Feed["lastrun"]) : "--") . "</td>\r\n\t\t\t\t<td class=\"" . $class . "\">" . ($Feed["active"] == 1 ? $Language[28] : $Language[29]) . "</td>\r\n\t\t\t\t<td class=\"" . $class . "\" $align = \"center\"><a $href = \"index.php?do=rss_feed_manager&amp;$act = edit&amp;$rssfeedid = " . $Feed["rssfeedid"] . "\"><img $src = \"./images/tool_edit.png\" $alt = \"" . $Language[24] . "\" $title = \"" . $Language[24] . "\" $border = \"0\"></a> <a $href = \"index.php?do=rss_feed_manager&amp;$act = run&amp;$rssfeedid = " . $Feed["rssfeedid"] . "\"><img $src = \"./images/tool_refresh.png\" $alt = \"" . $Language[8] . "\" $title = \"" . $Language[8] . "\" $border = \"0\"></a> <a $href = \"index.php?do=rss_feed_manager&amp;$act = delete&amp;$rssfeedid = " . $Feed["rssfeedid"] . "\" $onclick = \"return confirm('" . trim($Language[10]) . "');\"><img $src = \"./images/tool_delete.png\" $alt = \"" . $Language[25] . "\" $title = \"" . $Language[25] . "\" $border = \"0\"></a></td>\r\n\t\t\t</tr>";
+            $ListFeeds .= "\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"" . $class . "\">" . $Feed["title"] . "<br /><a $href = \"" . htmlspecialchars($Feed["url"]) . "\" $target = \"_blank\">" . htmlspecialchars($host) . "</></td>\r\n\t\t\t\t<td class=\"" . $class . "\">" . $Feed["forumname"] . "</td>\r\n\t\t\t\t<td class=\"" . $class . "\">" . applyUsernameStyle($Feed["username"], $Feed["namestyle"]) . "</td>\r\n\t\t\t\t<td class=\"" . $class . "\">" . ($Feed["lastrun"] ? formatTimestamp($Feed["lastrun"]) : "--") . "</td>\r\n\t\t\t\t<td class=\"" . $class . "\">" . ($Feed["active"] == 1 ? $Language[28] : $Language[29]) . "</td>\r\n\t\t\t\t<td class=\"" . $class . "\" $align = \"center\"><a $href = \"index.php?do=rss_feed_manager&amp;$act = edit&amp;$rssfeedid = " . $Feed["rssfeedid"] . "\"><img $src = \"./images/tool_edit.png\" $alt = \"" . $Language[24] . "\" $title = \"" . $Language[24] . "\" $border = \"0\"></a> <a $href = \"index.php?do=rss_feed_manager&amp;$act = run&amp;$rssfeedid = " . $Feed["rssfeedid"] . "\"><img $src = \"./images/tool_refresh.png\" $alt = \"" . $Language[8] . "\" $title = \"" . $Language[8] . "\" $border = \"0\"></a> <a $href = \"index.php?do=rss_feed_manager&amp;$act = delete&amp;$rssfeedid = " . $Feed["rssfeedid"] . "\" $onclick = \"return confirm('" . trim($Language[10]) . "');\"><img $src = \"./images/tool_delete.png\" $alt = \"" . $Language[25] . "\" $title = \"" . $Language[25] . "\" $border = \"0\"></a></td>\r\n\t\t\t</tr>";
         }
     }
-    echo "\r\n\t" . function_81("<a $href = \"index.php?do=rss_feed_manager&amp;$act = new\">" . $Language[11] . "</a>") . "\r\n\t" . $Message . "\r\n\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t<tr>\r\n\t\t\t<td class=\"tcat\" $colspan = \"6\" $align = \"center\">\r\n\t\t\t\t" . $Language[2] . "\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt2\"><b>" . $Language[3] . " &amp; " . $Language[14] . "</b></td>\r\n\t\t\t<td class=\"alt2\"><b>" . $Language[4] . "</b></td>\r\n\t\t\t<td class=\"alt2\"><b>" . $Language[5] . "</b></td>\r\n\t\t\t<td class=\"alt2\"><b>" . $Language[6] . "</b></td>\r\n\t\t\t<td class=\"alt2\"><b>" . $Language[12] . "</b></td>\r\n\t\t\t<td class=\"alt2\" $align = \"center\"><b>" . $Language[7] . "</b></td>\r\n\t\t</tr>\r\n\t\t" . $ListFeeds . "\r\n\t</table>";
+    echo "\r\n\t" . showAlertMessage("<a $href = \"index.php?do=rss_feed_manager&amp;$act = new\">" . $Language[11] . "</a>") . "\r\n\t" . $Message . "\r\n\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t<tr>\r\n\t\t\t<td class=\"tcat\" $colspan = \"6\" $align = \"center\">\r\n\t\t\t\t" . $Language[2] . "\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt2\"><b>" . $Language[3] . " &amp; " . $Language[14] . "</b></td>\r\n\t\t\t<td class=\"alt2\"><b>" . $Language[4] . "</b></td>\r\n\t\t\t<td class=\"alt2\"><b>" . $Language[5] . "</b></td>\r\n\t\t\t<td class=\"alt2\"><b>" . $Language[6] . "</b></td>\r\n\t\t\t<td class=\"alt2\"><b>" . $Language[12] . "</b></td>\r\n\t\t\t<td class=\"alt2\" $align = \"center\"><b>" . $Language[7] . "</b></td>\r\n\t\t</tr>\r\n\t\t" . $ListFeeds . "\r\n\t</table>";
 }
 class Class_6
 {
@@ -695,7 +695,7 @@ class Class_28
                     case "date":
                         $var_535 = strtotime(function_279($item["updated"]));
                         if (0 < $var_535) {
-                            return function_84($var_535);
+                            return formatTimestamp($var_535);
                         }
                         return function_279($item["updated"]);
                         break;
@@ -785,7 +785,7 @@ class Class_28
                     case "date":
                         $var_535 = strtotime(function_279($item["pubDate"]));
                         if (0 < $var_535) {
-                            return function_84($var_535);
+                            return formatTimestamp($var_535);
                         }
                         return $item["pubDate"];
                         break;
@@ -1241,20 +1241,20 @@ function function_271($value)
             return $var_608;
     }
 }
-function function_75()
+function getStaffLanguage()
 {
     if (isset($_COOKIE["staffcplanguage"]) && is_dir("languages/" . $_COOKIE["staffcplanguage"]) && is_file("languages/" . $_COOKIE["staffcplanguage"] . "/staffcp.lang")) {
         return $_COOKIE["staffcplanguage"];
     }
     return "english";
 }
-function function_77()
+function checkStaffAuthentication()
 {
     if (!defined("IN-TSSE-STAFF-PANEL")) {
         var_236("../index.php");
     }
 }
-function function_78($url)
+function redirectTo($url)
 {
     if (!headers_sent()) {
         header("Location: " . $url);
@@ -1263,15 +1263,15 @@ function function_78($url)
     }
     exit;
 }
-function function_76($Error)
+function showAlertError($Error)
 {
     return "<div class=\"alert\"><div>" . $Error . "</div></div>";
 }
-function function_79($log)
+function logStaffAction($log)
 {
     mysqli_query($GLOBALS["DatabaseConnect"], "INSERT INTO ts_staffcp_logs (uid, date, log) VALUES ('" . $_SESSION["ADMIN_ID"] . "', '" . time() . "', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $log) . "')");
 }
-function function_84($timestamp = "")
+function formatTimestamp($timestamp = "")
 {
     $var_265 = "m-d-Y h:i A";
     if (empty($timestamp)) {
@@ -1283,11 +1283,11 @@ function function_84($timestamp = "")
     }
     return date($var_265, $timestamp);
 }
-function function_83($username, $namestyle)
+function applyUsernameStyle($username, $namestyle)
 {
     return str_replace("{username}", $username, $namestyle);
 }
-function function_81($message = "")
+function showAlertMessage($message = "")
 {
     return "<div class=\"alert\"><div>" . $message . "</div></div>";
 }

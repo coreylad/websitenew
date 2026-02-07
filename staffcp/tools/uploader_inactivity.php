@@ -7,7 +7,7 @@
  */
 
 var_235();
-$Language = file("languages/" . function_75() . "/uploader_inactivity.lang");
+$Language = file("languages/" . getStaffLanguage() . "/uploader_inactivity.lang");
 $Act = isset($_GET["act"]) ? trim($_GET["act"]) : (isset($_POST["act"]) ? trim($_POST["act"]) : "");
 $Message = "";
 if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
@@ -17,8 +17,8 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
     $Configarray = serialize(["UploaderGroups" => $UploaderGroups, "DemoteTo" => $DemoteTo, "timelimit" => $timelimit]);
     mysqli_query($GLOBALS["DatabaseConnect"], "REPLACE INTO `ts_config` VALUES ('UI', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $Configarray) . "')");
     $Message = str_replace(["{1}"], [$_SESSION["ADMIN_USERNAME"]], $Language[3]);
-    function_79($Message);
-    $Message = function_76($Message);
+    logStaffAction($Message);
+    $Message = showAlertError($Message);
 }
 $Q = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE $configname = 'UI'");
 $Result = mysqli_fetch_assoc($Q);
@@ -39,21 +39,21 @@ while ($udgid = mysqli_fetch_assoc($udquery)) {
     $udgids .= "<option $value = \"" . $udgid["gid"] . "\"" . ($UI["DemoteTo"] == $udgid["gid"] ? " $selected = \"selected\"" : "") . ">" . $udgid["title"] . "</option>";
 }
 $udgids .= "</select>";
-echo "\r\n" . function_81("<a $href = \"index.php?do=manage_cronjobs\">" . $Language[13] . "</a>") . "\r\n" . $Message . "\r\n<form $method = \"post\" $action = \"index.php?do=uploader_inactivity\">\r\n<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t<tr>\r\n\t\t<td class=\"tcat\" $colspan = \"3\" $align = \"center\">\r\n\t\t\t" . $Language[2] . "\r\n\t\t</td>\r\n\t</tr>\r\n\t<tr>\r\n\t\t<td class=\"alt2\" $colspan = \"2\">" . $Language[4] . "</td>\r\n\t</tr>\r\n\t<tr>\r\n\t\t<td class=\"alt1\" $width = \"50%\" $align = \"justify\" $valign = \"top\">\r\n\t\t\t" . $Language[5] . "\r\n\t\t</td>\r\n\t\t<td class=\"alt1\" $width = \"50%\" $valign = \"top\">\r\n\t\t\t" . $sgids . "\r\n\t\t</td>\r\n\t</tr>\r\n\t<tr>\r\n\t\t<td class=\"alt2\" $colspan = \"2\">" . $Language[7] . "</td>\r\n\t</tr>\r\n\t<tr>\r\n\t\t<td class=\"alt1\" $width = \"50%\" $align = \"justify\" $valign = \"top\">\r\n\t\t\t" . $Language[8] . "\r\n\t\t</td>\r\n\t\t<td class=\"alt1\" $width = \"50%\" $valign = \"top\">\r\n\t\t\t" . $udgids . "\r\n\t\t</td>\r\n\t</tr>\r\n\t<tr>\r\n\t\t<td class=\"alt2\" $colspan = \"2\">" . $Language[9] . "</td>\r\n\t</tr>\r\n\t<tr>\r\n\t\t<td class=\"alt1\" $width = \"50%\" $align = \"justify\" $valign = \"top\">\r\n\t\t\t" . $Language[10] . "\r\n\t\t</td>\r\n\t\t<td class=\"alt1\" $width = \"50%\" $valign = \"top\">\r\n\t\t\t<input $type = \"text\" $name = \"timelimit\" $value = \"" . $UI["timelimit"] . "\" $size = \"10\" />\r\n\t\t</td>\r\n\t</tr>\r\n\t<tr>\r\n\t\t<td class=\"tcat2\"></td>\r\n\t\t<td class=\"tcat2\">\r\n\t\t\t<input $type = \"submit\" $value = \"" . $Language[11] . "\" /> <input $type = \"reset\" $value = \"" . $Language[12] . "\" />\r\n\t\t</td>\r\n\t</tr>\r\n</table>\r\n</form>\r\n";
-function function_75()
+echo "\r\n" . showAlertMessage("<a $href = \"index.php?do=manage_cronjobs\">" . $Language[13] . "</a>") . "\r\n" . $Message . "\r\n<form $method = \"post\" $action = \"index.php?do=uploader_inactivity\">\r\n<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t<tr>\r\n\t\t<td class=\"tcat\" $colspan = \"3\" $align = \"center\">\r\n\t\t\t" . $Language[2] . "\r\n\t\t</td>\r\n\t</tr>\r\n\t<tr>\r\n\t\t<td class=\"alt2\" $colspan = \"2\">" . $Language[4] . "</td>\r\n\t</tr>\r\n\t<tr>\r\n\t\t<td class=\"alt1\" $width = \"50%\" $align = \"justify\" $valign = \"top\">\r\n\t\t\t" . $Language[5] . "\r\n\t\t</td>\r\n\t\t<td class=\"alt1\" $width = \"50%\" $valign = \"top\">\r\n\t\t\t" . $sgids . "\r\n\t\t</td>\r\n\t</tr>\r\n\t<tr>\r\n\t\t<td class=\"alt2\" $colspan = \"2\">" . $Language[7] . "</td>\r\n\t</tr>\r\n\t<tr>\r\n\t\t<td class=\"alt1\" $width = \"50%\" $align = \"justify\" $valign = \"top\">\r\n\t\t\t" . $Language[8] . "\r\n\t\t</td>\r\n\t\t<td class=\"alt1\" $width = \"50%\" $valign = \"top\">\r\n\t\t\t" . $udgids . "\r\n\t\t</td>\r\n\t</tr>\r\n\t<tr>\r\n\t\t<td class=\"alt2\" $colspan = \"2\">" . $Language[9] . "</td>\r\n\t</tr>\r\n\t<tr>\r\n\t\t<td class=\"alt1\" $width = \"50%\" $align = \"justify\" $valign = \"top\">\r\n\t\t\t" . $Language[10] . "\r\n\t\t</td>\r\n\t\t<td class=\"alt1\" $width = \"50%\" $valign = \"top\">\r\n\t\t\t<input $type = \"text\" $name = \"timelimit\" $value = \"" . $UI["timelimit"] . "\" $size = \"10\" />\r\n\t\t</td>\r\n\t</tr>\r\n\t<tr>\r\n\t\t<td class=\"tcat2\"></td>\r\n\t\t<td class=\"tcat2\">\r\n\t\t\t<input $type = \"submit\" $value = \"" . $Language[11] . "\" /> <input $type = \"reset\" $value = \"" . $Language[12] . "\" />\r\n\t\t</td>\r\n\t</tr>\r\n</table>\r\n</form>\r\n";
+function getStaffLanguage()
 {
     if (isset($_COOKIE["staffcplanguage"]) && is_dir("languages/" . $_COOKIE["staffcplanguage"]) && is_file("languages/" . $_COOKIE["staffcplanguage"] . "/staffcp.lang")) {
         return $_COOKIE["staffcplanguage"];
     }
     return "english";
 }
-function function_77()
+function checkStaffAuthentication()
 {
     if (!defined("IN-TSSE-STAFF-PANEL")) {
         var_236("../index.php");
     }
 }
-function function_78($url, $timeout = false)
+function redirectTo($url, $timeout = false)
 {
     if (!headers_sent()) {
         if (!$timeout) {
@@ -70,15 +70,15 @@ function function_78($url, $timeout = false)
     }
     exit;
 }
-function function_76($Error)
+function showAlertError($Error)
 {
     return "<div class=\"alert\"><div>" . $Error . "</div></div>";
 }
-function function_79($log)
+function logStaffAction($log)
 {
     mysqli_query($GLOBALS["DatabaseConnect"], "INSERT INTO ts_staffcp_logs (uid, date, log) VALUES ('" . $_SESSION["ADMIN_ID"] . "', '" . time() . "', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $log) . "')");
 }
-function function_81($message = "")
+function showAlertMessage($message = "")
 {
     return "<div class=\"alert\"><div>" . $message . "</div></div>";
 }

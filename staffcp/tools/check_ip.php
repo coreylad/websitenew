@@ -7,7 +7,7 @@
  */
 
 var_235();
-$Language = file("languages/" . function_75() . "/check_ip.lang");
+$Language = file("languages/" . getStaffLanguage() . "/check_ip.lang");
 $Message = "";
 $ip = "";
 if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
@@ -23,7 +23,7 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
         }
         echo "\r\n\t\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"tcat\" $align = \"center\"><b>" . $Language[3] . "</b></td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt1\">" . $Res . "</td>\r\n\t\t\t</tr>\r\n\t\t</table>";
     } else {
-        $Message = function_76($Language[4]);
+        $Message = showAlertError($Language[4]);
     }
 }
 echo "<form $action = \"";
@@ -41,20 +41,20 @@ echo $Language[5];
 echo "\" $accesskey = \"s\" />\r\n\t\t\t<input $type = \"reset\" class=\"button\" $tabindex = \"1\" $value = \"";
 echo $Language[6];
 echo "\" $accesskey = \"r\" />\r\n\t\t</td>\r\n\t</tr>\r\n</table>\r\n</form>";
-function function_75()
+function getStaffLanguage()
 {
     if (isset($_COOKIE["staffcplanguage"]) && is_dir("languages/" . $_COOKIE["staffcplanguage"]) && is_file("languages/" . $_COOKIE["staffcplanguage"] . "/staffcp.lang")) {
         return $_COOKIE["staffcplanguage"];
     }
     return "english";
 }
-function function_77()
+function checkStaffAuthentication()
 {
     if (!defined("IN-TSSE-STAFF-PANEL")) {
         var_236("../index.php");
     }
 }
-function function_78($url)
+function redirectTo($url)
 {
     if (!headers_sent()) {
         header("Location: " . $url);
@@ -63,7 +63,7 @@ function function_78($url)
     }
     exit;
 }
-function function_76($Error)
+function showAlertError($Error)
 {
     return "<div class=\"alert\"><div>" . $Error . "</div></div>";
 }
