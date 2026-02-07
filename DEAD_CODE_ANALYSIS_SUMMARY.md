@@ -60,9 +60,9 @@ This document summarizes all dead code identified in the PHP 7.4 legacy codebase
 ### 1.3 Unused TSSE Constants
 
 **staffcp/index.php (Line 212):** `TSSE2020CHECKTOOLPHP` check
-- **Status:** DEAD - Constant only used for validation, never referenced elsewhere
+- **Status:** DEAD - Constant is checked at line 212 to validate check_tool.php was included, but the constant serves no other purpose beyond this single validation check
 - **Defined in:** staffcp/check_tool.php:95
-- **Purpose:** Validates check_tool.php was included
+- **Purpose:** One-time validation that check_tool.php was included - not used for any application logic
 
 ---
 
@@ -120,7 +120,8 @@ All marked as dead code - not part of application runtime:
    - Entire script is temporary utility
 
 4. **analyze_functions.php**
-   - Line 16: `analyzeFunctionPurpose()` defined but `getAllFiles()` commented as dead
+   - Line 19: Dead code comment indicates `getAllFiles()` is never called
+   - Line 20: `analyzeFunctionPurpose()` is defined and used
 
 5. **rename_functions.php**
    - Entire script is temporary utility
