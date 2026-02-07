@@ -43,6 +43,7 @@ function redirectTo($url, $timeout = false)
     }
     exit;
 }
+// DEAD CODE: function_268() attempts to fetch news from templateshares.info which is likely defunct. Code still runs but remote endpoint unreachable.
 function function_268($url = "http://www.templateshares.info/tsnews/tsnews.txt")
 {
     @ini_set("user_agent", "TS_SE via cURL/PHP");

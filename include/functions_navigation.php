@@ -9,6 +9,7 @@
 if (!defined("IN_TRACKER")) {
     exit("<font $face = 'verdana' $size = '2' $color = 'darkred'><b>Error!</b> Direct initialization of this file is not allowed.</font>");
 }
+// DEAD CODE: This entire file is never included or required anywhere in the codebase. TS_fetch_start_end_total_array() and related pagination functions are unused.
 function TS_fetch_start_end_total_array($pagenumber, $perpage, $total)
 {
     $first = $perpage * ($pagenumber - 1);
