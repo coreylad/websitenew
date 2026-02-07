@@ -223,7 +223,7 @@ function sendPrivateMessage($receiver = 0, $msg = "", $subject = "", $sender = 0
         mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET $pmunread = pmunread + 1 WHERE `id` = '" . $receiver . "'");
     }
 }
-function function_85($sec, $padHours = false)
+function formatSecondsToTime($sec, $padHours = false)
 {
     $formattedTime = "";
     $hours = intval(intval($sec) / 3600);
