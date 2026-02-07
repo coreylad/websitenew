@@ -6,7 +6,7 @@
  * @ Release: 10/08/2022
  */
 
-var_235();
+checkStaffAuthentication();
 $Language = file("languages/" . getStaffLanguage() . "/hit_and_run.lang");
 $Act = isset($_GET["act"]) ? trim($_GET["act"]) : (isset($_POST["act"]) ? trim($_POST["act"]) : "");
 $torrentid = isset($_GET["torrentid"]) ? intval($_GET["torrentid"]) : (isset($_POST["torrentid"]) ? intval($_POST["torrentid"]) : 0);
@@ -37,7 +37,7 @@ if ($Act == "manage_users" && isset($_POST["user_torrent_ids"]) && $_POST["user_
             $parts = explode("|", $work);
             mysqli_query($GLOBALS["DatabaseConnect"], "INSERT INTO ts_hit_and_run (userid, torrentid, added) VALUES ('" . $parts[0] . "', '" . $parts[1] . "', '" . $timenow . "')");
             $msgbody = trim(str_replace("{1}", "[URL]" . $MAIN["BASEURL"] . "/details.php?$id = " . $parts[1] . "[/URL]", $Language[12]));
-            var_237($parts[0], $msgbody, $msgsbj);
+            sendPrivateMessage($parts[0], $msgbody, $msgsbj);
             $Modcomment = str_replace(["{1}", "{2}"], [$_SESSION["ADMIN_USERNAME"], $parts[1]], $Language[17]);
             $Modcomment = gmdate("Y-m-d") . " - " . trim($Modcomment) . "\n";
             mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET `timeswarned` = timeswarned + 1, $modcomment = CONCAT(\"" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $Modcomment) . "\", modcomment) WHERE `id` = '" . $parts[0] . "'");
@@ -179,7 +179,7 @@ function getStaffLanguage()
 function checkStaffAuthentication()
 {
     if (!defined("IN-TSSE-STAFF-PANEL")) {
-        var_236("../index.php");
+        redirectTo("../index.php");
     }
 }
 function redirectTo($url)

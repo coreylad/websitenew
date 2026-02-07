@@ -6,7 +6,7 @@
  * @ Release: 10/08/2022
  */
 
-var_235();
+checkStaffAuthentication();
 $Language = file("languages/" . getStaffLanguage() . "/cheat_attempts.lang");
 $Message = "";
 $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'ANNOUNCE'");
@@ -43,7 +43,7 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST" && isset($_POST["ids"]) && 
                     $Message2 = showAlertMessage($Message2);
                     $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id FROM users WHERE id IN (0," . $Work . ")");
                     while ($User = mysqli_fetch_assoc($query)) {
-                        var_237($User["id"], $Message, $Language[2]);
+                        sendPrivateMessage($User["id"], $Message, $Language[2]);
                     }
                     $Message = $Message2;
                 }
@@ -82,7 +82,7 @@ function getStaffLanguage()
 function checkStaffAuthentication()
 {
     if (!defined("IN-TSSE-STAFF-PANEL")) {
-        var_236("../index.php");
+        redirectTo("../index.php");
     }
 }
 function redirectTo($url)

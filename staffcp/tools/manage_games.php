@@ -6,7 +6,7 @@
  * @ Release: 10/08/2022
  */
 
-var_235();
+checkStaffAuthentication();
 $Act = isset($_GET["act"]) ? trim($_GET["act"]) : (isset($_POST["act"]) ? trim($_POST["act"]) : "");
 $gid = isset($_GET["gid"]) ? intval($_GET["gid"]) : (isset($_POST["gid"]) ? intval($_POST["gid"]) : 0);
 $Language = file("languages/" . getStaffLanguage() . "/manage_games.lang");
@@ -144,7 +144,7 @@ function getStaffLanguage()
 function checkStaffAuthentication()
 {
     if (!defined("IN-TSSE-STAFF-PANEL")) {
-        var_236("../index.php");
+        redirectTo("../index.php");
     }
 }
 function redirectTo($url)

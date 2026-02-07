@@ -6,7 +6,7 @@
  * @ Release: 10/08/2022
  */
 
-var_235();
+checkStaffAuthentication();
 $Language = file("languages/" . getStaffLanguage() . "/delete_torrent.lang");
 $Message = "";
 $tid = isset($_GET["tid"]) ? intval($_GET["tid"]) : (isset($_POST["tid"]) ? intval($_POST["tid"]) : "");
@@ -20,7 +20,7 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST" && $tid) {
             $SysMsg = str_replace(["{1}", "{2}"], [$Torrent["name"], $_SESSION["ADMIN_USERNAME"]], $Language[7]);
             function_151($tid);
             logStaffAction($SysMsg);
-            var_237($Torrent["owner"], $SysMsg . "\r\n\t\t\t" . trim($Language[8]) . ": " . $reason, $Language[2]);
+            sendPrivateMessage($Torrent["owner"], $SysMsg . "\r\n\t\t\t" . trim($Language[8]) . ": " . $reason, $Language[2]);
             $Message = showAlertError($SysMsg);
             $tid = "";
             $reason = "";
@@ -42,7 +42,7 @@ function getStaffLanguage()
 function checkStaffAuthentication()
 {
     if (!defined("IN-TSSE-STAFF-PANEL")) {
-        var_236("../index.php");
+        redirectTo("../index.php");
     }
 }
 function redirectTo($url)

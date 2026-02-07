@@ -6,7 +6,7 @@
  * @ Release: 10/08/2022
  */
 
-var_235();
+checkStaffAuthentication();
 $Language = file("languages/" . getStaffLanguage() . "/mass_pm.lang");
 $Message = "";
 $subject = "";
@@ -24,7 +24,7 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
         $total = mysqli_num_rows($query);
         if (0 < $total) {
             while ($User = mysqli_fetch_assoc($query)) {
-                var_237($User["id"], $msg, $subject, $sender);
+                sendPrivateMessage($User["id"], $msg, $subject, $sender);
             }
             $Message = showAlertError(str_replace("{1}", number_format($total), $Language[12]));
             logStaffAction(str_replace(["{1}", "{2}", "{3}"], [$_SESSION["ADMIN_USERNAME"], $work, $subject], $Language[13]));
@@ -70,7 +70,7 @@ function getStaffLanguage()
 function checkStaffAuthentication()
 {
     if (!defined("IN-TSSE-STAFF-PANEL")) {
-        var_236("../index.php");
+        redirectTo("../index.php");
     }
 }
 function redirectTo($url)

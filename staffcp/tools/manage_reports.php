@@ -6,7 +6,7 @@
  * @ Release: 10/08/2022
  */
 
-var_235();
+checkStaffAuthentication();
 $Language = file("languages/" . getStaffLanguage() . "/manage_reports.lang");
 $Message = "";
 if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST" && isset($_POST["reports"]) && is_array($_POST["reports"]) && count($_POST["reports"])) {
@@ -57,7 +57,7 @@ function getStaffLanguage()
 function checkStaffAuthentication()
 {
     if (!defined("IN-TSSE-STAFF-PANEL")) {
-        var_236("../index.php");
+        redirectTo("../index.php");
     }
 }
 function redirectTo($url)

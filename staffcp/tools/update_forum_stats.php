@@ -7,7 +7,7 @@
  */
 
 @set_time_limit(0);
-var_235();
+checkStaffAuthentication();
 $Language = file("languages/" . getStaffLanguage() . "/update_forum_stats.lang");
 $Message = "";
 $TotalQueryCount = 0;
@@ -86,7 +86,7 @@ function getStaffLanguage()
 function checkStaffAuthentication()
 {
     if (!defined("IN-TSSE-STAFF-PANEL")) {
-        var_236("../index.php");
+        redirectTo("../index.php");
     }
 }
 function redirectTo($url)

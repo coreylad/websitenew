@@ -6,7 +6,7 @@
  * @ Release: 10/08/2022
  */
 
-var_235();
+checkStaffAuthentication();
 if (isset($_GET["checkVersion"])) {
     function_269();
     if (LATEST_VERSION < SHORT_SCRIPT_VERSION) {
@@ -38,7 +38,7 @@ function getStaffLanguage()
 function checkStaffAuthentication()
 {
     if (!defined("IN-TSSE-STAFF-PANEL")) {
-        var_236("../index.php");
+        redirectTo("../index.php");
     }
 }
 function redirectTo($url, $timeout = false)
