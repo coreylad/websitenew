@@ -136,7 +136,7 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
     } else {
         $Found = "";
         while ($User = mysqli_fetch_assoc($sql)) {
-            $Found .= "\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t<a $href = \"index.php?do=edit_user&amp;$username = " . $User["username"] . "\">" . applyUsernameStyle($User["username"], $User["namestyle"]) . "</a>\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . $User["title"] . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . htmlspecialchars($User["email"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . htmlspecialchars($User["ip"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . formatTimestamp($User["last_access"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . var_238($User["uploaded"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . var_238($User["downloaded"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . number_format($User["invites"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . $User["seedbonus"] . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t<a $href = \"index.php?do=edit_user&amp;$username = " . htmlspecialchars($User["username"]) . "\"><img $src = \"images/user_edit.png\" $alt = \"" . $Language[18] . "\" $title = \"" . $Language[18] . "\" $border = \"0\" /></a>\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t\t";
+            $Found .= "\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t<a $href = \"index.php?do=edit_user&amp;$username = " . $User["username"] . "\">" . applyUsernameStyle($User["username"], $User["namestyle"]) . "</a>\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . $User["title"] . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . htmlspecialchars($User["email"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . htmlspecialchars($User["ip"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . formatTimestamp($User["last_access"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . formatBytes($User["uploaded"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . formatBytes($User["downloaded"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . number_format($User["invites"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . $User["seedbonus"] . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t<a $href = \"index.php?do=edit_user&amp;$username = " . htmlspecialchars($User["username"]) . "\"><img $src = \"images/user_edit.png\" $alt = \"" . $Language[18] . "\" $title = \"" . $Language[18] . "\" $border = \"0\" /></a>\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t\t";
         }
         $Message = "\r\n\t\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"tcat\" $align = \"center\" $colspan = \"10\"><b>" . $Language[3] . "</b></td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt2\"><b>" . $Language[6] . "</b></td>\r\n\t\t\t\t<td class=\"alt2\"><b>" . $Language[12] . "</b></td>\r\n\t\t\t\t<td class=\"alt2\"><b>" . $Language[19] . "</b></td>\r\n\t\t\t\t<td class=\"alt2\"><b>" . $Language[20] . "</b></td>\r\n\t\t\t\t<td class=\"alt2\"><b>" . $Language[13] . "</b></td>\r\n\t\t\t\t<td class=\"alt2\"><b>" . $Language[14] . "</b></td>\r\n\t\t\t\t<td class=\"alt2\"><b>" . $Language[15] . "</b></td>\r\n\t\t\t\t<td class=\"alt2\"><b>" . $Language[16] . "</b></td>\r\n\t\t\t\t<td class=\"alt2\"><b>" . $Language[17] . "</b></td>\r\n\t\t\t\t<td class=\"alt2\"><b>" . $Language[18] . "</b></td>\r\n\t\t\t</tr>\r\n\t\t\t" . $Found . "\r\n\t\t</table>";
     }
@@ -300,7 +300,7 @@ function showAlertError($Error)
 }
 function formatTimestamp($timestamp = "")
 {
-    $var_265 = "m-d-Y h:i A";
+    $dateFormatPattern = "m-d-Y h:i A";
     if (empty($timestamp)) {
         $timestamp = time();
     } else {
@@ -308,7 +308,7 @@ function formatTimestamp($timestamp = "")
             $timestamp = strtotime($timestamp);
         }
     }
-    return date($var_265, $timestamp);
+    return date($dateFormatPattern, $timestamp);
 }
 function applyUsernameStyle($username, $namestyle)
 {

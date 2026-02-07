@@ -117,26 +117,26 @@ class Class_5
         $subject = $this->function_94($this->function_93($subject, $var_286), $var_285, false, false);
         $from = $this->function_92($from);
         if (empty($from)) {
-            $var_287 = "PHP/" . phpversion() . " via the PHP TS SE SMTP Class";
+            $emailFromHeader = "PHP/" . phpversion() . " via the PHP TS SE SMTP Class";
             if ($var_286) {
-                $var_287 = utf8_encode($var_287);
+                $emailFromHeader = utf8_encode($emailFromHeader);
             }
-            $var_287 = $this->function_94($this->function_93($var_287, $var_286), $var_285);
+            $emailFromHeader = $this->function_94($this->function_93($emailFromHeader, $var_286), $var_285);
             if (!isset($headers)) {
                 $headers = "";
             }
-            $headers .= "From: " . $var_287 . " <" . $webmasteremail . ">" . $delimiter;
+            $headers .= "From: " . $emailFromHeader . " <" . $webmasteremail . ">" . $delimiter;
             $headers .= "Auto-Submitted: auto-generated" . $delimiter;
         } else {
-            $var_287 = $from;
+            $emailFromHeader = $from;
             if ($var_286) {
-                $var_287 = utf8_encode($var_287);
+                $emailFromHeader = utf8_encode($emailFromHeader);
             }
-            $var_287 = $this->function_94($this->function_93($var_287, $var_286), $var_285);
+            $emailFromHeader = $this->function_94($this->function_93($emailFromHeader, $var_286), $var_285);
             if (!isset($headers)) {
                 $headers = "";
             }
-            $headers .= "From: " . $var_287 . " <" . $from . ">" . $delimiter;
+            $headers .= "From: " . $emailFromHeader . " <" . $from . ">" . $delimiter;
             $headers .= "Sender: " . $webmasteremail . $delimiter;
         }
         $fromemail = $webmasteremail;
@@ -350,26 +350,26 @@ function function_100($to, $subject, $body)
     $fromemail = $MAIN["SITEEMAIL"];
     $var_296 = false;
     if (strtoupper(substr(PHP_OS, 0, 3) == "WIN")) {
-        $var_297 = "\r\n";
+        $emailLineDelimiter = "\r\n";
         $var_296 = true;
     } else {
         if (strtoupper(substr(PHP_OS, 0, 3) == "MAC")) {
-            $var_297 = "\r";
+            $emailLineDelimiter = "\r";
         } else {
-            $var_297 = "\n";
+            $emailLineDelimiter = "\n";
         }
     }
     $var_298 = md5(uniqid(rand(), true) . time());
     $var_41 = $_SERVER["SERVER_NAME"];
-    $headers = "From: " . $var_295 . " <" . $fromemail . ">" . $var_297;
-    $headers .= "Reply-To: " . $var_295 . " <" . $fromemail . ">" . $var_297;
-    $headers .= "Return-Path: " . $var_295 . " <" . $fromemail . ">" . $var_297;
-    $headers .= "Message-ID: <" . $var_298 . " thesystem@" . $var_41 . ">" . $var_297;
-    $headers .= "X-Mailer: PHP v" . phpversion() . $var_297;
-    $headers .= "MIME-Version: 1.0" . $var_297;
-    $headers .= "Content-Transfer-Encoding: 8bit" . $var_297;
-    $headers .= "Content-type: text/html; $charset = " . $THEME["charset"] . $var_297;
-    $headers .= "X-Sender: PHP" . $var_297;
+    $headers = "From: " . $var_295 . " <" . $fromemail . ">" . $emailLineDelimiter;
+    $headers .= "Reply-To: " . $var_295 . " <" . $fromemail . ">" . $emailLineDelimiter;
+    $headers .= "Return-Path: " . $var_295 . " <" . $fromemail . ">" . $emailLineDelimiter;
+    $headers .= "Message-ID: <" . $var_298 . " thesystem@" . $var_41 . ">" . $emailLineDelimiter;
+    $headers .= "X-Mailer: PHP v" . phpversion() . $emailLineDelimiter;
+    $headers .= "MIME-Version: 1.0" . $emailLineDelimiter;
+    $headers .= "Content-Transfer-Encoding: 8bit" . $emailLineDelimiter;
+    $headers .= "Content-type: text/html; $charset = " . $THEME["charset"] . $emailLineDelimiter;
+    $headers .= "X-Sender: PHP" . $emailLineDelimiter;
     if ($SMTP["smtptype"] == "default") {
         return mail($to, $subject, $body, $headers);
     }

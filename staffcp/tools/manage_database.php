@@ -61,7 +61,7 @@ $totalrows = $totaldsize = $totalisize = 0;
 foreach ($DBTables as $Table) {
     $query = mysqli_query($GLOBALS["DatabaseConnect"], "SHOW TABLE STATUS LIKE '" . $Table . "'");
     $Res = mysqli_fetch_assoc($query);
-    echo "\r\n\t<tr>\r\n\t\t<td class=\"alt1\">" . $Res["Name"] . "</td>\r\n\t\t<td class=\"alt1\">" . $Res["Engine"] . "</td>\r\n\t\t<td class=\"alt1\">" . number_format($Res["Rows"]) . "</td>\r\n\t\t<td class=\"alt1\">" . var_238($Res["Data_length"]) . "</td>\r\n\t\t<td class=\"alt1\">" . var_238($Res["Index_length"]) . "</td>\r\n\t\t<td class=\"alt1\">" . (0 < $Res["Data_free"] ? "<font $color = \"red\"><b>" . var_238($Res["Data_free"]) . "</b></font>" : var_238($Res["Data_free"])) . "</td>\r\n\t\t<td class=\"alt1\">" . formatTimestamp($Res["Create_time"]) . "</td>\r\n\t\t<td class=\"alt1\">" . formatTimestamp($Res["Update_time"]) . "</td>\r\n\t\t<td class=\"alt1\">" . formatTimestamp($Res["Check_time"]) . "</td>\r\n\t\t<td class=\"alt1\">" . $Res["Collation"] . "</td>\r\n\t\t<td class=\"alt1\" $align = \"center\"><input $type = \"checkbox\" $name = \"table_names[]\" $value = \"" . $Res["Name"] . "\" $checkme = \"group\" /></td>\r\n\t</tr>\r\n\t";
+    echo "\r\n\t<tr>\r\n\t\t<td class=\"alt1\">" . $Res["Name"] . "</td>\r\n\t\t<td class=\"alt1\">" . $Res["Engine"] . "</td>\r\n\t\t<td class=\"alt1\">" . number_format($Res["Rows"]) . "</td>\r\n\t\t<td class=\"alt1\">" . formatBytes($Res["Data_length"]) . "</td>\r\n\t\t<td class=\"alt1\">" . formatBytes($Res["Index_length"]) . "</td>\r\n\t\t<td class=\"alt1\">" . (0 < $Res["Data_free"] ? "<font $color = \"red\"><b>" . formatBytes($Res["Data_free"]) . "</b></font>" : formatBytes($Res["Data_free"])) . "</td>\r\n\t\t<td class=\"alt1\">" . formatTimestamp($Res["Create_time"]) . "</td>\r\n\t\t<td class=\"alt1\">" . formatTimestamp($Res["Update_time"]) . "</td>\r\n\t\t<td class=\"alt1\">" . formatTimestamp($Res["Check_time"]) . "</td>\r\n\t\t<td class=\"alt1\">" . $Res["Collation"] . "</td>\r\n\t\t<td class=\"alt1\" $align = \"center\"><input $type = \"checkbox\" $name = \"table_names[]\" $value = \"" . $Res["Name"] . "\" $checkme = \"group\" /></td>\r\n\t</tr>\r\n\t";
     $totalrows += $Res["Rows"];
     $totaldsize += $Res["Data_length"];
     $totalisize += $Res["Index_length"];
@@ -112,7 +112,7 @@ function formatBytes($bytes = 0)
 }
 function formatTimestamp($timestamp = "")
 {
-    $var_265 = "m-d-Y h:i A";
+    $dateFormatPattern = "m-d-Y h:i A";
     if (empty($timestamp)) {
         $timestamp = time();
     } else {
@@ -120,7 +120,7 @@ function formatTimestamp($timestamp = "")
             $timestamp = strtotime($timestamp);
         }
     }
-    return date($var_265, $timestamp);
+    return date($dateFormatPattern, $timestamp);
 }
 function function_264()
 {

@@ -292,39 +292,39 @@ class Class_6
     public function function_117()
     {
         $this->$tscode_cache = [];
-        $var_362["b"]["regex"] = "#\\[b\\](.*?)\\[/b\\]#si";
-        $var_362["b"]["replacement"] = "<strong>\$1</strong>";
-        $var_362["i"]["regex"] = "#\\[i\\](.*?)\\[/i\\]#si";
-        $var_362["i"]["replacement"] = "<em>\$1</em>";
-        $var_362["u"]["regex"] = "#\\[u\\](.*?)\\[/u\\]#si";
-        $var_362["u"]["replacement"] = "<span $style = \"text-decoration: underline;\">\$1</span>";
-        $var_362["s"]["regex"] = "#\\[s\\](.*?)\\[/s\\]#si";
-        $var_362["s"]["replacement"] = "<span $style = \"text-decoration: line-through;\">\$1</span>";
-        $var_362["color"]["regex"] = "#\\[$color = (.*?)\\](.+?)\\[/color\\]#si";
-        $var_362["color"]["replacement"] = "<span $style = \"color: \$1;\">\$2</span>";
-        $var_362["size"]["regex"] = "#\\[$size = (.*?)\\](.+?)\\[/size\\]#si";
-        $var_362["size"]["replacement"] = "<span $style = \"font-size: \$1;\">\$2</span>";
-        $var_362["font"]["regex"] = "#\\[$font = (.*?)\\](.+?)\\[/font\\]#si";
-        $var_362["font"]["replacement"] = "<span $style = \"font-family: \$1;\">\$2</span>";
-        $var_362["align"]["regex"] = "#\\[$align = (left|center|right|justify)\\](.*?)\\[/align\\]#si";
-        $var_362["align"]["replacement"] = "<p $style = \"text-align: \$1;\">\$2</p>";
-        $var_362["hr"]["regex"] = "#\\[hr\\]#si";
-        $var_362["hr"]["replacement"] = "<hr />";
-        $var_362["h"]["regex"] = "#\\[h\\](.*?)\\[/h\\]#si";
-        $var_362["h"]["replacement"] = "<h3>\$1</h3>";
-        $var_362["pre"]["regex"] = "#\\[pre\\](.*?)\\[/pre\\]#si";
-        $var_362["pre"]["replacement"] = "<pre>\$1</pre>";
-        $var_362["nfo"]["regex"] = "#\\[nfo\\](.*?)\\[/nfo\\]#si";
-        $var_362["nfo"]["replacement"] = "<tt><div $style = \"white-space: nowrap; display: inline;\"><font $face = \"MS Linedraw\" $size = \"2\" $style = \"font-size: 10pt; line-height: 10pt\">\$1</font></div></tt>";
-        $var_362["copy"]["regex"] = "#\\(c\\)#i";
-        $var_362["copy"]["replacement"] = "&copy;";
-        $var_362["tm"]["regex"] = "#\\(tm\\)#i";
-        $var_362["tm"]["replacement"] = "&#153;";
-        $var_362["reg"]["regex"] = "#\\(r\\)#i";
-        $var_362["reg"]["replacement"] = "&reg;";
-        $var_362["youtube"]["regex"] = "#\\[youtube\\](.*?)\\[/youtube\\]#si";
-        $var_362["youtube"]["replacement"] = "<object $width = \"425\" $height = \"350\"><param $name = \"movie\" $value = \"http://www.youtube.com/v/\$1\"></param><embed $src = \"http://www.youtube.com/v/\$1\" $type = \"application/x-shockwave-flash\" $width = \"425\" $height = \"350\"></embed></object>";
-        $var_363 = $var_362;
+        $bbcodeTags["b"]["regex"] = "#\\[b\\](.*?)\\[/b\\]#si";
+        $bbcodeTags["b"]["replacement"] = "<strong>\$1</strong>";
+        $bbcodeTags["i"]["regex"] = "#\\[i\\](.*?)\\[/i\\]#si";
+        $bbcodeTags["i"]["replacement"] = "<em>\$1</em>";
+        $bbcodeTags["u"]["regex"] = "#\\[u\\](.*?)\\[/u\\]#si";
+        $bbcodeTags["u"]["replacement"] = "<span $style = \"text-decoration: underline;\">\$1</span>";
+        $bbcodeTags["s"]["regex"] = "#\\[s\\](.*?)\\[/s\\]#si";
+        $bbcodeTags["s"]["replacement"] = "<span $style = \"text-decoration: line-through;\">\$1</span>";
+        $bbcodeTags["color"]["regex"] = "#\\[$color = (.*?)\\](.+?)\\[/color\\]#si";
+        $bbcodeTags["color"]["replacement"] = "<span $style = \"color: \$1;\">\$2</span>";
+        $bbcodeTags["size"]["regex"] = "#\\[$size = (.*?)\\](.+?)\\[/size\\]#si";
+        $bbcodeTags["size"]["replacement"] = "<span $style = \"font-size: \$1;\">\$2</span>";
+        $bbcodeTags["font"]["regex"] = "#\\[$font = (.*?)\\](.+?)\\[/font\\]#si";
+        $bbcodeTags["font"]["replacement"] = "<span $style = \"font-family: \$1;\">\$2</span>";
+        $bbcodeTags["align"]["regex"] = "#\\[$align = (left|center|right|justify)\\](.*?)\\[/align\\]#si";
+        $bbcodeTags["align"]["replacement"] = "<p $style = \"text-align: \$1;\">\$2</p>";
+        $bbcodeTags["hr"]["regex"] = "#\\[hr\\]#si";
+        $bbcodeTags["hr"]["replacement"] = "<hr />";
+        $bbcodeTags["h"]["regex"] = "#\\[h\\](.*?)\\[/h\\]#si";
+        $bbcodeTags["h"]["replacement"] = "<h3>\$1</h3>";
+        $bbcodeTags["pre"]["regex"] = "#\\[pre\\](.*?)\\[/pre\\]#si";
+        $bbcodeTags["pre"]["replacement"] = "<pre>\$1</pre>";
+        $bbcodeTags["nfo"]["regex"] = "#\\[nfo\\](.*?)\\[/nfo\\]#si";
+        $bbcodeTags["nfo"]["replacement"] = "<tt><div $style = \"white-space: nowrap; display: inline;\"><font $face = \"MS Linedraw\" $size = \"2\" $style = \"font-size: 10pt; line-height: 10pt\">\$1</font></div></tt>";
+        $bbcodeTags["copy"]["regex"] = "#\\(c\\)#i";
+        $bbcodeTags["copy"]["replacement"] = "&copy;";
+        $bbcodeTags["tm"]["regex"] = "#\\(tm\\)#i";
+        $bbcodeTags["tm"]["replacement"] = "&#153;";
+        $bbcodeTags["reg"]["regex"] = "#\\(r\\)#i";
+        $bbcodeTags["reg"]["replacement"] = "&reg;";
+        $bbcodeTags["youtube"]["regex"] = "#\\[youtube\\](.*?)\\[/youtube\\]#si";
+        $bbcodeTags["youtube"]["replacement"] = "<object $width = \"425\" $height = \"350\"><param $name = \"movie\" $value = \"http://www.youtube.com/v/\$1\"></param><embed $src = \"http://www.youtube.com/v/\$1\" $type = \"application/x-shockwave-flash\" $width = \"425\" $height = \"350\"></embed></object>";
+        $var_363 = $bbcodeTags;
         foreach ($var_363 as $code) {
             $this->tscode_cache["find"][] = $code["regex"];
             $this->tscode_cache["replacement"][] = $code["replacement"];
@@ -416,27 +416,27 @@ function validatePerPage($numresults, &$page, &$perpage, $maxperpage = 20, $defa
             $perpage = $maxperpage;
         }
     }
-    $var_240 = ceil($numresults / $perpage);
-    if ($var_240 == 0) {
-        $var_240 = 1;
+    $totalPages = ceil($numresults / $perpage);
+    if ($totalPages == 0) {
+        $totalPages = 1;
     }
     if ($page < 1) {
         $page = 1;
     } else {
-        if ($var_240 < $page) {
-            $page = $var_240;
+        if ($totalPages < $page) {
+            $page = $totalPages;
         }
     }
 }
 function calculatePagination($pagenumber, $perpage, $total)
 {
-    $var_241 = $perpage * ($pagenumber - 1);
-    $var_89 = $var_241 + $perpage;
-    if ($total < $var_89) {
-        $var_89 = $total;
+    $paginationFirstItem = $perpage * ($pagenumber - 1);
+    $paginationLastItem = $paginationFirstItem + $perpage;
+    if ($total < $paginationLastItem) {
+        $paginationLastItem = $total;
     }
-    $var_241++;
-    return ["first" => number_format($var_241), "last" => number_format($var_89)];
+    $paginationFirstItem++;
+    return ["first" => number_format($paginationFirstItem), "last" => number_format($paginationLastItem)];
 }
 function buildPaginationLinks($perpage, $results, $address)
 {
@@ -444,85 +444,85 @@ function buildPaginationLinks($perpage, $results, $address)
         return ["", ""];
     }
     if ($results) {
-        $var_242 = @ceil($results / $perpage);
+        $queryResult = @ceil($results / $perpage);
     } else {
-        $var_242 = 0;
+        $queryResult = 0;
     }
     $pagenumber = isset($_GET["page"]) ? intval($_GET["page"]) : (isset($_POST["page"]) ? intval($_POST["page"]) : "");
     validatePerPage($results, $pagenumber, $perpage, 200);
-    $var_243 = ($pagenumber - 1) * $perpage;
+    $limitOffset = ($pagenumber - 1) * $perpage;
     $var_244 = $pagenumber * $perpage;
     if ($results < $var_244) {
         $var_244 = $results;
-        if ($results < $var_243) {
-            $var_243 = $results - $perpage - 1;
+        if ($results < $limitOffset) {
+            $limitOffset = $results - $perpage - 1;
         }
     }
-    if ($var_243 < 0) {
-        $var_243 = 0;
+    if ($limitOffset < 0) {
+        $limitOffset = 0;
     }
-    $var_245 = $var_246 = $var_247 = $var_248 = $var_249 = "";
-    $var_250 = 0;
+    $paginationLinks = $var_246 = $var_247 = $var_248 = $var_249 = "";
+    $currentPage = 0;
     if ($results <= $perpage) {
-        $var_251["pagenav"] = false;
-        return ["", "LIMIT " . $var_243 . ", " . $perpage];
+        $paginationHtml["pagenav"] = false;
+        return ["", "LIMIT " . $limitOffset . ", " . $perpage];
     }
-    $var_251["pagenav"] = true;
+    $paginationHtml["pagenav"] = true;
     $total = number_format($results);
-    $var_251["last"] = false;
-    $var_251["first"] = $var_251["last"];
-    $var_251["next"] = $var_251["first"];
-    $var_251["prev"] = $var_251["next"];
+    $paginationHtml["last"] = false;
+    $paginationHtml["first"] = $paginationHtml["last"];
+    $paginationHtml["next"] = $paginationHtml["first"];
+    $paginationHtml["prev"] = $paginationHtml["next"];
     if (1 < $pagenumber) {
-        $var_252 = $pagenumber - 1;
-        $var_253 = calculatePagination($var_252, $perpage, $results);
-        $var_251["prev"] = true;
+        $previousPage = $pagenumber - 1;
+        $var_253 = calculatePagination($previousPage, $perpage, $results);
+        $paginationHtml["prev"] = true;
     }
-    if ($pagenumber < $var_242) {
+    if ($pagenumber < $queryResult) {
         $var_254 = $pagenumber + 1;
         $var_255 = calculatePagination($var_254, $perpage, $results);
-        $var_251["next"] = true;
+        $paginationHtml["next"] = true;
     }
     $var_256 = "3";
-    if (!isset($var_257) || !is_array($var_257)) {
+    if (!isset($paginationSkipLinksArray) || !is_array($paginationSkipLinksArray)) {
         $var_258 = "10 50 100 500 1000";
-        $var_257[] = preg_split("#\\s+#s", $var_258, -1, PREG_SPLIT_NO_EMPTY);
-        while ($var_250++ < $var_242) {
+        $paginationSkipLinksArray[] = preg_split("#\\s+#s", $var_258, -1, PREG_SPLIT_NO_EMPTY);
+        while ($currentPage++ < $queryResult) {
         }
-        $var_259 = isset($var_252) && $var_252 != 1 ? "page=" . $var_252 : "";
-        $var_245 = "\r\n\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTableNoBorder\">\r\n\t\t<tr>\r\n\t\t\t<td $style = \"padding: 0px 0px 1px 0px;\">\r\n\t\t\t\t<div $style = \"float: left;\" $id = \"navcontainer_f\">\r\n\t\t\t\t\t<ul>\r\n\t\t\t\t\t\t<li>" . $pagenumber . " - " . $var_242 . "</li>\r\n\t\t\t\t\t\t" . ($var_251["first"] ? "<li><a class=\"smalltext\" $href = \"" . $address . "\" $title = \"First Page - Show Results " . $var_260["first"] . " to " . $var_260["last"] . " of " . $total . "\">&laquo; First</a></li>" : "") . ($var_251["prev"] ? "<li><a class=\"smalltext\" $href = \"" . $address . $var_259 . "\" $title = \"Previous Page - Show Results " . $var_253["first"] . " to " . $var_253["last"] . " of " . $total . "\">&lt;</a></li>" : "") . "\r\n\t\t\t\t\t\t" . $var_245 . "\r\n\t\t\t\t\t\t" . ($var_251["next"] ? "<li><a class=\"smalltext\" $href = \"" . $address . "page=" . $var_254 . "\" $title = \"Next Page - Show Results " . $var_255["first"] . " to " . $var_255["last"] . " of " . $total . "\">&gt;</a></li>" : "") . ($var_251["last"] ? "<li><a class=\"smalltext\" $href = \"" . $address . "page=" . $var_242 . "\" $title = \"Last Page - Show Results " . $var_261["first"] . " to " . $var_261["last"] . " of " . $total . "\">Last <strong>&raquo;</strong></a></li>" : "") . "\r\n\t\t\t\t\t</ul>\r\n\t\t\t\t</div>\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t</table>";
-        return [$var_245, "LIMIT " . $var_243 . ", " . $perpage];
+        $var_259 = isset($previousPage) && $previousPage != 1 ? "page=" . $previousPage : "";
+        $paginationLinks = "\r\n\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTableNoBorder\">\r\n\t\t<tr>\r\n\t\t\t<td $style = \"padding: 0px 0px 1px 0px;\">\r\n\t\t\t\t<div $style = \"float: left;\" $id = \"navcontainer_f\">\r\n\t\t\t\t\t<ul>\r\n\t\t\t\t\t\t<li>" . $pagenumber . " - " . $queryResult . "</li>\r\n\t\t\t\t\t\t" . ($paginationHtml["first"] ? "<li><a class=\"smalltext\" $href = \"" . $address . "\" $title = \"First Page - Show Results " . $firstPageInfo["first"] . " to " . $firstPageInfo["last"] . " of " . $total . "\">&laquo; First</a></li>" : "") . ($paginationHtml["prev"] ? "<li><a class=\"smalltext\" $href = \"" . $address . $var_259 . "\" $title = \"Previous Page - Show Results " . $var_253["first"] . " to " . $var_253["last"] . " of " . $total . "\">&lt;</a></li>" : "") . "\r\n\t\t\t\t\t\t" . $paginationLinks . "\r\n\t\t\t\t\t\t" . ($paginationHtml["next"] ? "<li><a class=\"smalltext\" $href = \"" . $address . "page=" . $var_254 . "\" $title = \"Next Page - Show Results " . $var_255["first"] . " to " . $var_255["last"] . " of " . $total . "\">&gt;</a></li>" : "") . ($paginationHtml["last"] ? "<li><a class=\"smalltext\" $href = \"" . $address . "page=" . $queryResult . "\" $title = \"Last Page - Show Results " . $lastPageInfo["first"] . " to " . $lastPageInfo["last"] . " of " . $total . "\">Last <strong>&raquo;</strong></a></li>" : "") . "\r\n\t\t\t\t\t</ul>\r\n\t\t\t\t</div>\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t</table>";
+        return [$paginationLinks, "LIMIT " . $limitOffset . ", " . $perpage];
     }
-    if ($var_256 <= abs($var_250 - $pagenumber) && $var_256 != 0) {
-        if ($var_250 == 1) {
-            $var_260 = calculatePagination(1, $perpage, $results);
-            $var_251["first"] = true;
+    if ($var_256 <= abs($currentPage - $pagenumber) && $var_256 != 0) {
+        if ($currentPage == 1) {
+            $firstPageInfo = calculatePagination(1, $perpage, $results);
+            $paginationHtml["first"] = true;
         }
-        if ($var_250 == $var_242) {
-            $var_261 = calculatePagination($var_242, $perpage, $results);
-            $var_251["last"] = true;
+        if ($currentPage == $queryResult) {
+            $lastPageInfo = calculatePagination($queryResult, $perpage, $results);
+            $paginationHtml["last"] = true;
         }
-        if (in_array(abs($var_250 - $pagenumber), $var_257) && $var_250 != 1 && $var_250 != $var_242) {
-            $var_262 = calculatePagination($var_250, $perpage, $results);
-            $var_263 = $var_250 - $pagenumber;
-            if (0 < $var_263) {
-                $var_263 = "+" . $var_263;
+        if (in_array(abs($currentPage - $pagenumber), $paginationSkipLinksArray) && $currentPage != 1 && $currentPage != $queryResult) {
+            $pageRangeInfo = calculatePagination($currentPage, $perpage, $results);
+            $pageOffsetDisplay = $currentPage - $pagenumber;
+            if (0 < $pageOffsetDisplay) {
+                $pageOffsetDisplay = "+" . $pageOffsetDisplay;
             }
-            $var_245 .= "<li><a class=\"smalltext\" $href = \"" . $address . ($var_250 != 1 ? "page=" . $var_250 : "") . "\" $title = \"Show results " . $var_262["first"] . " to " . $var_262["last"] . " of " . $total . "\"><!--" . $var_263 . "-->" . $var_250 . "</a></li>";
+            $paginationLinks .= "<li><a class=\"smalltext\" $href = \"" . $address . ($currentPage != 1 ? "page=" . $currentPage : "") . "\" $title = \"Show results " . $pageRangeInfo["first"] . " to " . $pageRangeInfo["last"] . " of " . $total . "\"><!--" . $pageOffsetDisplay . "-->" . $currentPage . "</a></li>";
         }
     } else {
-        if ($var_250 == $pagenumber) {
-            $var_264 = calculatePagination($var_250, $perpage, $results);
-            $var_245 .= "<li><a $name = \"current\" class=\"current\" $title = \"Showing results " . $var_264["first"] . " to " . $var_264["last"] . " of " . $total . "\">" . $var_250 . "</a></li>";
+        if ($currentPage == $pagenumber) {
+            $currentPageInfo = calculatePagination($currentPage, $perpage, $results);
+            $paginationLinks .= "<li><a $name = \"current\" class=\"current\" $title = \"Showing results " . $currentPageInfo["first"] . " to " . $currentPageInfo["last"] . " of " . $total . "\">" . $currentPage . "</a></li>";
         } else {
-            $var_262 = calculatePagination($var_250, $perpage, $results);
-            $var_245 .= "<li><a $href = \"" . $address . ($var_250 != 1 ? "page=" . $var_250 : "") . "\" $title = \"Show results " . $var_262["first"] . " to " . $var_262["last"] . " of " . $total . "\">" . $var_250 . "</a></li>";
+            $pageRangeInfo = calculatePagination($currentPage, $perpage, $results);
+            $paginationLinks .= "<li><a $href = \"" . $address . ($currentPage != 1 ? "page=" . $currentPage : "") . "\" $title = \"Show results " . $pageRangeInfo["first"] . " to " . $pageRangeInfo["last"] . " of " . $total . "\">" . $currentPage . "</a></li>";
         }
     }
 }
 function formatTimestamp($timestamp = "")
 {
-    $var_265 = "m-d-Y h:i A";
+    $dateFormatPattern = "m-d-Y h:i A";
     if (empty($timestamp)) {
         $timestamp = time();
     } else {
@@ -530,7 +530,7 @@ function formatTimestamp($timestamp = "")
             $timestamp = strtotime($timestamp);
         }
     }
-    return date($var_265, $timestamp);
+    return date($dateFormatPattern, $timestamp);
 }
 function applyUsernameStyle($username, $namestyle)
 {

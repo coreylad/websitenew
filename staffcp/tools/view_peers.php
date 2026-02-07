@@ -39,9 +39,9 @@ if ($ANNOUNCE["xbt_active"] == "yes") {
     if ($results) {
         while ($R = mysqli_fetch_assoc($query)) {
             $Left = 0 < $R["left"] ? round($R["size"] / $R["left"] * 100) . "%" : "";
-            $seedtime = var_239($R["announced"] * $xbt_announce_interval);
+            $seedtime = formatSecondsToTime($R["announced"] * $xbt_announce_interval);
             $ratio = 0 < $R["uploaded"] && 0 < $R["downloaded"] ? number_format($R["uploaded"] / $R["downloaded"], 2) : "0.0";
-            $Found .= "\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t<a $href = \"index.php?do=edit_user&amp;$username = " . $R["username"] . "\">" . applyUsernameStyle($R["username"], $R["namestyle"]) . "</a>\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t<a $href = \"../details.php?$id = " . $R["fid"] . "\" $alt = \"" . htmlspecialchars($R["torrentname"]) . "\" $title = \"" . htmlspecialchars($R["torrentname"]) . "\">" . substr(htmlspecialchars($R["torrentname"]), 0, 20) . "...</a>\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . var_238($R["uploaded"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . var_238($R["up_rate"]) . "/s\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . var_238($R["downloaded"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . var_238($R["down_rate"]) . "/s\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . $ratio . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t<font $color = \"" . (0 < $R["left"] ? "red\">" . $Language[19] : "green\">" . $Language[18]) . "</font>\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . formatTimestamp($R["mtime"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . number_format($R["announced"]) . " x " . $Language[38] . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . $seedtime . "\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t\t";
+            $Found .= "\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t<a $href = \"index.php?do=edit_user&amp;$username = " . $R["username"] . "\">" . applyUsernameStyle($R["username"], $R["namestyle"]) . "</a>\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t<a $href = \"../details.php?$id = " . $R["fid"] . "\" $alt = \"" . htmlspecialchars($R["torrentname"]) . "\" $title = \"" . htmlspecialchars($R["torrentname"]) . "\">" . substr(htmlspecialchars($R["torrentname"]), 0, 20) . "...</a>\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . formatBytes($R["uploaded"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . formatBytes($R["up_rate"]) . "/s\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . formatBytes($R["downloaded"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . formatBytes($R["down_rate"]) . "/s\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . $ratio . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t<font $color = \"" . (0 < $R["left"] ? "red\">" . $Language[19] : "green\">" . $Language[18]) . "</font>\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . formatTimestamp($R["mtime"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . number_format($R["announced"]) . " x " . $Language[38] . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . $seedtime . "\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t\t";
         }
     } else {
         echo "\r\n\t\t" . showAlertError($Language[17]);
@@ -62,7 +62,7 @@ if ($ANNOUNCE["xbt_active"] == "yes") {
     $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT t.*,  u.username, g.namestyle, tr.name as torrentname FROM peers t LEFT JOIN users u ON (t.$userid = u.id) LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) LEFT JOIN torrents tr ON (t.$torrent = tr.id) ORDER by " . $ORDERBY . " " . $limit);
     if ($results) {
         while ($R = mysqli_fetch_assoc($query)) {
-            $Found .= "\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t<a $href = \"index.php?do=edit_user&amp;$username = " . $R["username"] . "\">" . applyUsernameStyle($R["username"], $R["namestyle"]) . "</a>\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t<a $href = \"../details.php?$id = " . $R["torrent"] . "\" $alt = \"" . htmlspecialchars($R["torrentname"]) . "\" $title = \"" . htmlspecialchars($R["torrentname"]) . "\">" . substr(htmlspecialchars($R["torrentname"]), 0, 25) . "</a>\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . htmlspecialchars($R["ip"]) . ":" . intval($R["port"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . var_238($R["uploaded"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . var_238($R["downloaded"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . substr(htmlspecialchars($R["peer_id"]), 0, 8) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . $R["connectable"] . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . $R["seeder"] . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . formatTimestamp($R["started"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . formatTimestamp($R["last_action"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . formatTimestamp($R["prev_action"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . var_238($R["uploadoffset"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . var_238($R["downloadoffset"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . var_238($R["to_go"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t\t";
+            $Found .= "\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t<a $href = \"index.php?do=edit_user&amp;$username = " . $R["username"] . "\">" . applyUsernameStyle($R["username"], $R["namestyle"]) . "</a>\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t<a $href = \"../details.php?$id = " . $R["torrent"] . "\" $alt = \"" . htmlspecialchars($R["torrentname"]) . "\" $title = \"" . htmlspecialchars($R["torrentname"]) . "\">" . substr(htmlspecialchars($R["torrentname"]), 0, 25) . "</a>\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . htmlspecialchars($R["ip"]) . ":" . intval($R["port"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . formatBytes($R["uploaded"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . formatBytes($R["downloaded"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . substr(htmlspecialchars($R["peer_id"]), 0, 8) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . $R["connectable"] . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . $R["seeder"] . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . formatTimestamp($R["started"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . formatTimestamp($R["last_action"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . formatTimestamp($R["prev_action"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . formatBytes($R["uploadoffset"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . formatBytes($R["downloadoffset"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . formatBytes($R["to_go"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t\t";
         }
     } else {
         echo "\r\n\t\t" . showAlertError($Language[17]);
@@ -113,27 +113,27 @@ function validatePerPage($numresults, &$page, &$perpage, $maxperpage = 20, $defa
             $perpage = $maxperpage;
         }
     }
-    $var_240 = ceil($numresults / $perpage);
-    if ($var_240 == 0) {
-        $var_240 = 1;
+    $totalPages = ceil($numresults / $perpage);
+    if ($totalPages == 0) {
+        $totalPages = 1;
     }
     if ($page < 1) {
         $page = 1;
     } else {
-        if ($var_240 < $page) {
-            $page = $var_240;
+        if ($totalPages < $page) {
+            $page = $totalPages;
         }
     }
 }
 function calculatePagination($pagenumber, $perpage, $total)
 {
-    $var_241 = $perpage * ($pagenumber - 1);
-    $var_89 = $var_241 + $perpage;
-    if ($total < $var_89) {
-        $var_89 = $total;
+    $paginationFirstItem = $perpage * ($pagenumber - 1);
+    $paginationLastItem = $paginationFirstItem + $perpage;
+    if ($total < $paginationLastItem) {
+        $paginationLastItem = $total;
     }
-    $var_241++;
-    return ["first" => number_format($var_241), "last" => number_format($var_89)];
+    $paginationFirstItem++;
+    return ["first" => number_format($paginationFirstItem), "last" => number_format($paginationLastItem)];
 }
 function buildPaginationLinks($perpage, $results, $address)
 {
@@ -141,85 +141,85 @@ function buildPaginationLinks($perpage, $results, $address)
         return ["", ""];
     }
     if ($results) {
-        $var_242 = @ceil($results / $perpage);
+        $queryResult = @ceil($results / $perpage);
     } else {
-        $var_242 = 0;
+        $queryResult = 0;
     }
     $pagenumber = isset($_GET["page"]) ? intval($_GET["page"]) : (isset($_POST["page"]) ? intval($_POST["page"]) : "");
     validatePerPage($results, $pagenumber, $perpage, 200);
-    $var_243 = ($pagenumber - 1) * $perpage;
+    $limitOffset = ($pagenumber - 1) * $perpage;
     $var_244 = $pagenumber * $perpage;
     if ($results < $var_244) {
         $var_244 = $results;
-        if ($results < $var_243) {
-            $var_243 = $results - $perpage - 1;
+        if ($results < $limitOffset) {
+            $limitOffset = $results - $perpage - 1;
         }
     }
-    if ($var_243 < 0) {
-        $var_243 = 0;
+    if ($limitOffset < 0) {
+        $limitOffset = 0;
     }
-    $var_245 = $var_246 = $var_247 = $var_248 = $var_249 = "";
-    $var_250 = 0;
+    $paginationLinks = $var_246 = $var_247 = $var_248 = $var_249 = "";
+    $currentPage = 0;
     if ($results <= $perpage) {
-        $var_251["pagenav"] = false;
-        return ["", "LIMIT " . $var_243 . ", " . $perpage];
+        $paginationHtml["pagenav"] = false;
+        return ["", "LIMIT " . $limitOffset . ", " . $perpage];
     }
-    $var_251["pagenav"] = true;
+    $paginationHtml["pagenav"] = true;
     $total = number_format($results);
-    $var_251["last"] = false;
-    $var_251["first"] = $var_251["last"];
-    $var_251["next"] = $var_251["first"];
-    $var_251["prev"] = $var_251["next"];
+    $paginationHtml["last"] = false;
+    $paginationHtml["first"] = $paginationHtml["last"];
+    $paginationHtml["next"] = $paginationHtml["first"];
+    $paginationHtml["prev"] = $paginationHtml["next"];
     if (1 < $pagenumber) {
-        $var_252 = $pagenumber - 1;
-        $var_253 = calculatePagination($var_252, $perpage, $results);
-        $var_251["prev"] = true;
+        $previousPage = $pagenumber - 1;
+        $var_253 = calculatePagination($previousPage, $perpage, $results);
+        $paginationHtml["prev"] = true;
     }
-    if ($pagenumber < $var_242) {
+    if ($pagenumber < $queryResult) {
         $var_254 = $pagenumber + 1;
         $var_255 = calculatePagination($var_254, $perpage, $results);
-        $var_251["next"] = true;
+        $paginationHtml["next"] = true;
     }
     $var_256 = "3";
-    if (!isset($var_257) || !is_array($var_257)) {
+    if (!isset($paginationSkipLinksArray) || !is_array($paginationSkipLinksArray)) {
         $var_258 = "10 50 100 500 1000";
-        $var_257[] = preg_split("#\\s+#s", $var_258, -1, PREG_SPLIT_NO_EMPTY);
-        while ($var_250++ < $var_242) {
+        $paginationSkipLinksArray[] = preg_split("#\\s+#s", $var_258, -1, PREG_SPLIT_NO_EMPTY);
+        while ($currentPage++ < $queryResult) {
         }
-        $var_259 = isset($var_252) && $var_252 != 1 ? "page=" . $var_252 : "";
-        $var_245 = "\r\n\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTableNoBorder\">\r\n\t\t<tr>\r\n\t\t\t<td $style = \"padding: 0px 0px 1px 0px;\">\r\n\t\t\t\t<div $style = \"float: left;\" $id = \"navcontainer_f\">\r\n\t\t\t\t\t<ul>\r\n\t\t\t\t\t\t<li>" . $pagenumber . " - " . $var_242 . "</li>\r\n\t\t\t\t\t\t" . ($var_251["first"] ? "<li><a class=\"smalltext\" $href = \"" . $address . "\" $title = \"First Page - Show Results " . $var_260["first"] . " to " . $var_260["last"] . " of " . $total . "\">&laquo; First</a></li>" : "") . ($var_251["prev"] ? "<li><a class=\"smalltext\" $href = \"" . $address . $var_259 . "\" $title = \"Previous Page - Show Results " . $var_253["first"] . " to " . $var_253["last"] . " of " . $total . "\">&lt;</a></li>" : "") . "\r\n\t\t\t\t\t\t" . $var_245 . "\r\n\t\t\t\t\t\t" . ($var_251["next"] ? "<li><a class=\"smalltext\" $href = \"" . $address . "page=" . $var_254 . "\" $title = \"Next Page - Show Results " . $var_255["first"] . " to " . $var_255["last"] . " of " . $total . "\">&gt;</a></li>" : "") . ($var_251["last"] ? "<li><a class=\"smalltext\" $href = \"" . $address . "page=" . $var_242 . "\" $title = \"Last Page - Show Results " . $var_261["first"] . " to " . $var_261["last"] . " of " . $total . "\">Last <strong>&raquo;</strong></a></li>" : "") . "\r\n\t\t\t\t\t</ul>\r\n\t\t\t\t</div>\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t</table>";
-        return [$var_245, "LIMIT " . $var_243 . ", " . $perpage];
+        $var_259 = isset($previousPage) && $previousPage != 1 ? "page=" . $previousPage : "";
+        $paginationLinks = "\r\n\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTableNoBorder\">\r\n\t\t<tr>\r\n\t\t\t<td $style = \"padding: 0px 0px 1px 0px;\">\r\n\t\t\t\t<div $style = \"float: left;\" $id = \"navcontainer_f\">\r\n\t\t\t\t\t<ul>\r\n\t\t\t\t\t\t<li>" . $pagenumber . " - " . $queryResult . "</li>\r\n\t\t\t\t\t\t" . ($paginationHtml["first"] ? "<li><a class=\"smalltext\" $href = \"" . $address . "\" $title = \"First Page - Show Results " . $firstPageInfo["first"] . " to " . $firstPageInfo["last"] . " of " . $total . "\">&laquo; First</a></li>" : "") . ($paginationHtml["prev"] ? "<li><a class=\"smalltext\" $href = \"" . $address . $var_259 . "\" $title = \"Previous Page - Show Results " . $var_253["first"] . " to " . $var_253["last"] . " of " . $total . "\">&lt;</a></li>" : "") . "\r\n\t\t\t\t\t\t" . $paginationLinks . "\r\n\t\t\t\t\t\t" . ($paginationHtml["next"] ? "<li><a class=\"smalltext\" $href = \"" . $address . "page=" . $var_254 . "\" $title = \"Next Page - Show Results " . $var_255["first"] . " to " . $var_255["last"] . " of " . $total . "\">&gt;</a></li>" : "") . ($paginationHtml["last"] ? "<li><a class=\"smalltext\" $href = \"" . $address . "page=" . $queryResult . "\" $title = \"Last Page - Show Results " . $lastPageInfo["first"] . " to " . $lastPageInfo["last"] . " of " . $total . "\">Last <strong>&raquo;</strong></a></li>" : "") . "\r\n\t\t\t\t\t</ul>\r\n\t\t\t\t</div>\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t</table>";
+        return [$paginationLinks, "LIMIT " . $limitOffset . ", " . $perpage];
     }
-    if ($var_256 <= abs($var_250 - $pagenumber) && $var_256 != 0) {
-        if ($var_250 == 1) {
-            $var_260 = calculatePagination(1, $perpage, $results);
-            $var_251["first"] = true;
+    if ($var_256 <= abs($currentPage - $pagenumber) && $var_256 != 0) {
+        if ($currentPage == 1) {
+            $firstPageInfo = calculatePagination(1, $perpage, $results);
+            $paginationHtml["first"] = true;
         }
-        if ($var_250 == $var_242) {
-            $var_261 = calculatePagination($var_242, $perpage, $results);
-            $var_251["last"] = true;
+        if ($currentPage == $queryResult) {
+            $lastPageInfo = calculatePagination($queryResult, $perpage, $results);
+            $paginationHtml["last"] = true;
         }
-        if (in_array(abs($var_250 - $pagenumber), $var_257) && $var_250 != 1 && $var_250 != $var_242) {
-            $var_262 = calculatePagination($var_250, $perpage, $results);
-            $var_263 = $var_250 - $pagenumber;
-            if (0 < $var_263) {
-                $var_263 = "+" . $var_263;
+        if (in_array(abs($currentPage - $pagenumber), $paginationSkipLinksArray) && $currentPage != 1 && $currentPage != $queryResult) {
+            $pageRangeInfo = calculatePagination($currentPage, $perpage, $results);
+            $pageOffsetDisplay = $currentPage - $pagenumber;
+            if (0 < $pageOffsetDisplay) {
+                $pageOffsetDisplay = "+" . $pageOffsetDisplay;
             }
-            $var_245 .= "<li><a class=\"smalltext\" $href = \"" . $address . ($var_250 != 1 ? "page=" . $var_250 : "") . "\" $title = \"Show results " . $var_262["first"] . " to " . $var_262["last"] . " of " . $total . "\"><!--" . $var_263 . "-->" . $var_250 . "</a></li>";
+            $paginationLinks .= "<li><a class=\"smalltext\" $href = \"" . $address . ($currentPage != 1 ? "page=" . $currentPage : "") . "\" $title = \"Show results " . $pageRangeInfo["first"] . " to " . $pageRangeInfo["last"] . " of " . $total . "\"><!--" . $pageOffsetDisplay . "-->" . $currentPage . "</a></li>";
         }
     } else {
-        if ($var_250 == $pagenumber) {
-            $var_264 = calculatePagination($var_250, $perpage, $results);
-            $var_245 .= "<li><a $name = \"current\" class=\"current\" $title = \"Showing results " . $var_264["first"] . " to " . $var_264["last"] . " of " . $total . "\">" . $var_250 . "</a></li>";
+        if ($currentPage == $pagenumber) {
+            $currentPageInfo = calculatePagination($currentPage, $perpage, $results);
+            $paginationLinks .= "<li><a $name = \"current\" class=\"current\" $title = \"Showing results " . $currentPageInfo["first"] . " to " . $currentPageInfo["last"] . " of " . $total . "\">" . $currentPage . "</a></li>";
         } else {
-            $var_262 = calculatePagination($var_250, $perpage, $results);
-            $var_245 .= "<li><a $href = \"" . $address . ($var_250 != 1 ? "page=" . $var_250 : "") . "\" $title = \"Show results " . $var_262["first"] . " to " . $var_262["last"] . " of " . $total . "\">" . $var_250 . "</a></li>";
+            $pageRangeInfo = calculatePagination($currentPage, $perpage, $results);
+            $paginationLinks .= "<li><a $href = \"" . $address . ($currentPage != 1 ? "page=" . $currentPage : "") . "\" $title = \"Show results " . $pageRangeInfo["first"] . " to " . $pageRangeInfo["last"] . " of " . $total . "\">" . $currentPage . "</a></li>";
         }
     }
 }
 function formatTimestamp($timestamp = "")
 {
-    $var_265 = "m-d-Y h:i A";
+    $dateFormatPattern = "m-d-Y h:i A";
     if (empty($timestamp)) {
         $timestamp = time();
     } else {
@@ -227,7 +227,7 @@ function formatTimestamp($timestamp = "")
             $timestamp = strtotime($timestamp);
         }
     }
-    return date($var_265, $timestamp);
+    return date($dateFormatPattern, $timestamp);
 }
 function formatBytes($bytes = 0)
 {

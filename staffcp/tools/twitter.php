@@ -254,10 +254,10 @@ class Class_24
     }
     public function function_231($realm = NULL)
     {
-        $var_241 = true;
+        $paginationFirstItem = true;
         if ($realm) {
             $var_527 = "Authorization: OAuth $realm = \"" . Class_19::function_207($realm) . "\"";
-            $var_241 = false;
+            $paginationFirstItem = false;
         } else {
             $var_527 = "Authorization: OAuth";
         }
@@ -267,9 +267,9 @@ class Class_24
                 if (is_array($var_124)) {
                     throw new Class_15("Arrays not supported in headers");
                 }
-                $var_527 .= $var_241 ? " " : ",";
+                $var_527 .= $paginationFirstItem ? " " : ",";
                 $var_527 .= Class_19::function_207($k) . "=\"" . Class_19::function_207($var_124) . "\"";
-                $var_241 = false;
+                $paginationFirstItem = false;
             }
         }
         return $var_527;

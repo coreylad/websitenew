@@ -64,7 +64,7 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST" && isset($_POST["backupfile
         $Found = "";
         foreach ($BackupFiles as $File) {
             if ($File != ".." && $File != "." && $File != ".htaccess" && $File != "index.html") {
-                $Found .= "\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt1\">" . $File . "</td>\r\n\t\t\t\t<td class=\"alt1\">" . var_238(filesize($backuppath . $File)) . "</td>\r\n\t\t\t\t<td class=\"alt1\">" . formatTimestamp(filemtime($backuppath . $File)) . "</td>\r\n\t\t\t\t<td $align = \"center\" class=\"alt1\"><input $type = \"checkbox\" $name = \"backupfiles[]\" $value = \"" . $File . "\" $checkme = \"group\" /></td>\r\n\t\t\t</tr>\r\n\t\t\t";
+                $Found .= "\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt1\">" . $File . "</td>\r\n\t\t\t\t<td class=\"alt1\">" . formatBytes(filesize($backuppath . $File)) . "</td>\r\n\t\t\t\t<td class=\"alt1\">" . formatTimestamp(filemtime($backuppath . $File)) . "</td>\r\n\t\t\t\t<td $align = \"center\" class=\"alt1\"><input $type = \"checkbox\" $name = \"backupfiles[]\" $value = \"" . $File . "\" $checkme = \"group\" /></td>\r\n\t\t\t</tr>\r\n\t\t\t";
                 $Totalfound++;
             }
         }
@@ -110,7 +110,7 @@ function showAlertMessage($message = "")
 }
 function formatTimestamp($timestamp = "")
 {
-    $var_265 = "m-d-Y h:i A";
+    $dateFormatPattern = "m-d-Y h:i A";
     if (empty($timestamp)) {
         $timestamp = time();
     } else {
@@ -118,7 +118,7 @@ function formatTimestamp($timestamp = "")
             $timestamp = strtotime($timestamp);
         }
     }
-    return date($var_265, $timestamp);
+    return date($dateFormatPattern, $timestamp);
 }
 function function_149($file = "")
 {
