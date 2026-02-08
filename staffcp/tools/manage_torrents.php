@@ -489,8 +489,8 @@ function function_163($torrents)
     $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'THEME'");
     $Result = mysqli_fetch_assoc($query);
     $var_28 = unserialize($Result["content"]);
-    $var_282 = $var_27["BASEURL"] . "/include/templates/" . $var_28["defaulttemplate"] . "/images/torrent_flags/";
-    $var_461 = $var_27["pic_base_url"];
+    $var_282 = $configData["BASEURL"] . "/include/templates/" . $var_28["defaulttemplate"] . "/images/torrent_flags/";
+    $var_461 = $configData["pic_base_url"];
     $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'ANNOUNCE'");
     $Result = mysqli_fetch_assoc($query);
     $ANNOUNCE = unserialize($Result["content"]);
@@ -540,7 +540,7 @@ function function_151($id)
     $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'MAIN'");
     $Result = mysqli_fetch_assoc($query);
     $var_27 = unserialize($Result["content"]);
-    $var_427 = "../" . $var_27["torrent_dir"];
+    $var_427 = "../" . $configData["torrent_dir"];
     $id = intval($id);
     if (!$id) {
         return NULL;

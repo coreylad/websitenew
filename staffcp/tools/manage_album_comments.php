@@ -55,8 +55,8 @@ class Class_6
     }
     public function function_115()
     {
-        $var_281 = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'MAIN'");
-        $var_20 = mysqli_fetch_assoc($var_281);
+        $configQuery = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'MAIN'");
+        $configRow = mysqli_fetch_assoc($configQuery);
         $this->Settings = unserialize($var_20["content"]);
     }
     public function function_118($text, $entities = true)

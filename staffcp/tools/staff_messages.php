@@ -102,8 +102,8 @@ class Class_6
     }
     public function function_115()
     {
-        $var_281 = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = \"MAIN\"");
-        $Result = mysqli_fetch_assoc($var_281);
+        $configQuery = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = \"MAIN\"");
+        $Result = mysqli_fetch_assoc($configQuery);
         $this->Settings = unserialize($Result["content"]);
     }
     public function function_118($text, $entities = true)
@@ -430,10 +430,10 @@ function loadTinyMCEEditor($type = 1, $mode = "textareas", $elements = "")
     define("TINYMCE_ELEMENTS", $elements);
     define("WORKPATH", "./../scripts/");
     define("TINYMCE_EMOTIONS_URL", "./../tinymce_emotions.php");
-    $var_281 = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = \"MAIN\"");
-    $Result = mysqli_fetch_assoc($var_281);
+    $configQuery = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = \"MAIN\"");
+    $Result = mysqli_fetch_assoc($configQuery);
     $var_27 = unserialize($Result["content"]);
-    $var_282 = $var_27["pic_base_url"];
+    $var_282 = $configData["pic_base_url"];
     unset($var_27);
     define("PIC_BASEURL", $var_282);
     ob_start();

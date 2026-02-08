@@ -48,10 +48,10 @@ function loadTinyMCEEditor($type = 1, $mode = "textareas", $elements = "")
     define("TINYMCE_ELEMENTS", $elements);
     define("WORKPATH", "./../scripts/");
     define("TINYMCE_EMOTIONS_URL", "./../tinymce_emotions.php");
-    $var_281 = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'MAIN'");
-    $var_20 = mysqli_fetch_assoc($var_281);
-    $var_27 = unserialize($var_20["content"]);
-    $var_282 = $var_27["pic_base_url"];
+    $configQuery = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'MAIN'");
+    $configRow = mysqli_fetch_assoc($configQuery);
+    $configData = unserialize($configRow["content"]);
+    $var_282 = $configData["pic_base_url"];
     unset($var_27);
     define("PIC_BASEURL", $var_282);
     ob_start();
