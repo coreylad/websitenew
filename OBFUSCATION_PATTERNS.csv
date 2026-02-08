@@ -1,0 +1,84 @@
+Pattern Type,Identifier,Occurrence Count,Semantic Name,Priority,Files Affected,Purpose
+function_,function_95,152,smtpSendCommand,HIGH,51+,Sends SMTP command and validates response
+function_,function_96,80,smtpDebugError,HIGH,51+,SMTP error logging and debugging
+function_,function_202,80,formatFormSectionRow,HIGH,10+,HTML form row builder for admin panels
+function_,function_259,78,identifyUserLocation,MEDIUM,5+,Translates URL to human-readable location
+function_,function_260,52,identifyUserAgentBot,MEDIUM,5+,Identifies bot user agents
+function_,function_93,48,decodeHtmlEntities,HIGH,20+,HTML entity decoder with Unicode support
+function_,function_94,32,encodeEmailHeaderRFC2047,HIGH,20+,RFC 2047 email header encoder
+function_,function_92,32,sanitizeEmailText,HIGH,20+,Removes newlines from email text
+function_,function_40,67,calculateImageDimensions,LOW,1,Image resize calculation
+function_,function_156,53,parseMultipartFormData,MEDIUM,10+,Multipart form data parser
+function_,function_131,30,escapeSearchString,MEDIUM,15+,SQL LIKE pattern escaping
+function_,function_318,27,buildPaginationLinks,MEDIUM,10+,Pagination HTML generator
+function_,function_107,26,buildWhereClause,MEDIUM,10+,SQL WHERE clause constructor
+function_,function_97,24,validateNumericId,MEDIUM,10+,Numeric ID validation
+function_,function_149,23,formatUserPermissions,LOW,5+,Permission bit manipulation
+function_,function_128,20,sanitizeInput,MEDIUM,10+,Input sanitization
+function_,function_127,20,validateEmail,MEDIUM,10+,Email format validation
+function_,function_118,20,hashPassword,MEDIUM,10+,Password hashing
+function_,function_279,19,parseXmlFeed,MEDIUM,3,XML/RSS feed parser
+function_,function_203,17,formatSelectOption,LOW,5+,HTML select option builder
+function_,function_132,17,getConfigValue,MEDIUM,10+,Configuration value getter
+function_,function_98,16,postTweet,DONE,1,Twitter status update (already renamed)
+function_,function_91,16,connectSmtp,HIGH,20+,SMTP connection establishment
+function_,function_130,12,closeConnection,MEDIUM,10+,Database/SMTP connection closer
+function_,function_126,12,validateForm,MEDIUM,10+,Form validation
+function_,function_122,12,buildQuery,MEDIUM,10+,SQL query builder
+function_,function_120,12,executeQuery,MEDIUM,10+,Database query executor
+function_,function_117,12,fetchResults,MEDIUM,10+,Query result fetcher
+function_,function_114,12,logError,MEDIUM,10+,Error logging
+function_,function_119,11,generateToken,MEDIUM,8+,Security token generator
+function_,function_111,11,checkPermission,MEDIUM,8+,User permission checker
+
+var_,var_135,101,formFieldValue,MEDIUM,20+,Form field value storage
+var_,var_140,77,queryResult,MEDIUM,20+,Database query result
+var_,var_132,75,configArray,MEDIUM,15+,Configuration array access
+var_,var_256,69,alphaChannel,LOW,1,Image alpha channel (class.upload.php)
+var_,var_255,69,blueChannel,LOW,1,Image blue channel (class.upload.php)
+var_,var_254,69,greenChannel,LOW,1,Image green channel (class.upload.php)
+var_,var_253,69,redChannel,LOW,1,Image red channel (class.upload.php)
+var_,var_244,69,pixelColor,LOW,1,Pixel color value (class.upload.php)
+var_,var_286,64,dbConnection,HIGH,15+,Database connection reference
+var_,var_285,56,queryString,MEDIUM,15+,SQL query string builder
+var_,var_148,56,resultSet,MEDIUM,15+,Result set iterator
+var_,var_299,52,sessionData,MEDIUM,10+,Session data storage
+var_,var_280,51,emailContent,MEDIUM,20+,Email message content
+var_,var_139,49,userId,HIGH,20+,User ID reference
+var_,var_136,49,username,HIGH,20+,Username reference
+var_,var_293,47,uploadedFile,MEDIUM,5+,Uploaded file reference
+var_,var_259,46,formAction,MEDIUM,10+,Form action URL
+var_,var_258,46,formMethod,MEDIUM,10+,Form HTTP method
+var_,var_138,46,userEmail,MEDIUM,15+,User email address
+var_,var_137,46,userData,MEDIUM,15+,User data array
+var_,var_56,34,tempValue,LOW,10+,Temporary value storage
+var_,var_424,34,xmlNode,MEDIUM,3,XML node reference
+var_,var_202,34,htmlOutput,MEDIUM,10+,HTML output buffer
+var_,var_103,33,errorMessage,MEDIUM,15+,Error message text
+var_,var_102,33,successMessage,MEDIUM,15+,Success message text
+var_,var_101,33,warningMessage,MEDIUM,15+,Warning message text
+var_,var_296,32,tokenValue,MEDIUM,10+,Security token value
+var_,var_295,32,tokenExpiry,MEDIUM,10+,Token expiration time
+var_,var_292,32,uploadPath,MEDIUM,5+,File upload path
+var_,var_281,32,configData,MEDIUM,15+,Configuration data
+var_,var_352,30,oauthToken,HIGH,1,OAuth token (twitter.php)
+var_,var_347,30,oauthSecret,HIGH,1,OAuth secret (twitter.php)
+var_,var_342,30,oauthSignature,HIGH,1,OAuth signature (twitter.php)
+var_,var_113,30,permissionBits,MEDIUM,10+,Permission bit flags
+var_,var_361,28,apiResponse,MEDIUM,5+,API response data
+var_,var_144,27,pagination,MEDIUM,10+,Pagination data
+var_,var_324,26,feedUrl,MEDIUM,3,RSS feed URL
+var_,var_27,26,mainConfig,HIGH,50+,Main configuration array
+var_,var_131,26,whereClause,MEDIUM,15+,SQL WHERE clause
+var_,var_112,26,groupPermissions,MEDIUM,10+,User group permissions
+
+Summary Stats,,,,,
+Total Files with function_,62,,,
+Total Files with var_,70,,,
+Unique function_ Identifiers,229,,,
+Unique var_ Identifiers,591,,,
+High Priority function_,10,464 occurrences,,
+High Priority var_,15,500+ occurrences,,
+Phase 1 Target,~470 identifiers,,,
+Phase 2 Target,~720 identifiers,,,
+Total Remaining,~820 identifiers,,,

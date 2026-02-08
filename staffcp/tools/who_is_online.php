@@ -24,7 +24,7 @@ if ($Act == "today") {
     $Found .= "\r\n\t" . showAlertMessage("<a $href = \"index.php?do=who_is_online\">" . $Language[2] . "</a>") . "\r\n\t" . $Message . "\r\n\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t<tr>\r\n\t\t<td class=\"tcat\" $align = \"center\" $colspan = \"5\"><b>" . $Language[8] . " (" . number_format(mysqli_num_rows($query)) . ")</b></td>\r\n\t</tr>\r\n\t<tr>\r\n\t\t<td class=\"alt2\"><b>" . $Language[3] . "</b></td>\r\n\t\t<td class=\"alt2\"><b>" . $Language[6] . "</b></td>\r\n\t\t<td class=\"alt2\"><b>" . $Language[13] . "</b></td>\r\n\t\t<td class=\"alt2\"><b>" . $Language[14] . "</b></td>\r\n\t\t<td class=\"alt2\"><b>" . $Language[7] . "</b></td>\r\n\t</tr>\r\n\t";
     for ($Count = 0; $User = mysqli_fetch_assoc($query); $Count++) {
         $class = $Count % 2 == 1 ? "alt2" : "alt1";
-        $Found .= "\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"" . $class . "\">\r\n\t\t\t\t\t<a $href = \"index.php?do=edit_user&amp;$username = " . $User["username"] . "\">" . applyUsernameStyle($User["username"], $User["namestyle"]) . "</a>\r\n\t\t\t\t\t<br />\r\n\t\t\t\t\t<small>" . $Language[4] . ": <a $href = \"index.php?do=who_is_online&amp;$act = today&amp;$ip = " . htmlspecialchars($User["ip"]) . "\">" . htmlspecialchars($User["ip"]) . "</a></small>\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"" . $class . "\">\r\n\t\t\t\t\t" . formatTimestamp($User["last_access"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"" . $class . "\">\r\n\t\t\t\t\t" . formatBytes($User["uploaded"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"" . $class . "\">\r\n\t\t\t\t\t" . formatBytes($User["downloaded"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"" . $class . "\">\r\n\t\t\t\t\t<a $href = \"" . str_replace("&amp;", "&", htmlspecialchars($User["page"])) . "\">" . function_259($User["page"]) . "</a>\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t\t";
+        $Found .= "\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"" . $class . "\">\r\n\t\t\t\t\t<a $href = \"index.php?do=edit_user&amp;$username = " . $User["username"] . "\">" . applyUsernameStyle($User["username"], $User["namestyle"]) . "</a>\r\n\t\t\t\t\t<br />\r\n\t\t\t\t\t<small>" . $Language[4] . ": <a $href = \"index.php?do=who_is_online&amp;$act = today&amp;$ip = " . htmlspecialchars($User["ip"]) . "\">" . htmlspecialchars($User["ip"]) . "</a></small>\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"" . $class . "\">\r\n\t\t\t\t\t" . formatTimestamp($User["last_access"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"" . $class . "\">\r\n\t\t\t\t\t" . formatBytes($User["uploaded"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"" . $class . "\">\r\n\t\t\t\t\t" . formatBytes($User["downloaded"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"" . $class . "\">\r\n\t\t\t\t\t<a $href = \"" . str_replace("&amp;", "&", htmlspecialchars($User["page"])) . "\">" . identifyUserLocation($User["page"]) . "</a>\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t\t";
     }
     $Found .= "\r\n\t</table>";
     echo $Found;
@@ -33,7 +33,7 @@ if (!$Found) {
     $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT s.*, u.username, g.namestyle FROM ts_sessions s LEFT JOIN users u ON (s.`userid` = u.id) LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) WHERE s.lastactivity > '" . (time() - 3600) . "' GROUP BY u.id ORDER BY s.lastactivity DESC, u.username ASC");
     for ($Count = 0; $User = mysqli_fetch_assoc($query); $Count++) {
         $class = $Count % 2 == 1 ? "alt2" : "alt1";
-        $Found .= "\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"" . $class . "\">\r\n\t\t\t\t\t" . ($User["userid"] ? "<a $href = \"index.php?do=edit_user&amp;$username = " . $User["username"] . "\">" . applyUsernameStyle($User["username"], $User["namestyle"]) . "</a>" : function_260($User["useragent"])) . "\r\n\t\t\t\t\t<br />\r\n\t\t\t\t\t<small>" . $Language[4] . ": <a $href = \"index.php?do=who_is_online&amp;$ip = " . htmlspecialchars($User["host"]) . "\">" . htmlspecialchars($User["host"]) . "</a></small>\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"" . $class . "\">\r\n\t\t\t\t\t" . htmlspecialchars($User["useragent"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"" . $class . "\">\r\n\t\t\t\t\t" . formatTimestamp($User["lastactivity"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"" . $class . "\">\r\n\t\t\t\t\t<a $href = \"" . str_replace("&amp;", "&", htmlspecialchars($User["location"])) . "\">" . function_259($User["location"]) . "</a>\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t\t";
+        $Found .= "\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"" . $class . "\">\r\n\t\t\t\t\t" . ($User["userid"] ? "<a $href = \"index.php?do=edit_user&amp;$username = " . $User["username"] . "\">" . applyUsernameStyle($User["username"], $User["namestyle"]) . "</a>" : identifyUserAgentBot($User["useragent"])) . "\r\n\t\t\t\t\t<br />\r\n\t\t\t\t\t<small>" . $Language[4] . ": <a $href = \"index.php?do=who_is_online&amp;$ip = " . htmlspecialchars($User["host"]) . "\">" . htmlspecialchars($User["host"]) . "</a></small>\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"" . $class . "\">\r\n\t\t\t\t\t" . htmlspecialchars($User["useragent"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"" . $class . "\">\r\n\t\t\t\t\t" . formatTimestamp($User["lastactivity"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"" . $class . "\">\r\n\t\t\t\t\t<a $href = \"" . str_replace("&amp;", "&", htmlspecialchars($User["location"])) . "\">" . identifyUserLocation($User["location"]) . "</a>\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t\t";
     }
     echo "\r\n\t" . showAlertMessage("<a $href = \"index.php?do=who_is_online&amp;$act = today\">" . $Language[8] . "</a>") . "\r\n\t" . $Message . "\r\n\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t<tr>\r\n\t\t\t<td class=\"tcat\" $align = \"center\" $colspan = \"4\"><b>" . $Language[2] . " (" . number_format(mysqli_num_rows($query)) . ")</b></td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt2\"><b>" . $Language[3] . "</b></td>\r\n\t\t\t<td class=\"alt2\"><b>" . $Language[5] . "</b></td>\r\n\t\t\t<td class=\"alt2\"><b>" . $Language[6] . "</b></td>\r\n\t\t\t<td class=\"alt2\"><b>" . $Language[7] . "</b></td>\r\n\t\t</tr>\r\n\t\t" . $Found . "\r\n\t</table>";
 }
@@ -79,7 +79,7 @@ function applyUsernameStyle($username, $namestyle)
 {
     return str_replace("{username}", $username, $namestyle);
 }
-function function_259($location)
+function identifyUserLocation($location)
 {
     $var_281 = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'MAIN'");
     $var_20 = mysqli_fetch_assoc($var_281);
@@ -334,7 +334,7 @@ function formatBytes($bytes = 0)
     }
     return number_format($bytes / 0, 2) . " TB";
 }
-function function_260($Data = "")
+function identifyUserAgentBot($Data = "")
 {
     global $Language;
     $var_562 = ["msnbot" => "MSN Bot", "google" => "Google Bot", "yahoo" => "Yahoo! Bot", "alexa" => "AleXa Bot", "sogou" => "Sogou Web Spider", "baiduspider" => "Baidu Spider", "w3c_validator" => "W3C Validator", "mlbot" => "MLBoT", "yandex" => "YanDeX"];
