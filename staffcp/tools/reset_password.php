@@ -123,13 +123,13 @@ class Class_5
     }
     public function function_91($toemail, $subject, $message, $from = "", $uheaders = "", $charset = "", $webmasteremail = "", $http_host = "")
     {
-        $toemail = $this->function_92($toemail);
+        $toemail = $this->sanitizeEmailText($toemail);
         if (empty($toemail)) {
             return false;
         }
         $delimiter =& $this->delimiter;
-        $toemail = $this->function_93($toemail);
-        $subject = $this->function_92($subject);
+        $toemail = $this->decodeHtmlEntities($toemail);
+        $subject = $this->sanitizeEmailText($subject);
         $message = preg_replace("#(\r\n|\r|\n)#s", $delimiter, trim($message));
         if ((strtolower($charset) == "iso-8859-1" || $charset == "") && preg_match("/&[a-z0-9#]+;/i", $message)) {
             $message = utf8_encode($message);
@@ -140,15 +140,15 @@ class Class_5
             $var_285 = $charset;
             $var_286 = false;
         }
-        $message = $this->function_93($message, $var_286);
-        $subject = $this->function_94($this->function_93($subject, $var_286), $var_285, false, false);
-        $from = $this->function_92($from);
+        $message = $this->decodeHtmlEntities($message, $var_286);
+        $subject = $this->encodeEmailHeaderRFC2047($this->decodeHtmlEntities($subject, $var_286), $var_285, false, false);
+        $from = $this->sanitizeEmailText($from);
         if (empty($from)) {
             $emailFromHeader = "PHP/" . phpversion() . " via the PHP TS SE SMTP Class";
             if ($var_286) {
                 $emailFromHeader = utf8_encode($emailFromHeader);
             }
-            $emailFromHeader = $this->function_94($this->function_93($emailFromHeader, $var_286), $var_285);
+            $emailFromHeader = $this->encodeEmailHeaderRFC2047($this->decodeHtmlEntities($emailFromHeader, $var_286), $var_285);
             if (!isset($headers)) {
                 $headers = "";
             }
@@ -159,7 +159,7 @@ class Class_5
             if ($var_286) {
                 $emailFromHeader = utf8_encode($emailFromHeader);
             }
-            $emailFromHeader = $this->function_94($this->function_93($emailFromHeader, $var_286), $var_285);
+            $emailFromHeader = $this->encodeEmailHeaderRFC2047($this->decodeHtmlEntities($emailFromHeader, $var_286), $var_285);
             if (!isset($headers)) {
                 $headers = "";
             }
@@ -188,7 +188,7 @@ class Class_5
         $this->$fromemail = $fromemail;
         return true;
     }
-    public function function_95($msg, $expectedResult = false)
+    public function smtpSendCommand($msg, $expectedResult = false)
     {
         if ($msg !== false && !empty($msg)) {
             fputs($this->smtpSocket, $msg . "\r\n");
@@ -201,79 +201,79 @@ class Class_5
                 }
             }
             $this->$smtpReturn = intval($smtpMatches[1]);
-            return $this->$smtpReturn = = $expectedResult;
+            return $this->$smtpReturn == $expectedResult;
         }
         return true;
     }
-    public function function_96($msg)
+    public function smtpDebugError($msg)
     {
         if ($this->debug) {
             trigger_error($msg, 512);
         }
         return false;
     }
-    public function function_97()
+    public function smtpHandshake()
     {
         if (!$this->smtpSocket) {
             return false;
         }
-        if (!$this->function_95("EHLO " . $this->smtpHost, 250) && !$this->function_95("HELO " . $this->smtpHost, 250)) {
+        if (!$this->smtpSendCommand("EHLO " . $this->smtpHost, 250) && !$this->smtpSendCommand("HELO " . $this->smtpHost, 250)) {
             return false;
         }
         return true;
     }
-    public function function_98()
+    public function smtpSendEmail()
     {
         if (!$this->toemail) {
             return false;
         }
-        $this->$smtpSocket = fsockopen(($this->$secure = = "ssl" ? "ssl://" : "tcp://") . $this->smtpHost, $this->smtpPort, fsockError, fsockErrorStr, 30);
+        $this->$smtpSocket = fsockopen(($this->$secure == "ssl" ? "ssl://" : "tcp://") . $this->smtpHost, $this->smtpPort, fsockError, fsockErrorStr, 30);
         if ($this->smtpSocket) {
-            if (!$this->function_95(false, 220)) {
-                return $this->function_96($this->smtpReturn . " Unexpected response when connecting to SMTP server");
+            if (!$this->smtpSendCommand(false, 220)) {
+                return $this->smtpDebugError($this->smtpReturn . " Unexpected response when connecting to SMTP server");
             }
-            if (!$this->function_97()) {
-                return $this->function_96($this->smtpReturn . " Unexpected response from SMTP server during handshake");
+            if (!$this->smtpHandshake()) {
+                return $this->smtpDebugError($this->smtpReturn . " Unexpected response from SMTP server during handshake");
             }
-            if ($this->$secure = = "tls" && function_exists("stream_socket_enable_crypto")) {
-                if ($this->function_95("STARTTLS", 220) && !stream_socket_enable_crypto($this->smtpSocket, true, STREAM_CRYPTO_METHOD_TLS_CLIENT)) {
-                    return $this->function_96("Unable to negotitate TLS handshake.");
+            if ($this->$secure == "tls" && function_exists("stream_socket_enable_crypto")) {
+                if ($this->smtpSendCommand("STARTTLS", 220) && !stream_socket_enable_crypto($this->smtpSocket, true, STREAM_CRYPTO_METHOD_TLS_CLIENT)) {
+                    return $this->smtpDebugError("Unable to negotitate TLS handshake.");
                 }
-                $this->function_97();
+                $this->smtpHandshake();
             }
-            if ($this->smtpUser && $this->smtpPass && $this->function_95("AUTH LOGIN", 334) && (!$this->function_95(base64_encode($this->smtpUser), 334) || !$this->function_95(base64_encode($this->smtpPass), 235))) {
-                return $this->function_96($this->smtpReturn . " Authorization to the SMTP server failed");
+            if ($this->smtpUser && $this->smtpPass && $this->smtpSendCommand("AUTH LOGIN", 334) && (!$this->smtpSendCommand(base64_encode($this->smtpUser), 334) || !$this->smtpSendCommand(base64_encode($this->smtpPass), 235))) {
+                return $this->smtpDebugError($this->smtpReturn . " Authorization to the SMTP server failed");
             }
-            if (!$this->function_95("MAIL FROM:<" . $this->fromemail . ">", 250)) {
-                return $this->function_96($this->smtpReturn . " Unexpected response from SMTP server during FROM address transmission");
+            if (!$this->smtpSendCommand("MAIL FROM:<" . $this->fromemail . ">", 250)) {
+                return $this->smtpDebugError($this->smtpReturn . " Unexpected response from SMTP server during FROM address transmission");
             }
             $var_290 = explode(",", $this->toemail);
             foreach ($var_290 as $address) {
-                if (!$this->function_95("RCPT TO:<" . trim($address) . ">", 250)) {
-                    return $this->function_96($this->smtpReturn . " Unexpected response from SMTP server during TO address transmission");
+                if (!$this->smtpSendCommand("RCPT TO:<" . trim($address) . ">", 250)) {
+                    return $this->smtpDebugError($this->smtpReturn . " Unexpected response from SMTP server during TO address transmission");
                 }
             }
-            if ($this->function_95("DATA", 354)) {
-                $this->function_95("Date: " . gmdate("r"), false);
-                $this->function_95("To: " . $this->toemail, false);
-                $this->function_95(trim($this->headers), false);
-                $this->function_95("Subject: " . $this->subject, false);
-                $this->function_95("\r\n", false);
+            if ($this->smtpSendCommand("DATA", 354)) {
+                $this->smtpSendCommand("Date: " . gmdate("r"), false);
+                $this->smtpSendCommand("To: " . $this->toemail, false);
+                $this->smtpSendCommand(trim($this->headers), false);
+                $this->smtpSendCommand("Subject: " . $this->subject, false);
+                $this->smtpSendCommand("\r\n", false);
                 $this->$message = preg_replace("#^\\." . $this->delimiter . "#m", ".." . $this->delimiter, $this->message);
-                $this->function_95($this->message, false);
-                if (!$this->function_95(".", 250)) {
-                    return $this->function_96($this->smtpReturn . " Unexpected response from SMTP server when ending transmission");
+                $this->smtpSendCommand($this->message, false);
+                if (!$this->smtpSendCommand(".", 250)) {
+                    return $this->smtpDebugError($this->smtpReturn . " Unexpected response from SMTP server when ending transmission");
                 }
-                $this->function_95("QUIT", 221);
+                $this->smtpSendCommand("QUIT", 221);
                 fclose($this->smtpSocket);
                 return true;
             }
-            return $this->function_96($this->smtpReturn . " Unexpected response from SMTP server during data transmission");
+            return $this->smtpDebugError($this->smtpReturn . " Unexpected response from SMTP server during data transmission");
         } else {
-            return $this->function_96("Unable to connect to SMTP server");
+            return $this->smtpDebugError("Unable to connect to SMTP server");
         }
     }
-    public function function_92($text)
+    public function sanitizeEmailText($text)
     {
         $text = preg_replace("/(\r\n|\r|\n)/s", "\r\n", trim($text));
         $pos = strpos($text, "\r\n");
@@ -282,7 +282,7 @@ class Class_5
         }
         return $text;
     }
-    public function function_93($text, $doUniCode = false)
+    public function decodeHtmlEntities($text, $doUniCode = false)
     {
         if ($doUniCode) {
             $text = preg_replace_callback("/&#([0-9]+);/siU", function ($matches) {
@@ -291,7 +291,7 @@ class Class_5
         }
         return str_replace(["&lt;", "&gt;", "&quot;", "&amp;"], ["<", ">", "\"", "&"], $text);
     }
-    public function function_94($text, $charset = "utf-8", $force_encode = false, $quoted_string = true)
+    public function encodeEmailHeaderRFC2047($text, $charset = "utf-8", $force_encode = false, $quoted_string = true)
     {
         $text = trim($text);
         if (!$charset) {
@@ -399,7 +399,7 @@ function function_100($to, $subject, $body)
     }
     $var_300 = new Class_5($SMTP);
     $var_300->function_91($to, trim($subject), trim($body), $fromemail, "", $THEME["charset"], $fromemail, $MAIN["BASEURL"]);
-    $var_301 = $var_300->function_98();
+    $var_301 = $var_300->smtpSendEmail();
     return $var_301;
 }
 function showAlertError($Error)
