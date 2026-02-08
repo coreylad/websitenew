@@ -1,12 +1,4 @@
 <?php
-/*
- * @ https://EasyToYou.eu - IonCube v11 Decoder Online
- * @ PHP 7.2 & 7.3
- * @ Decoder version: 1.0.6
- * @ Release: 10/08/2022
- */
-
-
 $userIpHash = md5(getUserIpAddress());
 if (isset($_GET["logouthash"]) && $_GET["logouthash"] === $userIpHash) {
     setcookie("c_secure_uid", "", 2147483647, "/");

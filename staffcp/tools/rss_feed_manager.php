@@ -1,11 +1,4 @@
 <?php
-/*
- * @ https://EasyToYou.eu - IonCube v11 Decoder Online
- * @ PHP 7.2 & 7.3
- * @ Decoder version: 1.0.6
- * @ Release: 10/08/2022
- */
-
 if (($current_memory_limit = function_271(@ini_get("memory_limit"))) < 134217728 && 0 < $current_memory_limit) {
     @ini_set("memory_limit", 134217728);
 }

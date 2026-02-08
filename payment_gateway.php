@@ -1,11 +1,4 @@
 <?php
-/*
- * @ https://EasyToYou.eu - IonCube v11 Decoder Online
- * @ PHP 7.2 & 7.3
- * @ Decoder version: 1.0.6
- * @ Release: 10/08/2022
- */
-
 define("PG_VERSION", "2.0 by xam");
 define("DISABLE_ADS", true);
 define("THIS_SCRIPT", "payment_gateway.php");

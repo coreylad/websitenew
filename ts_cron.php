@@ -1,11 +1,4 @@
 <?php
-/*
- * @ https://EasyToYou.eu - IonCube v11 Decoder Online
- * @ PHP 7.2 & 7.3
- * @ Decoder version: 1.0.6
- * @ Release: 10/08/2022
- */
-
 @error_reporting(32759);
 @ini_set("display_errors", 0);
 @ini_set("display_startup_errors", 0);
@@ -26,7 +19,7 @@ define("TSDIR", THIS_PATH);
 require INC_PATH . "/php_default_timezone_set.php";
 require INC_PATH . "/init.php";
 define("TIMENOW", time());
-$_FileData = base64_decode("R0lGODlhAQABAIAAAMDAwAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==") /* GIF89a\0\0€\0\0ÀÀÀ\0\0\0!ù\0\0\0\0,\0\0\0\0\0\0\0D\0;... */ /* GIF89a\0\0€\0\0ÀÀÀ\0\0\0!ù\0\0\0\0,\0\0\0\0\0\0\0D\0;... */ /* GIF89a\0\0€\0\0ÀÀÀ\0\0\0!ù\0\0\0\0,\0\0\0\0\0\0\0D\0;... */;
+$_FileData = base64_decode("R0lGODlhAQABAIAAAMDAwAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==") /* GIF89a\0\0\0\0\0\0\0!\0\0\0\0,\0\0\0\0\0\0\0D\0;... */ /* GIF89a\0\0\0\0\0\0\0!\0\0\0\0,\0\0\0\0\0\0\0D\0;... */ /* GIF89a\0\0\0\0\0\0\0!\0\0\0\0,\0\0\0\0\0\0\0D\0;... */;
 header("Content-type: image/gif");
 if (!(strpos($_SERVER["SERVER_SOFTWARE"], "Microsoft-IIS") !== false && strpos(php_sapi_name(), "cgi") !== false)) {
     header("Content-Length: " . strlen($_FileData));

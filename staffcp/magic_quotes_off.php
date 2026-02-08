@@ -1,11 +1,4 @@
 <?php
-/*
- * @ https://EasyToYou.eu - IonCube v11 Decoder Online
- * @ PHP 7.2 & 7.3
- * @ Decoder version: 1.0.6
- * @ Release: 10/08/2022
- */
-
 var_216();
 if (function_exists("get_magic_quotes_gpc") && get_magic_quotes_gpc()) {
     function_51($_REQUEST);
