@@ -1394,7 +1394,7 @@ class Class_3
                     $this->$image_src_x = imagesx($var_131);
                     $this->$image_src_y = imagesy($var_131);
                     $var_96 = $this->function_39();
-                    $var_132 = NULL;
+                    $cropOffsets = NULL;
                     if (!imageistruecolor($var_131)) {
                         $this->log .= "- image is detected as having a palette<br />";
                         $this->$image_is_palette = true;
@@ -1422,7 +1422,7 @@ class Class_3
                         imagesavealpha($var_131, true);
                         $this->$image_is_palette = false;
                     }
-                    $var_135 =& $var_131;
+                    $workingImage =& $var_131;
                     if (!empty($this->image_precrop)) {
                         if (is_array($this->image_precrop)) {
                             $vars = $this->image_precrop;
@@ -1481,29 +1481,29 @@ class Class_3
                         if ($this->image_src_y < 1) {
                             $this->$image_src_y = 1;
                         }
-                        $var_140 = $this->function_44($this->image_src_x, $this->image_src_y);
-                        imagecopy($var_140, $var_135, 0, 0, $var_139, $var_136, $this->image_src_x, $this->image_src_y);
+                        $tempImage = $this->function_44($this->image_src_x, $this->image_src_y);
+                        imagecopy($tempImage, $workingImage, 0, 0, $var_139, $var_136, $this->image_src_x, $this->image_src_y);
                         if ($var_136 < 0 || $var_137 < 0 || $var_138 < 0 || $var_139 < 0) {
                             if (!empty($this->image_background_color)) {
                                 list($var_101, $var_102, $var_103) = $this->function_43($this->image_background_color);
-                                $fill = imagecolorallocate($var_140, $var_101, $var_102, $var_103);
+                                $fill = imagecolorallocate($tempImage, $var_101, $var_102, $var_103);
                             } else {
-                                $fill = imagecolorallocatealpha($var_140, 0, 0, 0, 127);
+                                $fill = imagecolorallocatealpha($tempImage, 0, 0, 0, 127);
                             }
                             if ($var_136 < 0) {
-                                imagefilledrectangle($var_140, 0, 0, $this->image_src_x, -1 * $var_136, $fill);
+                                imagefilledrectangle($tempImage, 0, 0, $this->image_src_x, -1 * $var_136, $fill);
                             }
                             if ($var_137 < 0) {
-                                imagefilledrectangle($var_140, $this->image_src_x + $var_137, 0, $this->image_src_x, $this->image_src_y, $fill);
+                                imagefilledrectangle($tempImage, $this->image_src_x + $var_137, 0, $this->image_src_x, $this->image_src_y, $fill);
                             }
                             if ($var_138 < 0) {
-                                imagefilledrectangle($var_140, 0, $this->image_src_y + $var_138, $this->image_src_x, $this->image_src_y, $fill);
+                                imagefilledrectangle($tempImage, 0, $this->image_src_y + $var_138, $this->image_src_x, $this->image_src_y, $fill);
                             }
                             if ($var_139 < 0) {
-                                imagefilledrectangle($var_140, 0, 0, -1 * $var_139, $this->image_src_y, $fill);
+                                imagefilledrectangle($tempImage, 0, 0, -1 * $var_139, $this->image_src_y, $fill);
                             }
                         }
-                        $var_135 = $this->function_45($var_140, $var_135);
+                        $workingImage = $this->function_45($tempImage, $workingImage);
                     }
                     if ($this->image_resize) {
                         $this->log .= "- resizing...<br />";
@@ -1537,42 +1537,42 @@ class Class_3
                                                 if ($this->image_src_y / $this->image_y < $this->image_src_x / $this->image_x) {
                                                     $this->$image_dst_y = $this->image_y;
                                                     $this->$image_dst_x = intval($this->image_src_x * $this->image_y / $this->image_src_y);
-                                                    $var_132 = [];
-                                                    $var_132["x"] = $this->image_dst_x - $this->image_x;
+                                                    $cropOffsets = [];
+                                                    $cropOffsets["x"] = $this->image_dst_x - $this->image_x;
                                                     if (strpos($this->image_ratio_crop, "l") !== false) {
-                                                        $var_132["l"] = 0;
-                                                        $var_132["r"] = $var_132["x"];
+                                                        $cropOffsets["l"] = 0;
+                                                        $cropOffsets["r"] = $cropOffsets["x"];
                                                     } else {
                                                         if (strpos($this->image_ratio_crop, "r") !== false) {
-                                                            $var_132["l"] = $var_132["x"];
-                                                            $var_132["r"] = 0;
+                                                            $cropOffsets["l"] = $cropOffsets["x"];
+                                                            $cropOffsets["r"] = 0;
                                                         } else {
-                                                            $var_132["l"] = round($var_132["x"] / 2);
-                                                            $var_132["r"] = $var_132["x"] - $var_132["l"];
+                                                            $cropOffsets["l"] = round($cropOffsets["x"] / 2);
+                                                            $cropOffsets["r"] = $cropOffsets["x"] - $cropOffsets["l"];
                                                         }
                                                     }
-                                                    $this->log .= "&nbsp;&nbsp;&nbsp;&nbsp;ratio_crop_x         : " . $var_132["x"] . " (" . $var_132["l"] . ";" . $var_132["r"] . ")<br />";
+                                                    $this->log .= "&nbsp;&nbsp;&nbsp;&nbsp;ratio_crop_x         : " . $cropOffsets["x"] . " (" . $cropOffsets["l"] . ";" . $cropOffsets["r"] . ")<br />";
                                                     if (is_null($this->image_crop)) {
                                                         $this->$image_crop = [0, 0, 0, 0];
                                                     }
                                                 } else {
                                                     $this->$image_dst_x = $this->image_x;
                                                     $this->$image_dst_y = intval($this->image_src_y * $this->image_x / $this->image_src_x);
-                                                    $var_132 = [];
-                                                    $var_132["y"] = $this->image_dst_y - $this->image_y;
+                                                    $cropOffsets = [];
+                                                    $cropOffsets["y"] = $this->image_dst_y - $this->image_y;
                                                     if (strpos($this->image_ratio_crop, "t") !== false) {
-                                                        $var_132["t"] = 0;
-                                                        $var_132["b"] = $var_132["y"];
+                                                        $cropOffsets["t"] = 0;
+                                                        $cropOffsets["b"] = $cropOffsets["y"];
                                                     } else {
                                                         if (strpos($this->image_ratio_crop, "b") !== false) {
-                                                            $var_132["t"] = $var_132["y"];
-                                                            $var_132["b"] = 0;
+                                                            $cropOffsets["t"] = $cropOffsets["y"];
+                                                            $cropOffsets["b"] = 0;
                                                         } else {
-                                                            $var_132["t"] = round($var_132["y"] / 2);
-                                                            $var_132["b"] = $var_132["y"] - $var_132["t"];
+                                                            $cropOffsets["t"] = round($cropOffsets["y"] / 2);
+                                                            $cropOffsets["b"] = $cropOffsets["y"] - $cropOffsets["t"];
                                                         }
                                                     }
-                                                    $this->log .= "&nbsp;&nbsp;&nbsp;&nbsp;ratio_crop_y         : " . $var_132["y"] . " (" . $var_132["t"] . ";" . $var_132["b"] . ")<br />";
+                                                    $this->log .= "&nbsp;&nbsp;&nbsp;&nbsp;ratio_crop_y         : " . $cropOffsets["y"] . " (" . $cropOffsets["t"] . ";" . $cropOffsets["b"] . ")<br />";
                                                     if (is_null($this->image_crop)) {
                                                         $this->$image_crop = [0, 0, 0, 0];
                                                     }
@@ -1586,42 +1586,42 @@ class Class_3
                                                     if ($this->image_src_x / $this->image_x < $this->image_src_y / $this->image_y) {
                                                         $this->$image_dst_y = $this->image_y;
                                                         $this->$image_dst_x = intval($this->image_src_x * $this->image_y / $this->image_src_y);
-                                                        $var_132 = [];
-                                                        $var_132["x"] = $this->image_dst_x - $this->image_x;
+                                                        $cropOffsets = [];
+                                                        $cropOffsets["x"] = $this->image_dst_x - $this->image_x;
                                                         if (strpos($this->image_ratio_fill, "l") !== false) {
-                                                            $var_132["l"] = 0;
-                                                            $var_132["r"] = $var_132["x"];
+                                                            $cropOffsets["l"] = 0;
+                                                            $cropOffsets["r"] = $cropOffsets["x"];
                                                         } else {
                                                             if (strpos($this->image_ratio_fill, "r") !== false) {
-                                                                $var_132["l"] = $var_132["x"];
-                                                                $var_132["r"] = 0;
+                                                                $cropOffsets["l"] = $cropOffsets["x"];
+                                                                $cropOffsets["r"] = 0;
                                                             } else {
-                                                                $var_132["l"] = round($var_132["x"] / 2);
-                                                                $var_132["r"] = $var_132["x"] - $var_132["l"];
+                                                                $cropOffsets["l"] = round($cropOffsets["x"] / 2);
+                                                                $cropOffsets["r"] = $cropOffsets["x"] - $cropOffsets["l"];
                                                             }
                                                         }
-                                                        $this->log .= "&nbsp;&nbsp;&nbsp;&nbsp;ratio_fill_x         : " . $var_132["x"] . " (" . $var_132["l"] . ";" . $var_132["r"] . ")<br />";
+                                                        $this->log .= "&nbsp;&nbsp;&nbsp;&nbsp;ratio_fill_x         : " . $cropOffsets["x"] . " (" . $cropOffsets["l"] . ";" . $cropOffsets["r"] . ")<br />";
                                                         if (is_null($this->image_crop)) {
                                                             $this->$image_crop = [0, 0, 0, 0];
                                                         }
                                                     } else {
                                                         $this->$image_dst_x = $this->image_x;
                                                         $this->$image_dst_y = intval($this->image_src_y * $this->image_x / $this->image_src_x);
-                                                        $var_132 = [];
-                                                        $var_132["y"] = $this->image_dst_y - $this->image_y;
+                                                        $cropOffsets = [];
+                                                        $cropOffsets["y"] = $this->image_dst_y - $this->image_y;
                                                         if (strpos($this->image_ratio_fill, "t") !== false) {
-                                                            $var_132["t"] = 0;
-                                                            $var_132["b"] = $var_132["y"];
+                                                            $cropOffsets["t"] = 0;
+                                                            $cropOffsets["b"] = $cropOffsets["y"];
                                                         } else {
                                                             if (strpos($this->image_ratio_fill, "b") !== false) {
-                                                                $var_132["t"] = $var_132["y"];
-                                                                $var_132["b"] = 0;
+                                                                $cropOffsets["t"] = $cropOffsets["y"];
+                                                                $cropOffsets["b"] = 0;
                                                             } else {
-                                                                $var_132["t"] = round($var_132["y"] / 2);
-                                                                $var_132["b"] = $var_132["y"] - $var_132["t"];
+                                                                $cropOffsets["t"] = round($cropOffsets["y"] / 2);
+                                                                $cropOffsets["b"] = $cropOffsets["y"] - $cropOffsets["t"];
                                                             }
                                                         }
-                                                        $this->log .= "&nbsp;&nbsp;&nbsp;&nbsp;ratio_fill_y         : " . $var_132["y"] . " (" . $var_132["t"] . ";" . $var_132["b"] . ")<br />";
+                                                        $this->log .= "&nbsp;&nbsp;&nbsp;&nbsp;ratio_fill_y         : " . $cropOffsets["y"] . " (" . $cropOffsets["t"] . ";" . $cropOffsets["b"] . ")<br />";
                                                         if (is_null($this->image_crop)) {
                                                             $this->$image_crop = [0, 0, 0, 0];
                                                         }
@@ -1655,21 +1655,21 @@ class Class_3
                         if ($this->image_dst_y < 1) {
                             $this->$image_dst_y = 1;
                         }
-                        $var_140 = $this->function_44($this->image_dst_x, $this->image_dst_y);
+                        $tempImage = $this->function_44($this->image_dst_x, $this->image_dst_y);
                         if (2 <= $var_96) {
-                            $res = imagecopyresampled($var_140, $var_131, 0, 0, 0, 0, $this->image_dst_x, $this->image_dst_y, $this->image_src_x, $this->image_src_y);
+                            $res = imagecopyresampled($tempImage, $var_131, 0, 0, 0, 0, $this->image_dst_x, $this->image_dst_y, $this->image_src_x, $this->image_src_y);
                         } else {
-                            $res = imagecopyresized($var_140, $var_131, 0, 0, 0, 0, $this->image_dst_x, $this->image_dst_y, $this->image_src_x, $this->image_src_y);
+                            $res = imagecopyresized($tempImage, $var_131, 0, 0, 0, 0, $this->image_dst_x, $this->image_dst_y, $this->image_src_x, $this->image_src_y);
                         }
                         $this->log .= "&nbsp;&nbsp;&nbsp;&nbsp;resized image object created<br />";
                         $this->log .= "&nbsp;&nbsp;&nbsp;&nbsp;image_src_x y        : " . $this->image_src_x . " x " . $this->image_src_y . "<br />";
                         $this->log .= "&nbsp;&nbsp;&nbsp;&nbsp;image_dst_x y        : " . $this->image_dst_x . " x " . $this->image_dst_y . "<br />";
-                        $var_135 = $this->function_45($var_140, $var_135);
+                        $workingImage = $this->function_45($tempImage, $workingImage);
                     } else {
                         $this->$image_dst_x = $this->image_src_x;
                         $this->$image_dst_y = $this->image_src_y;
                     }
-                    if (!empty($this->image_crop) || !is_null($var_132)) {
+                    if (!empty($this->image_crop) || !is_null($cropOffsets)) {
                         if (is_array($this->image_crop)) {
                             $vars = $this->image_crop;
                         } else {
@@ -1718,18 +1718,18 @@ class Class_3
                         $var_137 = (int) $var_137;
                         $var_138 = (int) $var_138;
                         $var_139 = (int) $var_139;
-                        if (!is_null($var_132)) {
-                            if (array_key_exists("t", $var_132)) {
-                                $var_136 += $var_132["t"];
+                        if (!is_null($cropOffsets)) {
+                            if (array_key_exists("t", $cropOffsets)) {
+                                $var_136 += $cropOffsets["t"];
                             }
-                            if (array_key_exists("r", $var_132)) {
-                                $var_137 += $var_132["r"];
+                            if (array_key_exists("r", $cropOffsets)) {
+                                $var_137 += $cropOffsets["r"];
                             }
-                            if (array_key_exists("b", $var_132)) {
-                                $var_138 += $var_132["b"];
+                            if (array_key_exists("b", $cropOffsets)) {
+                                $var_138 += $cropOffsets["b"];
                             }
-                            if (array_key_exists("l", $var_132)) {
-                                $var_139 += $var_132["l"];
+                            if (array_key_exists("l", $cropOffsets)) {
+                                $var_139 += $cropOffsets["l"];
                             }
                         }
                         $this->log .= "- crop image : " . $var_136 . " " . $var_137 . " " . $var_138 . " " . $var_139 . " <br />";
@@ -1741,44 +1741,44 @@ class Class_3
                         if ($this->image_dst_y < 1) {
                             $this->$image_dst_y = 1;
                         }
-                        $var_140 = $this->function_44($this->image_dst_x, $this->image_dst_y);
-                        imagecopy($var_140, $var_135, 0, 0, $var_139, $var_136, $this->image_dst_x, $this->image_dst_y);
+                        $tempImage = $this->function_44($this->image_dst_x, $this->image_dst_y);
+                        imagecopy($tempImage, $workingImage, 0, 0, $var_139, $var_136, $this->image_dst_x, $this->image_dst_y);
                         if ($var_136 < 0 || $var_137 < 0 || $var_138 < 0 || $var_139 < 0) {
                             if (!empty($this->image_background_color)) {
                                 list($var_101, $var_102, $var_103) = $this->function_43($this->image_background_color);
-                                $fill = imagecolorallocate($var_140, $var_101, $var_102, $var_103);
+                                $fill = imagecolorallocate($tempImage, $var_101, $var_102, $var_103);
                             } else {
-                                $fill = imagecolorallocatealpha($var_140, 0, 0, 0, 127);
+                                $fill = imagecolorallocatealpha($tempImage, 0, 0, 0, 127);
                             }
                             if ($var_136 < 0) {
-                                imagefilledrectangle($var_140, 0, 0, $this->image_dst_x, -1 * $var_136, $fill);
+                                imagefilledrectangle($tempImage, 0, 0, $this->image_dst_x, -1 * $var_136, $fill);
                             }
                             if ($var_137 < 0) {
-                                imagefilledrectangle($var_140, $this->image_dst_x + $var_137, 0, $this->image_dst_x, $this->image_dst_y, $fill);
+                                imagefilledrectangle($tempImage, $this->image_dst_x + $var_137, 0, $this->image_dst_x, $this->image_dst_y, $fill);
                             }
                             if ($var_138 < 0) {
-                                imagefilledrectangle($var_140, 0, $this->image_dst_y + $var_138, $this->image_dst_x, $this->image_dst_y, $fill);
+                                imagefilledrectangle($tempImage, 0, $this->image_dst_y + $var_138, $this->image_dst_x, $this->image_dst_y, $fill);
                             }
                             if ($var_139 < 0) {
-                                imagefilledrectangle($var_140, 0, 0, -1 * $var_139, $this->image_dst_y, $fill);
+                                imagefilledrectangle($tempImage, 0, 0, -1 * $var_139, $this->image_dst_y, $fill);
                             }
                         }
-                        $var_135 = $this->function_45($var_140, $var_135);
+                        $workingImage = $this->function_45($tempImage, $workingImage);
                     }
                     if (2 <= $var_96 && !empty($this->image_flip)) {
                         $this->$image_flip = strtolower($this->image_flip);
                         $this->log .= "- flip image : " . $this->image_flip . "<br />";
-                        $var_140 = $this->function_44($this->image_dst_x, $this->image_dst_y);
+                        $tempImage = $this->function_44($this->image_dst_x, $this->image_dst_y);
                         for ($x = 0; $x < $this->image_dst_x; $x++) {
                             for ($y = 0; $y < $this->image_dst_y; $y++) {
                                 if (strpos($this->image_flip, "v") !== false) {
-                                    imagecopy($var_140, $var_135, $this->image_dst_x - $x - 1, $y, $x, $y, 1, 1);
+                                    imagecopy($tempImage, $workingImage, $this->image_dst_x - $x - 1, $y, $x, $y, 1, 1);
                                 } else {
-                                    imagecopy($var_140, $var_135, $x, $this->image_dst_y - $y - 1, $x, $y, 1, 1);
+                                    imagecopy($tempImage, $workingImage, $x, $this->image_dst_y - $y - 1, $x, $y, 1, 1);
                                 }
                             }
                         }
-                        $var_135 = $this->function_45($var_140, $var_135);
+                        $workingImage = $this->function_45($tempImage, $workingImage);
                     }
                     if (2 <= $var_96 && is_numeric($this->image_rotate)) {
                         if (!in_array($this->image_rotate, [0, 90, 180, 270])) {
@@ -1786,23 +1786,23 @@ class Class_3
                         }
                         if ($this->image_rotate != 0) {
                             if ($this->$image_rotate = = 90 || $this->$image_rotate = = 270) {
-                                $var_140 = $this->function_44($this->image_dst_y, $this->image_dst_x);
+                                $tempImage = $this->function_44($this->image_dst_y, $this->image_dst_x);
                             } else {
-                                $var_140 = $this->function_44($this->image_dst_x, $this->image_dst_y);
+                                $tempImage = $this->function_44($this->image_dst_x, $this->image_dst_y);
                             }
                             $this->log .= "- rotate image : " . $this->image_rotate . "<br />";
                             for ($x = 0; $x < $this->image_dst_x; $x++) {
                                 for ($y = 0; $y < $this->image_dst_y; $y++) {
                                     if ($this->$image_rotate = = 90) {
-                                        imagecopy($var_140, $var_135, $y, $x, $x, $this->image_dst_y - $y - 1, 1, 1);
+                                        imagecopy($tempImage, $workingImage, $y, $x, $x, $this->image_dst_y - $y - 1, 1, 1);
                                     } else {
                                         if ($this->$image_rotate = = 180) {
-                                            imagecopy($var_140, $var_135, $x, $y, $this->image_dst_x - $x - 1, $this->image_dst_y - $y - 1, 1, 1);
+                                            imagecopy($tempImage, $workingImage, $x, $y, $this->image_dst_x - $x - 1, $this->image_dst_y - $y - 1, 1, 1);
                                         } else {
                                             if ($this->$image_rotate = = 270) {
-                                                imagecopy($var_140, $var_135, $y, $x, $this->image_dst_x - $x - 1, $y, 1, 1);
+                                                imagecopy($tempImage, $workingImage, $y, $x, $this->image_dst_x - $x - 1, $y, 1, 1);
                                             } else {
-                                                imagecopy($var_140, $var_135, $x, $y, $x, $y, 1, 1);
+                                                imagecopy($tempImage, $workingImage, $x, $y, $x, $y, 1, 1);
                                             }
                                         }
                                     }
@@ -1813,7 +1813,7 @@ class Class_3
                                 $this->$image_dst_y = $this->image_dst_x;
                                 $this->$image_dst_x = $var_143;
                             }
-                            $var_135 = $this->function_45($var_140, $var_135);
+                            $workingImage = $this->function_45($tempImage, $workingImage);
                         }
                     }
                     if (2 <= $var_96 && is_numeric($this->image_overlay_percent) && 0 < $this->image_overlay_percent && !empty($this->image_overlay_color)) {
@@ -1822,7 +1822,7 @@ class Class_3
                         $var_144 = imagecreatetruecolor($this->image_dst_x, $this->image_dst_y);
                         $color = imagecolorallocate($var_144, $var_101, $var_102, $var_103);
                         imagefilledrectangle($var_144, 0, 0, $this->image_dst_x, $this->image_dst_y, $color);
-                        $this->function_46($var_135, $var_144, 0, 0, 0, 0, $this->image_dst_x, $this->image_dst_y, $this->image_overlay_percent);
+                        $this->function_46($workingImage, $var_144, 0, 0, 0, 0, $this->image_dst_x, $this->image_dst_y, $this->image_overlay_percent);
                         imagedestroy($var_144);
                     }
                     if (2 <= $var_96 && ($this->image_negative || $this->image_greyscale || is_numeric($this->image_threshold) || is_numeric($this->image_brightness) || is_numeric($this->image_contrast) || !empty($this->image_tint_color))) {
@@ -1830,53 +1830,53 @@ class Class_3
                         if (!empty($this->image_tint_color)) {
                             list($var_145, $var_146, $var_147) = $this->function_43($this->image_tint_color);
                         }
-                        imagealphablending($var_135, true);
+                        imagealphablending($workingImage, true);
                         for ($y = 0; $y < $this->image_dst_y; $y++) {
                             for ($x = 0; $x < $this->image_dst_x; $x++) {
                                 if ($this->image_greyscale) {
-                                    $var_148 = imagecolorsforindex($var_135, imagecolorat($var_135, $x, $y));
+                                    $var_148 = imagecolorsforindex($workingImage, imagecolorat($workingImage, $x, $y));
                                     $var_100 = $var_149 = $b = round(0 * $var_148["red"] + 0 * $var_148["green"] + 0 * $var_148["blue"]);
-                                    $color = imagecolorallocatealpha($var_135, $var_100, $var_149, $b, $var_148["alpha"]);
-                                    imagesetpixel($var_135, $x, $y, $color);
+                                    $color = imagecolorallocatealpha($workingImage, $var_100, $var_149, $b, $var_148["alpha"]);
+                                    imagesetpixel($workingImage, $x, $y, $color);
                                 }
                                 if (is_numeric($this->image_threshold)) {
-                                    $var_148 = imagecolorsforindex($var_135, imagecolorat($var_135, $x, $y));
+                                    $var_148 = imagecolorsforindex($workingImage, imagecolorat($workingImage, $x, $y));
                                     $c = round($var_148["red"] + $var_148["green"] + $var_148["blue"]) / 3 - 127;
                                     $var_100 = $var_149 = $b = $this->image_threshold < $c ? 255 : 0;
-                                    $color = imagecolorallocatealpha($var_135, $var_100, $var_149, $b, $var_148["alpha"]);
-                                    imagesetpixel($var_135, $x, $y, $color);
+                                    $color = imagecolorallocatealpha($workingImage, $var_100, $var_149, $b, $var_148["alpha"]);
+                                    imagesetpixel($workingImage, $x, $y, $color);
                                 }
                                 if (is_numeric($this->image_brightness)) {
-                                    $var_148 = imagecolorsforindex($var_135, imagecolorat($var_135, $x, $y));
+                                    $var_148 = imagecolorsforindex($workingImage, imagecolorat($workingImage, $x, $y));
                                     $var_100 = max(min(round($var_148["red"] + $this->image_brightness * 2), 255), 0);
                                     $var_149 = max(min(round($var_148["green"] + $this->image_brightness * 2), 255), 0);
                                     $b = max(min(round($var_148["blue"] + $this->image_brightness * 2), 255), 0);
-                                    $color = imagecolorallocatealpha($var_135, $var_100, $var_149, $b, $var_148["alpha"]);
-                                    imagesetpixel($var_135, $x, $y, $color);
+                                    $color = imagecolorallocatealpha($workingImage, $var_100, $var_149, $b, $var_148["alpha"]);
+                                    imagesetpixel($workingImage, $x, $y, $color);
                                 }
                                 if (is_numeric($this->image_contrast)) {
-                                    $var_148 = imagecolorsforindex($var_135, imagecolorat($var_135, $x, $y));
+                                    $var_148 = imagecolorsforindex($workingImage, imagecolorat($workingImage, $x, $y));
                                     $var_100 = max(min(round(($this->image_contrast + 128) * $var_148["red"] / 128), 255), 0);
                                     $var_149 = max(min(round(($this->image_contrast + 128) * $var_148["green"] / 128), 255), 0);
                                     $b = max(min(round(($this->image_contrast + 128) * $var_148["blue"] / 128), 255), 0);
-                                    $color = imagecolorallocatealpha($var_135, $var_100, $var_149, $b, $var_148["alpha"]);
-                                    imagesetpixel($var_135, $x, $y, $color);
+                                    $color = imagecolorallocatealpha($workingImage, $var_100, $var_149, $b, $var_148["alpha"]);
+                                    imagesetpixel($workingImage, $x, $y, $color);
                                 }
                                 if (!empty($this->image_tint_color)) {
-                                    $var_148 = imagecolorsforindex($var_135, imagecolorat($var_135, $x, $y));
+                                    $var_148 = imagecolorsforindex($workingImage, imagecolorat($workingImage, $x, $y));
                                     $var_100 = min(round($var_145 * $var_148["red"] / 169), 255);
                                     $var_149 = min(round($var_146 * $var_148["green"] / 169), 255);
                                     $b = min(round($var_147 * $var_148["blue"] / 169), 255);
-                                    $color = imagecolorallocatealpha($var_135, $var_100, $var_149, $b, $var_148["alpha"]);
-                                    imagesetpixel($var_135, $x, $y, $color);
+                                    $color = imagecolorallocatealpha($workingImage, $var_100, $var_149, $b, $var_148["alpha"]);
+                                    imagesetpixel($workingImage, $x, $y, $color);
                                 }
                                 if (!empty($this->image_negative)) {
-                                    $var_148 = imagecolorsforindex($var_135, imagecolorat($var_135, $x, $y));
+                                    $var_148 = imagecolorsforindex($workingImage, imagecolorat($workingImage, $x, $y));
                                     $var_100 = round(255 - $var_148["red"]);
                                     $var_149 = round(255 - $var_148["green"]);
                                     $b = round(255 - $var_148["blue"]);
-                                    $color = imagecolorallocatealpha($var_135, $var_100, $var_149, $b, $var_148["alpha"]);
-                                    imagesetpixel($var_135, $x, $y, $color);
+                                    $color = imagecolorallocatealpha($workingImage, $var_100, $var_149, $b, $var_148["alpha"]);
+                                    imagesetpixel($workingImage, $x, $y, $color);
                                 }
                             }
                         }
@@ -1937,11 +1937,11 @@ class Class_3
                         if (!empty($this->image_border_color)) {
                             list($var_101, $var_102, $var_103) = $this->function_43($this->image_border_color);
                         }
-                        $var_140 = $this->function_44($this->image_dst_x, $this->image_dst_y);
-                        $var_150 = imagecolorallocatealpha($var_140, $var_101, $var_102, $var_103, 0);
-                        imagefilledrectangle($var_140, 0, 0, $this->image_dst_x, $this->image_dst_y, $var_150);
-                        imagecopy($var_140, $var_135, $var_139, $var_136, 0, 0, $this->image_dst_x - $var_137 - $var_139, $this->image_dst_y - $var_138 - $var_136);
-                        $var_135 = $this->function_45($var_140, $var_135);
+                        $tempImage = $this->function_44($this->image_dst_x, $this->image_dst_y);
+                        $var_150 = imagecolorallocatealpha($tempImage, $var_101, $var_102, $var_103, 0);
+                        imagefilledrectangle($tempImage, 0, 0, $this->image_dst_x, $this->image_dst_y, $var_150);
+                        imagecopy($tempImage, $workingImage, $var_139, $var_136, 0, 0, $this->image_dst_x - $var_137 - $var_139, $this->image_dst_y - $var_138 - $var_136);
+                        $workingImage = $this->function_45($tempImage, $workingImage);
                     }
                     if (is_numeric($this->image_frame)) {
                         if (is_array($this->image_frame_colors)) {
@@ -1954,24 +1954,24 @@ class Class_3
                         $var_151 = sizeof($vars);
                         $this->$image_dst_x = $this->image_dst_x + $var_151 * 2;
                         $this->$image_dst_y = $this->image_dst_y + $var_151 * 2;
-                        $var_140 = $this->function_44($this->image_dst_x, $this->image_dst_y);
-                        imagecopy($var_140, $var_135, $var_151, $var_151, 0, 0, $this->image_dst_x - $var_151 * 2, $this->image_dst_y - $var_151 * 2);
+                        $tempImage = $this->function_44($this->image_dst_x, $this->image_dst_y);
+                        imagecopy($tempImage, $workingImage, $var_151, $var_151, 0, 0, $this->image_dst_x - $var_151 * 2, $this->image_dst_y - $var_151 * 2);
                         for ($i = 0; $i < $var_151; $i++) {
                             list($var_101, $var_102, $var_103) = $this->function_43($vars[$i]);
-                            $c = imagecolorallocate($var_140, $var_101, $var_102, $var_103);
+                            $c = imagecolorallocate($tempImage, $var_101, $var_102, $var_103);
                             if ($this->$image_frame = = 1) {
-                                imageline($var_140, $i, $i, $this->image_dst_x - $i - 1, $i, $c);
-                                imageline($var_140, $this->image_dst_x - $i - 1, $this->image_dst_y - $i - 1, $this->image_dst_x - $i - 1, $i, $c);
-                                imageline($var_140, $this->image_dst_x - $i - 1, $this->image_dst_y - $i - 1, $i, $this->image_dst_y - $i - 1, $c);
-                                imageline($var_140, $i, $i, $i, $this->image_dst_y - $i - 1, $c);
+                                imageline($tempImage, $i, $i, $this->image_dst_x - $i - 1, $i, $c);
+                                imageline($tempImage, $this->image_dst_x - $i - 1, $this->image_dst_y - $i - 1, $this->image_dst_x - $i - 1, $i, $c);
+                                imageline($tempImage, $this->image_dst_x - $i - 1, $this->image_dst_y - $i - 1, $i, $this->image_dst_y - $i - 1, $c);
+                                imageline($tempImage, $i, $i, $i, $this->image_dst_y - $i - 1, $c);
                             } else {
-                                imageline($var_140, $i, $i, $this->image_dst_x - $i - 1, $i, $c);
-                                imageline($var_140, $this->image_dst_x - $var_151 + $i, $this->image_dst_y - $var_151 + $i, $this->image_dst_x - $var_151 + $i, $var_151 - $i, $c);
-                                imageline($var_140, $this->image_dst_x - $var_151 + $i, $this->image_dst_y - $var_151 + $i, $var_151 - $i, $this->image_dst_y - $var_151 + $i, $c);
-                                imageline($var_140, $i, $i, $i, $this->image_dst_y - $i - 1, $c);
+                                imageline($tempImage, $i, $i, $this->image_dst_x - $i - 1, $i, $c);
+                                imageline($tempImage, $this->image_dst_x - $var_151 + $i, $this->image_dst_y - $var_151 + $i, $this->image_dst_x - $var_151 + $i, $var_151 - $i, $c);
+                                imageline($tempImage, $this->image_dst_x - $var_151 + $i, $this->image_dst_y - $var_151 + $i, $var_151 - $i, $this->image_dst_y - $var_151 + $i, $c);
+                                imageline($tempImage, $i, $i, $i, $this->image_dst_y - $i - 1, $c);
                             }
                         }
-                        $var_135 = $this->function_45($var_140, $var_135);
+                        $workingImage = $this->function_45($tempImage, $workingImage);
                     }
                     if (0 < $this->image_bevel) {
                         if (empty($this->image_bevel_color1)) {
@@ -1982,19 +1982,19 @@ class Class_3
                         }
                         list($var_152, $var_153, $var_154) = $this->function_43($this->image_bevel_color1);
                         list($var_155, $var_156, $var_157) = $this->function_43($this->image_bevel_color2);
-                        $var_140 = $this->function_44($this->image_dst_x, $this->image_dst_y);
-                        imagecopy($var_140, $var_135, 0, 0, 0, 0, $this->image_dst_x, $this->image_dst_y);
-                        imagealphablending($var_140, true);
+                        $tempImage = $this->function_44($this->image_dst_x, $this->image_dst_y);
+                        imagecopy($tempImage, $workingImage, 0, 0, 0, 0, $this->image_dst_x, $this->image_dst_y);
+                        imagealphablending($tempImage, true);
                         for ($i = 0; $i < $this->image_bevel; $i++) {
                             $var_113 = round($i / $this->image_bevel * 127);
-                            $var_158 = imagecolorallocatealpha($var_140, $var_152, $var_153, $var_154, $var_113);
-                            $var_159 = imagecolorallocatealpha($var_140, $var_155, $var_156, $var_157, $var_113);
-                            imageline($var_140, $i, $i, $this->image_dst_x - $i - 1, $i, $var_158);
-                            imageline($var_140, $this->image_dst_x - $i - 1, $this->image_dst_y - $i, $this->image_dst_x - $i - 1, $i, $var_159);
-                            imageline($var_140, $this->image_dst_x - $i - 1, $this->image_dst_y - $i - 1, $i, $this->image_dst_y - $i - 1, $var_159);
-                            imageline($var_140, $i, $i, $i, $this->image_dst_y - $i - 1, $var_158);
+                            $var_158 = imagecolorallocatealpha($tempImage, $var_152, $var_153, $var_154, $var_113);
+                            $var_159 = imagecolorallocatealpha($tempImage, $var_155, $var_156, $var_157, $var_113);
+                            imageline($tempImage, $i, $i, $this->image_dst_x - $i - 1, $i, $var_158);
+                            imageline($tempImage, $this->image_dst_x - $i - 1, $this->image_dst_y - $i, $this->image_dst_x - $i - 1, $i, $var_159);
+                            imageline($tempImage, $this->image_dst_x - $i - 1, $this->image_dst_y - $i - 1, $i, $this->image_dst_y - $i - 1, $var_159);
+                            imageline($tempImage, $i, $i, $i, $this->image_dst_y - $i - 1, $var_158);
                         }
-                        $var_135 = $this->function_45($var_140, $var_135);
+                        $workingImage = $this->function_45($tempImage, $workingImage);
                     }
                     if ($this->image_watermark != "" && file_exists($this->image_watermark)) {
                         $this->log .= "- add watermark<br />";
@@ -2098,7 +2098,7 @@ class Class_3
                                     }
                                 }
                             }
-                            imagecopyresampled($var_135, $var_144, $var_165, $var_166, 0, 0, $var_163, $var_164, $var_163, $var_164);
+                            imagecopyresampled($workingImage, $var_144, $var_165, $var_166, 0, 0, $var_163, $var_164, $var_163, $var_164);
                         } else {
                             $this->$error = $this->function_40("watermark_invalid");
                         }
@@ -2202,11 +2202,11 @@ class Class_3
                                 $var_144 = imagecreatetruecolor($var_175, $var_174);
                                 $var_105 = imagecolorallocate($var_144, $var_101, $var_102, $var_103);
                                 imagefilledrectangle($var_144, 0, 0, $var_175, $var_174, $var_105);
-                                $this->function_46($var_135, $var_144, $var_179, $var_180, 0, 0, $var_175, $var_174, $this->image_text_background_percent);
+                                $this->function_46($workingImage, $var_144, $var_179, $var_180, 0, 0, $var_175, $var_174, $this->image_text_background_percent);
                                 imagedestroy($var_144);
                             } else {
-                                $var_105 = imagecolorallocate($var_135, $var_101, $var_102, $var_103);
-                                imagefilledrectangle($var_135, $var_179, $var_180, $var_179 + $var_175, $var_180 + $var_174, $var_105);
+                                $var_105 = imagecolorallocate($workingImage, $var_101, $var_102, $var_103);
+                                imagefilledrectangle($workingImage, $var_179, $var_180, $var_179 + $var_175, $var_180 + $var_174, $var_105);
                             }
                         }
                         $var_179 += $this->image_text_padding_x;
@@ -2230,15 +2230,15 @@ class Class_3
                                     imagestring($var_144, $this->image_text_font, $this->$image_text_alignment = = "l" ? 0 : ($var_181 - strlen($var_124) * $var_172) / ($this->$image_text_alignment = = "r" ? 1 : 2), $k * ($var_176 + (0 < $k && $k < sizeof($var_171) ? $this->image_text_line_spacing : 0)), $var_124, $var_183);
                                 }
                             }
-                            $this->function_46($var_135, $var_144, $var_179, $var_180, 0, 0, $var_181, $var_182, $this->image_text_percent);
+                            $this->function_46($workingImage, $var_144, $var_179, $var_180, 0, 0, $var_181, $var_182, $this->image_text_percent);
                             imagedestroy($var_144);
                         } else {
-                            $var_183 = var_184($var_135, $var_101, $var_102, $var_103);
+                            $var_183 = var_184($workingImage, $var_101, $var_102, $var_103);
                             foreach ($var_171 as $k => $var_124) {
                                 if ($this->$image_text_direction = = "v") {
-                                    imagestringup($var_135, $this->image_text_font, $var_179 + $k * ($var_177 + (0 < $k && $k < sizeof($var_171) ? $this->image_text_line_spacing : 0)), $var_180 + $var_174 - 2 * $this->image_text_padding_y - ($this->$image_text_alignment = = "l" ? 0 : ($var_182 - strlen($var_124) * $var_172) / ($this->$image_text_alignment = = "r" ? 1 : 2)), $var_124, $var_183);
+                                    imagestringup($workingImage, $this->image_text_font, $var_179 + $k * ($var_177 + (0 < $k && $k < sizeof($var_171) ? $this->image_text_line_spacing : 0)), $var_180 + $var_174 - 2 * $this->image_text_padding_y - ($this->$image_text_alignment = = "l" ? 0 : ($var_182 - strlen($var_124) * $var_172) / ($this->$image_text_alignment = = "r" ? 1 : 2)), $var_124, $var_183);
                                 } else {
-                                    imagestring($var_135, $this->image_text_font, $var_179 + ($this->$image_text_alignment = = "l" ? 0 : ($var_181 - strlen($var_124) * $var_172) / ($this->$image_text_alignment = = "r" ? 1 : 2)), $var_180 + $k * ($var_176 + (0 < $k && $k < sizeof($var_171) ? $this->image_text_line_spacing : 0)), $var_124, $var_183);
+                                    imagestring($workingImage, $this->image_text_font, $var_179 + ($this->$image_text_alignment = = "l" ? 0 : ($var_181 - strlen($var_124) * $var_172) / ($this->$image_text_alignment = = "r" ? 1 : 2)), $var_180 + $k * ($var_176 + (0 < $k && $k < sizeof($var_171) ? $this->image_text_line_spacing : 0)), $var_124, $var_183);
                                 }
                             }
                         }
@@ -2259,22 +2259,22 @@ class Class_3
                         if (empty($this->image_reflection_opacity)) {
                             $this->$image_reflection_opacity = 60;
                         }
-                        $var_140 = $this->function_44($this->image_dst_x, $this->image_dst_y + $image_reflection_height + $this->image_reflection_space, true);
+                        $tempImage = $this->function_44($this->image_dst_x, $this->image_dst_y + $image_reflection_height + $this->image_reflection_space, true);
                         $var_185 = $this->image_reflection_opacity;
-                        imagecopy($var_140, $var_135, 0, 0, 0, 0, $this->image_dst_x, $this->image_dst_y + ($this->image_reflection_space < 0 ? $this->image_reflection_space : 0));
+                        imagecopy($tempImage, $workingImage, 0, 0, 0, 0, $this->image_dst_x, $this->image_dst_y + ($this->image_reflection_space < 0 ? $this->image_reflection_space : 0));
                         if (0 < $image_reflection_height + $this->image_reflection_space) {
                             if (!empty($this->image_background_color)) {
                                 list($var_101, $var_102, $var_103) = $this->function_43($this->image_background_color);
-                                $fill = imagecolorallocate($var_140, $var_101, $var_102, $var_103);
+                                $fill = imagecolorallocate($tempImage, $var_101, $var_102, $var_103);
                             } else {
-                                $fill = imagecolorallocatealpha($var_140, 0, 0, 0, 127);
+                                $fill = imagecolorallocatealpha($tempImage, 0, 0, 0, 127);
                             }
-                            imagefill($var_140, round($this->image_dst_x / 2), $this->image_dst_y + $image_reflection_height + $this->image_reflection_space - 1, $fill);
+                            imagefill($tempImage, round($this->image_dst_x / 2), $this->image_dst_y + $image_reflection_height + $this->image_reflection_space - 1, $fill);
                         }
                         for ($y = 0; $y < $image_reflection_height; $y++) {
                             for ($x = 0; $x < $this->image_dst_x; $x++) {
-                                $var_186 = imagecolorsforindex($var_140, imagecolorat($var_140, $x, $y + $this->image_dst_y + $this->image_reflection_space));
-                                $var_187 = imagecolorsforindex($var_135, imagecolorat($var_135, $x, $this->image_dst_y - $y - 1 + ($this->image_reflection_space < 0 ? $this->image_reflection_space : 0)));
+                                $var_186 = imagecolorsforindex($tempImage, imagecolorat($tempImage, $x, $y + $this->image_dst_y + $this->image_reflection_space));
+                                $var_187 = imagecolorsforindex($workingImage, imagecolorat($workingImage, $x, $this->image_dst_y - $y - 1 + ($this->image_reflection_space < 0 ? $this->image_reflection_space : 0)));
                                 $var_188 = 1 - $var_187["alpha"] / 127;
                                 $var_189 = 1 - $var_186["alpha"] / 127;
                                 $var_112 = $var_188 * $var_185 / 100;
@@ -2287,8 +2287,8 @@ class Class_3
                                         $var_113 = 1;
                                     }
                                     $var_113 = round((1 - $var_113) * 127);
-                                    $color = imagecolorallocatealpha($var_140, $var_101, $var_102, $var_103, $var_113);
-                                    imagesetpixel($var_140, $x, $y + $this->image_dst_y + $this->image_reflection_space, $color);
+                                    $color = imagecolorallocatealpha($tempImage, $var_101, $var_102, $var_103, $var_113);
+                                    imagesetpixel($tempImage, $x, $y + $this->image_dst_y + $this->image_reflection_space, $color);
                                 }
                             }
                             if (0 < $var_185) {
@@ -2296,22 +2296,22 @@ class Class_3
                             }
                         }
                         $this->$image_dst_y = $this->image_dst_y + $image_reflection_height + $this->image_reflection_space;
-                        $var_135 = $this->function_45($var_140, $var_135);
+                        $workingImage = $this->function_45($tempImage, $workingImage);
                     }
                     if (is_numeric($this->jpeg_size) && 0 < $this->jpeg_size && ($this->$image_convert = = "jpeg" || $this->$image_convert = = "jpg")) {
                         $this->log .= "- JPEG desired file size : " . $this->jpeg_size . "<br />";
                         ob_start();
-                        imagejpeg($var_135, "", 75);
+                        imagejpeg($workingImage, "", 75);
                         $var_190 = ob_get_contents();
                         ob_end_clean();
                         $var_191 = strlen($var_190);
                         ob_start();
-                        imagejpeg($var_135, "", 50);
+                        imagejpeg($workingImage, "", 50);
                         $var_190 = ob_get_contents();
                         ob_end_clean();
                         $var_192 = strlen($var_190);
                         ob_start();
-                        imagejpeg($var_135, "", 25);
+                        imagejpeg($workingImage, "", 25);
                         $var_190 = ob_get_contents();
                         ob_end_clean();
                         $var_193 = strlen($var_190);
@@ -2334,12 +2334,12 @@ class Class_3
                     $this->log .= "- converting...<br />";
                     switch ($this->image_convert) {
                         case "gif":
-                            if (imageistruecolor($var_135)) {
+                            if (imageistruecolor($workingImage)) {
                                 $this->log .= "&nbsp;&nbsp;&nbsp;&nbsp;true color to palette<br />";
                                 $var_199 = [[]];
                                 for ($x = 0; $x < $this->image_dst_x; $x++) {
                                     for ($y = 0; $y < $this->image_dst_y; $y++) {
-                                        $var_148 = imagecolorsforindex($var_135, imagecolorat($var_135, $x, $y));
+                                        $var_148 = imagecolorsforindex($workingImage, imagecolorat($workingImage, $x, $y));
                                         $var_199[$x][$y] = $var_148["alpha"];
                                     }
                                 }
@@ -2347,24 +2347,24 @@ class Class_3
                                 for ($x = 0; $x < $this->image_dst_x; $x++) {
                                     for ($y = 0; $y < $this->image_dst_y; $y++) {
                                         if (0 < $var_199[$x][$y]) {
-                                            $var_148 = imagecolorsforindex($var_135, imagecolorat($var_135, $x, $y));
+                                            $var_148 = imagecolorsforindex($workingImage, imagecolorat($workingImage, $x, $y));
                                             $var_113 = $var_199[$x][$y] / 127;
                                             $var_148["red"] = round($var_148["red"] * (1 - $var_113) + $var_101 * $var_113);
                                             $var_148["green"] = round($var_148["green"] * (1 - $var_113) + $var_102 * $var_113);
                                             $var_148["blue"] = round($var_148["blue"] * (1 - $var_113) + $var_103 * $var_113);
-                                            $color = imagecolorallocate($var_135, $var_148["red"], $var_148["green"], $var_148["blue"]);
-                                            imagesetpixel($var_135, $x, $y, $color);
+                                            $color = imagecolorallocate($workingImage, $var_148["red"], $var_148["green"], $var_148["blue"]);
+                                            imagesetpixel($workingImage, $x, $y, $color);
                                         }
                                     }
                                 }
                                 if (empty($this->image_background_color)) {
-                                    imagetruecolortopalette($var_135, true, 255);
-                                    $var_185 = imagecolorallocate($var_135, 254, 1, 253);
-                                    imagecolortransparent($var_135, $var_185);
+                                    imagetruecolortopalette($workingImage, true, 255);
+                                    $var_185 = imagecolorallocate($workingImage, 254, 1, 253);
+                                    imagecolortransparent($workingImage, $var_185);
                                     for ($x = 0; $x < $this->image_dst_x; $x++) {
                                         for ($y = 0; $y < $this->image_dst_y; $y++) {
                                             if (120 < $var_199[$x][$y]) {
-                                                imagesetpixel($var_135, $x, $y, $var_185);
+                                                imagesetpixel($workingImage, $x, $y, $var_185);
                                             }
                                         }
                                     }
@@ -2376,25 +2376,25 @@ class Class_3
                         case "bmp":
                             $this->log .= "&nbsp;&nbsp;&nbsp;&nbsp;fills in transparency with default color<br />";
                             list($var_101, $var_102, $var_103) = $this->function_43($this->image_default_color);
-                            $var_185 = imagecolorallocate($var_135, $var_101, $var_102, $var_103);
+                            $var_185 = imagecolorallocate($workingImage, $var_101, $var_102, $var_103);
                             for ($x = 0; $x < $this->image_dst_x; $x++) {
                                 for ($y = 0; $y < $this->image_dst_y; $y++) {
-                                    if (imageistruecolor($var_135)) {
-                                        $var_200 = imagecolorat($var_135, $x, $y);
+                                    if (imageistruecolor($workingImage)) {
+                                        $var_200 = imagecolorat($workingImage, $x, $y);
                                         $var_148 = ["red" => $var_200 >> 16 & 255, "green" => $var_200 >> 8 & 255, "blue" => $var_200 & 255, "alpha" => ($var_200 & 2130706432) >> 24];
                                     } else {
-                                        $var_148 = imagecolorsforindex($var_135, imagecolorat($var_135, $x, $y));
+                                        $var_148 = imagecolorsforindex($workingImage, imagecolorat($workingImage, $x, $y));
                                     }
                                     if ($var_148["alpha"] == 127) {
-                                        imagesetpixel($var_135, $x, $y, $var_185);
+                                        imagesetpixel($workingImage, $x, $y, $var_185);
                                     } else {
                                         if (0 < $var_148["alpha"]) {
                                             $var_113 = $var_148["alpha"] / 127;
                                             $var_148["red"] = round($var_148["red"] * (1 - $var_113) + $var_101 * $var_113);
                                             $var_148["green"] = round($var_148["green"] * (1 - $var_113) + $var_102 * $var_113);
                                             $var_148["blue"] = round($var_148["blue"] * (1 - $var_113) + $var_103 * $var_113);
-                                            $color = imagecolorclosest($var_135, $var_148["red"], $var_148["green"], $var_148["blue"]);
-                                            imagesetpixel($var_135, $x, $y, $color);
+                                            $color = imagecolorclosest($workingImage, $var_148["red"], $var_148["green"], $var_148["blue"]);
+                                            imagesetpixel($workingImage, $x, $y, $color);
                                         }
                                     }
                                 }
@@ -2406,10 +2406,10 @@ class Class_3
                                 case "jpeg":
                                 case "jpg":
                                     if (!$var_120) {
-                                        $result = @imagejpeg($var_135, $this->file_dst_pathname, $this->jpeg_quality);
+                                        $result = @imagejpeg($workingImage, $this->file_dst_pathname, $this->jpeg_quality);
                                     } else {
                                         ob_start();
-                                        $result = @imagejpeg($var_135, "", $this->jpeg_quality);
+                                        $result = @imagejpeg($workingImage, "", $this->jpeg_quality);
                                         $var_121 = ob_get_contents();
                                         ob_end_clean();
                                     }
@@ -2421,13 +2421,13 @@ class Class_3
                                     }
                                     break;
                                 case "png":
-                                    imagealphablending($var_135, false);
-                                    imagesavealpha($var_135, true);
+                                    imagealphablending($workingImage, false);
+                                    imagesavealpha($workingImage, true);
                                     if (!$var_120) {
-                                        $result = @imagepng($var_135, $this->file_dst_pathname);
+                                        $result = @imagepng($workingImage, $this->file_dst_pathname);
                                     } else {
                                         ob_start();
-                                        $result = @imagepng($var_135);
+                                        $result = @imagepng($workingImage);
                                         $var_121 = ob_get_contents();
                                         ob_end_clean();
                                     }
@@ -2440,10 +2440,10 @@ class Class_3
                                     break;
                                 case "gif":
                                     if (!$var_120) {
-                                        $result = @imagegif($var_135, $this->file_dst_pathname);
+                                        $result = @imagegif($workingImage, $this->file_dst_pathname);
                                     } else {
                                         ob_start();
-                                        $result = @imagegif($var_135);
+                                        $result = @imagegif($workingImage);
                                         $var_121 = ob_get_contents();
                                         ob_end_clean();
                                     }
@@ -2456,10 +2456,10 @@ class Class_3
                                     break;
                                 case "bmp":
                                     if (!$var_120) {
-                                        $result = $this->function_49($var_135, $this->file_dst_pathname);
+                                        $result = $this->function_49($workingImage, $this->file_dst_pathname);
                                     } else {
                                         ob_start();
-                                        $result = $this->function_49($var_135);
+                                        $result = $this->function_49($workingImage);
                                         $var_121 = ob_get_contents();
                                         ob_end_clean();
                                     }
@@ -2477,8 +2477,8 @@ class Class_3
                                         if (is_resource($var_131)) {
                                             imagedestroy($var_131);
                                         }
-                                        if (is_resource($var_135)) {
-                                            imagedestroy($var_135);
+                                        if (is_resource($workingImage)) {
+                                            imagedestroy($workingImage);
                                         }
                                         $this->log .= "&nbsp;&nbsp;&nbsp;&nbsp;image objects destroyed<br />";
                                     }
@@ -2631,10 +2631,10 @@ class Class_3
         $h = imagesy($im);
         $result = "";
         if (!imageistruecolor($im)) {
-            $var_140 = imagecreatetruecolor($var_178, $h);
-            imagecopy($var_140, $im, 0, 0, 0, 0, $var_178, $h);
+            $tempImage = imagecreatetruecolor($var_178, $h);
+            imagecopy($tempImage, $im, 0, 0, 0, 0, $var_178, $h);
             imagedestroy($im);
-            $im =& $var_140;
+            $im =& $tempImage;
         }
         $var_209 = $var_178 * 3;
         $var_210 = $var_209 + 3 & -4;
