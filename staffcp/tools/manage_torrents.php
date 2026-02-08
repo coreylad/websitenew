@@ -292,8 +292,8 @@ if ($sort) {
 }
 $results = mysqli_num_rows(mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM torrents" . $extraquery1));
 list($pagertop, $limit) = buildPaginationLinks(25, $results, $_SERVER["SCRIPT_NAME"] . "?do=manage_torrents&amp;" . $extralink);
-$catdropdown = var_460("category", $category, "<option $value = \"0\">" . $Language[6] . "</option>");
-$catdropdown2 = var_460("browsecategory", $browsecategory, "<option $value = \"0\">" . $Language[6] . "</option>");
+$catdropdown = processTorrent("category", $category, "<option $value = \"0\">" . $Language[6] . "</option>");
+$catdropdown2 = processTorrent("browsecategory", $browsecategory, "<option $value = \"0\">" . $Language[6] . "</option>");
 $searchtype_dropdown = "\r\n<select $name = \"searchtype\">\r\n<option $value = \"0\">" . $Language[41] . "</option>";
 foreach (["deadonly" => $Language[46], "internal" => $Language[47], "external" => $Language[48], "silver" => $Language[49], "free" => $Language[50], "recommend" => $Language[51], "doubleuploads" => $Language[52], "anonymous" => $Language[53], "request" => $Language[54], "banned" => $Language[56]] as $valuename => $description) {
     $searchtype_dropdown .= "\r\n\t<option $value = \"" . $valuename . "\"" . ($searchtype == $valuename ? " $selected = \"selected\"" : "") . ">" . $description . "</option>";
@@ -411,9 +411,9 @@ function buildPaginationLinks($perpage, $results, $address)
     $pagenumber = isset($_GET["page"]) ? intval($_GET["page"]) : (isset($_POST["page"]) ? intval($_POST["page"]) : "");
     validatePerPage($results, $pagenumber, $perpage, 200);
     $limitOffset = ($pagenumber - 1) * $perpage;
-    $var_244 = $pagenumber * $perpage;
-    if ($results < $var_244) {
-        $var_244 = $results;
+    $paginationOffset = $pagenumber * $perpage;
+    if ($results < $paginationOffset) {
+        $paginationOffset = $results;
         if ($results < $limitOffset) {
             $limitOffset = $results - $perpage - 1;
         }
@@ -421,7 +421,7 @@ function buildPaginationLinks($perpage, $results, $address)
     if ($limitOffset < 0) {
         $limitOffset = 0;
     }
-    $paginationLinks = $var_246 = $var_247 = $var_248 = $var_249 = "";
+    $paginationLinks = $prevPage = $nextPage = $pageLinks = $paginationHtml = "";
     $currentPage = 0;
     if ($results <= $perpage) {
         $paginationHtml["pagenav"] = false;
@@ -445,12 +445,12 @@ function buildPaginationLinks($perpage, $results, $address)
     }
     $pageRangeThreshold = "3";
     if (!isset($paginationSkipLinksArray) || !is_array($paginationSkipLinksArray)) {
-        $var_258 = "10 50 100 500 1000";
-        $paginationSkipLinksArray[] = preg_split("#\\s+#s", $var_258, -1, PREG_SPLIT_NO_EMPTY);
+        $paginationOptions = "10 50 100 500 1000";
+        $paginationSkipLinksArray[] = preg_split("#\\s+#s", $paginationOptions, -1, PREG_SPLIT_NO_EMPTY);
         while ($currentPage++ < $queryResult) {
         }
-        $var_259 = isset($previousPage) && $previousPage != 1 ? "page=" . $previousPage : "";
-        $paginationLinks = "\r\n\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTableNoBorder\">\r\n\t\t<tr>\r\n\t\t\t<td $style = \"padding: 0px 0px 1px 0px;\">\r\n\t\t\t\t<div $style = \"float: left;\" $id = \"navcontainer_f\">\r\n\t\t\t\t\t<ul>\r\n\t\t\t\t\t\t<li>" . $pagenumber . " - " . $queryResult . "</li>\r\n\t\t\t\t\t\t" . ($paginationHtml["first"] ? "<li><a class=\"smalltext\" $href = \"" . $address . "\" $title = \"First Page - Show Results " . $firstPageInfo["first"] . " to " . $firstPageInfo["last"] . " of " . $total . "\">&laquo; First</a></li>" : "") . ($paginationHtml["prev"] ? "<li><a class=\"smalltext\" $href = \"" . $address . $var_259 . "\" $title = \"Previous Page - Show Results " . $previousPageInfo["first"] . " to " . $previousPageInfo["last"] . " of " . $total . "\">&lt;</a></li>" : "") . "\r\n\t\t\t\t\t\t" . $paginationLinks . "\r\n\t\t\t\t\t\t" . ($paginationHtml["next"] ? "<li><a class=\"smalltext\" $href = \"" . $address . "page=" . $nextPageNumber . "\" $title = \"Next Page - Show Results " . $nextPageInfo["first"] . " to " . $nextPageInfo["last"] . " of " . $total . "\">&gt;</a></li>" : "") . ($paginationHtml["last"] ? "<li><a class=\"smalltext\" $href = \"" . $address . "page=" . $queryResult . "\" $title = \"Last Page - Show Results " . $lastPageInfo["first"] . " to " . $lastPageInfo["last"] . " of " . $total . "\">Last <strong>&raquo;</strong></a></li>" : "") . "\r\n\t\t\t\t\t</ul>\r\n\t\t\t\t</div>\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t</table>";
+        $previousPageQuery = isset($previousPage) && $previousPage != 1 ? "page=" . $previousPage : "";
+        $paginationLinks = "\r\n\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTableNoBorder\">\r\n\t\t<tr>\r\n\t\t\t<td $style = \"padding: 0px 0px 1px 0px;\">\r\n\t\t\t\t<div $style = \"float: left;\" $id = \"navcontainer_f\">\r\n\t\t\t\t\t<ul>\r\n\t\t\t\t\t\t<li>" . $pagenumber . " - " . $queryResult . "</li>\r\n\t\t\t\t\t\t" . ($paginationHtml["first"] ? "<li><a class=\"smalltext\" $href = \"" . $address . "\" $title = \"First Page - Show Results " . $firstPageInfo["first"] . " to " . $firstPageInfo["last"] . " of " . $total . "\">&laquo; First</a></li>" : "") . ($paginationHtml["prev"] ? "<li><a class=\"smalltext\" $href = \"" . $address . $previousPageQuery . "\" $title = \"Previous Page - Show Results " . $previousPageInfo["first"] . " to " . $previousPageInfo["last"] . " of " . $total . "\">&lt;</a></li>" : "") . "\r\n\t\t\t\t\t\t" . $paginationLinks . "\r\n\t\t\t\t\t\t" . ($paginationHtml["next"] ? "<li><a class=\"smalltext\" $href = \"" . $address . "page=" . $nextPageNumber . "\" $title = \"Next Page - Show Results " . $nextPageInfo["first"] . " to " . $nextPageInfo["last"] . " of " . $total . "\">&gt;</a></li>" : "") . ($paginationHtml["last"] ? "<li><a class=\"smalltext\" $href = \"" . $address . "page=" . $queryResult . "\" $title = \"Last Page - Show Results " . $lastPageInfo["first"] . " to " . $lastPageInfo["last"] . " of " . $total . "\">Last <strong>&raquo;</strong></a></li>" : "") . "\r\n\t\t\t\t\t</ul>\r\n\t\t\t\t</div>\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t</table>";
         return [$paginationLinks, "LIMIT " . $limitOffset . ", " . $perpage];
     }
     if ($pageRangeThreshold <= abs($currentPage - $pagenumber) && $pageRangeThreshold != 0) {
@@ -485,92 +485,92 @@ function function_163($torrents)
     global $Language;
     $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'MAIN'");
     $Result = mysqli_fetch_assoc($query);
-    $var_27 = unserialize($Result["content"]);
+    $formAction = unserialize($Result["content"]);
     $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'THEME'");
     $Result = mysqli_fetch_assoc($query);
-    $var_28 = unserialize($Result["content"]);
-    $var_282 = $configData["BASEURL"] . "/include/templates/" . $var_28["defaulttemplate"] . "/images/torrent_flags/";
-    $var_461 = $configData["pic_base_url"];
+    $formMethod = unserialize($Result["content"]);
+    $formMethod2 = $configData["BASEURL"] . "/include/templates/" . $formMethod["defaulttemplate"] . "/images/torrent_flags/";
+    $torrentId = $configData["pic_base_url"];
     $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'ANNOUNCE'");
     $Result = mysqli_fetch_assoc($query);
     $ANNOUNCE = unserialize($Result["content"]);
     $xbt_active = $ANNOUNCE["xbt_active"];
-    $var_462 = $xbt_active != "yes" && $torrents["free"] == "yes" || $xbt_active == "yes" && $torrents["download_multiplier"] == "0" ? "<img $src = \"" . $var_282 . "freedownload.gif\" class=\"inlineimg\" $alt = \"" . $Language[15] . "\" $title = \"" . $Language[15] . "\" />" : "";
-    $var_463 = $xbt_active != "yes" && $torrents["silver"] == "yes" || $xbt_active == "yes" && $torrents["download_multiplier"] == "0.5" ? "<img $src = \"" . $var_282 . "silverdownload.gif\" class=\"inlineimg\" $alt = \"" . $Language[16] . "\" $title = \"" . $Language[16] . "\" />" : "";
-    $var_464 = $xbt_active != "yes" && $torrents["doubleupload"] == "yes" || $xbt_active == "yes" && $torrents["upload_multiplier"] == "2" ? "<img $src = \"" . $var_282 . "x2.gif\" $alt = \"" . $Language[24] . "\" $title = \"" . $Language[24] . "\" class=\"inlineimg\" />" : "";
-    $var_465 = $torrents["isrequest"] == "yes" ? "<img $src = \"" . $var_282 . "isrequest.gif\" class=\"inlineimg\" $alt = \"" . $Language[17] . "\" $title = \"" . $Language[17] . "\" />" : "";
-    $var_466 = $torrents["isnuked"] == "yes" ? "<img $src = \"" . $var_282 . "isnuked.gif\" class=\"inlineimg\" $alt = \"" . str_replace("{1}", $torrents["WhyNuked"], $Language[18]) . "\" $title = \"" . str_replace("{1}", $torrents["WhyNuked"], $Language[18]) . "\" />" : "";
-    $var_467 = $torrents["sticky"] == "yes" ? "<img $src = \"" . $var_282 . "sticky.gif\" $alt = \"" . $Language[19] . "\" $title = \"" . $Language[19] . "\" />" : "";
-    $var_468 = $torrents["anonymous"] == "yes" ? "<img $src = \"" . $var_461 . "chatpost.gif\" $alt = \"" . $Language[20] . "\" $title = \"" . $Language[20] . "\" />" : "";
-    $var_469 = $torrents["banned"] == "yes" ? "<img $src = \"" . $var_461 . "disabled.gif\" $alt = \"" . $Language[21] . "\" $title = \"" . $Language[21] . "\" />" : "";
-    $var_470 = $torrents["ts_external"] == "yes" ? "<img $src = \"" . $var_282 . "external.gif\" class=\"inlineimg\"  $border = \"0\" $alt = \"" . $Language[22] . "\" $title = \"" . $Language[22] . "\" /></a>" : "";
-    $var_471 = $torrents["visible"] == "yes" ? "" : "<img $src = \"" . $var_461 . "input_error.gif\" class=\"inlineimg\" $alt = \"" . $Language[23] . "\" $title = \"" . $Language[23] . "\" />";
-    $var_472 = $torrents["allowcomments"] == "no" ? "<img $src = \"" . $var_461 . "commentpos.gif\" $alt = \"" . $Language[25] . "\" $title = \"" . $Language[25] . "\" class=\"inlineimg\" />" : "";
-    return $var_471 . " " . $var_462 . " " . $var_463 . " " . $var_465 . " " . $var_466 . " " . $var_467 . " " . $var_470 . " " . $var_468 . " " . $var_469 . " " . $var_464 . " " . $var_472;
+    $torrentName = $xbt_active != "yes" && $torrents["free"] == "yes" || $xbt_active == "yes" && $torrents["download_multiplier"] == "0" ? "<img $src = \"" . $formMethod2 . "freedownload.gif\" class=\"inlineimg\" $alt = \"" . $Language[15] . "\" $title = \"" . $Language[15] . "\" />" : "";
+    $torrentHash = $xbt_active != "yes" && $torrents["silver"] == "yes" || $xbt_active == "yes" && $torrents["download_multiplier"] == "0.5" ? "<img $src = \"" . $formMethod2 . "silverdownload.gif\" class=\"inlineimg\" $alt = \"" . $Language[16] . "\" $title = \"" . $Language[16] . "\" />" : "";
+    $torrentSize = $xbt_active != "yes" && $torrents["doubleupload"] == "yes" || $xbt_active == "yes" && $torrents["upload_multiplier"] == "2" ? "<img $src = \"" . $formMethod2 . "x2.gif\" $alt = \"" . $Language[24] . "\" $title = \"" . $Language[24] . "\" class=\"inlineimg\" />" : "";
+    $torrentSeeders = $torrents["isrequest"] == "yes" ? "<img $src = \"" . $formMethod2 . "isrequest.gif\" class=\"inlineimg\" $alt = \"" . $Language[17] . "\" $title = \"" . $Language[17] . "\" />" : "";
+    $torrentLeechers = $torrents["isnuked"] == "yes" ? "<img $src = \"" . $formMethod2 . "isnuked.gif\" class=\"inlineimg\" $alt = \"" . str_replace("{1}", $torrents["WhyNuked"], $Language[18]) . "\" $title = \"" . str_replace("{1}", $torrents["WhyNuked"], $Language[18]) . "\" />" : "";
+    $torrentComplete = $torrents["sticky"] == "yes" ? "<img $src = \"" . $formMethod2 . "sticky.gif\" $alt = \"" . $Language[19] . "\" $title = \"" . $Language[19] . "\" />" : "";
+    $torrentCategory = $torrents["anonymous"] == "yes" ? "<img $src = \"" . $torrentId . "chatpost.gif\" $alt = \"" . $Language[20] . "\" $title = \"" . $Language[20] . "\" />" : "";
+    $torrentOwner = $torrents["banned"] == "yes" ? "<img $src = \"" . $torrentId . "disabled.gif\" $alt = \"" . $Language[21] . "\" $title = \"" . $Language[21] . "\" />" : "";
+    $torrentUploaded = $torrents["ts_external"] == "yes" ? "<img $src = \"" . $formMethod2 . "external.gif\" class=\"inlineimg\"  $border = \"0\" $alt = \"" . $Language[22] . "\" $title = \"" . $Language[22] . "\" /></a>" : "";
+    $torrentStatus = $torrents["visible"] == "yes" ? "" : "<img $src = \"" . $torrentId . "input_error.gif\" class=\"inlineimg\" $alt = \"" . $Language[23] . "\" $title = \"" . $Language[23] . "\" />";
+    $torrentVisible = $torrents["allowcomments"] == "no" ? "<img $src = \"" . $torrentId . "commentpos.gif\" $alt = \"" . $Language[25] . "\" $title = \"" . $Language[25] . "\" class=\"inlineimg\" />" : "";
+    return $torrentStatus . " " . $torrentName . " " . $torrentHash . " " . $torrentSeeders . " " . $torrentLeechers . " " . $torrentComplete . " " . $torrentUploaded . " " . $torrentCategory . " " . $torrentOwner . " " . $torrentSize . " " . $torrentVisible;
 }
 function function_164($selectname = "type", $selected = 0, $extra = "", $style = "specialboxn")
 {
-    $var_417 = [];
-    $var_67 = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM categories WHERE $type = 's'");
-    if (mysqli_num_rows($var_67)) {
-        $var_416 = [];
-        while ($var_473 = mysqli_fetch_assoc($var_67)) {
-            $var_416[] = $var_473;
+    $categoryName = [];
+    $errorMessage = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM categories WHERE $type = 's'");
+    if (mysqli_num_rows($errorMessage)) {
+        $categoryId = [];
+        while ($torrentImage = mysqli_fetch_assoc($errorMessage)) {
+            $categoryId[] = $torrentImage;
         }
-        foreach ($var_416 as $var_419) {
-            $var_417[$var_419["pid"]] = (isset($var_417[$var_419["pid"]]) ? $var_417[$var_419["pid"]] : "") . "\r\n\t\t\t\t\t<option $value = \"" . $var_419["id"] . "\"" . ($var_419["id"] == $selected ? " $selected = \"selected\"" : "") . ">&nbsp;&nbsp;|-- " . $var_419["name"] . "</option>\r\n\t\t\t\t\t";
-        }
-    }
-    $var_420 = "<select $name = \"" . $selectname . "\" $id = \"" . $style . "\">\r\n\t" . $extra;
-    $var_67 = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM categories WHERE $type = 'c'");
-    if (0 < mysqli_num_rows($var_67)) {
-        $var_415 = [];
-        while ($var_473 = mysqli_fetch_assoc($var_67)) {
-            $var_415[] = $var_473;
-        }
-        foreach ($var_415 as $var_421) {
-            $var_420 .= "\r\n\t\t\t\t<option $value = \"" . $var_421["id"] . "\"" . ($var_421["id"] == $selected ? " $selected = \"selected\"" : "") . " $style = \"color:red;\">" . $var_421["name"] . "</option>\r\n\t\t\t\t" . (isset($var_417[$var_421["id"]]) ? $var_417[$var_421["id"]] : "") . "\r\n\t\t\t\t";
+        foreach ($categoryId as $categorySort) {
+            $categoryName[$categorySort["pid"]] = (isset($categoryName[$categorySort["pid"]]) ? $categoryName[$categorySort["pid"]] : "") . "\r\n\t\t\t\t\t<option $value = \"" . $categorySort["id"] . "\"" . ($categorySort["id"] == $selected ? " $selected = \"selected\"" : "") . ">&nbsp;&nbsp;|-- " . $categorySort["name"] . "</option>\r\n\t\t\t\t\t";
         }
     }
-    $var_420 .= "</select>";
-    return $var_420;
+    $categoryDesc = "<select $name = \"" . $selectname . "\" $id = \"" . $style . "\">\r\n\t" . $extra;
+    $errorMessage = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM categories WHERE $type = 'c'");
+    if (0 < mysqli_num_rows($errorMessage)) {
+        $categoryConfig = [];
+        while ($torrentImage = mysqli_fetch_assoc($errorMessage)) {
+            $categoryConfig[] = $torrentImage;
+        }
+        foreach ($categoryConfig as $categoryHtml) {
+            $categoryDesc .= "\r\n\t\t\t\t<option $value = \"" . $categoryHtml["id"] . "\"" . ($categoryHtml["id"] == $selected ? " $selected = \"selected\"" : "") . " $style = \"color:red;\">" . $categoryHtml["name"] . "</option>\r\n\t\t\t\t" . (isset($categoryName[$categoryHtml["id"]]) ? $categoryName[$categoryHtml["id"]] : "") . "\r\n\t\t\t\t";
+        }
+    }
+    $categoryDesc .= "</select>";
+    return $categoryDesc;
 }
 function function_151($id)
 {
     $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'MAIN'");
     $Result = mysqli_fetch_assoc($query);
-    $var_27 = unserialize($Result["content"]);
-    $var_427 = "../" . $configData["torrent_dir"];
+    $formAction = unserialize($Result["content"]);
+    $fileHandle = "../" . $configData["torrent_dir"];
     $id = intval($id);
     if (!$id) {
         return NULL;
     }
-    $file = $var_427 . "/" . $id . ".torrent";
+    $file = $fileHandle . "/" . $id . ".torrent";
     if (@file_exists($file)) {
         @unlink($file);
     }
-    $var_428 = ["gif", "jpg", "png"];
-    foreach ($var_428 as $var_361) {
-        if (@file_exists($var_427 . "/images/" . $id . "." . $var_361)) {
-            @unlink($var_427 . "/images/" . $id . "." . $var_361);
+    $fileContent = ["gif", "jpg", "png"];
+    foreach ($fileContent as $smileyFileExt) {
+        if (@file_exists($fileHandle . "/images/" . $id . "." . $smileyFileExt)) {
+            @unlink($fileHandle . "/images/" . $id . "." . $smileyFileExt);
         }
     }
     $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT t_link FROM torrents WHERE `id` = " . $id);
     if (mysqli_num_rows($query)) {
         $Result = mysqli_fetch_assoc($query);
-        $var_429 = $Result["t_link"];
-        $var_97 = "#https://www.imdb.com/title/(.*)/#U";
-        preg_match($var_97, $var_429, $var_430);
-        $var_430 = $var_430[1];
-        foreach ($var_428 as $var_361) {
-            if (@file_exists($var_427 . "/images/" . $var_430 . "." . $var_361)) {
-                @unlink($var_427 . "/images/" . $var_430 . "." . $var_361);
+        $fileName = $Result["t_link"];
+        $resultSet = "#https://www.imdb.com/title/(.*)/#U";
+        preg_match($resultSet, $fileName, $fileSize);
+        $fileSize = $fileSize[1];
+        foreach ($fileContent as $smileyFileExt) {
+            if (@file_exists($fileHandle . "/images/" . $fileSize . "." . $smileyFileExt)) {
+                @unlink($fileHandle . "/images/" . $fileSize . "." . $smileyFileExt);
             }
         }
         for ($i = 0; $i <= 10; $i++) {
-            foreach ($var_428 as $var_361) {
-                if (@file_exists($var_427 . "/images/" . $var_430 . "_photo" . $i . "." . $var_361)) {
-                    @unlink($var_427 . "/images/" . $var_430 . "_photo" . $i . "." . $var_361);
+            foreach ($fileContent as $smileyFileExt) {
+                if (@file_exists($fileHandle . "/images/" . $fileSize . "_photo" . $i . "." . $smileyFileExt)) {
+                    @unlink($fileHandle . "/images/" . $fileSize . "_photo" . $i . "." . $smileyFileExt);
                 }
             }
         }
@@ -594,11 +594,11 @@ function function_162($val, $text)
     global $Links;
     global $sort;
     global $order;
-    $var_474 = [];
-    foreach ($Links as $var_475 => $var_476) {
-        $var_474[] = $var_475 . "=" . $var_476;
+    $torrentDescription = [];
+    foreach ($Links as $torrentNfo => $torrentData) {
+        $torrentDescription[] = $torrentNfo . "=" . $torrentData;
     }
-    return "<a $href = \"" . $_SERVER["SCRIPT_NAME"] . "?do=manage_torrents&amp;$sort = " . $val . "&amp;$order = " . (strtolower($order) == "asc" ? "desc" : "asc") . "&amp;" . implode("&amp;", $var_474) . "\">" . (strtolower($val) == strtolower($sort) ? "<strong>" . $text . "</strong>**" : $text) . "</a>";
+    return "<a $href = \"" . $_SERVER["SCRIPT_NAME"] . "?do=manage_torrents&amp;$sort = " . $val . "&amp;$order = " . (strtolower($order) == "asc" ? "desc" : "asc") . "&amp;" . implode("&amp;", $torrentDescription) . "\">" . (strtolower($val) == strtolower($sort) ? "<strong>" . $text . "</strong>**" : $text) . "</a>";
 }
 
 ?>

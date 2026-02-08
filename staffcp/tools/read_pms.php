@@ -110,7 +110,7 @@ class Class_6
             return "";
         }
         $this->function_120();
-        preg_match_all("#\\[(code|php|sql)\\](.*?)\\[/\\1\\](\r\n?|\n?)#si", $this->message, $var_341, PREG_SET_ORDER);
+        preg_match_all("#\\[(code|php|sql)\\](.*?)\\[/\\1\\](\r\n?|\n?)#si", $this->message, $codeBlockMatches, PREG_SET_ORDER);
         $this->$message = preg_replace("#\\[(code|php|sql)\\](.*?)\\[/\\1\\](\r\n?|\n?)#si", "~~~TSSE_CODE~~~\n", $this->message);
         if ($this->options["htmlspecialchars"]) {
             $this->$message = str_replace("&amp;", "&", $this->function_118(strip_tags($this->message)));
@@ -120,26 +120,26 @@ class Class_6
         }
         $this->function_122();
         $this->$message = nl2br($this->message);
-        if ($var_341 && is_array($var_341) && count($var_341)) {
+        if ($codeBlockMatches && is_array($codeBlockMatches) && count($codeBlockMatches)) {
             if (!$this->select_all) {
                 $this->$select_all = 1;
                 $this->$message = "<script $type = \"text/javascript\" $src = \"" . $this->Settings["BASEURL"] . "/scripts/select_all.js\"></script>" . $this->message;
             }
-            foreach ($var_341 as $text) {
+            foreach ($codeBlockMatches as $text) {
                 if (strtolower($text[1]) == "code") {
                     $text[2] = str_replace("&amp;", "&", $this->function_118($text[2]));
-                    $var_342 = $this->function_123($text[2]);
+                    $processedCode = $this->function_123($text[2]);
                 } else {
                     if (strtolower($text[1]) == "php") {
-                        $var_342 = $this->function_124($text[2]);
+                        $processedCode = $this->function_124($text[2]);
                     } else {
                         if (strtolower($text[1]) == "sql") {
                             $text[2] = str_replace("&amp;", "&", $this->function_118($text[2]));
-                            $var_342 = $this->function_125($text[2]);
+                            $processedCode = $this->function_125($text[2]);
                         }
                     }
                 }
-                $this->$message = preg_replace("#\\~~~TSSE_CODE~~~\n?#", $var_342, $this->message, 1);
+                $this->$message = preg_replace("#\\~~~TSSE_CODE~~~\n?#", $processedCode, $this->message, 1);
             }
         }
         $this->function_126();
@@ -154,30 +154,30 @@ class Class_6
     public function function_124($code)
     {
         $code = $this->function_127($code, 1);
-        $var_343 = ["<br>", "<br />"];
-        $var_344 = ["", ""];
-        $var_345 = ["&gt;", "&lt;", "&quot;", "&amp;", "&#91;", "&#93;"];
-        $var_346 = [">", "<", "\"", "&", "[", "]"];
-        $code = rtrim(str_replace($var_343, $var_344, $code));
-        $var_347 = $this->function_128($code);
-        $code = str_replace($var_345, $var_346, $code);
+        $bbCodePattern = ["<br>", "<br />"];
+        $bbCodeReplacement = ["", ""];
+        $codeContent = ["&gt;", "&lt;", "&quot;", "&amp;", "&#91;", "&#93;"];
+        $codeLanguage = [">", "<", "\"", "&", "[", "]"];
+        $code = rtrim(str_replace($bbCodePattern, $bbCodeReplacement, $code));
+        $syntaxHeight = $this->function_128($code);
+        $code = str_replace($codeContent, $codeLanguage, $code);
         if (!preg_match("#<\\?#si", $code)) {
             $code = "<?php BEGIN__TSSE__CODE__SNIPPET " . $code . " \r\nEND__TSSE__CODE__SNIPPET ?>";
-            $var_348 = true;
+            $codeFormatted = true;
         } else {
-            $var_348 = false;
+            $codeFormatted = false;
         }
-        $var_349 = error_reporting(0);
+        $syntaxHighlighted = error_reporting(0);
         $code = highlight_string($code, true);
-        error_reporting($var_349);
-        if ($var_348) {
-            $var_350 = ["#&lt;\\?php( |&nbsp;)BEGIN__TSSE__CODE__SNIPPET( |&nbsp;)#siU", "#(<(span|font)[^>]*>)&lt;\\?(</\\2>(<\\2[^>]*>))php( |&nbsp;)BEGIN__TSSE__CODE__SNIPPET( |&nbsp;)#siU", "#END__TSSE__CODE__SNIPPET( |&nbsp;)\\?(>|&gt;)#siU"];
-            $var_351 = ["", "\\4", ""];
-            $code = preg_replace($var_350, $var_351, $code);
+        error_reporting($syntaxHighlighted);
+        if ($codeFormatted) {
+            $codeProcessed = ["#&lt;\\?php( |&nbsp;)BEGIN__TSSE__CODE__SNIPPET( |&nbsp;)#siU", "#(<(span|font)[^>]*>)&lt;\\?(</\\2>(<\\2[^>]*>))php( |&nbsp;)BEGIN__TSSE__CODE__SNIPPET( |&nbsp;)#siU", "#END__TSSE__CODE__SNIPPET( |&nbsp;)\\?(>|&gt;)#siU"];
+            $replacementPatterns = ["", "\\4", ""];
+            $code = preg_replace($codeProcessed, $replacementPatterns, $code);
         }
         $code = preg_replace("/&amp;#([0-9]+);/", "&#\$1;", $code);
         $code = str_replace(["[", "]"], ["&#91;", "&#93;"], $code);
-        return "<div class=\"codetop\">PHP: (<a $href = \"javascript:void(0);\" $onclick = \"return HighlightText(this);\" class=\"codeoperation\">+</a>)</div><div class=\"codemain\" $dir = \"ltr\" $style = \"height: " . $var_347 . "px;\"><code $style = \"white-space:nowrap\" $id = \"php_tag\">" . trim($code) . "</code></div>";
+        return "<div class=\"codetop\">PHP: (<a $href = \"javascript:void(0);\" $onclick = \"return HighlightText(this);\" class=\"codeoperation\">+</a>)</div><div class=\"codemain\" $dir = \"ltr\" $style = \"height: " . $syntaxHeight . "px;\"><code $style = \"white-space:nowrap\" $id = \"php_tag\">" . trim($code) . "</code></div>";
     }
     public function function_125($sql)
     {
@@ -189,7 +189,7 @@ class Class_6
         }
         $sql = str_replace("\$", "&#36;", $sql);
         $sql = $this->function_127($sql, 1);
-        $var_347 = $this->function_128($sql);
+        $syntaxHeight = $this->function_128($sql);
         $sql = preg_replace("#(=|\\+|\\-|&gt;|&lt;|~|==|\\!=|LIKE|NOT LIKE|REGEXP)#i", "<span $style = 'color:orange'>\\1</span>", $sql);
         $sql = preg_replace("#(MAX|AVG|SUM|COUNT|MIN)\\(#i", "<span $style = 'color:blue'>\\1</span>(", $sql);
         $sql = preg_replace("#(FROM|INTO)\\s{1,}(\\S+?)\\s{1,}((\\w+)\\s{0,})#i", "<span $style = 'color:green'>\\1</span> <span $style = 'color:orange'>\\2</span> <span $style = 'color:orange'>\\3</span>", $sql);
@@ -199,14 +199,14 @@ class Class_6
         $sql = preg_replace("#(LEFT|JOIN|WHERE|MODIFY|CHANGE|AS|DISTINCT|IN|ASC|DESC|ORDER BY)\\s{1,}#i", "<span $style = 'color:green'>\\1</span> ", $sql);
         $sql = preg_replace("#LIMIT\\s*(\\d+)(?:\\s*([,])\\s*(\\d+))*#i", "<span $style = 'color:green'>LIMIT</span> <span $style = 'color:orange'>\\1\\2 \\3</span>", $sql);
         $sql = preg_replace("#(SELECT|INSERT|UPDATE|DELETE|ALTER TABLE|CREATE TABLE|DROP)#i", "<span $style = 'color:blue;font-weight:bold'>\\1</span>", $sql);
-        return "</p><div class=\"codetop\">SQL: (<a $href = \"javascript:void(0);\" $onclick = \"return HighlightText(this);\" class=\"codeoperation\">+</a>)</div><div $dir = \"ltr\" $style = \"height:" . $var_347 . "px;\" class=\"codemain\"><code $id = \"sql_tag\">" . trim($sql) . "</code></div><p>";
+        return "</p><div class=\"codetop\">SQL: (<a $href = \"javascript:void(0);\" $onclick = \"return HighlightText(this);\" class=\"codeoperation\">+</a>)</div><div $dir = \"ltr\" $style = \"height:" . $syntaxHeight . "px;\" class=\"codemain\"><code $id = \"sql_tag\">" . trim($sql) . "</code></div><p>";
     }
     public function function_123($code)
     {
         $code = str_replace(["<br>", "<br />", "\\\""], ["", "", "\""], $code);
         $code = $this->function_127($code, 1);
-        $var_347 = $this->function_128($code);
-        return "<div class=\"codetop\">Code: (<a $href = \"javascript:void(0);\" $onclick = \"return HighlightText(this);\" class=\"codeoperation\">+</a>)</div><pre class=\"codemain\" $dir = \"ltr\" $style = \"height: " . $var_347 . "px;\" $id = \"code_tag\">" . trim($code) . "</pre>";
+        $syntaxHeight = $this->function_128($code);
+        return "<div class=\"codetop\">Code: (<a $href = \"javascript:void(0);\" $onclick = \"return HighlightText(this);\" class=\"codeoperation\">+</a>)</div><pre class=\"codemain\" $dir = \"ltr\" $style = \"height: " . $syntaxHeight . "px;\" $id = \"code_tag\">" . trim($code) . "</pre>";
     }
     public function function_127($text, $max_amount = 1, $strip_front = true, $strip_back = true)
     {
@@ -221,15 +221,15 @@ class Class_6
     }
     public function function_128($code)
     {
-        $var_352 = count(explode("\n", $code));
-        if (30 < $var_352) {
-            $var_352 = 30;
+        $highlightedCode = count(explode("\n", $code));
+        if (30 < $highlightedCode) {
+            $highlightedCode = 30;
         } else {
-            if ($var_352 < 1) {
-                $var_352 = 1;
+            if ($highlightedCode < 1) {
+                $highlightedCode = 1;
             }
         }
-        return $var_352 * 22;
+        return $highlightedCode * 22;
     }
     public function function_122()
     {
@@ -260,10 +260,10 @@ class Class_6
     }
     public function function_129()
     {
-        $var_353 = ["#\\[$quote = (?:&quot;|\"|')?(.*?)[\"']?(?:&quot;|\"|')?\\](.*?)\\[\\/quote\\](\r\n?|\n?)#si", "#\\[quote\\](.*?)\\[\\/quote\\](\r\n?|\n?)#si"];
-        $var_351 = ["<div class=\"quote\"><cite class=\"smallfont\">Quote: \\1</cite><blockquote class=\"bq\" $dir = \"ltr\"><div>\$2</div></blockquote></div>", "<div class=\"quote\"><blockquote class=\"bq\" $dir = \"ltr\"><div>\$1</div></blockquote></div>"];
-        while (preg_match($var_353[0], $this->message) || preg_match($var_353[1], $this->message)) {
-            $this->$message = preg_replace($var_353, $var_351, $this->message);
+        $smileysArray = ["#\\[$quote = (?:&quot;|\"|')?(.*?)[\"']?(?:&quot;|\"|')?\\](.*?)\\[\\/quote\\](\r\n?|\n?)#si", "#\\[quote\\](.*?)\\[\\/quote\\](\r\n?|\n?)#si"];
+        $replacementPatterns = ["<div class=\"quote\"><cite class=\"smallfont\">Quote: \\1</cite><blockquote class=\"bq\" $dir = \"ltr\"><div>\$2</div></blockquote></div>", "<div class=\"quote\"><blockquote class=\"bq\" $dir = \"ltr\"><div>\$1</div></blockquote></div>"];
+        while (preg_match($smileysArray[0], $this->message) || preg_match($smileysArray[1], $this->message)) {
+            $this->$message = preg_replace($smileysArray, $replacementPatterns, $this->message);
         }
     }
     public function function_130()
@@ -275,52 +275,52 @@ class Class_6
     }
     public function function_133($message, $isOL = false)
     {
-        $var_354 = explode("[*]", $message);
-        $var_299 = $isOL ? "<ol>" : "<ul>";
-        foreach ($var_354 as $var_355) {
-            if (trim($var_355) != "") {
-                $var_299 .= "<li>" . $var_355 . "</li>";
+        $smileyCode = explode("[*]", $message);
+        $emailHeaderEncoded = $isOL ? "<ol>" : "<ul>";
+        foreach ($smileyCode as $smileyImage) {
+            if (trim($smileyImage) != "") {
+                $emailHeaderEncoded .= "<li>" . $smileyImage . "</li>";
             }
         }
-        $var_299 .= $isOL ? "</ol>" : "</ul>";
-        return $var_299;
+        $emailHeaderEncoded .= $isOL ? "</ol>" : "</ul>";
+        return $emailHeaderEncoded;
     }
     public function function_134($url)
     {
         $url = str_replace(["  ", "\"", "\\n", "\\r"], "", trim($url));
         if ($this->options["image_preview"]) {
-            $var_356 = mt_rand() . "_" . md5($url);
-            return "<span $id = \"lazyload\"><span $id = \"" . $var_356 . "\">&nbsp;</span> <a $href = \"" . str_replace("&$small = true", "", $url) . "\" $id = \"ts_show_preview\" $alt = \"\"><img $src = \"" . $url . "\" $border = \"0\" $alt = \"\" /></a></span>";
+            $smileyPath = mt_rand() . "_" . md5($url);
+            return "<span $id = \"lazyload\"><span $id = \"" . $smileyPath . "\">&nbsp;</span> <a $href = \"" . str_replace("&$small = true", "", $url) . "\" $id = \"ts_show_preview\" $alt = \"\"><img $src = \"" . $url . "\" $border = \"0\" $alt = \"\" /></a></span>";
         }
         return "<span $id = \"lazyload\"><img $src = \"" . $url . "\" $border = \"0\" $alt = \"\" /></span>";
     }
     public function function_116()
     {
-        $var_357 = "./../../" . $this->Settings["cache"] . "/";
-        if (is_file($var_357 . "smilies.php")) {
-            require $var_357 . "smilies.php";
-            $this->$smilies_cache = $var_358;
-            unset($var_358);
+        $urlPattern = "./../../" . $this->Settings["cache"] . "/";
+        if (is_file($urlPattern . "smilies.php")) {
+            require $urlPattern . "smilies.php";
+            $this->$smilies_cache = $urlMatches;
+            unset($urlMatches);
         } else {
             $this->$smilies_cache = [];
         }
     }
     public function function_120()
     {
-        $var_359 = ["#(&\\#(0*)106;|&\\#(0*)74;|j)((&\\#(0*)97;|&\\#(0*)65;|a)(&\\#(0*)118;|&\\#(0*)86;|v)(&\\#(0*)97;|&\\#(0*)65;|a)(\\s)?(&\\#(0*)115;|&\\#(0*)83;|s)(&\\#(0*)99;|&\\#(0*)67;|c)(&\\#(0*)114;|&\\#(0*)82;|r)(&\\#(0*)105;|&\\#(0*)73;|i)(&\\#112;|&\\#(0*)80;|p)(&\\#(0*)116;|&\\#(0*)84;|t)(&\\#(0*)58;|\\:))#i", "#(o)(nmouseover\\s?=)#i", "#(o)(nmouseout\\s?=)#i", "#(o)(nmousedown\\s?=)#i", "#(o)(nmousemove\\s?=)#i", "#(o)(nmouseup\\s?=)#i", "#(o)(nclick\\s?=)#i", "#(o)(ndblclick\\s?=)#i", "#(o)(nload\\s?=)#i", "#(o)(nsubmit\\s?=)#i", "#(o)(nblur\\s?=)#i", "#(o)(nchange\\s?=)#i", "#(o)(nfocus\\s?=)#i", "#(o)(nselect\\s?=)#i", "#(o)(nunload\\s?=)#i", "#(o)(nkeypress\\s?=)#i"];
-        $this->$message = preg_replace($var_359, "\$1<strong></strong>\$2\$4", $this->message);
-        unset($var_359);
+        $urlReplaced = ["#(&\\#(0*)106;|&\\#(0*)74;|j)((&\\#(0*)97;|&\\#(0*)65;|a)(&\\#(0*)118;|&\\#(0*)86;|v)(&\\#(0*)97;|&\\#(0*)65;|a)(\\s)?(&\\#(0*)115;|&\\#(0*)83;|s)(&\\#(0*)99;|&\\#(0*)67;|c)(&\\#(0*)114;|&\\#(0*)82;|r)(&\\#(0*)105;|&\\#(0*)73;|i)(&\\#112;|&\\#(0*)80;|p)(&\\#(0*)116;|&\\#(0*)84;|t)(&\\#(0*)58;|\\:))#i", "#(o)(nmouseover\\s?=)#i", "#(o)(nmouseout\\s?=)#i", "#(o)(nmousedown\\s?=)#i", "#(o)(nmousemove\\s?=)#i", "#(o)(nmouseup\\s?=)#i", "#(o)(nclick\\s?=)#i", "#(o)(ndblclick\\s?=)#i", "#(o)(nload\\s?=)#i", "#(o)(nsubmit\\s?=)#i", "#(o)(nblur\\s?=)#i", "#(o)(nchange\\s?=)#i", "#(o)(nfocus\\s?=)#i", "#(o)(nselect\\s?=)#i", "#(o)(nunload\\s?=)#i", "#(o)(nkeypress\\s?=)#i"];
+        $this->$message = preg_replace($urlReplaced, "\$1<strong></strong>\$2\$4", $this->message);
+        unset($urlReplaced);
     }
     public function function_121()
     {
         if (count($this->smilies_cache)) {
-            $var_360 = 0;
-            foreach ($this->smilies_cache as $code => $var_361) {
-                if ($this->options["max_smilies"] < $var_360) {
+            $linkFormatted = 0;
+            foreach ($this->smilies_cache as $code => $smileyFileExt) {
+                if ($this->options["max_smilies"] < $linkFormatted) {
                 } else {
                     if (strpos($this->message, $code) !== false) {
-                        $this->$message = str_replace($code, "<img $src = \"" . $this->Settings["pic_base_url"] . "smilies/" . $var_361 . "\" $border = \"0\" $alt = \"\" $title = \"\" />", $this->message);
-                        $var_360++;
+                        $this->$message = str_replace($code, "<img $src = \"" . $this->Settings["pic_base_url"] . "smilies/" . $smileyFileExt . "\" $border = \"0\" $alt = \"\" $title = \"\" />", $this->message);
+                        $linkFormatted++;
                     }
                 }
             }
@@ -361,34 +361,34 @@ class Class_6
         $bbcodeTags["reg"]["replacement"] = "&reg;";
         $bbcodeTags["youtube"]["regex"] = "#\\[youtube\\](.*?)\\[/youtube\\]#si";
         $bbcodeTags["youtube"]["replacement"] = "<object $width = \"425\" $height = \"350\"><param $name = \"movie\" $value = \"http://www.youtube.com/v/\$1\"></param><embed $src = \"http://www.youtube.com/v/\$1\" $type = \"application/x-shockwave-flash\" $width = \"425\" $height = \"350\"></embed></object>";
-        $var_363 = $bbcodeTags;
-        foreach ($var_363 as $code) {
+        $imageUrl = $bbcodeTags;
+        foreach ($imageUrl as $code) {
             $this->tscode_cache["find"][] = $code["regex"];
             $this->tscode_cache["replacement"][] = $code["replacement"];
         }
     }
     public function parseMyCodeUrl($url, $name = "")
     {
-        $var_364 = false;
+        $imageTag = false;
         if ($name) {
-            $var_364 = true;
+            $imageTag = true;
             $name = str_replace(["&amp;", "\\'"], ["&", "'"], $name);
         }
         if (!preg_match("#^[a-z0-9]+://#i", $url)) {
             $url = "http://" . $url;
         }
         $url = str_replace(["&amp;", "\\'"], ["&", "'"], $url);
-        $var_365 = $url;
+        $processedUrl = $url;
         if (!$name) {
             $name = $url;
         }
-        if (!$var_364 && $this->options["short_url"] && 55 < strlen($url)) {
+        if (!$imageTag && $this->options["short_url"] && 55 < strlen($url)) {
             $name = substr($url, 0, 40) . "..." . substr($url, -10);
         }
         $entities = ["\$" => "%24", "&#36;" => "%24", "^" => "%5E", "`" => "%60", "[" => "%5B", "]" => "%5D", "{" => "%7B", "}" => "%7D", "\"" => "%22", "<" => "%3C", ">" => "%3E", " " => "%20"];
-        $var_365 = str_replace(array_keys($entities), array_values($entities), $var_365);
+        $processedUrl = str_replace(array_keys($entities), array_values($entities), $processedUrl);
         $name = preg_replace("#&amp;\\#([0-9]+);#si", "&#\$1;", $name);
-        $link = "<a $href = \"" . $var_365 . "\" $target = \"_blank\">" . $name . "</a>";
+        $link = "<a $href = \"" . $processedUrl . "\" $target = \"_blank\">" . $name . "</a>";
         return $link;
     }
     public function function_132($email, $name = "")
@@ -501,9 +501,9 @@ function buildPaginationLinks($perpage, $results, $address)
     $pagenumber = isset($_GET["page"]) ? intval($_GET["page"]) : (isset($_POST["page"]) ? intval($_POST["page"]) : "");
     validatePerPage($results, $pagenumber, $perpage, 200);
     $limitOffset = ($pagenumber - 1) * $perpage;
-    $var_244 = $pagenumber * $perpage;
-    if ($results < $var_244) {
-        $var_244 = $results;
+    $paginationOffset = $pagenumber * $perpage;
+    if ($results < $paginationOffset) {
+        $paginationOffset = $results;
         if ($results < $limitOffset) {
             $limitOffset = $results - $perpage - 1;
         }
@@ -511,7 +511,7 @@ function buildPaginationLinks($perpage, $results, $address)
     if ($limitOffset < 0) {
         $limitOffset = 0;
     }
-    $paginationLinks = $var_246 = $var_247 = $var_248 = $var_249 = "";
+    $paginationLinks = $prevPage = $nextPage = $pageLinks = $paginationHtml = "";
     $currentPage = 0;
     if ($results <= $perpage) {
         $paginationHtml["pagenav"] = false;
@@ -535,12 +535,12 @@ function buildPaginationLinks($perpage, $results, $address)
     }
     $pageRangeThreshold = "3";
     if (!isset($paginationSkipLinksArray) || !is_array($paginationSkipLinksArray)) {
-        $var_258 = "10 50 100 500 1000";
-        $paginationSkipLinksArray[] = preg_split("#\\s+#s", $var_258, -1, PREG_SPLIT_NO_EMPTY);
+        $paginationOptions = "10 50 100 500 1000";
+        $paginationSkipLinksArray[] = preg_split("#\\s+#s", $paginationOptions, -1, PREG_SPLIT_NO_EMPTY);
         while ($currentPage++ < $queryResult) {
         }
-        $var_259 = isset($previousPage) && $previousPage != 1 ? "page=" . $previousPage : "";
-        $paginationLinks = "\r\n\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTableNoBorder\">\r\n\t\t<tr>\t\t\t\t\r\n\t\t\t<td $style = \"padding: 0px 0px 1px 0px;\">\r\n\t\t\t\t<div $style = \"float: left;\" $id = \"navcontainer_f\">\r\n\t\t\t\t\t<ul>\r\n\t\t\t\t\t\t<li>" . $pagenumber . " - " . $queryResult . "</li>\r\n\t\t\t\t\t\t" . ($paginationHtml["first"] ? "<li><a class=\"smalltext\" $href = \"" . $address . "\" $title = \"First Page - Show Results " . $firstPageInfo["first"] . " to " . $firstPageInfo["last"] . " of " . $total . "\">&laquo; First</a></li>" : "") . ($paginationHtml["prev"] ? "<li><a class=\"smalltext\" $href = \"" . $address . $var_259 . "\" $title = \"Previous Page - Show Results " . $previousPageInfo["first"] . " to " . $previousPageInfo["last"] . " of " . $total . "\">&lt;</a></li>" : "") . "\r\n\t\t\t\t\t\t" . $paginationLinks . "\r\n\t\t\t\t\t\t" . ($paginationHtml["next"] ? "<li><a class=\"smalltext\" $href = \"" . $address . "page=" . $nextPageNumber . "\" $title = \"Next Page - Show Results " . $nextPageInfo["first"] . " to " . $nextPageInfo["last"] . " of " . $total . "\">&gt;</a></li>" : "") . ($paginationHtml["last"] ? "<li><a class=\"smalltext\" $href = \"" . $address . "page=" . $queryResult . "\" $title = \"Last Page - Show Results " . $lastPageInfo["first"] . " to " . $lastPageInfo["last"] . " of " . $total . "\">Last <strong>&raquo;</strong></a></li>" : "") . "\r\n\t\t\t\t\t</ul>\t\t\t\t\t\r\n\t\t\t\t</div>\t\t\t\t\r\n\t\t\t</td>\t\t\t\r\n\t\t</tr>\r\n\t</table>";
+        $previousPageQuery = isset($previousPage) && $previousPage != 1 ? "page=" . $previousPage : "";
+        $paginationLinks = "\r\n\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTableNoBorder\">\r\n\t\t<tr>\t\t\t\t\r\n\t\t\t<td $style = \"padding: 0px 0px 1px 0px;\">\r\n\t\t\t\t<div $style = \"float: left;\" $id = \"navcontainer_f\">\r\n\t\t\t\t\t<ul>\r\n\t\t\t\t\t\t<li>" . $pagenumber . " - " . $queryResult . "</li>\r\n\t\t\t\t\t\t" . ($paginationHtml["first"] ? "<li><a class=\"smalltext\" $href = \"" . $address . "\" $title = \"First Page - Show Results " . $firstPageInfo["first"] . " to " . $firstPageInfo["last"] . " of " . $total . "\">&laquo; First</a></li>" : "") . ($paginationHtml["prev"] ? "<li><a class=\"smalltext\" $href = \"" . $address . $previousPageQuery . "\" $title = \"Previous Page - Show Results " . $previousPageInfo["first"] . " to " . $previousPageInfo["last"] . " of " . $total . "\">&lt;</a></li>" : "") . "\r\n\t\t\t\t\t\t" . $paginationLinks . "\r\n\t\t\t\t\t\t" . ($paginationHtml["next"] ? "<li><a class=\"smalltext\" $href = \"" . $address . "page=" . $nextPageNumber . "\" $title = \"Next Page - Show Results " . $nextPageInfo["first"] . " to " . $nextPageInfo["last"] . " of " . $total . "\">&gt;</a></li>" : "") . ($paginationHtml["last"] ? "<li><a class=\"smalltext\" $href = \"" . $address . "page=" . $queryResult . "\" $title = \"Last Page - Show Results " . $lastPageInfo["first"] . " to " . $lastPageInfo["last"] . " of " . $total . "\">Last <strong>&raquo;</strong></a></li>" : "") . "\r\n\t\t\t\t\t</ul>\t\t\t\t\t\r\n\t\t\t\t</div>\t\t\t\t\r\n\t\t\t</td>\t\t\t\r\n\t\t</tr>\r\n\t</table>";
         return [$paginationLinks, "LIMIT " . $limitOffset . ", " . $perpage];
     }
     if ($pageRangeThreshold <= abs($currentPage - $pagenumber) && $pageRangeThreshold != 0) {
@@ -589,9 +589,9 @@ function applyUsernameStyle($username, $namestyle)
 function function_114($message, $htmlspecialchars_uni = true, $noshoutbox = true, $xss_clean = true, $show_smilies = true, $imagerel = "posts")
 {
     $options = ["use_smilies" => $show_smilies, "max_smilies" => 30, "remove_badwords" => 1, "htmlspecialchars" => $htmlspecialchars_uni, "imagerel" => $imagerel, "auto_url" => 1, "short_url" => 1, "image_preview" => 1];
-    $var_366 = new Class_6();
-    $var_366->function_119($message, $options);
-    return $var_366->message;
+    $processedText = new Class_6();
+    $processedText->function_119($message, $options);
+    return $processedText->message;
 }
 
 ?>

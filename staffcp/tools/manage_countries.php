@@ -121,24 +121,24 @@ function function_157($selected = "")
 {
     global $MAIN;
     if (is_dir("../images")) {
-        $var_443 = "../images/flag/";
+        $countryId = "../images/flag/";
     } else {
         if (is_dir("../pic")) {
-            $var_443 = "../pic/flag/";
+            $countryId = "../pic/flag/";
         } else {
             return "<select $name = \"flagpic\"></select>";
         }
     }
-    $var_444 = $MAIN["pic_base_url"] . "/flag/";
-    $var_448 = scandir($var_443);
-    $var_446 = "<select $name = \"flagpic\">";
-    foreach ($var_448 as $var_447) {
-        if (in_array(var_449($var_447), ["png", "gif", "jpg"])) {
-            $var_446 .= "<option $value = \"" . htmlspecialchars($var_447) . "\"" . ($selected == $var_447 ? " $selected = \"selected\"" : "") . ">" . htmlspecialchars($var_447) . "</option>";
+    $countryName = $MAIN["pic_base_url"] . "/flag/";
+    $countryList = scandir($countryId);
+    $countryFlag = "<select $name = \"flagpic\">";
+    foreach ($countryList as $countryData) {
+        if (in_array(checkPermission($countryData), ["png", "gif", "jpg"])) {
+            $countryFlag .= "<option $value = \"" . htmlspecialchars($countryData) . "\"" . ($selected == $countryData ? " $selected = \"selected\"" : "") . ">" . htmlspecialchars($countryData) . "</option>";
         }
     }
-    $var_446 .= "</select>";
-    return $var_446;
+    $countryFlag .= "</select>";
+    return $countryFlag;
 }
 function function_154($file)
 {

@@ -129,23 +129,23 @@ function function_161($array = [])
     $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'MAIN'");
     $Result = mysqli_fetch_assoc($query);
     $MAIN = unserialize($Result["content"]);
-    $var_456 = "\$smilies = array (";
+    $smileyId = "\$smilies = array (";
     if (count($array) == 0) {
         $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT stext, spath FROM ts_smilies ORDER BY sorder, stitle");
-        while ($var_457 = mysqli_fetch_assoc($query)) {
-            $var_458[] = "'" . $var_457["stext"] . "' => '" . $var_457["spath"] . "'";
+        while ($smileyCode = mysqli_fetch_assoc($query)) {
+            $smileyImage[] = "'" . $smileyCode["stext"] . "' => '" . $smileyCode["spath"] . "'";
         }
     } else {
-        foreach ($array as $var_459 => $file) {
-            $var_458[] = "'" . $var_459 . "' => '" . $file . "'";
+        foreach ($array as $smileyOrder => $file) {
+            $smileyImage[] = "'" . $smileyOrder . "' => '" . $file . "'";
         }
     }
-    $var_456 = $var_456 . implode(", ", $var_458) . ");";
-    $var_440 = "../" . $MAIN["cache"] . "/smilies.php";
-    $var_442 = "<?php\n/** TS Generated Cache#14 - Do Not Alter\n * Cache Name: Smilies\n * Generated: " . gmdate("r") . "\n*/\n";
-    $var_442 .= $var_456 . "\n?>";
-    if (!file_put_contents($var_440, $var_442)) {
-        logStaffAction("I can't update Smilies cache.. Please check permission of " . $var_440 . " file..");
+    $smileyId = $smileyId . implode(", ", $smileyImage) . ");";
+    $smileyPath = "../" . $MAIN["cache"] . "/smilies.php";
+    $smileyData = "<?php\n/** TS Generated Cache#14 - Do Not Alter\n * Cache Name: Smilies\n * Generated: " . gmdate("r") . "\n*/\n";
+    $smileyData .= $smileyId . "\n?>";
+    if (!file_put_contents($smileyPath, $smileyData)) {
+        logStaffAction("I can't update Smilies cache.. Please check permission of " . $smileyPath . " file..");
     }
 }
 function function_149($file)

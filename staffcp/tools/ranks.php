@@ -123,13 +123,13 @@ function showAlertMessage($message = "")
 function function_109($ug, $name)
 {
     global $Language;
-    $var_320 = "\r\n\t<select $name = \"" . $name . "\">\r\n\t\t<option $value = \"0\"" . (0 == $ug ? " $selected = \"selected\"" : "") . ">" . $Language[17] . "</option>";
+    $settingOptions = "\r\n\t<select $name = \"" . $name . "\">\r\n\t\t<option $value = \"0\"" . (0 == $ug ? " $selected = \"selected\"" : "") . ">" . $Language[17] . "</option>";
     $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT gid, title, namestyle FROM usergroups");
     while ($usergroup = mysqli_fetch_assoc($query)) {
-        $var_320 .= "\r\n\t\t<option $value = \"" . $usergroup["gid"] . "\"" . ($usergroup["gid"] == $ug ? " $selected = \"selected\"" : "") . "\">" . str_replace("{username}", $usergroup["title"], $usergroup["namestyle"]) . "</option>";
+        $settingOptions .= "\r\n\t\t<option $value = \"" . $usergroup["gid"] . "\"" . ($usergroup["gid"] == $ug ? " $selected = \"selected\"" : "") . "\">" . str_replace("{username}", $usergroup["title"], $usergroup["namestyle"]) . "</option>";
     }
-    $var_320 .= "\r\n\t</select>";
-    return $var_320;
+    $settingOptions .= "\r\n\t</select>";
+    return $settingOptions;
 }
 function function_110($ug)
 {

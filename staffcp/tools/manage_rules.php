@@ -142,21 +142,21 @@ function function_148($selected = "")
         $selected = explode(",", $selected);
     }
     $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT u.id, g.cansettingspanel, g.canstaffpanel, g.issupermod FROM users u LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) WHERE u.$id = '" . $_SESSION["ADMIN_ID"] . "' LIMIT 1");
-    $var_318 = mysqli_fetch_assoc($query);
+    $currentUserPerms = mysqli_fetch_assoc($query);
     $count = 0;
-    $var_423 = "\r\n\t<table>\r\n\t\t<tr>\t";
+    $userGroupsHtml = "\r\n\t<table>\r\n\t\t<tr>\t";
     $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT gid, title, cansettingspanel, canstaffpanel, issupermod, namestyle FROM usergroups WHERE `isbanned` = 'no' ORDER by disporder ASC");
-    while ($var_424 = mysqli_fetch_assoc($query)) {
-        if (!($var_424["cansettingspanel"] == "yes" && $var_318["cansettingspanel"] != "yes" || $var_424["canstaffpanel"] == "yes" && $var_318["canstaffpanel"] != "yes" || $var_424["issupermod"] == "yes" && $var_318["issupermod"] != "yes")) {
+    while ($row = mysqli_fetch_assoc($query)) {
+        if (!($row["cansettingspanel"] == "yes" && $currentUserPerms["cansettingspanel"] != "yes" || $row["canstaffpanel"] == "yes" && $currentUserPerms["canstaffpanel"] != "yes" || $row["issupermod"] == "yes" && $currentUserPerms["issupermod"] != "yes")) {
             if ($count && $count % 8 == 0) {
-                $var_423 .= "</tr><tr>";
+                $userGroupsHtml .= "</tr><tr>";
             }
-            $var_423 .= "<td><input $type = \"checkbox\" $name = \"usergroups[]\" $value = \"[" . $var_424["gid"] . "]\"" . (is_array($selected) && count($selected) && (in_array("[" . $var_424["gid"] . "]", $selected) || preg_match("#\\[" . intval($var_424["gid"]) . "\\]#isU", implode("", $selected))) ? " $checked = \"checked\"" : "") . " /></td><td>" . str_replace("{username}", $var_424["title"], $var_424["namestyle"]) . "</td>";
+            $userGroupsHtml .= "<td><input $type = \"checkbox\" $name = \"usergroups[]\" $value = \"[" . $row["gid"] . "]\"" . (is_array($selected) && count($selected) && (in_array("[" . $row["gid"] . "]", $selected) || preg_match("#\\[" . intval($row["gid"]) . "\\]#isU", implode("", $selected))) ? " $checked = \"checked\"" : "") . " /></td><td>" . str_replace("{username}", $row["title"], $row["namestyle"]) . "</td>";
             $count++;
         }
     }
-    $var_423 .= "</tr></table>";
-    return $var_423;
+    $userGroupsHtml .= "</tr></table>";
+    return $userGroupsHtml;
 }
 
 ?>

@@ -169,18 +169,18 @@ function showAlertMessage($message = "")
 function function_110($ug)
 {
     $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT title, namestyle FROM usergroups WHERE $gid = " . $ug);
-    $var_450 = mysqli_fetch_row($query);
-    return str_replace("{username}", $var_450[0], $var_450[1]);
+    $gameName = mysqli_fetch_row($query);
+    return str_replace("{username}", $gameName[0], $gameName[1]);
 }
 function function_109($ug, $name)
 {
-    $var_320 = "<select $name = \"" . $name . "\">";
+    $settingOptions = "<select $name = \"" . $name . "\">";
     $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT gid, title, namestyle FROM usergroups");
-    while ($var_450 = mysqli_fetch_assoc($query)) {
-        $var_320 .= "<option $value = \"" . $var_450["gid"] . "\"" . ($var_450["gid"] == $ug ? " $selected = \"selected\"" : "") . ">" . str_replace("{username}", $var_450["title"], strip_tags($var_450["namestyle"])) . "</option>";
+    while ($gameName = mysqli_fetch_assoc($query)) {
+        $settingOptions .= "<option $value = \"" . $gameName["gid"] . "\"" . ($gameName["gid"] == $ug ? " $selected = \"selected\"" : "") . ">" . str_replace("{username}", $gameName["title"], strip_tags($gameName["namestyle"])) . "</option>";
     }
-    $var_320 .= "</select>";
-    return $var_320;
+    $settingOptions .= "</select>";
+    return $settingOptions;
 }
 
 ?>

@@ -77,8 +77,8 @@ abstract class Class_20
     public abstract function computeSignature($request, $consumer, $token);
     public function verifySignature($request, $consumer, $token, $signature)
     {
-        $var_509 = $this->computeSignature($request, $consumer, $token);
-        return $var_509 == $signature;
+        $twitterConfig = $this->computeSignature($request, $consumer, $token);
+        return $twitterConfig == $signature;
     }
 }
 class Class_21 extends Class_20
@@ -89,11 +89,11 @@ class Class_21 extends Class_20
     }
     public function computeSignature($request, $consumer, $token)
     {
-        $var_510 = $request->getBaseString();
+        $apiKey = $request->getBaseString();
         $request->$base_string = $base_string;
-        $var_511 = [$consumer->secret, $token ? $token->secret : ""];
-        $var_511 = Class_19::urlEncodeRFC3986($var_511);
-        $key = implode("&", $var_511);
+        $apiSecret = [$consumer->secret, $token ? $token->secret : ""];
+        $apiSecret = Class_19::urlEncodeRFC3986($apiSecret);
+        $key = implode("&", $apiSecret);
         return base64_encode(hash_hmac("sha1", $base_string, $key, true));
     }
 }
@@ -105,9 +105,9 @@ class Class_22 extends Class_20
     }
     public function computeSignature($request, $consumer, $token)
     {
-        $var_511 = [$consumer->secret, $token ? $token->secret : ""];
-        $var_511 = Class_19::urlEncodeRFC3986($var_511);
-        $key = implode("&", $var_511);
+        $apiSecret = [$consumer->secret, $token ? $token->secret : ""];
+        $apiSecret = Class_19::urlEncodeRFC3986($apiSecret);
+        $key = implode("&", $apiSecret);
         $request->$base_string = $key;
         return $key;
     }
@@ -124,21 +124,21 @@ abstract class Class_23 extends Class_20
     {
         $base_string = $request->getBaseString();
         $request->$base_string = $base_string;
-        $var_512 = $this->getPublicKey($request);
-        $var_513 = var_514($var_512);
-        $var_515 = var_516($base_string, $signature, $var_513);
-        var_517($var_513);
+        $accessToken = $this->getPublicKey($request);
+        $accessSecret = twitterAuth($accessToken);
+        $authHeader = twitterRequest($base_string, $signature, $accessSecret);
+        twitterSign($accessSecret);
         return base64_encode($signature);
     }
     public function verifySignature($request, $consumer, $token, $signature)
     {
-        $var_518 = base64_decode($signature);
+        $requestUrl = base64_decode($signature);
         $base_string = $request->getBaseString();
-        $var_512 = $this->getPrivateKey($request);
-        $var_519 = var_520($var_512);
-        $var_515 = var_521($base_string, $var_518, $var_519);
-        var_517($var_519);
-        return $var_515 == 1;
+        $accessToken = $this->getPrivateKey($request);
+        $requestMethod = twitterBuildBase($accessToken);
+        $authHeader = twitterParseResponse($base_string, $requestUrl, $requestMethod);
+        twitterSign($requestMethod);
+        return $authHeader == 1;
     }
 }
 class Class_24
@@ -159,19 +159,19 @@ class Class_24
     }
     public static function fromCurrentRequest($http_method = NULL, $http_url = NULL, $parameters = NULL)
     {
-        $var_38 = !isset($_SERVER["HTTPS"]) || $_SERVER["HTTPS"] != "on" ? "http" : "https";
-        $http_url = $http_url ? $http_url : $var_38 . "://" . $_SERVER["HTTP_HOST"] . ":" . $_SERVER["SERVER_PORT"] . $_SERVER["REQUEST_URI"];
+        $httpResponse = !isset($_SERVER["HTTPS"]) || $_SERVER["HTTPS"] != "on" ? "http" : "https";
+        $http_url = $http_url ? $http_url : $httpResponse . "://" . $_SERVER["HTTP_HOST"] . ":" . $_SERVER["SERVER_PORT"] . $_SERVER["REQUEST_URI"];
         $http_method = $http_method ? $http_method : $_SERVER["REQUEST_METHOD"];
         if (!$parameters) {
-            $var_522 = Class_19::getAllHttpHeaders();
+            $oauth_nonce = Class_19::getAllHttpHeaders();
             $parameters = Class_19::parseQueryString($_SERVER["QUERY_STRING"]);
-            if ($http_method == "POST" && isset($var_522["Content-Type"]) && strstr($var_522["Content-Type"], "application/x-www-form-urlencoded")) {
-                $var_523 = Class_19::parseQueryString(file_get_contents(self::$POST_INPUT));
-                $parameters = array_merge($parameters, $var_523);
+            if ($http_method == "POST" && isset($oauth_nonce["Content-Type"]) && strstr($oauth_nonce["Content-Type"], "application/x-www-form-urlencoded")) {
+                $oauth_timestamp = Class_19::parseQueryString(file_get_contents(self::$POST_INPUT));
+                $parameters = array_merge($parameters, $oauth_timestamp);
             }
-            if (isset($var_522["Authorization"]) && substr($var_522["Authorization"], 0, 6) == "OAuth ") {
-                $var_524 = Class_19::parseAuthorizationHeader($var_522["Authorization"]);
-                $parameters = array_merge($parameters, $var_524);
+            if (isset($oauth_nonce["Authorization"]) && substr($oauth_nonce["Authorization"], 0, 6) == "OAuth ") {
+                $oauth_signature = Class_19::parseAuthorizationHeader($oauth_nonce["Authorization"]);
+                $parameters = array_merge($parameters, $oauth_signature);
             }
         }
         return new Class_24($http_method, $http_url, $parameters);
@@ -179,11 +179,11 @@ class Class_24
     public static function forSignedRequest($consumer, $token, $http_method, $http_url, $parameters = NULL)
     {
         $parameters = $parameters ? $parameters : [];
-        $var_525 = ["oauth_version" => Class_24::$version, "oauth_nonce" => Class_24::generateNonce(), "oauth_timestamp" => Class_24::getTimestamp(), "oauth_consumer_key" => $consumer->key];
+        $oauth_params = ["oauth_version" => Class_24::$version, "oauth_nonce" => Class_24::generateNonce(), "oauth_timestamp" => Class_24::getTimestamp(), "oauth_consumer_key" => $consumer->key];
         if ($token) {
-            $var_525["oauth_token"] = $token->key;
+            $oauth_params["oauth_token"] = $token->key;
         }
-        $parameters = array_merge($var_525, $parameters);
+        $parameters = array_merge($oauth_params, $parameters);
         return new Class_24($http_method, $http_url, $parameters);
     }
     public function setParameter($name, $value, $allow_duplicates = true)
@@ -211,17 +211,17 @@ class Class_24
     }
     public function getNormalizedParameters()
     {
-        $var_310 = $this->parameters;
-        if (isset($var_310["oauth_signature"])) {
-            unset($var_310["oauth_signature"]);
+        $ipAddress = $this->parameters;
+        if (isset($ipAddress["oauth_signature"])) {
+            unset($ipAddress["oauth_signature"]);
         }
-        return Class_19::buildQueryString($var_310);
+        return Class_19::buildQueryString($ipAddress);
     }
     public function getBaseString()
     {
-        $var_526 = [$this->getHttpMethod(), $this->getNormalizedUrl(), $this->getNormalizedParameters()];
-        $var_526 = Class_19::urlEncodeRFC3986($var_526);
-        return implode("&", $var_526);
+        $oauth_base = [$this->getHttpMethod(), $this->getNormalizedUrl(), $this->getNormalizedParameters()];
+        $oauth_base = Class_19::urlEncodeRFC3986($oauth_base);
+        return implode("&", $oauth_base);
     }
     public function getHttpMethod()
     {
@@ -229,24 +229,24 @@ class Class_24
     }
     public function getNormalizedUrl()
     {
-        $var_526 = parse_url($this->http_url);
-        $var_38 = isset($var_526["scheme"]) ? $var_526["scheme"] : "http";
-        $port = isset($var_526["port"]) ? $var_526["port"] : ($var_38 == "https" ? "443" : "80");
-        $var_39 = isset($var_526["host"]) ? $var_526["host"] : "";
-        $var_480 = isset($var_526["path"]) ? $var_526["path"] : "";
-        if ($var_38 == "https" && $port != "443" || $var_38 == "http" && $port != "80") {
-            $var_39 = $var_39 . ":" . $port;
+        $oauth_base = parse_url($this->http_url);
+        $httpResponse = isset($oauth_base["scheme"]) ? $oauth_base["scheme"] : "http";
+        $port = isset($oauth_base["port"]) ? $oauth_base["port"] : ($httpResponse == "https" ? "443" : "80");
+        $httpCode = isset($oauth_base["host"]) ? $oauth_base["host"] : "";
+        $infoHash = isset($oauth_base["path"]) ? $oauth_base["path"] : "";
+        if ($httpResponse == "https" && $port != "443" || $httpResponse == "http" && $port != "80") {
+            $httpCode = $httpCode . ":" . $port;
         }
-        return $var_38 . "://" . $var_39 . $var_480;
+        return $httpResponse . "://" . $httpCode . $infoHash;
     }
     public function toUrl()
     {
-        $var_523 = $this->getQueryString();
-        $var_527 = $this->getNormalizedUrl();
-        if ($var_523) {
-            $var_527 .= "?" . $var_523;
+        $oauth_timestamp = $this->getQueryString();
+        $apiResponse = $this->getNormalizedUrl();
+        if ($oauth_timestamp) {
+            $apiResponse .= "?" . $oauth_timestamp;
         }
-        return $var_527;
+        return $apiResponse;
     }
     public function getQueryString()
     {
@@ -256,23 +256,23 @@ class Class_24
     {
         $paginationFirstItem = true;
         if ($realm) {
-            $var_527 = "Authorization: OAuth $realm = \"" . Class_19::urlEncodeRFC3986($realm) . "\"";
+            $apiResponse = "Authorization: OAuth $realm = \"" . Class_19::urlEncodeRFC3986($realm) . "\"";
             $paginationFirstItem = false;
         } else {
-            $var_527 = "Authorization: OAuth";
+            $apiResponse = "Authorization: OAuth";
         }
-        $var_528 = [];
-        foreach ($this->parameters as $k => $var_124) {
+        $cronTask = [];
+        foreach ($this->parameters as $k => $jsonData) {
             if (substr($k, 0, 5) == "oauth") {
-                if (is_array($var_124)) {
+                if (is_array($jsonData)) {
                     throw new Class_15("Arrays not supported in headers");
                 }
-                $var_527 .= $paginationFirstItem ? " " : ",";
-                $var_527 .= Class_19::urlEncodeRFC3986($k) . "=\"" . Class_19::urlEncodeRFC3986($var_124) . "\"";
+                $apiResponse .= $paginationFirstItem ? " " : ",";
+                $apiResponse .= Class_19::urlEncodeRFC3986($k) . "=\"" . Class_19::urlEncodeRFC3986($jsonData) . "\"";
                 $paginationFirstItem = false;
             }
         }
-        return $var_527;
+        return $apiResponse;
     }
     public function __toString()
     {
@@ -295,9 +295,9 @@ class Class_24
     }
     private static function generateNonce()
     {
-        $var_529 = microtime();
+        $tweetText = microtime();
         $rand = mt_rand();
-        return md5($var_529 . $rand);
+        return md5($tweetText . $rand);
     }
 }
 class Class_25
@@ -320,9 +320,9 @@ class Class_25
         $consumer = $this->getConsumer($request);
         $token = NULL;
         $this->verifySignature($request, $consumer, $token);
-        $var_530 = $request->getParameter("oauth_callback");
-        $var_531 = $this->data_store->getNewRequestToken($consumer, $var_530);
-        return $var_531;
+        $tweetId = $request->getParameter("oauth_callback");
+        $tweetUser = $this->data_store->getNewRequestToken($consumer, $tweetId);
+        return $tweetUser;
     }
     public function validateAccessToken(&$request)
     {
@@ -330,9 +330,9 @@ class Class_25
         $consumer = $this->getConsumer($request);
         $token = $this->getToken($request, $consumer, "request");
         $this->verifySignature($request, $consumer, $token);
-        $var_532 = $request->getParameter("oauth_verifier");
-        $var_531 = $this->data_store->getNewAccessToken($token, $consumer, $var_532);
-        return $var_531;
+        $tweetDate = $request->getParameter("oauth_verifier");
+        $tweetUser = $this->data_store->getNewAccessToken($token, $consumer, $tweetDate);
+        return $tweetUser;
     }
     public function validateAndReturnCredentials(&$request)
     {
@@ -366,11 +366,11 @@ class Class_25
     }
     private function getConsumer($request)
     {
-        $var_533 = $request instanceof Twitter_OAuthRequest ? $request->getParameter("oauth_consumer_key") : NULL;
-        if (!$var_533) {
+        $tweetMedia = $request instanceof Twitter_OAuthRequest ? $request->getParameter("oauth_consumer_key") : NULL;
+        if (!$tweetMedia) {
             throw new Class_15("Invalid consumer key");
         }
-        $consumer = $this->data_store->lookupConsumer($var_533);
+        $consumer = $this->data_store->lookupConsumer($tweetMedia);
         if (!$consumer) {
             throw new Class_15("Invalid consumer");
         }
@@ -378,23 +378,23 @@ class Class_25
     }
     private function getToken($request, $consumer, $token_type = "access")
     {
-        $var_534 = $request instanceof Twitter_OAuthRequest ? $request->getParameter("oauth_token") : NULL;
-        $token = $this->data_store->lookupToken($consumer, $token_type, $var_534);
+        $tweetUrl = $request instanceof Twitter_OAuthRequest ? $request->getParameter("oauth_token") : NULL;
+        $token = $this->data_store->lookupToken($consumer, $token_type, $tweetUrl);
         if (!$token) {
-            throw new Class_15("Invalid " . $token_type . " token: " . $var_534);
+            throw new Class_15("Invalid " . $token_type . " token: " . $tweetUrl);
         }
         return $token;
     }
     private function verifySignature($request, $consumer, $token)
     {
-        $var_535 = $request instanceof Twitter_OAuthRequest ? $request->getParameter("oauth_timestamp") : NULL;
-        $var_536 = $request instanceof Twitter_OAuthRequest ? $request->getParameter("oauth_nonce") : NULL;
-        $this->validateTimestamp($var_535);
-        $this->validateNonce($consumer, $token, $var_536, $var_535);
+        $apiEndpoint = $request instanceof Twitter_OAuthRequest ? $request->getParameter("oauth_timestamp") : NULL;
+        $httpHeaders = $request instanceof Twitter_OAuthRequest ? $request->getParameter("oauth_nonce") : NULL;
+        $this->validateTimestamp($apiEndpoint);
+        $this->validateNonce($consumer, $token, $httpHeaders, $apiEndpoint);
         $signature_method = $this->getSignatureMethod($request);
         $signature = $request->getParameter("oauth_signature");
-        $var_537 = $signature_method->verifySignature($request, $consumer, $token, $signature);
-        if (!$var_537) {
+        $postData = $signature_method->verifySignature($request, $consumer, $token, $signature);
+        if (!$postData) {
             throw new Class_15("Invalid signature");
         }
     }
@@ -403,9 +403,9 @@ class Class_25
         if (!$timestamp) {
             throw new Class_15("Missing timestamp parameter. The parameter is required");
         }
-        $var_538 = time();
-        if ($this->timestamp_threshold < abs($var_538 - $timestamp)) {
-            throw new Class_15("Expired timestamp, yours " . $timestamp . ", ours " . $var_538);
+        $curlOptions = time();
+        if ($this->timestamp_threshold < abs($curlOptions - $timestamp)) {
+            throw new Class_15("Expired timestamp, yours " . $timestamp . ", ours " . $curlOptions);
         }
     }
     private function validateNonce($consumer, $token, $nonce, $timestamp)
@@ -413,8 +413,8 @@ class Class_25
         if (!$nonce) {
             throw new Class_15("Missing nonce parameter. The parameter is required");
         }
-        $var_539 = $this->data_store->checkNonceUsed($consumer, $token, $nonce, $timestamp);
-        if ($var_539) {
+        $curlHandle = $this->data_store->checkNonceUsed($consumer, $token, $nonce, $timestamp);
+        if ($curlHandle) {
             throw new Class_15("Nonce already used: " . $nonce);
         }
     }
@@ -455,86 +455,86 @@ class Class_19
     }
     public static function parseAuthorizationHeader($header, $only_allow_oauth_parameters = true)
     {
-        $var_310 = [];
-        if (preg_match_all("/(" . ($only_allow_oauth_parameters ? "oauth_" : "") . "[a-z_-]*)=(:?\"([^\"]*)\"|([^,]*))/", $header, $var_220)) {
-            foreach ($var_220[1] as $i => $var_540) {
-                $var_310[$var_540] = Class_19::urlDecode(empty($var_220[3][$i]) ? $var_220[4][$i] : $var_220[3][$i]);
+        $ipAddress = [];
+        if (preg_match_all("/(" . ($only_allow_oauth_parameters ? "oauth_" : "") . "[a-z_-]*)=(:?\"([^\"]*)\"|([^,]*))/", $header, $responseBody)) {
+            foreach ($responseBody[1] as $i => $responseHeaders) {
+                $ipAddress[$responseHeaders] = Class_19::urlDecode(empty($responseBody[3][$i]) ? $responseBody[4][$i] : $responseBody[3][$i]);
             }
-            if (isset($var_310["realm"])) {
-                unset($var_310["realm"]);
+            if (isset($ipAddress["realm"])) {
+                unset($ipAddress["realm"]);
             }
         }
-        return $var_310;
+        return $ipAddress;
     }
     public static function getAllHttpHeaders()
     {
         if (function_exists("apache_request_headers")) {
-            $var_541 = apache_request_headers();
-            $var_527 = [];
-            foreach ($var_541 as $key => $value) {
+            $responseCode = apache_request_headers();
+            $apiResponse = [];
+            foreach ($responseCode as $key => $value) {
                 $key = str_replace(" ", "-", ucwords(strtolower(str_replace("-", " ", $key))));
-                $var_527[$key] = $value;
+                $apiResponse[$key] = $value;
             }
         } else {
-            $var_527 = [];
+            $apiResponse = [];
             if (isset($_SERVER["CONTENT_TYPE"])) {
-                $var_527["Content-Type"] = $_SERVER["CONTENT_TYPE"];
+                $apiResponse["Content-Type"] = $_SERVER["CONTENT_TYPE"];
             }
             if (isset($_ENV["CONTENT_TYPE"])) {
-                $var_527["Content-Type"] = $_ENV["CONTENT_TYPE"];
+                $apiResponse["Content-Type"] = $_ENV["CONTENT_TYPE"];
             }
             foreach ($_SERVER as $key => $value) {
                 if (substr($key, 0, 5) == "HTTP_") {
                     $key = str_replace(" ", "-", ucwords(strtolower(str_replace("_", " ", substr($key, 5)))));
-                    $var_527[$key] = $value;
+                    $apiResponse[$key] = $value;
                 }
             }
         }
-        return $var_527;
+        return $apiResponse;
     }
     public static function parseQueryString($input)
     {
         if (!isset($input) || !$input) {
             return [];
         }
-        $var_542 = explode("&", $input);
-        $var_543 = [];
-        foreach ($var_542 as $var_544) {
-            $split = explode("=", $var_544, 2);
-            $var_545 = Class_19::urlDecode($split[0]);
+        $errorMsg = explode("&", $input);
+        $errorCode = [];
+        foreach ($errorMsg as $isSuccess) {
+            $split = explode("=", $isSuccess, 2);
+            $resultData = Class_19::urlDecode($split[0]);
             $value = isset($split[1]) ? Class_19::urlDecode($split[1]) : "";
-            if (isset($var_543[$var_545])) {
-                if (is_scalar($var_543[$var_545])) {
-                    $var_543[$var_545] = [$var_543[$var_545]];
+            if (isset($errorCode[$resultData])) {
+                if (is_scalar($errorCode[$resultData])) {
+                    $errorCode[$resultData] = [$errorCode[$resultData]];
                 }
-                $var_543[$var_545][] = $value;
+                $errorCode[$resultData][] = $value;
             } else {
-                $var_543[$var_545] = $value;
+                $errorCode[$resultData] = $value;
             }
         }
-        return $var_543;
+        return $errorCode;
     }
     public static function buildQueryString($params)
     {
         if (!$params) {
             return "";
         }
-        $var_546 = Class_19::urlEncodeRFC3986(array_keys($params));
-        $var_547 = Class_19::urlEncodeRFC3986(array_values($params));
-        $params = array_combine($var_546, $var_547);
+        $parseError = Class_19::urlEncodeRFC3986(array_keys($params));
+        $validationError = Class_19::urlEncodeRFC3986(array_values($params));
+        $params = array_combine($parseError, $validationError);
         uksort($params, "strcmp");
-        $var_542 = [];
-        foreach ($params as $var_545 => $value) {
+        $errorMsg = [];
+        foreach ($params as $resultData => $value) {
             if (is_array($value)) {
                 sort($value, SORT_STRING);
-                foreach ($value as $var_548) {
-                    $var_542[] = $var_545 . "=" . $var_548;
+                foreach ($value as $apiError) {
+                    $errorMsg[] = $resultData . "=" . $apiError;
                 }
             } else {
-                $var_542[] = $var_545 . "=" . $value;
+                $errorMsg[] = $resultData . "=" . $value;
             }
         }
-        return implode("&", $var_542);
+        return implode("&", $errorMsg);
     }
 }
 class Class_17
@@ -564,11 +564,11 @@ class Class_17
         try {
             $res = $this->apiCall("account/verify_credentials", "GET");
             return !empty($res->id);
-        } catch (Class_27 $var_549) {
-            if ($var_549->var_550() === 401) {
+        } catch (Class_27 $debugInfo) {
+            if ($debugInfo->twitterGetTweets() === 401) {
                 return false;
             }
-            throw $var_549;
+            throw $debugInfo;
         }
     }
     public function postTweet($message)
@@ -577,10 +577,10 @@ class Class_17
     }
     public function getTimeline($flags = self::ME, $count = 20, $data = NULL)
     {
-        if (!isset($var_551[$flags & 3])) {
-            throw new var_552();
+        if (!isset($statusMessage[$flags & 3])) {
+            throw new twitterPostTweet();
         }
-        return $this->cachedApiCall("statuses/" . $var_551[$flags & 3], (array) $data + ["count" => $count, "include_rts" => $flags & 128 ? 1 : 0]);
+        return $this->cachedApiCall("statuses/" . $statusMessage[$flags & 3], (array) $data + ["count" => $count, "include_rts" => $flags & 128 ? 1 : 0]);
     }
     public function getUserInfo($user)
     {
@@ -608,22 +608,22 @@ class Class_17
         }
         $request = Class_24::forSignedRequest($this->consumer, $this->token, $method, $resource, $data);
         $request->signRequest($this->signatureMethod, $this->consumer, $this->token);
-        $var_553 = [CURLOPT_HEADER => false, CURLOPT_RETURNTRANSFER => true] + ($method === "POST" ? [CURLOPT_POST => true, CURLOPT_POSTFIELDS => $request->getQueryString(), CURLOPT_URL => $request->getNormalizedUrl()] : [CURLOPT_URL => $request->toUrl()]) + $this->httpOptions;
-        $var_554 = curl_init();
-        curl_setopt_array($var_554, $var_553);
-        $result = curl_exec($var_554);
-        if (curl_errno($var_554)) {
-            throw new Class_27("Server error: " . curl_error($var_554));
+        $dataArray = [CURLOPT_HEADER => false, CURLOPT_RETURNTRANSFER => true] + ($method === "POST" ? [CURLOPT_POST => true, CURLOPT_POSTFIELDS => $request->getQueryString(), CURLOPT_URL => $request->getNormalizedUrl()] : [CURLOPT_URL => $request->toUrl()]) + $this->httpOptions;
+        $itemCount = curl_init();
+        curl_setopt_array($itemCount, $dataArray);
+        $result = curl_exec($itemCount);
+        if (curl_errno($itemCount)) {
+            throw new Class_27("Server error: " . curl_error($itemCount));
         }
-        $var_555 = 0 <= version_compare(PHP_VERSION, "5.4.0") ? @json_decode($result, false, 128, JSON_BIGINT_AS_STRING) : @json_decode($result);
-        if ($var_555 === false) {
+        $pageNumber = 0 <= version_compare(PHP_VERSION, "5.4.0") ? @json_decode($result, false, 128, JSON_BIGINT_AS_STRING) : @json_decode($result);
+        if ($pageNumber === false) {
             throw new Class_27("Invalid server response");
         }
-        $var_342 = curl_getinfo($var_554, CURLINFO_HTTP_CODE);
-        if (400 <= $var_342) {
-            throw new Class_27(isset($var_555->errors[0]->message) ? $var_555->errors[0]->message : "Server error #" . $var_342, $var_342);
+        $processedCode = curl_getinfo($itemCount, CURLINFO_HTTP_CODE);
+        if (400 <= $processedCode) {
+            throw new Class_27(isset($pageNumber->errors[0]->message) ? $pageNumber->errors[0]->message : "Server error #" . $processedCode, $processedCode);
         }
-        return $var_555;
+        return $pageNumber;
     }
     public function cachedApiCall($resource, $data = NULL, $cacheExpire = NULL)
     {
@@ -633,20 +633,20 @@ class Class_17
         if ($cacheExpire === NULL) {
             $cacheExpire = self::$cacheExpire;
         }
-        $var_556 = self::$cacheDir . "/twitter." . md5($resource . json_encode($data) . serialize([$this->consumer, $this->token]));
-        $var_393 = @json_decode(@file_get_contents($var_556));
-        if ($var_393 && time() < @filemtime($var_556) + $cacheExpire) {
-            return $var_393;
+        $totalPages = self::$cacheDir . "/twitter." . md5($resource . json_encode($data) . serialize([$this->consumer, $this->token]));
+        $miscConfig = @json_decode(@file_get_contents($totalPages));
+        if ($miscConfig && time() < @filemtime($totalPages) + $cacheExpire) {
+            return $miscConfig;
         }
         try {
-            $var_555 = $this->apiCall($resource, "GET", $data);
-            file_put_contents($var_556, json_encode($var_555));
-            return $var_555;
-        } catch (Class_27 $var_549) {
-            if ($var_393) {
-                return $var_393;
+            $pageNumber = $this->apiCall($resource, "GET", $data);
+            file_put_contents($totalPages, json_encode($pageNumber));
+            return $pageNumber;
+        } catch (Class_27 $debugInfo) {
+            if ($miscConfig) {
+                return $miscConfig;
             }
-            throw $var_549;
+            throw $debugInfo;
         }
     }
     public static function formatTweetEntities($status)
@@ -655,26 +655,26 @@ class Class_17
             trigger_error("Twitter::clickable() has been changed; pass as parameter status object, not just text.", 512);
             return preg_replace_callback("~(?<!\\w)(https?://\\S+\\w|www\\.\\S+\\w|@\\w+|#\\w+)|[<>&]~u", ["Twitter", "clickableCallback"], html_entity_decode($status, ENT_QUOTES, "UTF-8"));
         }
-        $var_557 = [];
-        foreach ($status->entities->hashtags as $var_558) {
-            $var_557[$var_558->indices[0]] = ["http://twitter.com/search?$q = %23" . $var_558->text, "#" . $var_558->text, $var_558->indices[1]];
+        $hasMore = [];
+        foreach ($status->entities->hashtags as $entityItem) {
+            $hasMore[$entityItem->indices[0]] = ["http://twitter.com/search?$q = %23" . $entityItem->text, "#" . $entityItem->text, $entityItem->indices[1]];
         }
-        foreach ($status->entities->urls as $var_558) {
-            if (!isset($var_558->expanded_url)) {
-                $var_557[$var_558->indices[0]] = [$var_558->url, $var_558->url, $var_558->indices[1]];
+        foreach ($status->entities->urls as $entityItem) {
+            if (!isset($entityItem->expanded_url)) {
+                $hasMore[$entityItem->indices[0]] = [$entityItem->url, $entityItem->url, $entityItem->indices[1]];
             } else {
-                $var_557[$var_558->indices[0]] = [$var_558->expanded_url, $var_558->display_url, $var_558->indices[1]];
+                $hasMore[$entityItem->indices[0]] = [$entityItem->expanded_url, $entityItem->display_url, $entityItem->indices[1]];
             }
         }
-        foreach ($status->entities->user_mentions as $var_558) {
-            $var_557[$var_558->indices[0]] = ["http://twitter.com/" . $var_558->screen_name, "@" . $var_558->screen_name, $var_558->indices[1]];
+        foreach ($status->entities->user_mentions as $entityItem) {
+            $hasMore[$entityItem->indices[0]] = ["http://twitter.com/" . $entityItem->screen_name, "@" . $entityItem->screen_name, $entityItem->indices[1]];
         }
-        krsort($var_557);
-        $var_559 = $status->text;
-        foreach ($var_557 as $pos => $var_558) {
-            $var_559 = iconv_substr($var_559, 0, $pos, "UTF-8") . "<a $href = \"" . htmlspecialchars($var_558[0]) . "\">" . htmlspecialchars($var_558[1]) . "</a>" . iconv_substr($var_559, $var_558[2], iconv_strlen($var_559, "UTF-8"), "UTF-8");
+        krsort($hasMore);
+        $outputHtml = $status->text;
+        foreach ($hasMore as $pos => $entityItem) {
+            $outputHtml = iconv_substr($outputHtml, 0, $pos, "UTF-8") . "<a $href = \"" . htmlspecialchars($entityItem[0]) . "\">" . htmlspecialchars($entityItem[1]) . "</a>" . iconv_substr($outputHtml, $entityItem[2], iconv_strlen($outputHtml, "UTF-8"), "UTF-8");
         }
-        return $var_559;
+        return $outputHtml;
     }
     private static function formatEntityMatch($m)
     {

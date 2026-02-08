@@ -366,9 +366,9 @@ class Class_6
     }
     public function function_126($wraptext = "  ")
     {
-        $var_582 = 136;
+        $feedId = 136;
         if (!empty($this->message)) {
-            $this->$message = preg_replace("\r\n\t\t\t\t#((?>[^\\s&/<>\"\\-\\[\\]]|&[\\#a-z0-9]{1,7};){" . $var_582 . "})(?=[^\\s&/<>\"\\-\\[\\]]|&[\\#a-z0-9]{1,7};)#i", "\$0" . $wraptext, $this->message);
+            $this->$message = preg_replace("\r\n\t\t\t\t#((?>[^\\s&/<>\"\\-\\[\\]]|&[\\#a-z0-9]{1,7};){" . $feedId . "})(?=[^\\s&/<>\"\\-\\[\\]]|&[\\#a-z0-9]{1,7};)#i", "\$0" . $wraptext, $this->message);
         }
     }
     public function function_122()
@@ -410,12 +410,12 @@ class Class_6
         $message = preg_replace("#\\s*\\[\\*\\]\\s*#", "</li>\n<li>", $message);
         $message .= "</li>";
         if ($type) {
-            $var_8 = "\n<ol $type = \"" . $type . "\">" . $message . "</ol>\n";
+            $formattedListHtml = "\n<ol $type = \"" . $type . "\">" . $message . "</ol>\n";
         } else {
-            $var_8 = "<ul>" . $message . "</ul>\n";
+            $formattedListHtml = "<ul>" . $message . "</ul>\n";
         }
-        $var_8 = preg_replace("#<(ol $type = \"" . $type . "\"|ul)>\\s*</li>#", "<\$1>", $var_8);
-        return $var_8;
+        $formattedListHtml = preg_replace("#<(ol $type = \"" . $type . "\"|ul)>\\s*</li>#", "<\$1>", $formattedListHtml);
+        return $formattedListHtml;
     }
     public function function_134($url)
     {
@@ -425,9 +425,9 @@ class Class_6
     }
     public function function_120()
     {
-        $var_359 = ["#(&\\#(0*)106;|&\\#(0*)74;|j)((&\\#(0*)97;|&\\#(0*)65;|a)(&\\#(0*)118;|&\\#(0*)86;|v)(&\\#(0*)97;|&\\#(0*)65;|a)(\\s)?(&\\#(0*)115;|&\\#(0*)83;|s)(&\\#(0*)99;|&\\#(0*)67;|c)(&\\#(0*)114;|&\\#(0*)82;|r)(&\\#(0*)105;|&\\#(0*)73;|i)(&\\#112;|&\\#(0*)80;|p)(&\\#(0*)116;|&\\#(0*)84;|t)(&\\#(0*)58;|\\:))#i", "#(o)(nmouseover\\s?=)#i", "#(o)(nmouseout\\s?=)#i", "#(o)(nmousedown\\s?=)#i", "#(o)(nmousemove\\s?=)#i", "#(o)(nmouseup\\s?=)#i", "#(o)(nclick\\s?=)#i", "#(o)(ndblclick\\s?=)#i", "#(o)(nload\\s?=)#i", "#(o)(nsubmit\\s?=)#i", "#(o)(nblur\\s?=)#i", "#(o)(nchange\\s?=)#i", "#(o)(nfocus\\s?=)#i", "#(o)(nselect\\s?=)#i", "#(o)(nunload\\s?=)#i", "#(o)(nkeypress\\s?=)#i"];
-        $this->$message = preg_replace($var_359, "\$1<strong></strong>\$2\$4", $this->message);
-        unset($var_359);
+        $urlReplaced = ["#(&\\#(0*)106;|&\\#(0*)74;|j)((&\\#(0*)97;|&\\#(0*)65;|a)(&\\#(0*)118;|&\\#(0*)86;|v)(&\\#(0*)97;|&\\#(0*)65;|a)(\\s)?(&\\#(0*)115;|&\\#(0*)83;|s)(&\\#(0*)99;|&\\#(0*)67;|c)(&\\#(0*)114;|&\\#(0*)82;|r)(&\\#(0*)105;|&\\#(0*)73;|i)(&\\#112;|&\\#(0*)80;|p)(&\\#(0*)116;|&\\#(0*)84;|t)(&\\#(0*)58;|\\:))#i", "#(o)(nmouseover\\s?=)#i", "#(o)(nmouseout\\s?=)#i", "#(o)(nmousedown\\s?=)#i", "#(o)(nmousemove\\s?=)#i", "#(o)(nmouseup\\s?=)#i", "#(o)(nclick\\s?=)#i", "#(o)(ndblclick\\s?=)#i", "#(o)(nload\\s?=)#i", "#(o)(nsubmit\\s?=)#i", "#(o)(nblur\\s?=)#i", "#(o)(nchange\\s?=)#i", "#(o)(nfocus\\s?=)#i", "#(o)(nselect\\s?=)#i", "#(o)(nunload\\s?=)#i", "#(o)(nkeypress\\s?=)#i"];
+        $this->$message = preg_replace($urlReplaced, "\$1<strong></strong>\$2\$4", $this->message);
+        unset($urlReplaced);
     }
     public function function_117()
     {
@@ -466,34 +466,34 @@ class Class_6
         $bbcodeTags["nfo"]["replacement"] = "<tt><div $style = \"white-space: nowrap; display: inline;\"><font $face = \"MS Linedraw\" $size = \"2\" $style = \"font-size: 10pt; line-height: 10pt\">\$1</font></div></tt>";
         $bbcodeTags["youtube"]["regex"] = "#\\[youtube\\](.*?)\\[/youtube\\]#si";
         $bbcodeTags["youtube"]["replacement"] = "<object $width = \"425\" $height = \"350\"><param $name = \"movie\" $value = \"http://www.youtube.com/v/\$1\"></param><embed $src = \"http://www.youtube.com/v/\$1\" $type = \"application/x-shockwave-flash\" $width = \"425\" $height = \"350\"></embed></object>";
-        $var_363 = $bbcodeTags;
-        foreach ($var_363 as $var_342) {
-            $this->tscode_cache["find"][] = $var_342["regex"];
-            $this->tscode_cache["replacement"][] = $var_342["replacement"];
+        $imageUrl = $bbcodeTags;
+        foreach ($imageUrl as $processedCode) {
+            $this->tscode_cache["find"][] = $processedCode["regex"];
+            $this->tscode_cache["replacement"][] = $processedCode["replacement"];
         }
     }
     public function parseMyCodeUrl($url, $name = "")
     {
-        $var_364 = false;
+        $imageTag = false;
         if ($name) {
-            $var_364 = true;
+            $imageTag = true;
             $name = str_replace(["&amp;", "\\'"], ["&", "'"], $name);
         }
         if (!preg_match("#^[a-z0-9]+://#i", $url)) {
             $url = "http://" . $url;
         }
         $url = str_replace(["&amp;", "\\'"], ["&", "'"], $url);
-        $var_365 = $url;
+        $processedUrl = $url;
         if (!$name) {
             $name = $url;
         }
-        if (!$var_364 && $this->options["short_url"] && 55 < strlen($url)) {
+        if (!$imageTag && $this->options["short_url"] && 55 < strlen($url)) {
             $name = substr($url, 0, 40) . "..." . substr($url, -10);
         }
-        $var_583 = ["\$" => "%24", "&#36;" => "%24", "^" => "%5E", "`" => "%60", "[" => "%5B", "]" => "%5D", "{" => "%7B", "}" => "%7D", "\"" => "%22", "<" => "%3C", ">" => "%3E", " " => "%20"];
-        $var_365 = str_replace(array_keys($var_583), array_values($var_583), $var_365);
+        $feedTitle = ["\$" => "%24", "&#36;" => "%24", "^" => "%5E", "`" => "%60", "[" => "%5B", "]" => "%5D", "{" => "%7B", "}" => "%7D", "\"" => "%22", "<" => "%3C", ">" => "%3E", " " => "%20"];
+        $processedUrl = str_replace(array_keys($feedTitle), array_values($feedTitle), $processedUrl);
         $name = preg_replace("#&amp;\\#([0-9]+);#si", "&#\$1;", $name);
-        $link = "<a $href = \"" . $var_365 . "\" $target = \"_blank\">" . $name . "</a>";
+        $link = "<a $href = \"" . $processedUrl . "\" $target = \"_blank\">" . $name . "</a>";
         return $link;
     }
     public function function_135($size, $text)
@@ -522,16 +522,16 @@ class Class_28
     }
     public function function_272($url)
     {
-        $xml_string = var_584($url);
+        $xml_string = rssGetFeed($url);
         if ($xml_string === false || empty($xml_string["body"])) {
             trigger_error("Unable to fetch RSS Feed", 512);
         }
         $xml_string = $xml_string["body"];
         if (preg_match_all("#(<description>)(.*)(</description>)#siU", $xml_string, $matches, PREG_SET_ORDER)) {
-            foreach ($matches as $var_585) {
-                if (strpos(strtoupper($var_585[2]), "<![CDATA[") === false && strpos($var_585[2], "<") !== false) {
-                    $output = $var_585[1] . "<![CDATA[" . $this->function_281($var_585[2]) . "]]>" . $var_585[3];
-                    $xml_string = str_replace($var_585[0], $output, $xml_string);
+            foreach ($matches as $feedItem) {
+                if (strpos(strtoupper($feedItem[2]), "<![CDATA[") === false && strpos($feedItem[2], "<") !== false) {
+                    $output = $feedItem[1] . "<![CDATA[" . $this->function_281($feedItem[2]) . "]]>" . $feedItem[3];
+                    $xml_string = str_replace($feedItem[0], $output, $xml_string);
                 }
             }
         }
@@ -572,11 +572,11 @@ class Class_28
     {
         switch ($this->feedtype) {
             case "atom":
-                return var_586($id);
+                return rssParseFeed($id);
                 break;
             case "rss":
             default:
-                return var_587($id);
+                return rssProcessItem($id);
         }
     }
     public function function_286($id = -1)
@@ -609,12 +609,12 @@ class Class_28
     {
         switch ($this->feedtype) {
             case "atom":
-                $var_588 = "entry";
+                $feedUrl = "entry";
                 break;
             case "rss":
             default:
-                $var_588 = "item";
-                return var_589($this->xml_array, $var_588, true);
+                $feedUrl = "item";
+                return rssValidateFeed($this->xml_array, $feedUrl, true);
         }
     }
     public function function_288()
@@ -623,18 +623,18 @@ class Class_28
         if (empty($items)) {
             return false;
         }
-        $var_590 = [];
+        $feedEnabled = [];
         foreach ($items as $item) {
-            $var_591 = ["link" => $this->function_289("link", $item), "description" => $this->function_289("description", $item), "title" => $this->function_289("title", $item), "id" => $this->function_289("id", $item), "date" => $this->function_289("date", $item), "enclosure_link" => $this->function_289("enclosure_date", $item), "content" => $this->function_289("content", $item), "author" => $this->function_289("author", $item)];
-            $var_591["link"] = $this->function_290($var_591["link"]);
-            $var_591["enclosure_link"] = $this->function_290($var_591["enclosure_link"]);
-            $var_590[] = $var_591;
+            $feedCategory = ["link" => $this->function_289("link", $item), "description" => $this->function_289("description", $item), "title" => $this->function_289("title", $item), "id" => $this->function_289("id", $item), "date" => $this->function_289("date", $item), "enclosure_link" => $this->function_289("enclosure_date", $item), "content" => $this->function_289("content", $item), "author" => $this->function_289("author", $item)];
+            $feedCategory["link"] = $this->function_290($feedCategory["link"]);
+            $feedCategory["enclosure_link"] = $this->function_290($feedCategory["enclosure_link"]);
+            $feedEnabled[] = $feedCategory;
         }
-        return $var_590;
+        return $feedEnabled;
     }
     public function function_291($var)
     {
-        return preg_replace($var_592, $preg_replace, htmlspecialchars(trim($var)));
+        return preg_replace($feedInterval, $preg_replace, htmlspecialchars(trim($var)));
     }
     public function function_290($url)
     {
@@ -648,9 +648,9 @@ class Class_28
     public function function_278($template, $item, $decodeSecuredHTML = true)
     {
         if (preg_match_all("#\\{(?:feed|rss):([\\w:\\[\\]]+)\\}#siU", $template, $matches)) {
-            foreach ($matches[0] as $var_593 => $var_573) {
-                $var_351 = $this->function_289($matches[1][$var_593], $item);
-                $template = str_replace($var_573, $var_351, $template);
+            foreach ($matches[0] as $feedLastUpdate => $dbTable) {
+                $replacementPatterns = $this->function_289($matches[1][$feedLastUpdate], $item);
+                $template = str_replace($dbTable, $replacementPatterns, $template);
             }
         }
         if ($decodeSecuredHTML) {
@@ -662,9 +662,9 @@ class Class_28
     {
         switch ($this->feedtype) {
             case "atom":
-                $var_594 = NULL;
-                if ($var_594 !== NULL) {
-                    return $var_594;
+                $feedItems = NULL;
+                if ($feedItems !== NULL) {
+                    return $feedItems;
                 }
                 switch ($field) {
                     case "link":
@@ -693,9 +693,9 @@ class Class_28
                         return function_279($item["id"]);
                         break;
                     case "date":
-                        $var_535 = strtotime(function_279($item["updated"]));
-                        if (0 < $var_535) {
-                            return formatTimestamp($var_535);
+                        $apiEndpoint = strtotime(function_279($item["updated"]));
+                        if (0 < $apiEndpoint) {
+                            return formatTimestamp($apiEndpoint);
                         }
                         return function_279($item["updated"]);
                         break;
@@ -714,31 +714,31 @@ class Class_28
                         if (empty($item["content"][0])) {
                             return function_279($item["content"]);
                         }
-                        $var_299 = [];
-                        foreach ($item["content"] as $var_568) {
-                            if (is_array($var_568)) {
-                                if ($var_568["type"] == "html" && $var_299["type"] != "xhtml") {
-                                    $var_299 = $var_568;
+                        $emailHeaderEncoded = [];
+                        foreach ($item["content"] as $tableRow) {
+                            if (is_array($tableRow)) {
+                                if ($tableRow["type"] == "html" && $emailHeaderEncoded["type"] != "xhtml") {
+                                    $emailHeaderEncoded = $tableRow;
                                 } else {
-                                    if ($var_568["type"] == "text" && !($var_299["type"] == "html" || $var_299["type"] == "xhtml")) {
-                                        $var_299 = $var_568;
+                                    if ($tableRow["type"] == "text" && !($emailHeaderEncoded["type"] == "html" || $emailHeaderEncoded["type"] == "xhtml")) {
+                                        $emailHeaderEncoded = $tableRow;
                                     } else {
-                                        if ($var_568["type"] == "xhtml") {
-                                            $var_299 = $var_568;
+                                        if ($tableRow["type"] == "xhtml") {
+                                            $emailHeaderEncoded = $tableRow;
                                         } else {
-                                            if ($var_568["type"] != "xhtml" || $var_568["type"] != "xhtml" || $var_568["type"] != "xhtml") {
-                                                $var_299 = $var_568;
+                                            if ($tableRow["type"] != "xhtml" || $tableRow["type"] != "xhtml" || $tableRow["type"] != "xhtml") {
+                                                $emailHeaderEncoded = $tableRow;
                                             }
                                         }
                                     }
                                 }
                             } else {
-                                if (empty($var_299["type"])) {
-                                    $var_299["value"] = $var_568;
+                                if (empty($emailHeaderEncoded["type"])) {
+                                    $emailHeaderEncoded["value"] = $tableRow;
                                 }
                             }
                         }
-                        return $var_299["value"];
+                        return $emailHeaderEncoded["value"];
                         break;
                     case "author":
                         return function_279($item["author"]["name"]);
@@ -754,9 +754,9 @@ class Class_28
                 }
                 break;
             case "rss":
-                $var_594 = NULL;
-                if ($var_594 !== NULL) {
-                    return $var_594;
+                $feedItems = NULL;
+                if ($feedItems !== NULL) {
+                    return $feedItems;
                 }
                 switch ($field) {
                     case "link":
@@ -783,9 +783,9 @@ class Class_28
                         break;
                     case "pubDate":
                     case "date":
-                        $var_535 = strtotime(function_279($item["pubDate"]));
-                        if (0 < $var_535) {
-                            return formatTimestamp($var_535);
+                        $apiEndpoint = strtotime(function_279($item["pubDate"]));
+                        if (0 < $apiEndpoint) {
+                            return formatTimestamp($apiEndpoint);
                         }
                         return $item["pubDate"];
                         break;
@@ -851,7 +851,7 @@ class Class_29
             }
         }
     }
-    public function &var_595($encoding = "ISO-8859-1", $emptydata = true)
+    public function &rssSaveFeed($encoding = "ISO-8859-1", $emptydata = true)
     {
         $this->$encoding = $encoding;
         if (!$this->legacy_mode) {
@@ -869,13 +869,13 @@ class Class_29
         xml_set_character_data_handler($this->xml_parser, [$this, "handle_cdata"]);
         xml_set_element_handler($this->xml_parser, [$this, "handle_element_start"], [$this, "handle_element_end"]);
         xml_parse($this->xml_parser, $this->xmldata, true);
-        $var_596 = xml_get_error_code($this->xml_parser);
+        $xmlData = xml_get_error_code($this->xml_parser);
         if ($emptydata) {
             $this->$xmldata = "";
             $this->$stack = [];
             $this->$cdata = "";
         }
-        if ($var_596) {
+        if ($xmlData) {
             $this->$error_code = @xml_get_error_code($this->xml_parser);
             $this->$error_line = @xml_get_current_line_number($this->xml_parser);
             xml_parser_free($this->xml_parser);
@@ -889,10 +889,10 @@ class Class_29
         if ($this->legacy_mode) {
             return $this->function_294();
         }
-        if (preg_match("#(<?xml.*$encoding = ['\"])(.*?)(['\"].*?>)#m", $this->xmldata, $var_585)) {
-            $encoding = strtoupper($var_585[2]);
+        if (preg_match("#(<?xml.*$encoding = ['\"])(.*?)(['\"].*?>)#m", $this->xmldata, $feedItem)) {
+            $encoding = strtoupper($feedItem[2]);
             if ($encoding != "UTF-8") {
-                $this->$xmldata = str_replace($var_585[0], $var_585[1] . "UTF-8" . $var_585[3], $this->xmldata);
+                $this->$xmldata = str_replace($feedItem[0], $feedItem[1] . "UTF-8" . $feedItem[3], $this->xmldata);
             }
             if (!$this->encoding) {
                 $this->$encoding = $encoding;
@@ -910,7 +910,7 @@ class Class_29
         if ("UTF-8" !== $this->encoding) {
             $this->$xmldata = $this->function_295($this->xmldata, $this->encoding);
         }
-        if (!$this->var_595("UTF-8")) {
+        if (!$this->rssSaveFeed("UTF-8")) {
             return false;
         }
         return true;
@@ -924,8 +924,8 @@ class Class_29
             $charset = "UTF-8";
         }
         if (function_exists("iconv")) {
-            $var_527 = @iconv($charset, "UTF-8//IGNORE", $in);
-            return $var_527;
+            $apiResponse = @iconv($charset, "UTF-8//IGNORE", $in);
+            return $apiResponse;
         }
         if (function_exists("mb_convert_encoding")) {
             return @mb_convert_encoding($in, "UTF-8", $charset);
@@ -933,52 +933,52 @@ class Class_29
         if (!$strip) {
             return $in;
         }
-        $var_597 = "#([\\x09\\x0A\\x0D\\x20-\\x7E]|[\\xC2-\\xDF][\\x80-\\xBF]|\\xE0[\\xA0-\\xBF][\\x80-\\xBF]|[\\xE1-\\xEC\\xEE\\xEF][\\x80-\\xBF]{2}|\\xED[\\x80-\\x9F][\\x80-\\xBF]|\\xF0[\\x90-\\xBF][\\x80-\\xBF]{2}|[\\xF1-\\xF3][\\x80-\\xBF]{3}|\\xF4[\\x80-\\x8F][\\x80-\\xBF]{2})#S";
-        $var_527 = "";
+        $xmlParser = "#([\\x09\\x0A\\x0D\\x20-\\x7E]|[\\xC2-\\xDF][\\x80-\\xBF]|\\xE0[\\xA0-\\xBF][\\x80-\\xBF]|[\\xE1-\\xEC\\xEE\\xEF][\\x80-\\xBF]{2}|\\xED[\\x80-\\x9F][\\x80-\\xBF]|\\xF0[\\x90-\\xBF][\\x80-\\xBF]{2}|[\\xF1-\\xF3][\\x80-\\xBF]{3}|\\xF4[\\x80-\\x8F][\\x80-\\xBF]{2})#S";
+        $apiResponse = "";
         $matches = [];
-        while (preg_match($var_597, $in, $matches)) {
-            $var_527 .= $matches[0];
+        while (preg_match($xmlParser, $in, $matches)) {
+            $apiResponse .= $matches[0];
             $in = substr($in, strlen($matches[0]));
         }
-        return $var_527;
+        return $apiResponse;
     }
     public function function_294()
     {
-        if (preg_match("#(<?xml.*$encoding = ['\"])(.*?)(['\"].*?>)#m", $this->xmldata, $var_585)) {
-            $var_598 = strtoupper($var_585[2]);
-            if ($var_598 == "ISO-8859-1") {
-                $var_598 = "WINDOWS-1252";
+        if (preg_match("#(<?xml.*$encoding = ['\"])(.*?)(['\"].*?>)#m", $this->xmldata, $feedItem)) {
+            $xmlElement = strtoupper($feedItem[2]);
+            if ($xmlElement == "ISO-8859-1") {
+                $xmlElement = "WINDOWS-1252";
             }
-            if ($var_598 != "UTF-8") {
-                $this->$xmldata = str_replace($var_585[0], $var_585[1] . "ISO-8859-1" . $var_585[3], $this->xmldata);
+            if ($xmlElement != "UTF-8") {
+                $this->$xmldata = str_replace($feedItem[0], $feedItem[1] . "ISO-8859-1" . $feedItem[3], $this->xmldata);
             }
         } else {
-            $var_598 = "UTF-8";
+            $xmlElement = "UTF-8";
             if (strpos($this->xmldata, "<?xml") === false) {
                 $this->$xmldata = "<?xml $version = \"1.0\" $encoding = \"ISO-8859-1\"?>\n" . $this->xmldata;
             } else {
                 $this->$xmldata = preg_replace("#(<?xml.*)(\\?>)#", "\\1 $encoding = \"ISO-8859-1\" \\2", $this->xmldata);
             }
-            $var_598 = "ISO-8859-1";
+            $xmlElement = "ISO-8859-1";
         }
-        $var_599 = $this->xmldata;
+        $xmlAttributes = $this->xmldata;
         $target_encoding = $charset == "iso-8859-1" ? "WINDOWS-1252" : "UTF-8";
-        $var_600 = $var_598 != "UTF-8" ? "ISO-8859-1" : "UTF-8";
-        $var_601 = false;
-        if (strtoupper($var_598) !== strtoupper($target_encoding)) {
-            if (function_exists("iconv") && ($var_602 = iconv($var_598, $target_encoding . "//TRANSLIT", $this->xmldata))) {
-                $var_601 = true;
-                $this->$xmldata = & $var_602;
+        $itemTitle = $xmlElement != "UTF-8" ? "ISO-8859-1" : "UTF-8";
+        $itemLink = false;
+        if (strtoupper($xmlElement) !== strtoupper($target_encoding)) {
+            if (function_exists("iconv") && ($itemDescription = iconv($xmlElement, $target_encoding . "//TRANSLIT", $this->xmldata))) {
+                $itemLink = true;
+                $this->$xmldata = & $itemDescription;
             }
-            if (!$var_601 && function_exists("mb_convert_encoding") && ($var_602 = @mb_convert_encoding($this->xmldata, $target_encoding, $var_598))) {
-                $this->$xmldata = & $var_602;
+            if (!$itemLink && function_exists("mb_convert_encoding") && ($itemDescription = @mb_convert_encoding($this->xmldata, $target_encoding, $xmlElement))) {
+                $this->$xmldata = & $itemDescription;
             }
         }
-        if ($this->var_595($var_600)) {
+        if ($this->rssSaveFeed($itemTitle)) {
             return true;
         }
-        if ($var_601 && ($this->$xmldata = iconv($var_598, $target_encoding . "//IGNORE", $var_599))) {
-            if ($this->var_595($var_600)) {
+        if ($itemLink && ($this->$xmldata = iconv($xmlElement, $target_encoding . "//IGNORE", $xmlAttributes))) {
+            if ($this->rssSaveFeed($itemTitle)) {
                 return true;
             }
             return false;
@@ -1001,12 +1001,12 @@ class Class_29
     }
     public function function_298(&$parser, $name)
     {
-        $var_603 = array_shift($this->stack);
-        if ($var_603["name"] != $name) {
+        $itemDate = array_shift($this->stack);
+        if ($itemDate["name"] != $name) {
             return NULL;
         }
-        $output = $var_603["attribs"];
-        if (trim($this->cdata) !== "" || $var_603["tag_count"] == $this->tag_count) {
+        $output = $itemDate["attribs"];
+        if (trim($this->cdata) !== "" || $itemDate["tag_count"] == $this->tag_count) {
             if (sizeof($output) == 0) {
                 $output = $this->function_299($this->cdata);
             } else {
@@ -1026,8 +1026,8 @@ class Class_29
     }
     public function function_274()
     {
-        if ($var_604 = @xml_error_string(@$this->function_301())) {
-            return $var_604;
+        if ($itemGuid = @xml_error_string(@$this->function_301())) {
+            return $itemGuid;
         }
         return "unknown";
     }
@@ -1060,14 +1060,14 @@ class Class_29
     }
     public function function_299($xml)
     {
-        if (!is_array($var_433)) {
-            $var_433 = ["�![CDATA[", "]]�", "\r\n", "\n"];
-            $var_351 = ["<![CDATA[", "]]>", "\n", "\r\n"];
+        if (!is_array($logMessage)) {
+            $logMessage = ["�![CDATA[", "]]�", "\r\n", "\n"];
+            $replacementPatterns = ["<![CDATA[", "]]>", "\n", "\r\n"];
         }
         if (!$this->legacy_mode && $this->encoding != $this->target_encoding) {
             $xml = $this->function_194($xml);
         }
-        return str_replace($var_433, $var_351, $xml);
+        return str_replace($logMessage, $replacementPatterns, $xml);
     }
     public function function_284($encoding)
     {
@@ -1100,7 +1100,7 @@ class Class_29
         if ($this->ncr_encode) {
             $data = ncrencode($data, true);
         }
-        return var_605($data, $this->encoding, $this->target_encoding);
+        return rssFormatItem($data, $this->encoding, $this->target_encoding);
     }
     public function function_282($disable = true)
     {
@@ -1177,17 +1177,17 @@ class Class_30
     }
     public function function_309($tag, $attr, $closing = false)
     {
-        $var_140 = "<" . $tag;
+        $loopCounter = "<" . $tag;
         if (!empty($attr)) {
-            foreach ($attr as $var_606 => $var_607) {
-                if (strpos($var_607, "\"") !== false) {
-                    $var_607 = htmlspecialchars($var_607);
+            foreach ($attr as $feedError => $parseSuccess) {
+                if (strpos($parseSuccess, "\"") !== false) {
+                    $parseSuccess = htmlspecialchars($parseSuccess);
                 }
-                $var_140 .= " " . $var_606 . "=\"" . $var_607 . "\"";
+                $loopCounter .= " " . $feedError . "=\"" . $parseSuccess . "\"";
             }
         }
-        $var_140 .= $closing ? " />\n" : ">";
-        return $var_140;
+        $loopCounter .= $closing ? " />\n" : ">";
+        return $loopCounter;
     }
     public function function_281($xml)
     {
@@ -1225,20 +1225,20 @@ class Class_32 extends Class_30
 function function_271($value)
 {
     $value = trim($value);
-    $var_608 = intval($value);
+    $validFeed = intval($value);
     strtolower($value[strlen($value) - 1]);
     switch (strtolower($value[strlen($value) - 1])) {
         case "g":
-            $var_608 *= 1024;
+            $validFeed *= 1024;
             break;
         case "m":
-            $var_608 *= 1024;
+            $validFeed *= 1024;
             break;
         case "k":
-            $var_608 *= 1024;
+            $validFeed *= 1024;
             break;
         default:
-            return $var_608;
+            return $validFeed;
     }
 }
 function getStaffLanguage()
@@ -1295,7 +1295,7 @@ function function_292($text, $doUniCode = false)
 {
     if ($doUniCode) {
         $text = preg_replace_callback("/&#([0-9]+);/siU", function ($matches) {
-            return var_291($matches[1]);
+            return convertUtf8Char($matches[1]);
         }, $text);
     }
     return str_replace(["&lt;", "&gt;", "&quot;", "&amp;"], ["<", ">", "\"", "&"], $text);
@@ -1322,22 +1322,22 @@ function function_314($rawurl, $postfields = [])
             $url["path"] .= "?" . $url["query"];
         }
         $url["query"] = "";
-        $var_609 = "GET";
+        $feedContent = "GET";
     } else {
-        $var_574 = [];
+        $dbQuery = [];
         foreach ($postfields as $key => $value) {
             if (!empty($value)) {
-                $var_574[] = $key . "=" . urlencode($value);
+                $dbQuery[] = $key . "=" . urlencode($value);
             }
         }
-        $url["query"] = implode("&", $var_574);
-        $var_609 = "POST";
+        $url["query"] = implode("&", $dbQuery);
+        $feedContent = "POST";
     }
-    $var_610 = false;
+    $itemsProcessed = false;
     if (function_exists("curl_init") && ($ch = curl_init())) {
         curl_setopt($ch, CURLOPT_URL, $rawurl);
         curl_setopt($ch, CURLOPT_TIMEOUT, 5);
-        if ($var_609 == "POST") {
+        if ($feedContent == "POST") {
             curl_setopt($ch, CURLOPT_POST, true);
             curl_setopt($ch, CURLOPT_POSTFIELDS, $url["query"]);
         }
@@ -1346,47 +1346,47 @@ function function_314($rawurl, $postfields = [])
         curl_setopt($ch, CURLOPT_USERAGENT, "TSSE via cURL/PHP");
         @curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
         @curl_setopt($ch, CURLOPT_ENCODING, "gzip");
-        $var_611 = curl_exec($ch);
+        $itemsSaved = curl_exec($ch);
         curl_close($ch);
-        if ($var_611 !== false) {
-            $var_610 = true;
+        if ($itemsSaved !== false) {
+            $itemsProcessed = true;
         }
     }
-    if (!$var_610) {
+    if (!$itemsProcessed) {
         $fp = fsockopen($url["host"], $url["port"], fsockError, fsockErrorStr, 5);
         if (!$fp) {
             trigger_error("Unable to connect to host <i>" . $url["host"] . "</i>.<br />" . fsockErrorStr, 256);
             return false;
         }
         socket_set_timeout($fp, 5);
-        $var_541 = $var_609 . " " . $url["path"] . " HTTP/1.0\r\n";
-        $var_541 .= "Host: " . $url["host"] . "\r\n";
-        $var_541 .= "User-Agent: TSSE RSS Reader\r\n";
+        $responseCode = $feedContent . " " . $url["path"] . " HTTP/1.0\r\n";
+        $responseCode .= "Host: " . $url["host"] . "\r\n";
+        $responseCode .= "User-Agent: TSSE RSS Reader\r\n";
         if (function_exists("gzinflate")) {
-            $var_541 .= "Accept-Encoding: gzip\r\n";
+            $responseCode .= "Accept-Encoding: gzip\r\n";
         }
-        if ($var_609 == "POST") {
-            $var_541 .= "Content-Type: application/x-www-form-urlencoded\r\n";
-            $var_541 .= "Content-Length: " . strlen($url["query"]) . "\r\n";
+        if ($feedContent == "POST") {
+            $responseCode .= "Content-Type: application/x-www-form-urlencoded\r\n";
+            $responseCode .= "Content-Length: " . strlen($url["query"]) . "\r\n";
         }
-        $var_541 .= "\r\n";
-        fwrite($fp, $var_541 . $url["query"]);
-        $var_611 = "";
+        $responseCode .= "\r\n";
+        fwrite($fp, $responseCode . $url["query"]);
+        $itemsSaved = "";
         while (!feof($fp)) {
             $result = fgets($fp, 1024);
-            $var_611 .= $result;
+            $itemsSaved .= $result;
         }
         fclose($fp);
     }
-    preg_match("#^(.*)\\r\\n\\r\\n(.*)\$#sU", $var_611, $matches);
-    unset($var_611);
-    if ($var_610) {
+    preg_match("#^(.*)\\r\\n\\r\\n(.*)\$#sU", $itemsSaved, $matches);
+    unset($itemsSaved);
+    if ($itemsProcessed) {
         while (preg_match("#\r\nLocation: #i", $matches[1])) {
             preg_match("#^(.*)\\r\\n\\r\\n(.*)\$#sU", $matches[2], $matches);
         }
     }
-    if (function_exists("gzinflate") && preg_match("#\r\nContent-encoding: gzip\r\n#i", $matches[1]) && ($var_612 = @gzinflate(@substr($matches[2], 10)))) {
-        $matches[2] = $var_612;
+    if (function_exists("gzinflate") && preg_match("#\r\nContent-encoding: gzip\r\n#i", $matches[1]) && ($duplicates = @gzinflate(@substr($matches[2], 10)))) {
+        $matches[2] = $duplicates;
     }
     return ["headers" => $matches[1], "body" => $matches[2]];
 }
@@ -1400,8 +1400,8 @@ function function_144(&$array, $tagname, $reinitialise = false, $depth = 0)
             if ($key === $tagname) {
                 if (is_array($array[(string) $key])) {
                     if ($array[(string) $key][0]) {
-                        foreach (array_keys($array[(string) $key]) as $var_613) {
-                            $output[] =& $array[(string) $key][(string) $var_613];
+                        foreach (array_keys($array[(string) $key]) as $totalItems) {
+                            $output[] =& $array[(string) $key][(string) $totalItems];
                         }
                     } else {
                         $output[] =& $array[(string) $key];
@@ -1409,7 +1409,7 @@ function function_144(&$array, $tagname, $reinitialise = false, $depth = 0)
                 }
             } else {
                 if (is_array($array[(string) $key]) && $depth < 30) {
-                    var_614($array[(string) $key], $tagname, false, $depth + 1);
+                    pluginActivate($array[(string) $key], $tagname, false, $depth + 1);
                 }
             }
         }

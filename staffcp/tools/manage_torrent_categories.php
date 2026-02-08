@@ -7,7 +7,7 @@
  */
 
 checkStaffAuthentication();
-var_435();
+parseCategory();
 $Act = isset($_GET["act"]) ? trim($_GET["act"]) : (isset($_POST["act"]) ? trim($_POST["act"]) : "");
 $Cid = isset($_GET["id"]) ? intval($_GET["id"]) : (isset($_POST["id"]) ? intval($_POST["id"]) : 0);
 $Language = file("languages/" . getStaffLanguage() . "/manage_torrent_categories.lang");
@@ -92,7 +92,7 @@ if ($Act == "edit" && $Cid) {
                 $sgids2 .= "\r\n\t\t\t\t<td class=\"none\"><input $type = \"checkbox\" $name = \"usergroups2[]\" $value = \"" . $gid["gid"] . "\"" . (in_array($gid["gid"], $candownload, true) ? " $checked = \"checked\"" : "") . " /></td>\r\n\t\t\t\t<td class=\"none\">" . str_replace("{username}", $gid["title"], $gid["namestyle"]) . "</td>";
             }
             $sgids2 .= "\r\n\t\t\t\t\t\t</tr>\r\n\t\t\t\t\t</table>\r\n\t\t\t</fieldset>";
-            echo "\r\n\t\t\t\r\n\t\t\t<form $method = \"post\" $action = \"index.php?do=manage_torrent_categories&$act = edit&$id = " . $Cid . "\">\r\n\t\t\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td class=\"tcat\" $colspan = \"2\" $align = \"center\">\r\n\t\t\t\t\t\t" . $Language[6] . "\r\n\t\t\t\t\t</td>\r\n\t\t\t\t</tr>\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td class=\"alt1\">" . $Language[13] . "</td>\r\n\t\t\t\t\t<td class=\"alt1\"><input $type = \"text\" $name = \"name\" $value = \"" . htmlspecialchars($Category["name"]) . "\" $size = \"40\" /></td>\r\n\t\t\t\t</tr>\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td class=\"alt1\">" . $Language[15] . "</td>\r\n\t\t\t\t\t<td class=\"alt1\"><input $type = \"text\" $name = \"cat_desc\" $value = \"" . htmlspecialchars($Category["cat_desc"]) . "\" $size = \"40\" /></td>\r\n\t\t\t\t</tr>\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td class=\"alt1\">" . $Language[14] . "</td>\r\n\t\t\t\t\t<td class=\"alt1\">" . var_435($Category["image"]) . "</td>\r\n\t\t\t\t</tr>\r\n\t\t\t\t" . $Extra . "\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td class=\"alt1\" $valign = \"top\">" . $Language[27] . "</td>\r\n\t\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t\t" . $sgids . "\r\n\t\t\t\t\t</td>\r\n\t\t\t\t</tr>\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td class=\"alt1\" $valign = \"top\">" . $Language[29] . "</td>\r\n\t\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t\t" . $sgids2 . "\r\n\t\t\t\t\t</td>\r\n\t\t\t\t</tr>\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td class=\"tcat2\"></td>\r\n\t\t\t\t\t<td class=\"tcat2\"><input $type = \"submit\" $value = \"" . $Language[20] . "\" /> <input $type = \"reset\" $value = \"" . $Language[21] . "\" /></td>\r\n\t\t\t\t</tr>\r\n\t\t\t</table>\r\n\t\t\t</form>";
+            echo "\r\n\t\t\t\r\n\t\t\t<form $method = \"post\" $action = \"index.php?do=manage_torrent_categories&$act = edit&$id = " . $Cid . "\">\r\n\t\t\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td class=\"tcat\" $colspan = \"2\" $align = \"center\">\r\n\t\t\t\t\t\t" . $Language[6] . "\r\n\t\t\t\t\t</td>\r\n\t\t\t\t</tr>\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td class=\"alt1\">" . $Language[13] . "</td>\r\n\t\t\t\t\t<td class=\"alt1\"><input $type = \"text\" $name = \"name\" $value = \"" . htmlspecialchars($Category["name"]) . "\" $size = \"40\" /></td>\r\n\t\t\t\t</tr>\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td class=\"alt1\">" . $Language[15] . "</td>\r\n\t\t\t\t\t<td class=\"alt1\"><input $type = \"text\" $name = \"cat_desc\" $value = \"" . htmlspecialchars($Category["cat_desc"]) . "\" $size = \"40\" /></td>\r\n\t\t\t\t</tr>\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td class=\"alt1\">" . $Language[14] . "</td>\r\n\t\t\t\t\t<td class=\"alt1\">" . parseCategory($Category["image"]) . "</td>\r\n\t\t\t\t</tr>\r\n\t\t\t\t" . $Extra . "\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td class=\"alt1\" $valign = \"top\">" . $Language[27] . "</td>\r\n\t\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t\t" . $sgids . "\r\n\t\t\t\t\t</td>\r\n\t\t\t\t</tr>\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td class=\"alt1\" $valign = \"top\">" . $Language[29] . "</td>\r\n\t\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t\t" . $sgids2 . "\r\n\t\t\t\t\t</td>\r\n\t\t\t\t</tr>\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td class=\"tcat2\"></td>\r\n\t\t\t\t\t<td class=\"tcat2\"><input $type = \"submit\" $value = \"" . $Language[20] . "\" /> <input $type = \"reset\" $value = \"" . $Language[21] . "\" /></td>\r\n\t\t\t\t</tr>\r\n\t\t\t</table>\r\n\t\t\t</form>";
         }
     }
 }
@@ -166,7 +166,7 @@ if ($Act == "new") {
             $sgids2 .= "\r\n\t\t\t<td class=\"none\"><input $type = \"checkbox\" $name = \"usergroups2[]\" $value = \"" . $gid["gid"] . "\"" . (in_array($gid["gid"], $candownload, true) ? " $checked = \"checked\"" : "") . " /></td>\r\n\t\t\t<td class=\"none\">" . str_replace("{username}", $gid["title"], $gid["namestyle"]) . "</td>";
         }
         $sgids2 .= "\r\n\t\t\t\t\t</tr>\r\n\t\t\t\t</table>\r\n\t\t</fieldset>";
-        echo "\r\n\t\t\r\n\t\t" . $Message . "\r\n\t\t<form $method = \"post\" $action = \"index.php?do=manage_torrent_categories&$act = new&$id = " . $id . "\">\r\n\t\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"tcat\" $colspan = \"2\" $align = \"center\">\r\n\t\t\t\t\t" . $Head . "\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt1\">" . $Language[13] . "</td>\r\n\t\t\t\t<td class=\"alt1\"><input $type = \"text\" $name = \"name\" $value = \"" . htmlspecialchars($name) . "\" $size = \"40\" /></td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt1\">" . $Language[15] . "</td>\r\n\t\t\t\t<td class=\"alt1\"><input $type = \"text\" $name = \"cat_desc\" $value = \"" . htmlspecialchars($cat_desc) . "\" $size = \"40\" /></td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt1\">" . $Language[14] . "</td>\r\n\t\t\t\t<td class=\"alt1\">" . var_435($image) . "</td>\r\n\t\t\t</tr>\r\n\t\t\t" . $Extra . "\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt1\" $valign = \"top\">" . $Language[27] . "</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . $sgids . "\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\t\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt1\" $valign = \"top\">" . $Language[29] . "</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . $sgids2 . "\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\t\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"tcat2\"></td>\r\n\t\t\t\t<td class=\"tcat2\"><input $type = \"submit\" $value = \"" . $Language[20] . "\" /> <input $type = \"reset\" $value = \"" . $Language[21] . "\" /></td>\r\n\t\t\t</tr>\r\n\t\t</table>\r\n\t\t</form>";
+        echo "\r\n\t\t\r\n\t\t" . $Message . "\r\n\t\t<form $method = \"post\" $action = \"index.php?do=manage_torrent_categories&$act = new&$id = " . $id . "\">\r\n\t\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"tcat\" $colspan = \"2\" $align = \"center\">\r\n\t\t\t\t\t" . $Head . "\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt1\">" . $Language[13] . "</td>\r\n\t\t\t\t<td class=\"alt1\"><input $type = \"text\" $name = \"name\" $value = \"" . htmlspecialchars($name) . "\" $size = \"40\" /></td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt1\">" . $Language[15] . "</td>\r\n\t\t\t\t<td class=\"alt1\"><input $type = \"text\" $name = \"cat_desc\" $value = \"" . htmlspecialchars($cat_desc) . "\" $size = \"40\" /></td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt1\">" . $Language[14] . "</td>\r\n\t\t\t\t<td class=\"alt1\">" . parseCategory($image) . "</td>\r\n\t\t\t</tr>\r\n\t\t\t" . $Extra . "\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt1\" $valign = \"top\">" . $Language[27] . "</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . $sgids . "\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\t\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt1\" $valign = \"top\">" . $Language[29] . "</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . $sgids2 . "\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\t\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"tcat2\"></td>\r\n\t\t\t\t<td class=\"tcat2\"><input $type = \"submit\" $value = \"" . $Language[20] . "\" /> <input $type = \"reset\" $value = \"" . $Language[21] . "\" /></td>\r\n\t\t\t</tr>\r\n\t\t</table>\r\n\t\t</form>";
     }
 }
 $SubCategories = [];
@@ -231,25 +231,25 @@ function function_153()
     $configQuery = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'MAIN'");
     $configRow = mysqli_fetch_assoc($configQuery);
     $configData = unserialize($configRow["content"]);
-    $var_436 = [];
+    $catId = [];
     $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM categories WHERE $type = 'c' ORDER by name,id");
-    while ($var_418 = mysqli_fetch_assoc($query)) {
-        $var_436[] = $var_418;
+    while ($categoryImage = mysqli_fetch_assoc($query)) {
+        $catId[] = $categoryImage;
     }
-    $var_437 = [];
+    $catName = [];
     $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM categories WHERE $type = 's' ORDER by name,id");
-    while ($var_418 = mysqli_fetch_assoc($query)) {
-        $var_437[] = $var_418;
+    while ($categoryImage = mysqli_fetch_assoc($query)) {
+        $catName[] = $categoryImage;
     }
-    $var_438 = var_export($var_436, true);
-    $var_439 = var_export($var_437, true);
-    $var_440 = "../" . $configData["cache"] . "/categories.php";
-    $var_441 = @fopen((string) $var_440, "w");
-    $var_442 = "<?php\n/** TS Generated Cache#7 - Do Not Alter\n * Cache Name: Categories\n * Generated: " . gmdate("r") . "\n*/\n\n";
-    $var_442 .= "\$_categoriesC = " . $var_438 . ";\n\n";
-    $var_442 .= "\$_categoriesS = " . $var_439 . ";\n?>";
-    @fwrite($var_441, $var_442);
-    @fclose($var_441);
+    $catSort = var_export($catId, true);
+    $catDesc = var_export($catName, true);
+    $smileyPath = "../" . $configData["cache"] . "/categories.php";
+    $catImage = @fopen((string) $smileyPath, "w");
+    $smileyData = "<?php\n/** TS Generated Cache#7 - Do Not Alter\n * Cache Name: Categories\n * Generated: " . gmdate("r") . "\n*/\n\n";
+    $smileyData .= "\$_categoriesC = " . $catSort . ";\n\n";
+    $smileyData .= "\$_categoriesS = " . $catDesc . ";\n?>";
+    @fwrite($catImage, $smileyData);
+    @fclose($catImage);
 }
 function function_155($selected = "")
 {
@@ -257,24 +257,24 @@ function function_155($selected = "")
     $configRow = mysqli_fetch_assoc($configQuery);
     $configData = unserialize($configRow["content"]);
     if (is_dir("../images")) {
-        $var_443 = "../images/" . $configData["table_cat"] . "/";
+        $countryId = "../images/" . $configData["table_cat"] . "/";
     } else {
         if (is_dir("../pic")) {
-            $var_443 = "../pic/" . $configData["table_cat"] . "/";
+            $countryId = "../pic/" . $configData["table_cat"] . "/";
         } else {
             return "<select $name = \"image\"></select>";
         }
     }
-    $var_444 = $configData["pic_base_url"] . $configData["table_cat"] . "/";
-    $var_445 = scandir($var_443);
-    $var_446 = "<select $name = \"image\">";
-    foreach ($var_445 as $var_447) {
-        if (in_array(function_154($var_447), ["png", "gif", "jpg"])) {
-            $var_446 .= "<option $value = \"" . htmlspecialchars($var_447) . "\"" . ($selected == $var_447 ? " $selected = \"selected\"" : "") . ">" . htmlspecialchars($var_447) . "</option>";
+    $countryName = $configData["pic_base_url"] . $configData["table_cat"] . "/";
+    $countryCode = scandir($countryId);
+    $countryFlag = "<select $name = \"image\">";
+    foreach ($countryCode as $countryData) {
+        if (in_array(function_154($countryData), ["png", "gif", "jpg"])) {
+            $countryFlag .= "<option $value = \"" . htmlspecialchars($countryData) . "\"" . ($selected == $countryData ? " $selected = \"selected\"" : "") . ">" . htmlspecialchars($countryData) . "</option>";
         }
     }
-    $var_446 .= "</select>";
-    return $var_446;
+    $countryFlag .= "</select>";
+    return $countryFlag;
 }
 function showAlertMessage($message = "")
 {

@@ -194,14 +194,14 @@ if ($Act == "manage_menu_items" && isset($_GET["language"]) && ($lang = trim($_G
         $Count = 0;
         foreach ($MainMenus as $mid => $menu) {
             $class = $Count % 2 == 1 ? "alt2" : "alt1";
-            $Found .= "\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"" . $class . "\" $align = \"center\">\r\n\t\t\t\t\t<input $type = \"text\" $size = \"5\" $name = \"sort[" . $mid . "]\" $value = \"" . $menu["sort"] . "\" />\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"" . $class . "\">\r\n\t\t\t\t\t<input $type = \"text\" $size = \"40\" $name = \"title[" . $mid . "]\" $value = \"" . $menu["title"] . "\" />\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"" . $class . "\">\r\n\t\t\t\t\t<input $type = \"text\" $size = \"40\" $name = \"link[" . $mid . "]\" $value = \"" . $menu["link"] . "\" />\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"" . $class . "\">\r\n\t\t\t\t\t<input $type = \"text\" $size = \"40\" $name = \"image[" . $mid . "]\" $value = \"" . $menu["image"] . "\" />\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"" . $class . "\" $align = \"center\">\r\n\t\t\t\t\t" . var_495($mid, $menu["pid"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"" . $class . "\" $align = \"center\"><a $href = \"index.php?do=manage_menu&amp;$act = edit&amp;$mid = " . $mid . "&amp;$language = " . $lang . "\"><img $src = \"images/tool_edit.png\" $alt = \"" . $Language[11] . "\" $title = \"" . $Language[11] . "\" $border = \"0\" /></a> <a $href = \"#\" $onclick = \"ConfirmDelete(" . $mid . ", '" . $lang . "');\"><img $src = \"images/tool_delete.png\" $alt = \"" . $Language[12] . "\" $title = \"" . $Language[12] . "\" $border = \"0\" /></a></td>\r\n\t\t\t</tr>\r\n\t\t\t";
+            $Found .= "\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"" . $class . "\" $align = \"center\">\r\n\t\t\t\t\t<input $type = \"text\" $size = \"5\" $name = \"sort[" . $mid . "]\" $value = \"" . $menu["sort"] . "\" />\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"" . $class . "\">\r\n\t\t\t\t\t<input $type = \"text\" $size = \"40\" $name = \"title[" . $mid . "]\" $value = \"" . $menu["title"] . "\" />\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"" . $class . "\">\r\n\t\t\t\t\t<input $type = \"text\" $size = \"40\" $name = \"link[" . $mid . "]\" $value = \"" . $menu["link"] . "\" />\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"" . $class . "\">\r\n\t\t\t\t\t<input $type = \"text\" $size = \"40\" $name = \"image[" . $mid . "]\" $value = \"" . $menu["image"] . "\" />\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"" . $class . "\" $align = \"center\">\r\n\t\t\t\t\t" . buildMenuHtml($mid, $menu["pid"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"" . $class . "\" $align = \"center\"><a $href = \"index.php?do=manage_menu&amp;$act = edit&amp;$mid = " . $mid . "&amp;$language = " . $lang . "\"><img $src = \"images/tool_edit.png\" $alt = \"" . $Language[11] . "\" $title = \"" . $Language[11] . "\" $border = \"0\" /></a> <a $href = \"#\" $onclick = \"ConfirmDelete(" . $mid . ", '" . $lang . "');\"><img $src = \"images/tool_delete.png\" $alt = \"" . $Language[12] . "\" $title = \"" . $Language[12] . "\" $border = \"0\" /></a></td>\r\n\t\t\t</tr>\r\n\t\t\t";
             $Count++;
             if (isset($ParentCetegories[$mid])) {
                 foreach ($ParentCetegories[$mid] as $pmid => $pcategory) {
-                    $Found .= "\r\n\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t<td class=\"" . $class . "\" $align = \"center\">\r\n\t\t\t\t\t\t\t- -  <input $type = \"text\" $size = \"2\" $name = \"sort[" . $pmid . "]\" $value = \"" . $pcategory["sort"] . "\" />\r\n\t\t\t\t\t\t</td>\r\n\t\t\t\t\t\t<td class=\"" . $class . "\">\r\n\t\t\t\t\t\t\t- - <input $type = \"text\" $size = \"37\" $name = \"title[" . $pmid . "]\" $value = \"" . $pcategory["title"] . "\" />\r\n\t\t\t\t\t\t</td>\r\n\t\t\t\t\t\t<td class=\"" . $class . "\">\r\n\t\t\t\t\t\t\t<input $type = \"text\" $size = \"40\" $name = \"link[" . $pmid . "]\" $value = \"" . $pcategory["link"] . "\" />\r\n\t\t\t\t\t\t</td>\r\n\t\t\t\t\t\t<td class=\"" . $class . "\">\r\n\t\t\t\t\t\t\t<input $type = \"text\" $size = \"40\" $name = \"image[" . $pmid . "]\" $value = \"" . $pcategory["image"] . "\" />\r\n\t\t\t\t\t\t</td>\r\n\t\t\t\t\t\t<td class=\"" . $class . "\" $align = \"center\">\r\n\t\t\t\t\t\t\t" . var_495($pmid, $pcategory["pid"]) . "\r\n\t\t\t\t\t\t</td>\r\n\t\t\t\t\t\t<td class=\"" . $class . "\" $align = \"center\"><a $href = \"index.php?do=manage_menu&amp;$act = edit&amp;$mid = " . $pmid . "&amp;$language = " . $lang . "\"><img $src = \"images/tool_edit.png\" $alt = \"" . $Language[11] . "\" $title = \"" . $Language[11] . "\" $border = \"0\" /></a> <a $href = \"#\" $onclick = \"ConfirmDelete(" . $pmid . ", '" . $lang . "');\"><img $src = \"images/tool_delete.png\" $alt = \"" . $Language[12] . "\" $title = \"" . $Language[12] . "\" $border = \"0\" /></a></td>\r\n\t\t\t\t\t</tr>\r\n\t\t\t\t\t";
+                    $Found .= "\r\n\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t<td class=\"" . $class . "\" $align = \"center\">\r\n\t\t\t\t\t\t\t- -  <input $type = \"text\" $size = \"2\" $name = \"sort[" . $pmid . "]\" $value = \"" . $pcategory["sort"] . "\" />\r\n\t\t\t\t\t\t</td>\r\n\t\t\t\t\t\t<td class=\"" . $class . "\">\r\n\t\t\t\t\t\t\t- - <input $type = \"text\" $size = \"37\" $name = \"title[" . $pmid . "]\" $value = \"" . $pcategory["title"] . "\" />\r\n\t\t\t\t\t\t</td>\r\n\t\t\t\t\t\t<td class=\"" . $class . "\">\r\n\t\t\t\t\t\t\t<input $type = \"text\" $size = \"40\" $name = \"link[" . $pmid . "]\" $value = \"" . $pcategory["link"] . "\" />\r\n\t\t\t\t\t\t</td>\r\n\t\t\t\t\t\t<td class=\"" . $class . "\">\r\n\t\t\t\t\t\t\t<input $type = \"text\" $size = \"40\" $name = \"image[" . $pmid . "]\" $value = \"" . $pcategory["image"] . "\" />\r\n\t\t\t\t\t\t</td>\r\n\t\t\t\t\t\t<td class=\"" . $class . "\" $align = \"center\">\r\n\t\t\t\t\t\t\t" . buildMenuHtml($pmid, $pcategory["pid"]) . "\r\n\t\t\t\t\t\t</td>\r\n\t\t\t\t\t\t<td class=\"" . $class . "\" $align = \"center\"><a $href = \"index.php?do=manage_menu&amp;$act = edit&amp;$mid = " . $pmid . "&amp;$language = " . $lang . "\"><img $src = \"images/tool_edit.png\" $alt = \"" . $Language[11] . "\" $title = \"" . $Language[11] . "\" $border = \"0\" /></a> <a $href = \"#\" $onclick = \"ConfirmDelete(" . $pmid . ", '" . $lang . "');\"><img $src = \"images/tool_delete.png\" $alt = \"" . $Language[12] . "\" $title = \"" . $Language[12] . "\" $border = \"0\" /></a></td>\r\n\t\t\t\t\t</tr>\r\n\t\t\t\t\t";
                     if (isset($SubCategories[$pmid])) {
                         foreach ($SubCategories[$pmid] as $psmid => $pscategory) {
-                            $Found .= "\r\n\t\t\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t\t\t<td class=\"" . $class . "\" $align = \"center\">\r\n\t\t\t\t\t\t\t\t\t- - -  <input $type = \"text\" $size = \"1\" $name = \"sort[" . $psmid . "]\" $value = \"" . $pscategory["sort"] . "\" />\r\n\t\t\t\t\t\t\t\t</td>\r\n\t\t\t\t\t\t\t\t<td class=\"" . $class . "\">\r\n\t\t\t\t\t\t\t\t\t- - - <input $type = \"text\" $size = \"27\" $name = \"title[" . $psmid . "]\" $value = \"" . $pscategory["title"] . "\" />\r\n\t\t\t\t\t\t\t\t</td>\r\n\t\t\t\t\t\t\t\t<td class=\"" . $class . "\">\r\n\t\t\t\t\t\t\t\t\t<input $type = \"text\" $size = \"30\" $name = \"link[" . $psmid . "]\" $value = \"" . $pscategory["link"] . "\" />\r\n\t\t\t\t\t\t\t\t</td>\r\n\t\t\t\t\t\t\t\t<td class=\"" . $class . "\">\r\n\t\t\t\t\t\t\t\t\t<input $type = \"text\" $size = \"30\" $name = \"image[" . $psmid . "]\" $value = \"" . $pscategory["image"] . "\" />\r\n\t\t\t\t\t\t\t\t</td>\r\n\t\t\t\t\t\t\t\t<td class=\"" . $class . "\" $align = \"center\">\r\n\t\t\t\t\t\t\t\t\t" . var_495($psmid, $pscategory["sub"], true) . "\r\n\t\t\t\t\t\t\t\t</td>\r\n\t\t\t\t\t\t\t\t<td class=\"" . $class . "\" $align = \"center\"><a $href = \"index.php?do=manage_menu&amp;$act = edit&amp;$mid = " . $psmid . "&amp;$language = " . $lang . "\"><img $src = \"images/tool_edit.png\" $alt = \"" . $Language[11] . "\" $title = \"" . $Language[11] . "\" $border = \"0\" /></a> <a $href = \"#\" $onclick = \"ConfirmDelete(" . $psmid . ", '" . $lang . "');\"><img $src = \"images/tool_delete.png\" $alt = \"" . $Language[12] . "\" $title = \"" . $Language[12] . "\" $border = \"0\" /></a></td>\r\n\t\t\t\t\t\t\t</tr>\r\n\t\t\t\t\t\t\t";
+                            $Found .= "\r\n\t\t\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t\t\t<td class=\"" . $class . "\" $align = \"center\">\r\n\t\t\t\t\t\t\t\t\t- - -  <input $type = \"text\" $size = \"1\" $name = \"sort[" . $psmid . "]\" $value = \"" . $pscategory["sort"] . "\" />\r\n\t\t\t\t\t\t\t\t</td>\r\n\t\t\t\t\t\t\t\t<td class=\"" . $class . "\">\r\n\t\t\t\t\t\t\t\t\t- - - <input $type = \"text\" $size = \"27\" $name = \"title[" . $psmid . "]\" $value = \"" . $pscategory["title"] . "\" />\r\n\t\t\t\t\t\t\t\t</td>\r\n\t\t\t\t\t\t\t\t<td class=\"" . $class . "\">\r\n\t\t\t\t\t\t\t\t\t<input $type = \"text\" $size = \"30\" $name = \"link[" . $psmid . "]\" $value = \"" . $pscategory["link"] . "\" />\r\n\t\t\t\t\t\t\t\t</td>\r\n\t\t\t\t\t\t\t\t<td class=\"" . $class . "\">\r\n\t\t\t\t\t\t\t\t\t<input $type = \"text\" $size = \"30\" $name = \"image[" . $psmid . "]\" $value = \"" . $pscategory["image"] . "\" />\r\n\t\t\t\t\t\t\t\t</td>\r\n\t\t\t\t\t\t\t\t<td class=\"" . $class . "\" $align = \"center\">\r\n\t\t\t\t\t\t\t\t\t" . buildMenuHtml($psmid, $pscategory["sub"], true) . "\r\n\t\t\t\t\t\t\t\t</td>\r\n\t\t\t\t\t\t\t\t<td class=\"" . $class . "\" $align = \"center\"><a $href = \"index.php?do=manage_menu&amp;$act = edit&amp;$mid = " . $psmid . "&amp;$language = " . $lang . "\"><img $src = \"images/tool_edit.png\" $alt = \"" . $Language[11] . "\" $title = \"" . $Language[11] . "\" $border = \"0\" /></a> <a $href = \"#\" $onclick = \"ConfirmDelete(" . $psmid . ", '" . $lang . "');\"><img $src = \"images/tool_delete.png\" $alt = \"" . $Language[12] . "\" $title = \"" . $Language[12] . "\" $border = \"0\" /></a></td>\r\n\t\t\t\t\t\t\t</tr>\r\n\t\t\t\t\t\t\t";
                         }
                     }
                 }
@@ -317,12 +317,12 @@ function function_201($mid, $selected, $sub = false)
     while ($M = mysqli_fetch_assoc($query)) {
         $MainMenus[$M["mid"]] = $M;
     }
-    $var_496 = "\r\n\t<select $name = \"pid[" . $mid . "]\">\r\n\t\t<option $value = \"0\"" . ($selected == 0 ? " $selected = \"selected\"" : "") . "></option>";
-    foreach ($MainMenus as $var_497 => $var_498) {
-        $var_496 .= "<option $value = \"" . $var_498["mid"] . "\"" . ($selected == $var_498["mid"] ? " $selected = \"selected\"" : "") . ">" . $var_498["title"] . "</option>";
+    $menuId = "\r\n\t<select $name = \"pid[" . $mid . "]\">\r\n\t\t<option $value = \"0\"" . ($selected == 0 ? " $selected = \"selected\"" : "") . "></option>";
+    foreach ($MainMenus as $menuTitle => $menuUrl) {
+        $menuId .= "<option $value = \"" . $menuUrl["mid"] . "\"" . ($selected == $menuUrl["mid"] ? " $selected = \"selected\"" : "") . ">" . $menuUrl["title"] . "</option>";
     }
-    $var_496 .= "</select>";
-    return $var_496;
+    $menuId .= "</select>";
+    return $menuId;
 }
 function function_197($selected, $mid = 0)
 {
@@ -334,12 +334,12 @@ function function_197($selected, $mid = 0)
             $MainMenus[$M["mid"]] = $M;
         }
     }
-    $var_496 = "\r\n\t<select $name = \"pid\">\r\n\t\t<option $value = \"0\"" . ($selected == 0 ? " $selected = \"selected\"" : "") . "></option>";
-    foreach ($MainMenus as $var_497 => $var_498) {
-        $var_496 .= "<option $value = \"" . $var_498["mid"] . "\"" . ($selected == $var_498["mid"] ? " $selected = \"selected\"" : "") . ">" . $var_498["title"] . "</option>";
+    $menuId = "\r\n\t<select $name = \"pid\">\r\n\t\t<option $value = \"0\"" . ($selected == 0 ? " $selected = \"selected\"" : "") . "></option>";
+    foreach ($MainMenus as $menuTitle => $menuUrl) {
+        $menuId .= "<option $value = \"" . $menuUrl["mid"] . "\"" . ($selected == $menuUrl["mid"] ? " $selected = \"selected\"" : "") . ">" . $menuUrl["title"] . "</option>";
     }
-    $var_496 .= "</select>";
-    return $var_496;
+    $menuId .= "</select>";
+    return $menuId;
 }
 function function_199($lang)
 {
@@ -366,45 +366,45 @@ function function_199($lang)
             $SubCategories[$PSC["sub"]][$PSC["mid"]] = $PSC;
         }
     }
-    $var_499 = "<?php\r\n/** TS Generated Cache#15 - Do Not Alter\r\n* Cache Name: TS MENU - " . $lang . "\r\n* Generated: " . gmdate("r") . "\r\n*/\r\n?>\r\n<!-- START TSSE MENU -->\r\n\t<ul class=\"TSSEMenu TSSEMenum\">";
-    foreach ($MainMenus as $mid => $var_500) {
-        if ($var_500["permissions"] != "[ALL]" && $var_500["permissions"]) {
-            $var_501 = [];
-            $var_502 = explode(",", $var_500["permissions"]);
-            foreach ($var_502 as $var_503) {
-                $var_501[] = "'" . $var_503 . "'";
+    $menuOrder = "<?php\r\n/** TS Generated Cache#15 - Do Not Alter\r\n* Cache Name: TS MENU - " . $lang . "\r\n* Generated: " . gmdate("r") . "\r\n*/\r\n?>\r\n<!-- START TSSE MENU -->\r\n\t<ul class=\"TSSEMenu TSSEMenum\">";
+    foreach ($MainMenus as $mid => $menuItem) {
+        if ($menuItem["permissions"] != "[ALL]" && $menuItem["permissions"]) {
+            $menuIcon = [];
+            $menuTarget = explode(",", $menuItem["permissions"]);
+            foreach ($menuTarget as $menuClass) {
+                $menuIcon[] = "'" . $menuClass . "'";
             }
-            $var_501 = implode(",", $var_501);
+            $menuIcon = implode(",", $menuIcon);
         }
-        $var_499 .= "\r\n\t\t" . ($var_500["permissions"] != "[ALL]" && $var_500["permissions"] ? "<?php echo (\$CURUSER['usergroup'] && in_array('['.\$CURUSER['usergroup'].']', array(" . $var_501 . ")) ? '" : "") . "<li class=\"TSSEMenui\"><a class=\"TSSEMenui\" $href = \"" . ($var_500["link"] ? str_replace("{BASEURL}", $MAIN["BASEURL"], $var_500["link"]) : "#") . "\">" . ($var_500["image"] ? "<img $src = \"" . $var_500["image"] . "\" $alt = \"\" $title = \"\" $border = \"0\" /> " : "") . (isset($ParentCetegories[$mid]) ? "<span>" . str_replace("'", "\\'", $var_500["title"]) . "</span>" : str_replace("'", "\\'", $var_500["title"])) . "</a>";
+        $menuOrder .= "\r\n\t\t" . ($menuItem["permissions"] != "[ALL]" && $menuItem["permissions"] ? "<?php echo (\$CURUSER['usergroup'] && in_array('['.\$CURUSER['usergroup'].']', array(" . $menuIcon . ")) ? '" : "") . "<li class=\"TSSEMenui\"><a class=\"TSSEMenui\" $href = \"" . ($menuItem["link"] ? str_replace("{BASEURL}", $MAIN["BASEURL"], $menuItem["link"]) : "#") . "\">" . ($menuItem["image"] ? "<img $src = \"" . $menuItem["image"] . "\" $alt = \"\" $title = \"\" $border = \"0\" /> " : "") . (isset($ParentCetegories[$mid]) ? "<span>" . str_replace("'", "\\'", $menuItem["title"]) . "</span>" : str_replace("'", "\\'", $menuItem["title"])) . "</a>";
         if (isset($ParentCetegories[$mid])) {
-            $var_499 .= "\r\n\t\t\t<!--[if lte IE 6]><table><tr><td><![endif]-->\r\n\t\t\t<ul class=\"TSSEMenum\">";
+            $menuOrder .= "\r\n\t\t\t<!--[if lte IE 6]><table><tr><td><![endif]-->\r\n\t\t\t<ul class=\"TSSEMenum\">";
             foreach ($ParentCetegories[$mid] as $pmid => $pcategory) {
                 if ($pcategory["permissions"] != "[ALL]" && $pcategory["permissions"]) {
-                    $var_504 = [];
-                    $var_505 = explode(",", $pcategory["permissions"]);
-                    foreach ($var_505 as $var_506) {
-                        $var_504[] = "'" . $var_506 . "'";
+                    $menuParent = [];
+                    $menuLevel = explode(",", $pcategory["permissions"]);
+                    foreach ($menuLevel as $menuHtml) {
+                        $menuParent[] = "'" . $menuHtml . "'";
                     }
-                    $var_504 = implode(",", $var_504);
+                    $menuParent = implode(",", $menuParent);
                 }
-                $var_499 .= "\r\n\t\t\t\t" . ($pcategory["permissions"] != "[ALL]" && $pcategory["permissions"] ? ($var_500["permissions"] != "[ALL]" && $var_500["permissions"] ? "'." : "<?php echo") . "(\$CURUSER['usergroup'] && in_array('['.\$CURUSER['usergroup'].']', array(" . $var_504 . ")) ? '" : "") . "<li class=\"TSSEMenui\"><a class=\"TSSEMenui\" $href = \"" . ($pcategory["link"] ? str_replace("{BASEURL}", $MAIN["BASEURL"], $pcategory["link"]) : "#") . "\">" . ($pcategory["image"] ? "<img $src = \"" . str_replace("{BASEURL}", $MAIN["BASEURL"], $pcategory["image"]) . "\" $alt = \"\" $title = \"\" $border = \"0\" class=\"inlineimg\" /> " : "") . (isset($SubCategories[$pmid]) ? "<span>" : "") . str_replace("'", "\\'", $pcategory["title"]) . (isset($SubCategories[$pmid]) ? "</span>" : "") . "</a>";
+                $menuOrder .= "\r\n\t\t\t\t" . ($pcategory["permissions"] != "[ALL]" && $pcategory["permissions"] ? ($menuItem["permissions"] != "[ALL]" && $menuItem["permissions"] ? "'." : "<?php echo") . "(\$CURUSER['usergroup'] && in_array('['.\$CURUSER['usergroup'].']', array(" . $menuParent . ")) ? '" : "") . "<li class=\"TSSEMenui\"><a class=\"TSSEMenui\" $href = \"" . ($pcategory["link"] ? str_replace("{BASEURL}", $MAIN["BASEURL"], $pcategory["link"]) : "#") . "\">" . ($pcategory["image"] ? "<img $src = \"" . str_replace("{BASEURL}", $MAIN["BASEURL"], $pcategory["image"]) . "\" $alt = \"\" $title = \"\" $border = \"0\" class=\"inlineimg\" /> " : "") . (isset($SubCategories[$pmid]) ? "<span>" : "") . str_replace("'", "\\'", $pcategory["title"]) . (isset($SubCategories[$pmid]) ? "</span>" : "") . "</a>";
                 if (isset($SubCategories[$pmid])) {
-                    $var_499 .= "\r\n\t\t\t\t\t\t<!--[if lte IE 6]><table><tr><td><![endif]-->\r\n\t\t\t\t\t\t<ul class=\"TSSEMenum\">";
+                    $menuOrder .= "\r\n\t\t\t\t\t\t<!--[if lte IE 6]><table><tr><td><![endif]-->\r\n\t\t\t\t\t\t<ul class=\"TSSEMenum\">";
                     foreach ($SubCategories[$pmid] as $psmid => $pscategory) {
-                        $var_499 .= "<li class=\"TSSEMenui\"><a class=\"TSSEMenui\" $href = \"" . ($pscategory["link"] ? str_replace("{BASEURL}", $MAIN["BASEURL"], $pscategory["link"]) : "#") . "\">" . str_replace("'", "\\'", $pscategory["title"]) . "</a></li> ";
+                        $menuOrder .= "<li class=\"TSSEMenui\"><a class=\"TSSEMenui\" $href = \"" . ($pscategory["link"] ? str_replace("{BASEURL}", $MAIN["BASEURL"], $pscategory["link"]) : "#") . "\">" . str_replace("'", "\\'", $pscategory["title"]) . "</a></li> ";
                     }
-                    $var_499 .= "\r\n\t\t\t\t\t\t</ul>\r\n\t\t\t\t\t\t<!--[if lte IE 6]></td></tr></table></a><![endif]-->";
+                    $menuOrder .= "\r\n\t\t\t\t\t\t</ul>\r\n\t\t\t\t\t\t<!--[if lte IE 6]></td></tr></table></a><![endif]-->";
                 }
-                $var_499 .= "</li>" . ($pcategory["permissions"] != "[ALL]" && $pcategory["permissions"] ? $var_500["permissions"] != "[ALL]" && $var_500["permissions"] ? "' : '').'" : "' : ''); ?>" : "");
+                $menuOrder .= "</li>" . ($pcategory["permissions"] != "[ALL]" && $pcategory["permissions"] ? $menuItem["permissions"] != "[ALL]" && $menuItem["permissions"] ? "' : '').'" : "' : ''); ?>" : "");
             }
-            $var_499 .= "\r\n\t\t\t</ul>\r\n\t\t\t<!--[if lte IE 6]></td></tr></table></a><![endif]-->\r\n\t\t</li>" . ($var_500["permissions"] != "[ALL]" && $var_500["permissions"] ? "' : ''); ?>" : "");
+            $menuOrder .= "\r\n\t\t\t</ul>\r\n\t\t\t<!--[if lte IE 6]></td></tr></table></a><![endif]-->\r\n\t\t</li>" . ($menuItem["permissions"] != "[ALL]" && $menuItem["permissions"] ? "' : ''); ?>" : "");
         } else {
-            $var_499 .= "</li>" . ($var_500["permissions"] != "[ALL]" && $var_500["permissions"] ? "' : ''); ?>" : "");
+            $menuOrder .= "</li>" . ($menuItem["permissions"] != "[ALL]" && $menuItem["permissions"] ? "' : ''); ?>" : "");
         }
     }
-    $var_499 .= "\r\n\t</ul>\r\n<!-- END TSSE MENU -->";
-    file_put_contents($filename, $var_499);
+    $menuOrder .= "\r\n\t</ul>\r\n<!-- END TSSE MENU -->";
+    file_put_contents($filename, $menuOrder);
 }
 function function_200()
 {
@@ -420,21 +420,21 @@ function function_200()
 function function_198($usergroups)
 {
     $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT u.id, g.cansettingspanel, g.canstaffpanel, g.issupermod FROM users u LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) WHERE u.$id = '" . $_SESSION["ADMIN_ID"] . "' LIMIT 1");
-    $var_318 = mysqli_fetch_assoc($query);
+    $currentUserPerms = mysqli_fetch_assoc($query);
     $count = 0;
-    $var_423 = "\r\n\t<table>\r\n\t\t<tr>\t";
+    $userGroupsHtml = "\r\n\t<table>\r\n\t\t<tr>\t";
     $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT gid, title, cansettingspanel, canstaffpanel, issupermod, namestyle FROM usergroups ORDER by disporder ASC");
-    while ($var_424 = mysqli_fetch_assoc($query)) {
-        if (!($var_424["cansettingspanel"] == "yes" && $var_318["cansettingspanel"] != "yes" || $var_424["canstaffpanel"] == "yes" && $var_318["canstaffpanel"] != "yes" || $var_424["issupermod"] == "yes" && $var_318["issupermod"] != "yes")) {
+    while ($row = mysqli_fetch_assoc($query)) {
+        if (!($row["cansettingspanel"] == "yes" && $currentUserPerms["cansettingspanel"] != "yes" || $row["canstaffpanel"] == "yes" && $currentUserPerms["canstaffpanel"] != "yes" || $row["issupermod"] == "yes" && $currentUserPerms["issupermod"] != "yes")) {
             if ($count && $count % 8 == 0) {
-                $var_423 .= "</tr><tr>";
+                $userGroupsHtml .= "</tr><tr>";
             }
-            $var_423 .= "<td><input $type = \"checkbox\" $name = \"usergroups[]\" $value = \"" . $var_424["gid"] . "\"" . (is_array($usergroups) && count($usergroups) && (in_array($var_424["gid"], $usergroups) || in_array("[" . $var_424["gid"] . "]", $usergroups)) ? " $checked = \"checked\"" : "") . " /></td><td>" . str_replace("{username}", $var_424["title"], $var_424["namestyle"]) . "</td>";
+            $userGroupsHtml .= "<td><input $type = \"checkbox\" $name = \"usergroups[]\" $value = \"" . $row["gid"] . "\"" . (is_array($usergroups) && count($usergroups) && (in_array($row["gid"], $usergroups) || in_array("[" . $row["gid"] . "]", $usergroups)) ? " $checked = \"checked\"" : "") . " /></td><td>" . str_replace("{username}", $row["title"], $row["namestyle"]) . "</td>";
             $count++;
         }
     }
-    $var_423 .= "</tr></table>";
-    return $var_423;
+    $userGroupsHtml .= "</tr></table>";
+    return $userGroupsHtml;
 }
 function logStaffAction($log)
 {

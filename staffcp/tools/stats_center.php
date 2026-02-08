@@ -29,7 +29,7 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
                             $GeneratedChartImage = function_111($query, "added");
                             break;
                         case "23":
-                            $GeneratedChartImage = var_321($query, "added");
+                            $GeneratedChartImage = applyUsernameStyle($query, "added");
                             break;
                     }
                 } else {
@@ -44,7 +44,7 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
                             $GeneratedChartImage = function_111($query, "dateline", false);
                             break;
                         case "23":
-                            $GeneratedChartImage = var_321($query, "dateline", false);
+                            $GeneratedChartImage = applyUsernameStyle($query, "dateline", false);
                             break;
                     }
                 } else {
@@ -59,7 +59,7 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
                             $GeneratedChartImage = function_111($query, "added");
                             break;
                         case "23":
-                            $GeneratedChartImage = var_321($query, "added");
+                            $GeneratedChartImage = applyUsernameStyle($query, "added");
                             break;
                     }
                 } else {
@@ -74,7 +74,7 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
                             $GeneratedChartImage = function_111($query, "added");
                             break;
                         case "23":
-                            $GeneratedChartImage = var_321($query, "added");
+                            $GeneratedChartImage = applyUsernameStyle($query, "added");
                             break;
                     }
                 } else {
@@ -89,7 +89,7 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
                             $GeneratedChartImage = function_111($query, "completedat");
                             break;
                         case "23":
-                            $GeneratedChartImage = var_321($query, "completedat");
+                            $GeneratedChartImage = applyUsernameStyle($query, "completedat");
                             break;
                     }
                 } else {
@@ -104,7 +104,7 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
                             $GeneratedChartImage = function_111($query, "added");
                             break;
                         case "23":
-                            $GeneratedChartImage = var_321($query, "added");
+                            $GeneratedChartImage = applyUsernameStyle($query, "added");
                             break;
                     }
                 } else {
@@ -119,7 +119,7 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
                             $GeneratedChartImage = function_111($query, "added");
                             break;
                         case "23":
-                            $GeneratedChartImage = var_321($query, "added");
+                            $GeneratedChartImage = applyUsernameStyle($query, "added");
                             break;
                     }
                 } else {
@@ -134,7 +134,7 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
                             $GeneratedChartImage = function_111($query, "dateline", false);
                             break;
                         case "23":
-                            $GeneratedChartImage = var_321($query, "dateline", false);
+                            $GeneratedChartImage = applyUsernameStyle($query, "dateline", false);
                             break;
                     }
                 } else {
@@ -149,7 +149,7 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
                             $GeneratedChartImage = function_111($query, "dateline", false);
                             break;
                         case "23":
-                            $GeneratedChartImage = var_321($query, "dateline", false);
+                            $GeneratedChartImage = applyUsernameStyle($query, "dateline", false);
                             break;
                     }
                 } else {
@@ -164,7 +164,7 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
                             $GeneratedChartImage = function_111($query, "added");
                             break;
                         case "23":
-                            $GeneratedChartImage = var_321($query, "added");
+                            $GeneratedChartImage = applyUsernameStyle($query, "added");
                             break;
                     }
                 } else {
@@ -219,60 +219,60 @@ function showAlertError($Error)
 function function_112($query, $field, $strtotime = true)
 {
     global $Language;
-    $var_322 = "";
-    $var_323 = [];
-    while ($var_324 = mysqli_fetch_assoc($query)) {
-        if (isset($var_323[date("Y", $strtotime ? strtotime($var_324[$field]) : $var_324[$field])][date("m", $strtotime ? strtotime($var_324[$field]) : $var_324[$field])])) {
-            date("Y", $strtotime ? strtotime($var_324[$field]) : $var_324[$field]);
-            date("m", $strtotime ? strtotime($var_324[$field]) : $var_324[$field]);
-            $var_323[date("Y", $strtotime ? strtotime($var_324[$field]) : $var_324[$field])][date("m", $strtotime ? strtotime($var_324[$field]) : $var_324[$field])]++;
+    $statName = "";
+    $statValue = [];
+    while ($currentRow = mysqli_fetch_assoc($query)) {
+        if (isset($statValue[date("Y", $strtotime ? strtotime($currentRow[$field]) : $currentRow[$field])][date("m", $strtotime ? strtotime($currentRow[$field]) : $currentRow[$field])])) {
+            date("Y", $strtotime ? strtotime($currentRow[$field]) : $currentRow[$field]);
+            date("m", $strtotime ? strtotime($currentRow[$field]) : $currentRow[$field]);
+            $statValue[date("Y", $strtotime ? strtotime($currentRow[$field]) : $currentRow[$field])][date("m", $strtotime ? strtotime($currentRow[$field]) : $currentRow[$field])]++;
         } else {
-            $var_323[date("Y", $strtotime ? strtotime($var_324[$field]) : $var_324[$field])][date("m", $strtotime ? strtotime($var_324[$field]) : $var_324[$field])] = 1;
+            $statValue[date("Y", $strtotime ? strtotime($currentRow[$field]) : $currentRow[$field])][date("m", $strtotime ? strtotime($currentRow[$field]) : $currentRow[$field])] = 1;
         }
     }
-    $var_325 = "http://chart.apis.google.com/chart?$cht = p3&$chd = t:{1}&$chs = 800x375&$chl = {2}";
-    $var_326 = [];
-    $var_327 = [];
-    $var_328 = explode(",", $Language[28]);
-    $var_329 = [];
-    foreach ($var_323 as $var_330 => $var_331) {
-        $var_329[$var_330] = $var_331;
+    $statFormatted = "http://chart.apis.google.com/chart?$cht = p3&$chd = t:{1}&$chs = 800x375&$chl = {2}";
+    $statsArray = [];
+    $chartData = [];
+    $chartLabels = explode(",", $Language[28]);
+    $chartValues = [];
+    foreach ($statValue as $graphData => $dataPoints) {
+        $chartValues[$graphData] = $dataPoints;
     }
-    asort($var_329);
-    foreach ($var_329 as $var_330 => $var_331) {
-        $var_326 = [];
-        $var_327 = [];
-        asort($var_331, SORT_STRING);
-        foreach ($var_331 as $var_332 => $var_333) {
-            $var_326[] = $var_333;
-            $var_327[] = $var_328[intval($var_332)] . " " . $var_330 . " (" . number_format($var_333) . ")";
+    asort($chartValues);
+    foreach ($chartValues as $graphData => $dataPoints) {
+        $statsArray = [];
+        $chartData = [];
+        asort($dataPoints, SORT_STRING);
+        foreach ($dataPoints as $seriesData => $plotData) {
+            $statsArray[] = $plotData;
+            $chartData[] = $chartLabels[intval($seriesData)] . " " . $graphData . " (" . number_format($plotData) . ")";
         }
-        $var_334 = number_format(array_sum($var_326));
-        $var_322 .= "<img $src = \"" . str_replace(["{1}", "{2}"], [implode(",", $var_326), implode("|", $var_327)], $var_325) . "\" $border = \"0\" $alt = \"" . $var_334 . "\" $title = \"" . $var_334 . "\" />";
+        $visualData = number_format(array_sum($statsArray));
+        $statName .= "<img $src = \"" . str_replace(["{1}", "{2}"], [implode(",", $statsArray), implode("|", $chartData)], $statFormatted) . "\" $border = \"0\" $alt = \"" . $visualData . "\" $title = \"" . $visualData . "\" />";
     }
-    return $var_322;
+    return $statName;
 }
 function function_111($query, $field, $strtotime = true)
 {
-    $var_323 = [];
-    while ($var_324 = mysqli_fetch_assoc($query)) {
-        if (isset($var_323[date("Y", $strtotime ? strtotime($var_324[$field]) : $var_324[$field])])) {
-            date("Y", $strtotime ? strtotime($var_324[$field]) : $var_324[$field]);
-            $var_323[date("Y", $strtotime ? strtotime($var_324[$field]) : $var_324[$field])]++;
+    $statValue = [];
+    while ($currentRow = mysqli_fetch_assoc($query)) {
+        if (isset($statValue[date("Y", $strtotime ? strtotime($currentRow[$field]) : $currentRow[$field])])) {
+            date("Y", $strtotime ? strtotime($currentRow[$field]) : $currentRow[$field]);
+            $statValue[date("Y", $strtotime ? strtotime($currentRow[$field]) : $currentRow[$field])]++;
         } else {
-            $var_323[date("Y", $strtotime ? strtotime($var_324[$field]) : $var_324[$field])] = 1;
+            $statValue[date("Y", $strtotime ? strtotime($currentRow[$field]) : $currentRow[$field])] = 1;
         }
     }
-    $var_325 = "http://chart.apis.google.com/chart?$cht = p3&$chd = t:{1}&$chs = 600x300&$chl = {2}";
-    $var_326 = [];
-    $var_327 = [];
-    foreach ($var_323 as $var_330 => $var_333) {
-        $var_326[] = $var_333;
-        $var_327[] = $var_330 . " (" . number_format($var_333) . ")";
+    $statFormatted = "http://chart.apis.google.com/chart?$cht = p3&$chd = t:{1}&$chs = 600x300&$chl = {2}";
+    $statsArray = [];
+    $chartData = [];
+    foreach ($statValue as $graphData => $plotData) {
+        $statsArray[] = $plotData;
+        $chartData[] = $graphData . " (" . number_format($plotData) . ")";
     }
-    $var_334 = number_format(array_sum($var_326));
-    $var_322 = "<img $src = \"" . str_replace(["{1}", "{2}"], [implode(",", $var_326), implode("|", $var_327)], $var_325) . "\" $border = \"0\" $alt = \"" . $var_334 . "\" $title = \"" . $var_334 . "\" />";
-    return $var_322;
+    $visualData = number_format(array_sum($statsArray));
+    $statName = "<img $src = \"" . str_replace(["{1}", "{2}"], [implode(",", $statsArray), implode("|", $chartData)], $statFormatted) . "\" $border = \"0\" $alt = \"" . $visualData . "\" $title = \"" . $visualData . "\" />";
+    return $statName;
 }
 
 ?>

@@ -174,7 +174,7 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST" && isset($_POST["configname
         $STATUS[$_GET["stab"]] = "<div class=\"icon-error\">An error occurded!</div>";
     }
 }
-echo loadTinyMCEEditor(1, "exact", "wire_form,S_ANNOUNCEMENT,send_welcome_pm_body,upload_page_notice") . "\r\n<script $type = \"text/javascript\">\r\n\tfunction enableDateFields()\r\n\t{\r\n\t\tjQuery(\"#minfinishdate,#lottery_begin_date,#lottery_end_date,#__F_START,#__F_END\").datepicker({dateFormat: \"yy-mm-dd\", changeMonth: true, changeYear: true, closeText: \"X\", showButtonPanel: true});\r\n\t}\r\n\r\n\tjQuery(document).ready(function()\r\n\t{\r\n\t\tenableDateFields()\r\n\t});\r\n</script>\r\n" . $Message . "\r\n<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t<tr>\r\n\t\t<td class=\"tcat\" $align = \"center\" $colspan = \"2\">" . $Language[2] . "</td>\r\n\t</tr>\r\n\t<tr>\r\n\t\t<td class=\"alt0\">\r\n\t\t\t" . var_367() . "\r\n\t\t</td>\r\n\t</tr>\r\n</table>";
+echo loadTinyMCEEditor(1, "exact", "wire_form,S_ANNOUNCEMENT,send_welcome_pm_body,upload_page_notice") . "\r\n<script $type = \"text/javascript\">\r\n\tfunction enableDateFields()\r\n\t{\r\n\t\tjQuery(\"#minfinishdate,#lottery_begin_date,#lottery_end_date,#__F_START,#__F_END\").datepicker({dateFormat: \"yy-mm-dd\", changeMonth: true, changeYear: true, closeText: \"X\", showButtonPanel: true});\r\n\t}\r\n\r\n\tjQuery(document).ready(function()\r\n\t{\r\n\t\tenableDateFields()\r\n\t});\r\n</script>\r\n" . $Message . "\r\n<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t<tr>\r\n\t\t<td class=\"tcat\" $align = \"center\" $colspan = \"2\">" . $Language[2] . "</td>\r\n\t</tr>\r\n\t<tr>\r\n\t\t<td class=\"alt0\">\r\n\t\t\t" . formatBytes() . "\r\n\t\t</td>\r\n\t</tr>\r\n</table>";
 function loadTinyMCEEditor($type = 1, $mode = "textareas", $elements = "")
 {
     define("EDITOR_TYPE", $type);
@@ -245,62 +245,62 @@ function formatBytes($bytes = 0)
 }
 function function_139($selected = 1, $name = "", $Where = "")
 {
-    $var_368 = "<select $name = \"" . $name . "\">";
-    $var_67 = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT gid, title FROM usergroups" . $Where . " ORDER BY disporder");
-    while ($var_369 = mysqli_fetch_assoc($var_67)) {
-        $var_368 .= "<option $value = \"" . $var_369["gid"] . "\"" . ($selected == $var_369["gid"] ? " $selected = \"selected\"" : "") . ">" . $var_369["title"] . "</option>";
+    $settingId = "<select $name = \"" . $name . "\">";
+    $errorMessage = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT gid, title FROM usergroups" . $Where . " ORDER BY disporder");
+    while ($settingGroup = mysqli_fetch_assoc($errorMessage)) {
+        $settingId .= "<option $value = \"" . $settingGroup["gid"] . "\"" . ($selected == $settingGroup["gid"] ? " $selected = \"selected\"" : "") . ">" . $settingGroup["title"] . "</option>";
     }
-    $var_368 .= "</select>";
-    return $var_368;
+    $settingId .= "</select>";
+    return $settingId;
 }
 function function_140($offset = "all")
 {
-    $var_313 = ["4294967284" => "timezone_gmt_minus_1200", "4294967285" => "timezone_gmt_minus_1100", "4294967286" => "timezone_gmt_minus_1000", "4294967287" => "timezone_gmt_minus_0900", "4294967288" => "timezone_gmt_minus_0800", "4294967289" => "timezone_gmt_minus_0700", "4294967290" => "timezone_gmt_minus_0600", "4294967291" => "timezone_gmt_minus_0500", "-4.5" => "timezone_gmt_minus_0430", "4294967292" => "timezone_gmt_minus_0400", "-3.5" => "timezone_gmt_minus_0330", "4294967293" => "timezone_gmt_minus_0300", "4294967294" => "timezone_gmt_minus_0200", "4294967295" => "timezone_gmt_minus_0100", "0" => "timezone_gmt_plus_0000", "1" => "timezone_gmt_plus_0100", "2" => "timezone_gmt_plus_0200", "3" => "timezone_gmt_plus_0300", "3.5" => "timezone_gmt_plus_0330", "4" => "timezone_gmt_plus_0400", "4.5" => "timezone_gmt_plus_0430", "5" => "timezone_gmt_plus_0500", "5.5" => "timezone_gmt_plus_0530", "5.75" => "timezone_gmt_plus_0545", "6" => "timezone_gmt_plus_0600", "6.5" => "timezone_gmt_plus_0630", "7" => "timezone_gmt_plus_0700", "8" => "timezone_gmt_plus_0800", "9" => "timezone_gmt_plus_0900", "9.5" => "timezone_gmt_plus_0930", "10" => "timezone_gmt_plus_1000", "11" => "timezone_gmt_plus_1100", "12" => "timezone_gmt_plus_1200"];
-    return $offset == "all" ? $var_313 : $var_313[(string) $offset];
+    $settingName = ["4294967284" => "timezone_gmt_minus_1200", "4294967285" => "timezone_gmt_minus_1100", "4294967286" => "timezone_gmt_minus_1000", "4294967287" => "timezone_gmt_minus_0900", "4294967288" => "timezone_gmt_minus_0800", "4294967289" => "timezone_gmt_minus_0700", "4294967290" => "timezone_gmt_minus_0600", "4294967291" => "timezone_gmt_minus_0500", "-4.5" => "timezone_gmt_minus_0430", "4294967292" => "timezone_gmt_minus_0400", "-3.5" => "timezone_gmt_minus_0330", "4294967293" => "timezone_gmt_minus_0300", "4294967294" => "timezone_gmt_minus_0200", "4294967295" => "timezone_gmt_minus_0100", "0" => "timezone_gmt_plus_0000", "1" => "timezone_gmt_plus_0100", "2" => "timezone_gmt_plus_0200", "3" => "timezone_gmt_plus_0300", "3.5" => "timezone_gmt_plus_0330", "4" => "timezone_gmt_plus_0400", "4.5" => "timezone_gmt_plus_0430", "5" => "timezone_gmt_plus_0500", "5.5" => "timezone_gmt_plus_0530", "5.75" => "timezone_gmt_plus_0545", "6" => "timezone_gmt_plus_0600", "6.5" => "timezone_gmt_plus_0630", "7" => "timezone_gmt_plus_0700", "8" => "timezone_gmt_plus_0800", "9" => "timezone_gmt_plus_0900", "9.5" => "timezone_gmt_plus_0930", "10" => "timezone_gmt_plus_1000", "11" => "timezone_gmt_plus_1100", "12" => "timezone_gmt_plus_1200"];
+    return $offset == "all" ? $settingName : $settingName[(string) $offset];
 }
 function function_141($tzoffset = 0)
 {
-    $var_370 = ["timezone_gmt_minus_0100" => "(GMT -1:00 hour) Azores, Cape Verde Islands", "timezone_gmt_minus_0200" => "(GMT -2:00) Mid-Atlantic", "timezone_gmt_minus_0300" => "(GMT -3:00) Brazil, Buenos Aires, Georgetown", "timezone_gmt_minus_0330" => "(GMT -3:30) Newfoundland", "timezone_gmt_minus_0400" => "(GMT -4:00) Atlantic Time (Canada), La Paz, Santiago", "timezone_gmt_minus_0430" => "(GMT -4:30) Caracas", "timezone_gmt_minus_0500" => "(GMT -5:00) Eastern Time (US &amp; Canada), Bogota, Lima", "timezone_gmt_minus_0600" => "(GMT -6:00) Central Time (US &amp; Canada), Mexico City", "timezone_gmt_minus_0700" => "(GMT -7:00) Mountain Time (US &amp; Canada)", "timezone_gmt_minus_0800" => "(GMT -8:00) Pacific Time (US &amp; Canada)", "timezone_gmt_minus_0900" => "(GMT -9:00) Alaska", "timezone_gmt_minus_1000" => "(GMT -10:00) Hawaii", "timezone_gmt_minus_1100" => "(GMT -11:00) Midway Island, Samoa", "timezone_gmt_minus_1200" => "(GMT -12:00) Eniwetok, Kwajalein", "timezone_gmt_plus_0000" => "(GMT) Western Europe Time, London, Lisbon, Casablanca", "timezone_gmt_plus_0100" => "(GMT +1:00 hour) Brussels, Copenhagen, Madrid, Paris", "timezone_gmt_plus_0200" => "(GMT +2:00) Kaliningrad, South Africa", "timezone_gmt_plus_0300" => "(GMT +3:00) Baghdad, Riyadh, Moscow, St. Petersburg", "timezone_gmt_plus_0330" => "(GMT +3:30) Tehran", "timezone_gmt_plus_0400" => "(GMT +4:00) Abu Dhabi, Muscat, Baku, Tbilisi", "timezone_gmt_plus_0430" => "(GMT +4:30) Kabul", "timezone_gmt_plus_0500" => "(GMT +5:00) Ekaterinburg, Islamabad, Karachi, Tashkent", "timezone_gmt_plus_0530" => "(GMT +5:30) Mumbai, Kolkata, Chennai, New Delhi", "timezone_gmt_plus_0545" => "(GMT +5:45) Kathmandu", "timezone_gmt_plus_0600" => "(GMT +6:00) Almaty, Dhaka, Colombo", "timezone_gmt_plus_0630" => "(GMT +6:30) Yangon, Cocos Islands", "timezone_gmt_plus_0700" => "(GMT +7:00) Bangkok, Hanoi, Jakarta", "timezone_gmt_plus_0800" => "(GMT +8:00) Beijing, Perth, Singapore, Hong Kong", "timezone_gmt_plus_0900" => "(GMT +9:00) Tokyo, Seoul, Osaka, Sapporo, Yakutsk", "timezone_gmt_plus_0930" => "(GMT +9:30) Adelaide, Darwin", "timezone_gmt_plus_1000" => "(GMT +10:00) Eastern Australia, Guam, Vladivostok", "timezone_gmt_plus_1100" => "(GMT +11:00) Magadan, Solomon Islands, New Caledonia", "timezone_gmt_plus_1200" => "(GMT +12:00) Auckland, Wellington, Fiji, Kamchatka"];
-    $var_314 = "";
-    foreach (function_140() as $var_315 => $var_316) {
-        $var_314 .= "<option $value = \"" . $var_315 . "\"" . ($tzoffset == $var_315 ? " $selected = \"selected\"" : "") . ">" . $var_370[(string) $var_316] . "</option>";
+    $inputType = ["timezone_gmt_minus_0100" => "(GMT -1:00 hour) Azores, Cape Verde Islands", "timezone_gmt_minus_0200" => "(GMT -2:00) Mid-Atlantic", "timezone_gmt_minus_0300" => "(GMT -3:00) Brazil, Buenos Aires, Georgetown", "timezone_gmt_minus_0330" => "(GMT -3:30) Newfoundland", "timezone_gmt_minus_0400" => "(GMT -4:00) Atlantic Time (Canada), La Paz, Santiago", "timezone_gmt_minus_0430" => "(GMT -4:30) Caracas", "timezone_gmt_minus_0500" => "(GMT -5:00) Eastern Time (US &amp; Canada), Bogota, Lima", "timezone_gmt_minus_0600" => "(GMT -6:00) Central Time (US &amp; Canada), Mexico City", "timezone_gmt_minus_0700" => "(GMT -7:00) Mountain Time (US &amp; Canada)", "timezone_gmt_minus_0800" => "(GMT -8:00) Pacific Time (US &amp; Canada)", "timezone_gmt_minus_0900" => "(GMT -9:00) Alaska", "timezone_gmt_minus_1000" => "(GMT -10:00) Hawaii", "timezone_gmt_minus_1100" => "(GMT -11:00) Midway Island, Samoa", "timezone_gmt_minus_1200" => "(GMT -12:00) Eniwetok, Kwajalein", "timezone_gmt_plus_0000" => "(GMT) Western Europe Time, London, Lisbon, Casablanca", "timezone_gmt_plus_0100" => "(GMT +1:00 hour) Brussels, Copenhagen, Madrid, Paris", "timezone_gmt_plus_0200" => "(GMT +2:00) Kaliningrad, South Africa", "timezone_gmt_plus_0300" => "(GMT +3:00) Baghdad, Riyadh, Moscow, St. Petersburg", "timezone_gmt_plus_0330" => "(GMT +3:30) Tehran", "timezone_gmt_plus_0400" => "(GMT +4:00) Abu Dhabi, Muscat, Baku, Tbilisi", "timezone_gmt_plus_0430" => "(GMT +4:30) Kabul", "timezone_gmt_plus_0500" => "(GMT +5:00) Ekaterinburg, Islamabad, Karachi, Tashkent", "timezone_gmt_plus_0530" => "(GMT +5:30) Mumbai, Kolkata, Chennai, New Delhi", "timezone_gmt_plus_0545" => "(GMT +5:45) Kathmandu", "timezone_gmt_plus_0600" => "(GMT +6:00) Almaty, Dhaka, Colombo", "timezone_gmt_plus_0630" => "(GMT +6:30) Yangon, Cocos Islands", "timezone_gmt_plus_0700" => "(GMT +7:00) Bangkok, Hanoi, Jakarta", "timezone_gmt_plus_0800" => "(GMT +8:00) Beijing, Perth, Singapore, Hong Kong", "timezone_gmt_plus_0900" => "(GMT +9:00) Tokyo, Seoul, Osaka, Sapporo, Yakutsk", "timezone_gmt_plus_0930" => "(GMT +9:30) Adelaide, Darwin", "timezone_gmt_plus_1000" => "(GMT +10:00) Eastern Australia, Guam, Vladivostok", "timezone_gmt_plus_1100" => "(GMT +11:00) Magadan, Solomon Islands, New Caledonia", "timezone_gmt_plus_1200" => "(GMT +12:00) Auckland, Wellington, Fiji, Kamchatka"];
+    $settingValue = "";
+    foreach (function_140() as $settingType => $settingDescription) {
+        $settingValue .= "<option $value = \"" . $settingType . "\"" . ($tzoffset == $settingType ? " $selected = \"selected\"" : "") . ">" . $inputType[(string) $settingDescription] . "</option>";
     }
-    return "\r\n\t<select $name = \"DATETIME[timezoneoffset]\" $id = \"sel_tzoffset\">\r\n\t\t" . $var_314 . "\r\n\t</select>\r\n\t";
+    return "\r\n\t<select $name = \"DATETIME[timezoneoffset]\" $id = \"sel_tzoffset\">\r\n\t\t" . $settingValue . "\r\n\t</select>\r\n\t";
 }
 function function_142($selected = "")
 {
-    $var_368 = "";
-    $var_371 = scandir("../include/languages");
-    foreach ($var_371 as $language) {
+    $settingId = "";
+    $inputSize = scandir("../include/languages");
+    foreach ($inputSize as $language) {
         if ($language != "." && $language != "..") {
-            $var_368 .= "<input $type = \"radio\" $name = \"THEME[defaultlanguage]\" $value = \"" . $language . "\"" . ($selected == $language ? " $checked = \"checked\"" : "") . " /> " . ucfirst($language);
+            $settingId .= "<input $type = \"radio\" $name = \"THEME[defaultlanguage]\" $value = \"" . $language . "\"" . ($selected == $language ? " $checked = \"checked\"" : "") . " /> " . ucfirst($language);
         }
     }
-    return $var_368;
+    return $settingId;
 }
 function function_143($selected = "")
 {
-    $var_368 = "";
-    $var_67 = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `name` FROM ts_themes ORDER BY isdefault, name");
-    while ($var_372 = mysqli_fetch_assoc($var_67)) {
-        $var_368 .= "<input $type = \"radio\" $name = \"THEME[defaulttemplate]\" $value = \"" . $var_372["name"] . "\"" . ($selected == $var_372["name"] ? " $checked = \"checked\"" : "") . " /> " . ucfirst($var_372["name"]);
+    $settingId = "";
+    $errorMessage = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `name` FROM ts_themes ORDER BY isdefault, name");
+    while ($inputClass = mysqli_fetch_assoc($errorMessage)) {
+        $settingId .= "<input $type = \"radio\" $name = \"THEME[defaulttemplate]\" $value = \"" . $inputClass["name"] . "\"" . ($selected == $inputClass["name"] ? " $checked = \"checked\"" : "") . " /> " . ucfirst($inputClass["name"]);
     }
-    return $var_368;
+    return $settingId;
 }
 function function_137()
 {
-    $var_373 = "\r\n\r\n<IfModule mod_rewrite.c>\r\n\t# //seo_mod_start\r\n\tRewriteEngine On\t\r\n\t# Uncomment the following and add your tracker path if rewrites arent working properly\r\n\t#RewriteBase /\r\n\r\n\tRewriteRule ^forum-([0-9]+)/(.*)\$ tsf_forums/index.php?$fid = \$1&\$2 [L,NC] #New\r\n\tRewriteRule ^threads-([0-9]+)/(.*)\$ tsf_forums/forumdisplay.php?$fid = \$1&\$2 [L,NC] #New\r\n\tRewriteRule ^thread-([0-9]+)/(.*)\$ tsf_forums/showthread.php?$tid = \$1&\$2 [L,NC] #New\r\n\t\r\n\tRewriteRule ^torrent-category-([0-9]+)/(.*)\$ browse.php?$category = \$1 [L,NC] #torrent-category-1/Default-Category\r\n\tRewriteRule ^download-torrent-([0-9]+)/(.*)\$ download.php?$id = \$1 [L,NC] #download-torrent-2/1-jpg\r\n\tRewriteRule ^download-torrent-ssl-([0-9]+)/(.*)\$ download.php?$id = \$1&$type = ssl [L,NC] #download-torrent-ssl-2/1-jpg\r\n\tRewriteRule ^torrent-details-([0-9]+)/(.*)\$ details.php?$id = \$1 [L,NC] #torrent-details-2/1-jpg\r\n\tRewriteRule ^user-profile-([0-9]+)/(.*)\$ userdetails.php?$id = \$1 [L,NC] #user-profile-1/admin\r\n\r\n\t#Support for old links with old seo\r\n\tRewriteRule ^(.*)-c-([0-9]+).ts(.*)\$ browse.php?$category = \$2 [QSA,L]\r\n\tRewriteRule ^(.*)-d-([0-9]+).ts(.*)\$ download.php?$id = \$2 [QSA,L]\r\n\tRewriteRule ^(.*)-s-([0-9]+).ts(.*)\$ details.php?$id = \$2 [QSA,L]\r\n\tRewriteRule ^(.*)-a-(.*).ts(.*)\$ announce.php?$passkey = \$2 [QSA,L]\r\n\tRewriteRule ^(.*)-u?([0-9]+).ts(.*)\$ userdetails.php?$id = \$2\$3 [QSA,L]\r\n\tRewriteRule ^(.*)-f([0-9]+).tsf(.*)\$ tsf_forums/index.php?$fid = \$2\$3 [QSA,L]\r\n\tRewriteRule ^(.*)-fd([0-9]+).tsf(.*)\$ tsf_forums/forumdisplay.php?$fid = \$2\$3 [QSA,L]\r\n\tRewriteRule ^(.*)-t([0-9]+).tsf(.*)\$ tsf_forums/showthread.php?$tid = \$2\$3 [QSA,L]\r\n</IfModule>\r\n";
+    $inputAttributes = "\r\n\r\n<IfModule mod_rewrite.c>\r\n\t# //seo_mod_start\r\n\tRewriteEngine On\t\r\n\t# Uncomment the following and add your tracker path if rewrites arent working properly\r\n\t#RewriteBase /\r\n\r\n\tRewriteRule ^forum-([0-9]+)/(.*)\$ tsf_forums/index.php?$fid = \$1&\$2 [L,NC] #New\r\n\tRewriteRule ^threads-([0-9]+)/(.*)\$ tsf_forums/forumdisplay.php?$fid = \$1&\$2 [L,NC] #New\r\n\tRewriteRule ^thread-([0-9]+)/(.*)\$ tsf_forums/showthread.php?$tid = \$1&\$2 [L,NC] #New\r\n\t\r\n\tRewriteRule ^torrent-category-([0-9]+)/(.*)\$ browse.php?$category = \$1 [L,NC] #torrent-category-1/Default-Category\r\n\tRewriteRule ^download-torrent-([0-9]+)/(.*)\$ download.php?$id = \$1 [L,NC] #download-torrent-2/1-jpg\r\n\tRewriteRule ^download-torrent-ssl-([0-9]+)/(.*)\$ download.php?$id = \$1&$type = ssl [L,NC] #download-torrent-ssl-2/1-jpg\r\n\tRewriteRule ^torrent-details-([0-9]+)/(.*)\$ details.php?$id = \$1 [L,NC] #torrent-details-2/1-jpg\r\n\tRewriteRule ^user-profile-([0-9]+)/(.*)\$ userdetails.php?$id = \$1 [L,NC] #user-profile-1/admin\r\n\r\n\t#Support for old links with old seo\r\n\tRewriteRule ^(.*)-c-([0-9]+).ts(.*)\$ browse.php?$category = \$2 [QSA,L]\r\n\tRewriteRule ^(.*)-d-([0-9]+).ts(.*)\$ download.php?$id = \$2 [QSA,L]\r\n\tRewriteRule ^(.*)-s-([0-9]+).ts(.*)\$ details.php?$id = \$2 [QSA,L]\r\n\tRewriteRule ^(.*)-a-(.*).ts(.*)\$ announce.php?$passkey = \$2 [QSA,L]\r\n\tRewriteRule ^(.*)-u?([0-9]+).ts(.*)\$ userdetails.php?$id = \$2\$3 [QSA,L]\r\n\tRewriteRule ^(.*)-f([0-9]+).tsf(.*)\$ tsf_forums/index.php?$fid = \$2\$3 [QSA,L]\r\n\tRewriteRule ^(.*)-fd([0-9]+).tsf(.*)\$ tsf_forums/forumdisplay.php?$fid = \$2\$3 [QSA,L]\r\n\tRewriteRule ^(.*)-t([0-9]+).tsf(.*)\$ tsf_forums/showthread.php?$tid = \$2\$3 [QSA,L]\r\n</IfModule>\r\n";
     if (!file_exists(TSDIR . "/.htaccess")) {
         @touch(TSDIR . "/.htaccess");
     }
     if (is_writeable(TSDIR . "/.htaccess")) {
-        $var_374 = implode("", file(TSDIR . "/.htaccess"));
-        if (strstr($var_374, "//seo_mod_start")) {
+        $fieldHtml = implode("", file(TSDIR . "/.htaccess"));
+        if (strstr($fieldHtml, "//seo_mod_start")) {
             return NULL;
         }
-        file_put_contents(TSDIR . "/.htaccess", $var_374 . $var_373);
+        file_put_contents(TSDIR . "/.htaccess", $fieldHtml . $inputAttributes);
     } else {
-        return showAlertError("Error, .htaccess isn't writable! <b>Copy/Paste the following code at end of a .htaccess file in your tracker root directory:</b><br /><br /><textarea $cols = '80' $rows = '15'>" . str_replace("%extra_code%", "RewriteEngine On\r\n", $var_373) . "</textarea>");
+        return showAlertError("Error, .htaccess isn't writable! <b>Copy/Paste the following code at end of a .htaccess file in your tracker root directory:</b><br /><br /><textarea $cols = '80' $rows = '15'>" . str_replace("%extra_code%", "RewriteEngine On\r\n", $inputAttributes) . "</textarea>");
     }
 }
 function function_136()
@@ -308,98 +308,98 @@ function function_136()
     $configCodeBuffer = "";
     $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'ANNOUNCE'");
     $Result = mysqli_fetch_assoc($query);
-    $var_56 = unserialize($Result["content"]);
-    $var_376 = $var_56["xbt_active"];
-    $var_377 = $var_56["xbt_announce_url"];
-    $var_378 = $var_56["announce_system"];
-    $var_379 = $var_56["announce_interval"];
-    $var_380 = $var_56["bannedclientdetect"];
-    $var_381 = $var_56["allowed_clients"];
-    $var_382 = $var_56["announce_actions"];
-    $var_383 = $var_56["max_rate"];
-    $var_384 = $var_56["announce_wait"];
-    $var_385 = $var_56["aggressivecheat"];
-    $var_386 = $var_56["detectbrowsercheats"];
-    $var_387 = $var_56["A_checkconnectable"];
-    $var_388 = $var_56["checkip"];
-    $var_389 = $var_56["banned_ports"];
-    $var_390 = $var_56["nc"];
+    $configData = unserialize($Result["content"]);
+    $mainConfig = $configData["xbt_active"];
+    $themeConfig = $configData["xbt_announce_url"];
+    $uploadConfig = $configData["announce_system"];
+    $cacheConfig = $configData["announce_interval"];
+    $securityConfig = $configData["bannedclientdetect"];
+    $emailConfig = $configData["allowed_clients"];
+    $smtpConfig = $configData["announce_actions"];
+    $socialConfig = $configData["max_rate"];
+    $apiConfig = $configData["announce_wait"];
+    $proxyConfig = $configData["aggressivecheat"];
+    $searchConfig = $configData["detectbrowsercheats"];
+    $trackerConfig = $configData["A_checkconnectable"];
+    $bonusConfig = $configData["checkip"];
+    $torrentConfig = $configData["banned_ports"];
+    $userConfig = $configData["nc"];
     $configCodeBuffer .= "/* ANNOUNCE */";
-    $configCodeBuffer .= "\$xbt_active = '" . $var_376 . "';";
-    if ($var_376 == "yes") {
-        $configCodeBuffer .= "\$xbt_announce_url = '" . $var_377 . "';";
+    $configCodeBuffer .= "\$xbt_active = '" . $mainConfig . "';";
+    if ($mainConfig == "yes") {
+        $configCodeBuffer .= "\$xbt_announce_url = '" . $themeConfig . "';";
     }
-    $configCodeBuffer .= "\$announce_system = '" . $var_378 . "';";
-    $configCodeBuffer .= "\$announce_interval = '" . $var_379 . "';";
-    $configCodeBuffer .= "\$bannedclientdetect = '" . $var_380 . "';";
-    if ($var_380 == "yes") {
-        $configCodeBuffer .= "\$allowed_clients = '" . $var_381 . "';";
+    $configCodeBuffer .= "\$announce_system = '" . $uploadConfig . "';";
+    $configCodeBuffer .= "\$announce_interval = '" . $cacheConfig . "';";
+    $configCodeBuffer .= "\$bannedclientdetect = '" . $securityConfig . "';";
+    if ($securityConfig == "yes") {
+        $configCodeBuffer .= "\$allowed_clients = '" . $emailConfig . "';";
     }
-    $configCodeBuffer .= "\$announce_actions = '" . $var_382 . "';";
-    $configCodeBuffer .= "\$max_rate = '" . $var_383 . "';";
-    $configCodeBuffer .= "\$announce_wait = '" . $var_384 . "';";
-    $configCodeBuffer .= "\$aggressivecheat = '" . $var_385 . "';";
-    $configCodeBuffer .= "\$detectbrowsercheats = '" . $var_386 . "';";
-    $configCodeBuffer .= "\$A_checkconnectable = '" . $var_387 . "';";
-    $configCodeBuffer .= "\$checkip = '" . $var_388 . "';";
-    $configCodeBuffer .= "\$banned_ports = '" . $var_389 . "';";
-    $configCodeBuffer .= "\$nc = '" . $var_390 . "';";
+    $configCodeBuffer .= "\$announce_actions = '" . $smtpConfig . "';";
+    $configCodeBuffer .= "\$max_rate = '" . $socialConfig . "';";
+    $configCodeBuffer .= "\$announce_wait = '" . $apiConfig . "';";
+    $configCodeBuffer .= "\$aggressivecheat = '" . $proxyConfig . "';";
+    $configCodeBuffer .= "\$detectbrowsercheats = '" . $searchConfig . "';";
+    $configCodeBuffer .= "\$A_checkconnectable = '" . $trackerConfig . "';";
+    $configCodeBuffer .= "\$checkip = '" . $bonusConfig . "';";
+    $configCodeBuffer .= "\$banned_ports = '" . $torrentConfig . "';";
+    $configCodeBuffer .= "\$nc = '" . $userConfig . "';";
     $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'MAIN'");
     $Result = mysqli_fetch_assoc($query);
     $MAIN = unserialize($Result["content"]);
-    $var_391 = $MAIN["BASEURL"];
-    $var_392 = $MAIN["SITENAME"];
-    $var_393 = $MAIN["cache"];
+    $forumConfig = $MAIN["BASEURL"];
+    $chatConfig = $MAIN["SITENAME"];
+    $miscConfig = $MAIN["cache"];
     $configCodeBuffer .= "/* MAIN */";
-    $configCodeBuffer .= "\$BASEURL = '" . $var_391 . "';";
-    $configCodeBuffer .= "\$SITENAME = '" . $var_392 . "';";
-    $configCodeBuffer .= "\$cache = '" . $var_393 . "';";
+    $configCodeBuffer .= "\$BASEURL = '" . $forumConfig . "';";
+    $configCodeBuffer .= "\$SITENAME = '" . $chatConfig . "';";
+    $configCodeBuffer .= "\$cache = '" . $miscConfig . "';";
     $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'TWEAK'");
     $Result = mysqli_fetch_assoc($query);
-    $var_394 = unserialize($Result["content"]);
-    $var_395 = $var_394["snatchmod"];
-    $var_396 = $var_394["gzipcompress"];
-    $var_397 = isset($var_394["memcached_enabled"]) ? $var_394["memcached_enabled"] : "no";
-    $var_398 = isset($var_394["memcached_host"]) ? $var_394["memcached_host"] : "localhost";
-    $var_399 = isset($var_394["memcached_port"]) ? $var_394["memcached_port"] : "11211";
+    $donationConfig = unserialize($Result["content"]);
+    $lotteryConfig = $donationConfig["snatchmod"];
+    $gameConfig = $donationConfig["gzipcompress"];
+    $warnConfig = isset($donationConfig["memcached_enabled"]) ? $donationConfig["memcached_enabled"] : "no";
+    $inviteConfig = isset($donationConfig["memcached_host"]) ? $donationConfig["memcached_host"] : "localhost";
+    $ratioConfig = isset($donationConfig["memcached_port"]) ? $donationConfig["memcached_port"] : "11211";
     $configCodeBuffer .= "/* TWEAK */";
-    $configCodeBuffer .= "\$snatchmod = '" . $var_395 . "';";
-    $configCodeBuffer .= "\$gzipcompress = '" . $var_396 . "';";
-    $configCodeBuffer .= "\$memcached_enabled = '" . $var_397 . "';";
-    $configCodeBuffer .= "\$memcached_host = '" . $var_398 . "';";
-    $configCodeBuffer .= "\$memcached_port = '" . $var_399 . "';";
+    $configCodeBuffer .= "\$snatchmod = '" . $lotteryConfig . "';";
+    $configCodeBuffer .= "\$gzipcompress = '" . $gameConfig . "';";
+    $configCodeBuffer .= "\$memcached_enabled = '" . $warnConfig . "';";
+    $configCodeBuffer .= "\$memcached_host = '" . $inviteConfig . "';";
+    $configCodeBuffer .= "\$memcached_port = '" . $ratioConfig . "';";
     $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'SECURITY'");
     $Result = mysqli_fetch_assoc($query);
-    $var_400 = unserialize($Result["content"]);
-    $var_401 = $var_400["privatetrackerpatch"];
-    $var_402 = $var_400["aggressivecheckip"];
+    $seedConfig = unserialize($Result["content"]);
+    $hitRunConfig = $seedConfig["privatetrackerpatch"];
+    $announceConfig = $seedConfig["aggressivecheckip"];
     $configCodeBuffer .= "/* SECURITY */";
-    $configCodeBuffer .= "\$privatetrackerpatch = '" . $var_401 . "';";
-    $configCodeBuffer .= "\$aggressivecheckip = '" . $var_402 . "';";
+    $configCodeBuffer .= "\$privatetrackerpatch = '" . $hitRunConfig . "';";
+    $configCodeBuffer .= "\$aggressivecheckip = '" . $announceConfig . "';";
     $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'THEME'");
     $Result = mysqli_fetch_assoc($query);
-    $var_28 = unserialize($Result["content"]);
-    $var_403 = $var_28["defaultlanguage"];
-    $var_10 = $var_28["charset"];
+    $formMethod = unserialize($Result["content"]);
+    $rssConfig = $formMethod["defaultlanguage"];
+    $htmlOutput = $formMethod["charset"];
     $configCodeBuffer .= "/* THEME */";
-    $configCodeBuffer .= "\$defaultlanguage = '" . $var_403 . "';";
-    $configCodeBuffer .= "\$charset = '" . $var_10 . "';";
+    $configCodeBuffer .= "\$defaultlanguage = '" . $rssConfig . "';";
+    $configCodeBuffer .= "\$charset = '" . $htmlOutput . "';";
     $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'KPS'");
     $Result = mysqli_fetch_assoc($query);
-    $var_404 = unserialize($Result["content"]);
-    $var_405 = $var_404["bdayreward"];
-    $var_406 = $var_404["bdayrewardtype"];
-    $var_407 = $var_404["bonus"];
-    $var_408 = $var_404["kpsseed"];
-    $var_409 = $var_404["kpstype"];
-    $var_410 = $var_404["kpsgbamount"];
+    $statsConfig = unserialize($Result["content"]);
+    $logConfig = $statsConfig["bdayreward"];
+    $backupConfig = $statsConfig["bdayrewardtype"];
+    $maintenanceConfig = $statsConfig["bonus"];
+    $performanceConfig = $statsConfig["kpsseed"];
+    $debugConfig = $statsConfig["kpstype"];
+    $captchaConfig = $statsConfig["kpsgbamount"];
     $configCodeBuffer .= "/* KPS */";
-    $configCodeBuffer .= "\$bdayreward = '" . $var_405 . "';";
-    $configCodeBuffer .= "\$bdayrewardtype = '" . $var_406 . "';";
-    $configCodeBuffer .= "\$bonus = '" . $var_407 . "';";
-    $configCodeBuffer .= "\$kpsseed = '" . $var_408 . "';";
-    $configCodeBuffer .= "\$kpstype = '" . $var_409 . "';";
-    $configCodeBuffer .= "\$kpsgbamount = '" . $var_410 . "';";
+    $configCodeBuffer .= "\$bdayreward = '" . $logConfig . "';";
+    $configCodeBuffer .= "\$bdayrewardtype = '" . $backupConfig . "';";
+    $configCodeBuffer .= "\$bonus = '" . $maintenanceConfig . "';";
+    $configCodeBuffer .= "\$kpsseed = '" . $performanceConfig . "';";
+    $configCodeBuffer .= "\$kpstype = '" . $debugConfig . "';";
+    $configCodeBuffer .= "\$kpsgbamount = '" . $captchaConfig . "';";
     if (file_put_contents("../include/config_announce.php", "<?php\r\n/* Please use Setting Panel to Modify this file! */\r\n" . $configCodeBuffer . "\r\n/* Please use Setting Panel to Modify this file! */\r\n?>")) {
         return "";
     }
@@ -507,7 +507,7 @@ function TS_Create_Tabs_HIT()
         $sgids .= "\r\n\t\t<td class=\"alt0\"><input $type = \"checkbox\" $name = \"usergroups[]\" $value = \"" . $gid["gid"] . "\"" . (in_array($gid["gid"], $HRSkipUsergroups, true) ? " $checked = \"checked\"" : "") . " /></td>\r\n\t\t<td class=\"alt0\">" . str_replace("{username}", $gid["title"], $gid["namestyle"]) . "</td>";
     }
     $sgids .= "\r\n\t\t\t\t</tr>\r\n\t\t\t</table>\r\n\t</fieldset>";
-    return "\r\n\t<script $type = \"text/javascript\">\r\n\t\tfunction selected_autohitrun_type(selected)\r\n\t\t{\r\n\t\t\tTSGetID(\"auto_hitrun_no\").style.$display = \"none\";\r\n\t\t\tTSGetID(\"auto_hitrun_yes\").style.$display = \"none\";\r\n\t\t\tTSGetID(\"auto_hitrun_\"+selected).style.$display = \"inline\";\r\n\t\t}\r\n\t</script>\r\n\t<form $method = \"post\" $action = \"" . $_SERVER["SCRIPT_NAME"] . "?do=manage_settings&amp;$act = save_hitrun&amp;$tab = 1&amp;$stab = 100\" $name = \"hitrun\">\r\n\t<input $type = \"hidden\" $name = \"usergroups_implode_with\" $value = \",\" />\r\n\t<input $type = \"hidden\" $name = \"configname\" $value = \"HITRUN\" />\r\n\t\t<table $cellspacing = \"0\" $cellpadding = \"0\" $border = \"0\" class=\"mainTableNoBorder\">\r\n\r\n\t\t<tr>\r\n\t\t\t\t<td class=\"tcat\" $colspan = \"2\">Hit &amp; Run Settings</td>\r\n\t\t\t</tr>\r\n\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt3\" $colspan = \"2\">Enable Auto-Hit&Run (Weekly cronjobs must be enabled)</td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt0\" $width = \"50%\" $align = \"justify\">\r\n\t\t\t\t\tEnable this feature to warn users due bad ratio for downloaded torrents (each).<br /><b>Note:</b> This feature doesn't work if XBT feature enabled.\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt0\" $width = \"50%\" $valign = \"top\">\r\n\t\t\t\t\t<input $onclick = \"selected_autohitrun_type(this.value);\" $type = \"radio\" $name = \"HITRUN[Enabled]\" $value = \"yes\"" . ($HITRUN["Enabled"] == "yes" ? " $checked = \"checked\"" : "") . " /> Yes\r\n\t\t\t\t\t<input $onclick = \"selected_autohitrun_type(this.value);\" $type = \"radio\" $name = \"HITRUN[Enabled]\" $value = \"no\"" . ($HITRUN["Enabled"] == "no" ? " $checked = \"checked\"" : "") . " /> No\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt0\" $colspan = \"2\">\r\n\t\t\t\t\t<div $id = \"auto_hitrun_no\" $style = \"display: " . ($HITRUN["Enabled"] == "no" ? "inline" : "none") . ";\"></div>\r\n\t\t\t\t\t<div $id = \"auto_hitrun_yes\" $style = \"display: " . ($HITRUN["Enabled"] == "yes" ? "inline" : "none") . ";\">\r\n\t\t\t\t\t\t<table $cellspacing = \"0\" $cellpadding = \"0\" $border = \"0\" class=\"mainTableNoBorder\">\r\n\r\n\t\t\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t\t\t<td class=\"alt3\" $colspan = \"2\">Min. Ratio</td>\r\n\t\t\t\t\t\t\t</tr>\r\n\t\t\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t\t\t<td class=\"alt0\" $width = \"50%\" $align = \"justify\">\r\n\t\t\t\t\t\t\t\t\tPlease enter minimum ratio per torrent.\r\n\t\t\t\t\t\t\t\t</td>\r\n\t\t\t\t\t\t\t\t<td class=\"alt0\" $width = \"50%\" $valign = \"top\">\r\n\t\t\t\t\t\t\t\t\t<input $type = \"text\" $name = \"HITRUN[MinRatio]\" $value = \"" . $HITRUN["MinRatio"] . "\" $size = \"10\" />\r\n\t\t\t\t\t\t\t\t</td>\r\n\t\t\t\t\t\t\t</tr>\r\n\r\n\t\t\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t\t\t<td class=\"alt3\" $colspan = \"2\">Min. Seed Time</td>\r\n\t\t\t\t\t\t\t</tr>\r\n\t\t\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t\t\t<td class=\"alt0\" $width = \"50%\" $align = \"justify\">\r\n\t\t\t\t\t\t\t\t\tPlease enter minimum seed-time per torrent.\r\n\t\t\t\t\t\t\t\t</td>\r\n\t\t\t\t\t\t\t\t<td class=\"alt0\" $width = \"50%\" $valign = \"top\">\r\n\t\t\t\t\t\t\t\t\t<input $type = \"text\" $name = \"HITRUN[MinSeedTime]\" $value = \"" . $HITRUN["MinSeedTime"] . "\" $size = \"10\" />\r\n\t\t\t\t\t\t\t\t</td>\r\n\t\t\t\t\t\t\t</tr>\r\n\r\n\t\t\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t\t\t<td class=\"alt3\" $colspan = \"2\">Min. Finish Date</td>\r\n\t\t\t\t\t\t\t</tr>\r\n\t\t\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t\t\t<td class=\"alt0\" $width = \"50%\" $align = \"justify\">\r\n\t\t\t\t\t\t\t\t\tPlease enter minimum finish-date per torrent.\r\n\t\t\t\t\t\t\t\t</td>\r\n\t\t\t\t\t\t\t\t<td class=\"alt0\" $width = \"50%\" $valign = \"top\">\r\n\t\t\t\t\t\t\t\t\t<input $type = \"text\" $name = \"HITRUN[MinFinishDate]\" $id = \"minfinishdate\" $value = \"" . ($HITRUN["MinFinishDate"] != "0000-00-00 00:00:00" ? date("Y-m-d", $HITRUN["MinFinishDate"]) : "") . "\" $size = \"10\" />\r\n\t\t\t\t\t\t\t\t</td>\r\n\t\t\t\t\t\t\t</tr>\r\n\r\n\t\t\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t\t\t<td class=\"alt3\" $colspan = \"2\">Wait Time-Limit (in hours)</td>\r\n\t\t\t\t\t\t\t</tr>\r\n\t\t\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t\t\t<td class=\"alt0\" $width = \"50%\" $align = \"justify\">\r\n\t\t\t\t\t\t\t\t\tDo not warn users whenever they stop the torrent within this time-limit.<br /><b>Example</b>: User X has torrent Z and seeded it a few hours, user X must shut-down his computer but he will continue to seed torrent Z tomorrow.. This limit is between Shut-down torrent and Re-Start Torrent Time-Limit.\r\n\t\t\t\t\t\t\t\t</td>\r\n\t\t\t\t\t\t\t\t<td class=\"alt0\" $width = \"50%\" $valign = \"top\">\r\n\t\t\t\t\t\t\t\t\t<input $type = \"text\" $name = \"HITRUN[CanWait]\" $value = \"" . $HITRUN["CanWait"] . "\" $size = \"10\" />\r\n\t\t\t\t\t\t\t\t</td>\r\n\t\t\t\t\t\t\t</tr>\r\n\r\n\t\t\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t\t\t<td class=\"alt3\" $colspan = \"2\">Protected Usergroups</td>\r\n\t\t\t\t\t\t\t</tr>\r\n\t\t\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t\t\t<td class=\"alt0\" $width = \"50%\" $align = \"justify\" $valign = \"top\">\r\n\t\t\t\t\t\t\t\t\tPlease select usergroups that you don't want to warn due Hit & Run.\r\n\t\t\t\t\t\t\t\t</td>\r\n\t\t\t\t\t\t\t\t<td class=\"alt0\" $width = \"50%\" $valign = \"top\">\r\n\t\t\t\t\t\t\t\t\t" . $sgids . "\r\n\t\t\t\t\t\t\t\t</td>\r\n\t\t\t\t\t\t\t</tr>\r\n\r\n\t\t\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t\t\t<td class=\"alt3\" $colspan = \"2\">Categories</td>\r\n\t\t\t\t\t\t\t</tr>\r\n\t\t\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t\t\t<td class=\"alt0\" $width = \"50%\" $align = \"justify\" $valign = \"top\">\r\n\t\t\t\t\t\t\t\t\tPlease select categories that you want to check for Hit & Run.\r\n\t\t\t\t\t\t\t\t</td>\r\n\t\t\t\t\t\t\t\t<td class=\"alt0\" $width = \"50%\" $valign = \"top\">\r\n\t\t\t\t\t\t\t\t\t" . var_411("hitrun", $Categories) . "\r\n\t\t\t\t\t\t\t\t</td>\r\n\t\t\t\t\t\t\t</tr>\r\n\r\n\t\t\t\t\t\t</table>\r\n\t\t\t\t\t</div>\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"tcat2\"></td>\r\n\t\t\t\t<td class=\"tcat2\">\r\n\t\t\t\t\t<input $type = \"submit\" $value = \"Save Settings\" /> <input $type = \"reset\" $value = \"Reset Settings\" />\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\r\n\t\t</table>\r\n\t</form>\r\n\t<script $type = \"text/javascript\">\r\n\t\tfunction select_deselectAll(formname,elm,group)\r\n\t\t{\r\n\t\t\tvar $frm = document.forms[formname];\r\n\t\t\tfor($i = 0;i<frm.length;i++)\r\n\t\t\t{\r\n\t\t\t\tif(elm.attributes[\"checkall\"] != null && elm.attributes[\"checkall\"].$value = = group)\r\n\t\t\t\t{\r\n\t\t\t\t\tif(frm.elements[i].attributes[\"checkme\"] != null && frm.elements[i].attributes[\"checkme\"].$value = = group)\r\n\t\t\t\t\t{\r\n\t\t\t\t\t\tfrm.elements[i].$checked = elm.checked;\r\n\t\t\t\t\t}\r\n\t\t\t\t}\r\n\t\t\t\telse if(frm.elements[i].attributes[\"checkme\"] != null && frm.elements[i].attributes[\"checkme\"].$value = = group)\r\n\t\t\t\t{\r\n\t\t\t\t\tif(frm.elements[i].$checked = = false)\r\n\t\t\t\t\t{\r\n\t\t\t\t\t\tfrm.elements[1].$checked = false;\r\n\t\t\t\t\t}\r\n\t\t\t\t}\r\n\t\t\t}\r\n\t\t}\r\n\t</script>";
+    return "\r\n\t<script $type = \"text/javascript\">\r\n\t\tfunction selected_autohitrun_type(selected)\r\n\t\t{\r\n\t\t\tTSGetID(\"auto_hitrun_no\").style.$display = \"none\";\r\n\t\t\tTSGetID(\"auto_hitrun_yes\").style.$display = \"none\";\r\n\t\t\tTSGetID(\"auto_hitrun_\"+selected).style.$display = \"inline\";\r\n\t\t}\r\n\t</script>\r\n\t<form $method = \"post\" $action = \"" . $_SERVER["SCRIPT_NAME"] . "?do=manage_settings&amp;$act = save_hitrun&amp;$tab = 1&amp;$stab = 100\" $name = \"hitrun\">\r\n\t<input $type = \"hidden\" $name = \"usergroups_implode_with\" $value = \",\" />\r\n\t<input $type = \"hidden\" $name = \"configname\" $value = \"HITRUN\" />\r\n\t\t<table $cellspacing = \"0\" $cellpadding = \"0\" $border = \"0\" class=\"mainTableNoBorder\">\r\n\r\n\t\t<tr>\r\n\t\t\t\t<td class=\"tcat\" $colspan = \"2\">Hit &amp; Run Settings</td>\r\n\t\t\t</tr>\r\n\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt3\" $colspan = \"2\">Enable Auto-Hit&Run (Weekly cronjobs must be enabled)</td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt0\" $width = \"50%\" $align = \"justify\">\r\n\t\t\t\t\tEnable this feature to warn users due bad ratio for downloaded torrents (each).<br /><b>Note:</b> This feature doesn't work if XBT feature enabled.\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt0\" $width = \"50%\" $valign = \"top\">\r\n\t\t\t\t\t<input $onclick = \"selected_autohitrun_type(this.value);\" $type = \"radio\" $name = \"HITRUN[Enabled]\" $value = \"yes\"" . ($HITRUN["Enabled"] == "yes" ? " $checked = \"checked\"" : "") . " /> Yes\r\n\t\t\t\t\t<input $onclick = \"selected_autohitrun_type(this.value);\" $type = \"radio\" $name = \"HITRUN[Enabled]\" $value = \"no\"" . ($HITRUN["Enabled"] == "no" ? " $checked = \"checked\"" : "") . " /> No\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt0\" $colspan = \"2\">\r\n\t\t\t\t\t<div $id = \"auto_hitrun_no\" $style = \"display: " . ($HITRUN["Enabled"] == "no" ? "inline" : "none") . ";\"></div>\r\n\t\t\t\t\t<div $id = \"auto_hitrun_yes\" $style = \"display: " . ($HITRUN["Enabled"] == "yes" ? "inline" : "none") . ";\">\r\n\t\t\t\t\t\t<table $cellspacing = \"0\" $cellpadding = \"0\" $border = \"0\" class=\"mainTableNoBorder\">\r\n\r\n\t\t\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t\t\t<td class=\"alt3\" $colspan = \"2\">Min. Ratio</td>\r\n\t\t\t\t\t\t\t</tr>\r\n\t\t\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t\t\t<td class=\"alt0\" $width = \"50%\" $align = \"justify\">\r\n\t\t\t\t\t\t\t\t\tPlease enter minimum ratio per torrent.\r\n\t\t\t\t\t\t\t\t</td>\r\n\t\t\t\t\t\t\t\t<td class=\"alt0\" $width = \"50%\" $valign = \"top\">\r\n\t\t\t\t\t\t\t\t\t<input $type = \"text\" $name = \"HITRUN[MinRatio]\" $value = \"" . $HITRUN["MinRatio"] . "\" $size = \"10\" />\r\n\t\t\t\t\t\t\t\t</td>\r\n\t\t\t\t\t\t\t</tr>\r\n\r\n\t\t\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t\t\t<td class=\"alt3\" $colspan = \"2\">Min. Seed Time</td>\r\n\t\t\t\t\t\t\t</tr>\r\n\t\t\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t\t\t<td class=\"alt0\" $width = \"50%\" $align = \"justify\">\r\n\t\t\t\t\t\t\t\t\tPlease enter minimum seed-time per torrent.\r\n\t\t\t\t\t\t\t\t</td>\r\n\t\t\t\t\t\t\t\t<td class=\"alt0\" $width = \"50%\" $valign = \"top\">\r\n\t\t\t\t\t\t\t\t\t<input $type = \"text\" $name = \"HITRUN[MinSeedTime]\" $value = \"" . $HITRUN["MinSeedTime"] . "\" $size = \"10\" />\r\n\t\t\t\t\t\t\t\t</td>\r\n\t\t\t\t\t\t\t</tr>\r\n\r\n\t\t\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t\t\t<td class=\"alt3\" $colspan = \"2\">Min. Finish Date</td>\r\n\t\t\t\t\t\t\t</tr>\r\n\t\t\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t\t\t<td class=\"alt0\" $width = \"50%\" $align = \"justify\">\r\n\t\t\t\t\t\t\t\t\tPlease enter minimum finish-date per torrent.\r\n\t\t\t\t\t\t\t\t</td>\r\n\t\t\t\t\t\t\t\t<td class=\"alt0\" $width = \"50%\" $valign = \"top\">\r\n\t\t\t\t\t\t\t\t\t<input $type = \"text\" $name = \"HITRUN[MinFinishDate]\" $id = \"minfinishdate\" $value = \"" . ($HITRUN["MinFinishDate"] != "0000-00-00 00:00:00" ? date("Y-m-d", $HITRUN["MinFinishDate"]) : "") . "\" $size = \"10\" />\r\n\t\t\t\t\t\t\t\t</td>\r\n\t\t\t\t\t\t\t</tr>\r\n\r\n\t\t\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t\t\t<td class=\"alt3\" $colspan = \"2\">Wait Time-Limit (in hours)</td>\r\n\t\t\t\t\t\t\t</tr>\r\n\t\t\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t\t\t<td class=\"alt0\" $width = \"50%\" $align = \"justify\">\r\n\t\t\t\t\t\t\t\t\tDo not warn users whenever they stop the torrent within this time-limit.<br /><b>Example</b>: User X has torrent Z and seeded it a few hours, user X must shut-down his computer but he will continue to seed torrent Z tomorrow.. This limit is between Shut-down torrent and Re-Start Torrent Time-Limit.\r\n\t\t\t\t\t\t\t\t</td>\r\n\t\t\t\t\t\t\t\t<td class=\"alt0\" $width = \"50%\" $valign = \"top\">\r\n\t\t\t\t\t\t\t\t\t<input $type = \"text\" $name = \"HITRUN[CanWait]\" $value = \"" . $HITRUN["CanWait"] . "\" $size = \"10\" />\r\n\t\t\t\t\t\t\t\t</td>\r\n\t\t\t\t\t\t\t</tr>\r\n\r\n\t\t\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t\t\t<td class=\"alt3\" $colspan = \"2\">Protected Usergroups</td>\r\n\t\t\t\t\t\t\t</tr>\r\n\t\t\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t\t\t<td class=\"alt0\" $width = \"50%\" $align = \"justify\" $valign = \"top\">\r\n\t\t\t\t\t\t\t\t\tPlease select usergroups that you don't want to warn due Hit & Run.\r\n\t\t\t\t\t\t\t\t</td>\r\n\t\t\t\t\t\t\t\t<td class=\"alt0\" $width = \"50%\" $valign = \"top\">\r\n\t\t\t\t\t\t\t\t\t" . $sgids . "\r\n\t\t\t\t\t\t\t\t</td>\r\n\t\t\t\t\t\t\t</tr>\r\n\r\n\t\t\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t\t\t<td class=\"alt3\" $colspan = \"2\">Categories</td>\r\n\t\t\t\t\t\t\t</tr>\r\n\t\t\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t\t\t<td class=\"alt0\" $width = \"50%\" $align = \"justify\" $valign = \"top\">\r\n\t\t\t\t\t\t\t\t\tPlease select categories that you want to check for Hit & Run.\r\n\t\t\t\t\t\t\t\t</td>\r\n\t\t\t\t\t\t\t\t<td class=\"alt0\" $width = \"50%\" $valign = \"top\">\r\n\t\t\t\t\t\t\t\t\t" . sanitizeInput("hitrun", $Categories) . "\r\n\t\t\t\t\t\t\t\t</td>\r\n\t\t\t\t\t\t\t</tr>\r\n\r\n\t\t\t\t\t\t</table>\r\n\t\t\t\t\t</div>\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"tcat2\"></td>\r\n\t\t\t\t<td class=\"tcat2\">\r\n\t\t\t\t\t<input $type = \"submit\" $value = \"Save Settings\" /> <input $type = \"reset\" $value = \"Reset Settings\" />\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\r\n\t\t</table>\r\n\t</form>\r\n\t<script $type = \"text/javascript\">\r\n\t\tfunction select_deselectAll(formname,elm,group)\r\n\t\t{\r\n\t\t\tvar $frm = document.forms[formname];\r\n\t\t\tfor($i = 0;i<frm.length;i++)\r\n\t\t\t{\r\n\t\t\t\tif(elm.attributes[\"checkall\"] != null && elm.attributes[\"checkall\"].$value = = group)\r\n\t\t\t\t{\r\n\t\t\t\t\tif(frm.elements[i].attributes[\"checkme\"] != null && frm.elements[i].attributes[\"checkme\"].$value = = group)\r\n\t\t\t\t\t{\r\n\t\t\t\t\t\tfrm.elements[i].$checked = elm.checked;\r\n\t\t\t\t\t}\r\n\t\t\t\t}\r\n\t\t\t\telse if(frm.elements[i].attributes[\"checkme\"] != null && frm.elements[i].attributes[\"checkme\"].$value = = group)\r\n\t\t\t\t{\r\n\t\t\t\t\tif(frm.elements[i].$checked = = false)\r\n\t\t\t\t\t{\r\n\t\t\t\t\t\tfrm.elements[1].$checked = false;\r\n\t\t\t\t\t}\r\n\t\t\t\t}\r\n\t\t\t}\r\n\t\t}\r\n\t</script>";
 }
 function TS_Create_Tabs_PAYMENT()
 {
@@ -559,14 +559,14 @@ function TS_Create_Tabs_REQUEST()
 }
 function function_145($SECURITY)
 {
-    $var_412 = "<select $name = \"SECURITY[reCAPTCHALanguage]\">";
-    $var_413 = file("./../cache/languagecodes.txt");
-    foreach ($var_413 as $var_289) {
-        list($var_414, $var_342) = explode("~", $var_289);
-        $var_412 .= "<option $value = \"" . $var_342 . "\"" . ($SECURITY["reCAPTCHALanguage"] == $var_342 ? " $selected = \"selected\"" : "") . ">" . $var_414 . "</option>";
+    $pluginConfig = "<select $name = \"SECURITY[reCAPTCHALanguage]\">";
+    $widgetConfig = file("./../cache/languagecodes.txt");
+    foreach ($widgetConfig as $formMethod9) {
+        list($customConfig, $processedCode) = explode("~", $formMethod9);
+        $pluginConfig .= "<option $value = \"" . $processedCode . "\"" . ($SECURITY["reCAPTCHALanguage"] == $processedCode ? " $selected = \"selected\"" : "") . ">" . $customConfig . "</option>";
     }
-    $var_412 .= "</select>";
-    return $var_412;
+    $pluginConfig .= "</select>";
+    return $pluginConfig;
 }
 function TS_Create_Tabs_SECURITY()
 {
@@ -739,34 +739,34 @@ function TS_Create_Tabs_SOCIAL()
 }
 function function_146($formname = "hitrun", $selected = [])
 {
-    $var_415 = [];
-    $var_416 = [];
-    $var_417 = [];
+    $categoryConfig = [];
+    $categoryId = [];
+    $categoryName = [];
     $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM categories WHERE type IN ('c','s') ORDER by name,id");
-    while ($var_418 = mysqli_fetch_assoc($query)) {
-        if ($var_418["type"] == "c") {
-            $var_415[] = $var_418;
+    while ($categoryImage = mysqli_fetch_assoc($query)) {
+        if ($categoryImage["type"] == "c") {
+            $categoryConfig[] = $categoryImage;
         }
-        if ($var_418["type"] == "s") {
-            $var_416[] = $var_418;
-        }
-    }
-    if (count($var_416)) {
-        foreach ($var_416 as $var_419) {
-            $var_417[$var_419["pid"]] = (isset($var_417[$var_419["pid"]]) ? $var_417[$var_419["pid"]] : "") . "\r\n\t\t\t<tr>\r\n\t\t\t\t<td $valign = \"top\" class=\"alt0\">\r\n\t\t\t\t\t<input $type = \"checkbox\" $value = \"" . $var_419["id"] . "\" $checkme = \"group" . $var_419["pid"] . "\" $name = \"categories[]\"" . (in_array($var_419["id"], $selected) ? " $checked = \"checked\"" : "") . "> <span $style = \"color: #000000; font-size: 11px; font-weight: normal;\">" . $var_419["name"] . "</span>\r\n\t\t\t\t</td>\r\n\t\t\t</tr>";
+        if ($categoryImage["type"] == "s") {
+            $categoryId[] = $categoryImage;
         }
     }
-    $var_420 = "\r\n\t<div $style = \"border: 1px solid #000;\">\r\n\t\t<table $width = \"100%\" $cellspacing = \"0\" $cellpadding = \"0\" $border = \"0\">\r\n\t\t\t<tr>";
+    if (count($categoryId)) {
+        foreach ($categoryId as $categorySort) {
+            $categoryName[$categorySort["pid"]] = (isset($categoryName[$categorySort["pid"]]) ? $categoryName[$categorySort["pid"]] : "") . "\r\n\t\t\t<tr>\r\n\t\t\t\t<td $valign = \"top\" class=\"alt0\">\r\n\t\t\t\t\t<input $type = \"checkbox\" $value = \"" . $categorySort["id"] . "\" $checkme = \"group" . $categorySort["pid"] . "\" $name = \"categories[]\"" . (in_array($categorySort["id"], $selected) ? " $checked = \"checked\"" : "") . "> <span $style = \"color: #000000; font-size: 11px; font-weight: normal;\">" . $categorySort["name"] . "</span>\r\n\t\t\t\t</td>\r\n\t\t\t</tr>";
+        }
+    }
+    $categoryDesc = "\r\n\t<div $style = \"border: 1px solid #000;\">\r\n\t\t<table $width = \"100%\" $cellspacing = \"0\" $cellpadding = \"0\" $border = \"0\">\r\n\t\t\t<tr>";
     $count = 0;
-    foreach ($var_415 as $var_421) {
+    foreach ($categoryConfig as $categoryHtml) {
         if ($count % 3 == 0) {
-            $var_420 .= "</tr><tr>";
+            $categoryDesc .= "</tr><tr>";
         }
-        $var_420 .= "\r\n\t\t\t\t<td $valign = \"top\" class=\"alt0\">\r\n\t\t\t\t\t<input $type = \"checkbox\" $value = \"" . $var_421["id"] . "\" $name = \"categories[]\" $checkall = \"group" . $var_421["id"] . "\" $onclick = \"javascript: return select_deselectAll ('" . $formname . "', this, 'group" . $var_421["id"] . "');\"" . (in_array($var_421["id"], $selected) ? " $checked = \"checked\"" : "") . "> <span $style = \"color: red; font-size: 12px; font-weight: bold;\">" . $var_421["name"] . "</span>\r\n\t\t\t\t\t" . (isset($var_417[$var_421["id"]]) ? "\r\n\t\t\t\t\t<div $style = \"margin-left: 20px;\">\r\n\t\t\t\t\t\t<table>\r\n\t\t\t\t\t\t\t" . $var_417[$var_421["id"]] . "\r\n\t\t\t\t\t\t</table>\r\n\t\t\t\t\t</span>" : "") . "\r\n\t\t\t\t</td>\r\n\t\t";
+        $categoryDesc .= "\r\n\t\t\t\t<td $valign = \"top\" class=\"alt0\">\r\n\t\t\t\t\t<input $type = \"checkbox\" $value = \"" . $categoryHtml["id"] . "\" $name = \"categories[]\" $checkall = \"group" . $categoryHtml["id"] . "\" $onclick = \"javascript: return select_deselectAll ('" . $formname . "', this, 'group" . $categoryHtml["id"] . "');\"" . (in_array($categoryHtml["id"], $selected) ? " $checked = \"checked\"" : "") . "> <span $style = \"color: red; font-size: 12px; font-weight: bold;\">" . $categoryHtml["name"] . "</span>\r\n\t\t\t\t\t" . (isset($categoryName[$categoryHtml["id"]]) ? "\r\n\t\t\t\t\t<div $style = \"margin-left: 20px;\">\r\n\t\t\t\t\t\t<table>\r\n\t\t\t\t\t\t\t" . $categoryName[$categoryHtml["id"]] . "\r\n\t\t\t\t\t\t</table>\r\n\t\t\t\t\t</span>" : "") . "\r\n\t\t\t\t</td>\r\n\t\t";
         $count++;
     }
-    $var_420 .= "\r\n\t\t\t</tr>\r\n\t\t</table>\r\n\t</div>";
-    return $var_420;
+    $categoryDesc .= "\r\n\t\t\t</tr>\r\n\t\t</table>\r\n\t</div>";
+    return $categoryDesc;
 }
 
 ?>

@@ -50,26 +50,26 @@ function function_268($url = "http://www.templateshares.info/tsnews/tsnews.txt")
     $data = false;
     $timeout = 10;
     if (function_exists("curl_init") && ($ch = curl_init())) {
-        $var_581 = true;
+        $newsItem = true;
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
         $data = curl_exec($ch);
         curl_close($ch);
     }
-    if (!isset($var_581) && !$data && ini_get("allow_url_fopen")) {
-        $var_99 = ini_set("default_socket_timeout", $timeout);
-        $var_568 = "";
+    if (!isset($newsItem) && !$data && ini_get("allow_url_fopen")) {
+        $newsCount = ini_set("default_socket_timeout", $timeout);
+        $tableRow = "";
         if ($handle = @fopen($url, "rb")) {
-            ini_set("default_socket_timeout", $var_99);
+            ini_set("default_socket_timeout", $newsCount);
             stream_set_timeout($handle, $timeout);
             stream_set_blocking($handle, 0);
             while (!feof($handle)) {
-                $var_568 .= fread($handle, 8192);
+                $tableRow .= fread($handle, 8192);
             }
             fclose($handle);
-            $data = $var_568;
-            unset($var_568);
+            $data = $tableRow;
+            unset($tableRow);
         }
     }
     if ($data) {

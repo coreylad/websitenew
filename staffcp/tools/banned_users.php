@@ -37,7 +37,7 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST" && isset($_POST["ids"]) && 
                     }
                     $emessage = str_replace(["{1}", "{2}", "{3}"], [$User["username"], $_SESSION["ADMIN_USERNAME"], $MAIN["BASEURL"]], $Language[24]);
                     echo "\r\n\t\t\t\t\t<table $cellpadding = \"4\" $cellspacing = \"0\" $border = \"0\" $width = \"650\">\r\n\t\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t\t<td $width = \"25%\">\r\n\t\t\t\t\t\t\t\t" . $Language[21] . "\r\n\t\t\t\t\t\t\t</td>\r\n\t\t\t\t\t\t\t<td $width = \"60%\">\r\n\t\t\t\t\t\t\t\t<b>" . htmlspecialchars($User["email"]) . "</b>\r\n\t\t\t\t\t\t\t</td>\r\n\t\t\t\t\t\t\t<td $width = \"15%\">";
-                    if (var_283($User["email"], $Language[14], nl2br($emessage))) {
+                    if (function_100($User["email"], $Language[14], nl2br($emessage))) {
                         echo "\r\n\t\t\t\t\t\t\t\t\t\t\t<font $color = \"green\">" . $Language[22] . "</font>";
                     } else {
                         echo "\r\n\t\t\t\t\t\t\t\t\t\t\t<font $color = \"red\">" . $Language[23] . "</font>";
@@ -166,8 +166,8 @@ class Class_5
         if (!$http_host) {
             $http_host = substr(md5($message), 12, 18) . ".ts_unknown.unknown";
         }
-        $var_288 = "<" . gmdate("YmdHis") . "." . substr(md5($message . microtime()), 0, 12) . "@" . $http_host . ">";
-        $headers .= "Message-ID: " . $var_288 . $delimiter;
+        $emailMessageId = "<" . gmdate("YmdHis") . "." . substr(md5($message . microtime()), 0, 12) . "@" . $http_host . ">";
+        $headers .= "Message-ID: " . $emailMessageId . $delimiter;
         $headers .= preg_replace("#(\r\n|\r|\n)#s", $delimiter, $uheaders);
         unset($uheaders);
         $headers .= "MIME-Version: 1.0" . $delimiter;
@@ -242,8 +242,8 @@ class Class_5
             if (!$this->smtpSendCommand("MAIL FROM:<" . $this->fromemail . ">", 250)) {
                 return $this->smtpDebugError($this->smtpReturn . " Unexpected response from SMTP server during FROM address transmission");
             }
-            $var_290 = explode(",", $this->toemail);
-            foreach ($var_290 as $address) {
+            $emailRecipientsArray = explode(",", $this->toemail);
+            foreach ($emailRecipientsArray as $address) {
                 if (!$this->smtpSendCommand("RCPT TO:<" . trim($address) . ">", 250)) {
                     return $this->smtpDebugError($this->smtpReturn . " Unexpected response from SMTP server during TO address transmission");
                 }
@@ -281,7 +281,7 @@ class Class_5
     {
         if ($doUniCode) {
             $text = preg_replace_callback("/&#([0-9]+);/siU", function ($matches) {
-                return var_291($matches[1]);
+                return convertUtf8Char($matches[1]);
             }, $text);
         }
         return str_replace(["&lt;", "&gt;", "&quot;", "&amp;"], ["<", ">", "\"", "&"], $text);
@@ -293,25 +293,25 @@ class Class_5
             return $text;
         }
         if ($force_encode) {
-            $var_292 = true;
+            $emailEncodingNeeded = true;
         } else {
-            $var_292 = false;
+            $emailEncodingNeeded = false;
             $i = 0;
             while ($i < strlen($text)) {
                 if (127 < ord($text[$i])) {
-                    $var_292 = true;
+                    $emailEncodingNeeded = true;
                 } else {
                     $i++;
                 }
             }
         }
-        if ($var_292) {
-            $var_293 = preg_replace_callback("#([^a-zA-Z0-9!*+\\-/ ])#", function ($matches) {
+        if ($emailEncodingNeeded) {
+            $emailSubjectEncoded = preg_replace_callback("#([^a-zA-Z0-9!*+\\-/ ])#", function ($matches) {
                 return "'=" . strtoupper(dechex(ord(str_replace("\\\\\"", "\\\"", $matches[1]))));
             }, $text);
-            $var_293 = str_replace(" ", "_", $var_293);
-            $var_293 = "=?" . $charset . "?q?" . $var_293 . "?=";
-            return $var_293;
+            $emailSubjectEncoded = str_replace(" ", "_", $emailSubjectEncoded);
+            $emailSubjectEncoded = "=?" . $charset . "?q?" . $emailSubjectEncoded . "?=";
+            return $emailSubjectEncoded;
         }
         if ($quoted_string) {
             $text = str_replace(["\"", "(", ")"], ["\\\"", "\\(", "\\)"], $text);
@@ -347,12 +347,12 @@ function function_100($to, $subject, $body)
     global $MAIN;
     global $SMTP;
     global $THEME;
-    $var_295 = $MAIN["SITENAME"];
+    $emailIsPrepared = $MAIN["SITENAME"];
     $fromemail = $MAIN["SITEEMAIL"];
-    $var_296 = false;
+    $siteNameForEmail = false;
     if (strtoupper(substr(PHP_OS, 0, 3) == "WIN")) {
         $emailLineDelimiter = "\r\n";
-        $var_296 = true;
+        $siteNameForEmail = true;
     } else {
         if (strtoupper(substr(PHP_OS, 0, 3) == "MAC")) {
             $emailLineDelimiter = "\r";
@@ -360,12 +360,12 @@ function function_100($to, $subject, $body)
             $emailLineDelimiter = "\n";
         }
     }
-    $var_298 = md5(uniqid(rand(), true) . time());
-    $var_41 = $_SERVER["SERVER_NAME"];
-    $headers = "From: " . $var_295 . " <" . $fromemail . ">" . $emailLineDelimiter;
-    $headers .= "Reply-To: " . $var_295 . " <" . $fromemail . ">" . $emailLineDelimiter;
-    $headers .= "Return-Path: " . $var_295 . " <" . $fromemail . ">" . $emailLineDelimiter;
-    $headers .= "Message-ID: <" . $var_298 . " thesystem@" . $var_41 . ">" . $emailLineDelimiter;
+    $uniqueEmailId = md5(uniqid(rand(), true) . time());
+    $serverName = $_SERVER["SERVER_NAME"];
+    $headers = "From: " . $emailIsPrepared . " <" . $fromemail . ">" . $emailLineDelimiter;
+    $headers .= "Reply-To: " . $emailIsPrepared . " <" . $fromemail . ">" . $emailLineDelimiter;
+    $headers .= "Return-Path: " . $emailIsPrepared . " <" . $fromemail . ">" . $emailLineDelimiter;
+    $headers .= "Message-ID: <" . $uniqueEmailId . " thesystem@" . $serverName . ">" . $emailLineDelimiter;
     $headers .= "X-Mailer: PHP v" . phpversion() . $emailLineDelimiter;
     $headers .= "MIME-Version: 1.0" . $emailLineDelimiter;
     $headers .= "Content-Transfer-Encoding: 8bit" . $emailLineDelimiter;
@@ -378,24 +378,24 @@ function function_100($to, $subject, $body)
         if (isset($SMTP["smtp"]) && $SMTP["smtp"] == "yes") {
             ini_set("SMTP", $SMTP["smtp_host"]);
             ini_set("smtp_port", $SMTP["smtp_port"]);
-            if ($var_296) {
+            if ($siteNameForEmail) {
                 ini_set("sendmail_from", $SMTP["smtp_from"]);
             }
         }
-        $var_299 = mail($to, $subject, $body, $headers);
+        $emailHeaderEncoded = mail($to, $subject, $body, $headers);
         if (isset($SMTP["smtp"]) && $SMTP["smtp"] == "yes") {
             ini_restore("SMTP");
             ini_restore("smtp_port");
-            if ($var_296) {
+            if ($siteNameForEmail) {
                 ini_restore("sendmail_from");
             }
         }
-        return $var_299;
+        return $emailHeaderEncoded;
     }
-    $var_300 = new Class_5($SMTP);
-    $var_300->function_91($to, trim($subject), trim($body), $fromemail, "", $THEME["charset"], $fromemail, $MAIN["BASEURL"]);
-    $var_301 = $var_300->smtpSendEmail();
-    return $var_301;
+    $emailHandler = new Class_5($SMTP);
+    $emailHandler->function_91($to, trim($subject), trim($body), $fromemail, "", $THEME["charset"], $fromemail, $MAIN["BASEURL"]);
+    $emailSendResult = $emailHandler->smtpSendEmail();
+    return $emailSendResult;
 }
 function formatBytes($bytes = 0)
 {
@@ -459,9 +459,9 @@ function buildPaginationLinks($perpage, $results, $address)
     $pagenumber = isset($_GET["page"]) ? intval($_GET["page"]) : (isset($_POST["page"]) ? intval($_POST["page"]) : "");
     validatePerPage($results, $pagenumber, $perpage, 200);
     $limitOffset = ($pagenumber - 1) * $perpage;
-    $var_244 = $pagenumber * $perpage;
-    if ($results < $var_244) {
-        $var_244 = $results;
+    $paginationOffset = $pagenumber * $perpage;
+    if ($results < $paginationOffset) {
+        $paginationOffset = $results;
         if ($results < $limitOffset) {
             $limitOffset = $results - $perpage - 1;
         }
@@ -469,7 +469,7 @@ function buildPaginationLinks($perpage, $results, $address)
     if ($limitOffset < 0) {
         $limitOffset = 0;
     }
-    $paginationLinks = $var_246 = $var_247 = $var_248 = $var_249 = "";
+    $paginationLinks = $prevPage = $nextPage = $pageLinks = $paginationHtml = "";
     $currentPage = 0;
     if ($results <= $perpage) {
         $paginationHtml["pagenav"] = false;
@@ -493,12 +493,12 @@ function buildPaginationLinks($perpage, $results, $address)
     }
     $pageRangeThreshold = "3";
     if (!isset($paginationSkipLinksArray) || !is_array($paginationSkipLinksArray)) {
-        $var_258 = "10 50 100 500 1000";
-        $paginationSkipLinksArray[] = preg_split("#\\s+#s", $var_258, -1, PREG_SPLIT_NO_EMPTY);
+        $paginationOptions = "10 50 100 500 1000";
+        $paginationSkipLinksArray[] = preg_split("#\\s+#s", $paginationOptions, -1, PREG_SPLIT_NO_EMPTY);
         while ($currentPage++ < $queryResult) {
         }
-        $var_259 = isset($previousPage) && $previousPage != 1 ? "page=" . $previousPage : "";
-        $paginationLinks = "\r\n\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTableNoBorder\">\r\n\t\t<tr>\r\n\t\t\t<td $style = \"padding: 0px 0px 1px 0px;\">\r\n\t\t\t\t<div $style = \"float: left;\" $id = \"navcontainer_f\">\r\n\t\t\t\t\t<ul>\r\n\t\t\t\t\t\t<li>" . $pagenumber . " - " . $queryResult . "</li>\r\n\t\t\t\t\t\t" . ($paginationHtml["first"] ? "<li><a class=\"smalltext\" $href = \"" . $address . "\" $title = \"First Page - Show Results " . $firstPageInfo["first"] . " to " . $firstPageInfo["last"] . " of " . $total . "\">&laquo; First</a></li>" : "") . ($paginationHtml["prev"] ? "<li><a class=\"smalltext\" $href = \"" . $address . $var_259 . "\" $title = \"Previous Page - Show Results " . $previousPageInfo["first"] . " to " . $previousPageInfo["last"] . " of " . $total . "\">&lt;</a></li>" : "") . "\r\n\t\t\t\t\t\t" . $paginationLinks . "\r\n\t\t\t\t\t\t" . ($paginationHtml["next"] ? "<li><a class=\"smalltext\" $href = \"" . $address . "page=" . $nextPageNumber . "\" $title = \"Next Page - Show Results " . $nextPageInfo["first"] . " to " . $nextPageInfo["last"] . " of " . $total . "\">&gt;</a></li>" : "") . ($paginationHtml["last"] ? "<li><a class=\"smalltext\" $href = \"" . $address . "page=" . $queryResult . "\" $title = \"Last Page - Show Results " . $lastPageInfo["first"] . " to " . $lastPageInfo["last"] . " of " . $total . "\">Last <strong>&raquo;</strong></a></li>" : "") . "\r\n\t\t\t\t\t</ul>\r\n\t\t\t\t</div>\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t</table>";
+        $previousPageQuery = isset($previousPage) && $previousPage != 1 ? "page=" . $previousPage : "";
+        $paginationLinks = "\r\n\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTableNoBorder\">\r\n\t\t<tr>\r\n\t\t\t<td $style = \"padding: 0px 0px 1px 0px;\">\r\n\t\t\t\t<div $style = \"float: left;\" $id = \"navcontainer_f\">\r\n\t\t\t\t\t<ul>\r\n\t\t\t\t\t\t<li>" . $pagenumber . " - " . $queryResult . "</li>\r\n\t\t\t\t\t\t" . ($paginationHtml["first"] ? "<li><a class=\"smalltext\" $href = \"" . $address . "\" $title = \"First Page - Show Results " . $firstPageInfo["first"] . " to " . $firstPageInfo["last"] . " of " . $total . "\">&laquo; First</a></li>" : "") . ($paginationHtml["prev"] ? "<li><a class=\"smalltext\" $href = \"" . $address . $previousPageQuery . "\" $title = \"Previous Page - Show Results " . $previousPageInfo["first"] . " to " . $previousPageInfo["last"] . " of " . $total . "\">&lt;</a></li>" : "") . "\r\n\t\t\t\t\t\t" . $paginationLinks . "\r\n\t\t\t\t\t\t" . ($paginationHtml["next"] ? "<li><a class=\"smalltext\" $href = \"" . $address . "page=" . $nextPageNumber . "\" $title = \"Next Page - Show Results " . $nextPageInfo["first"] . " to " . $nextPageInfo["last"] . " of " . $total . "\">&gt;</a></li>" : "") . ($paginationHtml["last"] ? "<li><a class=\"smalltext\" $href = \"" . $address . "page=" . $queryResult . "\" $title = \"Last Page - Show Results " . $lastPageInfo["first"] . " to " . $lastPageInfo["last"] . " of " . $total . "\">Last <strong>&raquo;</strong></a></li>" : "") . "\r\n\t\t\t\t\t</ul>\r\n\t\t\t\t</div>\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t</table>";
         return [$paginationLinks, "LIMIT " . $limitOffset . ", " . $perpage];
     }
     if ($pageRangeThreshold <= abs($currentPage - $pagenumber) && $pageRangeThreshold != 0) {
@@ -550,36 +550,36 @@ function logStaffAction($log)
 }
 function function_113($userid)
 {
-    $var_335 = [];
-    $var_67 = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT ip FROM iplog WHERE `userid` = '" . $userid . "'");
-    if (mysqli_num_rows($var_67)) {
-        while ($var_336 = mysqli_fetch_assoc($var_67)) {
-            if ($var_336["ip"]) {
-                $var_335[] = trim($var_336["ip"]);
+    $userId = [];
+    $errorMessage = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT ip FROM iplog WHERE `userid` = '" . $userid . "'");
+    if (mysqli_num_rows($errorMessage)) {
+        while ($userName = mysqli_fetch_assoc($errorMessage)) {
+            if ($userName["ip"]) {
+                $userId[] = trim($userName["ip"]);
             }
         }
     }
     if ($userid) {
-        $var_67 = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT ip FROM users WHERE `id` = '" . $userid . "'");
-        if (mysqli_num_rows($var_67)) {
-            $Result = mysqli_fetch_assoc($var_67);
-            $var_337 = trim($Result["ip"]);
-            if (!in_array($var_337, $var_335)) {
-                $var_335[] = $var_337;
+        $errorMessage = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT ip FROM users WHERE `id` = '" . $userid . "'");
+        if (mysqli_num_rows($errorMessage)) {
+            $Result = mysqli_fetch_assoc($errorMessage);
+            $userEmail = trim($Result["ip"]);
+            if (!in_array($userEmail, $userId)) {
+                $userId[] = $userEmail;
             }
-            $var_338 = ip2long($var_337);
-            mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM xbt_deny_from_hosts WHERE $begin = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $var_338) . "' OR $end = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $var_338) . "'");
+            $userGroup = ip2long($userEmail);
+            mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM xbt_deny_from_hosts WHERE $begin = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $userGroup) . "' OR $end = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $userGroup) . "'");
         }
     }
-    $var_339 = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT value FROM ipbans WHERE `id` = 1");
-    if (mysqli_num_rows($var_339)) {
-        $Result = mysqli_fetch_assoc($var_339);
+    $userStatus = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT value FROM ipbans WHERE `id` = 1");
+    if (mysqli_num_rows($userStatus)) {
+        $Result = mysqli_fetch_assoc($userStatus);
         $value = trim($Result["value"]);
         $value = explode(" ", $value);
-        if (count($var_335)) {
-            foreach ($var_335 as $var_340) {
-                if (in_array($var_340, $value)) {
-                    $key = array_search($var_340, $value);
+        if (count($userId)) {
+            foreach ($userId as $userData) {
+                if (in_array($userData, $value)) {
+                    $key = array_search($userData, $value);
                     unset($value[$key]);
                 }
             }
