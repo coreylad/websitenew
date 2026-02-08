@@ -194,21 +194,21 @@ class Class_5
         if ((strtolower($charset) == "iso-8859-1" || $charset == "") && preg_match("/&[a-z0-9#]+;/i", $message)) {
             $message = utf8_encode($message);
             $subject = utf8_encode($subject);
-            $var_285 = "UTF-8";
-            $var_286 = true;
+            $emailCharset = "UTF-8";
+            $isUtf8Encoded = true;
         } else {
-            $var_285 = $charset;
-            $var_286 = false;
+            $emailCharset = $charset;
+            $isUtf8Encoded = false;
         }
-        $message = $this->decodeHtmlEntities($message, $var_286);
-        $subject = $this->encodeEmailHeaderRFC2047($this->decodeHtmlEntities($subject, $var_286), $var_285, false, false);
+        $message = $this->decodeHtmlEntities($message, $isUtf8Encoded);
+        $subject = $this->encodeEmailHeaderRFC2047($this->decodeHtmlEntities($subject, $isUtf8Encoded), $emailCharset, false, false);
         $from = $this->sanitizeEmailText($from);
         if (empty($from)) {
             $emailFromHeader = "PHP/" . phpversion() . " via the PHP TS SE SMTP Class";
-            if ($var_286) {
+            if ($isUtf8Encoded) {
                 $emailFromHeader = utf8_encode($emailFromHeader);
             }
-            $emailFromHeader = $this->encodeEmailHeaderRFC2047($this->decodeHtmlEntities($emailFromHeader, $var_286), $var_285);
+            $emailFromHeader = $this->encodeEmailHeaderRFC2047($this->decodeHtmlEntities($emailFromHeader, $isUtf8Encoded), $emailCharset);
             if (!isset($headers)) {
                 $headers = "";
             }
@@ -216,10 +216,10 @@ class Class_5
             $headers .= "Auto-Submitted: auto-generated" . $delimiter;
         } else {
             $emailFromHeader = $from;
-            if ($var_286) {
+            if ($isUtf8Encoded) {
                 $emailFromHeader = utf8_encode($emailFromHeader);
             }
-            $emailFromHeader = $this->encodeEmailHeaderRFC2047($this->decodeHtmlEntities($emailFromHeader, $var_286), $var_285);
+            $emailFromHeader = $this->encodeEmailHeaderRFC2047($this->decodeHtmlEntities($emailFromHeader, $isUtf8Encoded), $emailCharset);
             if (!isset($headers)) {
                 $headers = "";
             }
@@ -236,7 +236,7 @@ class Class_5
         $headers .= preg_replace("#(\r\n|\r|\n)#s", $delimiter, $uheaders);
         unset($uheaders);
         $headers .= "MIME-Version: 1.0" . $delimiter;
-        $headers .= "Content-Type: text/html" . ($var_285 ? "; $charset = \"" . $var_285 . "\"" : "") . $delimiter;
+        $headers .= "Content-Type: text/html" . ($emailCharset ? "; $charset = \"" . $emailCharset . "\"" : "") . $delimiter;
         $headers .= "Content-Transfer-Encoding: 8bit" . $delimiter;
         $headers .= "X-Priority: 3" . $delimiter;
         $headers .= "X-Mailer: TS SE Mail via PHP" . $delimiter;
