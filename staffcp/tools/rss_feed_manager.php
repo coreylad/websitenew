@@ -1,5 +1,5 @@
 <?php
-if (($current_memory_limit = function_271(@ini_get("memory_limit"))) < 134217728 && 0 < $current_memory_limit) {
+if (($current_memory_limit = iniSizeToBytes(@ini_get("memory_limit"))) < 134217728 && 0 < $current_memory_limit) {
     @ini_set("memory_limit", 134217728);
 }
 @set_time_limit(0);
@@ -16,7 +16,7 @@ if (!function_exists("xml_set_element_handler")) {
         dl($extension_file);
     }
 }
-if (!function_exists("ini_size_to_bytes") || ($current_memory_limit = function_271(@ini_get("memory_limit"))) < 134217728 && 0 < $current_memory_limit) {
+if (!function_exists("ini_size_to_bytes") || ($current_memory_limit = iniSizeToBytes(@ini_get("memory_limit"))) < 134217728 && 0 < $current_memory_limit) {
     @ini_set("memory_limit", 134217728);
 }
 $Language = file("languages/" . getStaffLanguage() . "/rss_feed_manager.lang");
@@ -98,25 +98,25 @@ if ($Act == "edit" && ($rssfeedid = intval($_GET["rssfeedid"]))) {
                 exit;
             }
             if (isset($_POST["preview"])) {
-                $xml = new Class_28();
-                $xml->function_272($url);
+                $xml = new RSSFeedParser();
+                $xml->fetchFeed($url);
                 if (empty($xml->xml_string)) {
                     exit("unable_to_open_url");
                 }
-                if ($xml->function_273() === false) {
-                    exit("xml_error_x_at_line_y " . ($xml->$feedtype = = "unknown" ? "Unknown Feed Type" : $xml->xml_object->function_274()) . " " . $xml->xml_object->function_275());
+                if ($xml->parseFeed() === false) {
+                    exit("xml_error_x_at_line_y " . ($xml->feedtype == "unknown" ? "Unknown Feed Type" : $xml->xml_object->getErrorString()) . " " . $xml->xml_object->getErrorLine());
                 }
                 $output = "<table $cellpadding = \"0\" $cellspacing = \"0\" class=\"mainTable\">";
                 $count = 0;
-                foreach ($xml->function_276() as $item) {
+                foreach ($xml->getItems() as $item) {
                     if ($maxresults && $maxresults <= $count++) {
                         $output .= "\r\n\t\t\t\t</table>";
                     } else {
                         if (!empty($item["content:encoded"])) {
                             $content_encoded = true;
                         }
-                        $feedtitle = function_277($xml->function_278($titletemplate, $item));
-                        $feedbody = function_277($xml->function_278($bodytemplate, $item));
+                        $feedtitle = stripTagsFromText($xml->applyTemplate($titletemplate, $item));
+                        $feedbody = stripTagsFromText($xml->applyTemplate($bodytemplate, $item));
                         $output .= "\r\n\t\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t\t<td $valign = \"top\" $align = \"left\" class=\"alt1\">\r\n\t\t\t\t\t\t\t\t<h3><em>" . $feedtitle . "</em></h3>\r\n\t\t\t\t\t\t\t\t" . $feedbody . "\r\n\t\t\t\t\t\t\t\t<br />\r\n\t\t\t\t\t\t\t</td>\r\n\t\t\t\t\t\t</tr>";
                     }
                 }
@@ -144,8 +144,8 @@ if ($Act == "run" && ($rssfeedid = intval($_GET["rssfeedid"]))) {
     }
     mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE ts_rssfeed SET $lastrun = " . $timenow . " WHERE $rssfeedid = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $rssfeedid) . "'");
     $feed = mysqli_fetch_assoc($query);
-    $feed["xml"] = new Class_28();
-    $feed["xml"]->function_272($feed["url"]);
+    $feed["xml"] = new RSSFeedParser();
+    $feed["xml"]->fetchFeed($feed["url"]);
     $feed["counter"] = 0;
     $feed["useparent"] = false;
     $realforumid = $feed["realforumid"];
@@ -156,9 +156,9 @@ if ($Act == "run" && ($rssfeedid = intval($_GET["rssfeedid"]))) {
         echo "Unable to Open URL: " . $feed["title"] . "<br />";
         return NULL;
     }
-    if ($feed["xml"]->function_273() === false) {
+    if ($feed["xml"]->parseFeed() === false) {
         if (defined("IN_CONTROL_PANEL")) {
-            echo "xml_error_x_at_line_y " . ($xml->$feedtype = = "unknown" ? "Unknown Feed Type" : $xml->xml_object->function_274()) . " " . $xml->xml_object->function_275() . "<br />";
+            echo "xml_error_x_at_line_y " . ($xml->feedtype == "unknown" ? "Unknown Feed Type" : $xml->xml_object->getErrorString()) . " " . $xml->xml_object->getErrorLine() . "<br />";
         }
         return NULL;
     }
@@ -170,18 +170,18 @@ if ($Act == "run" && ($rssfeedid = intval($_GET["rssfeedid"]))) {
             $AllFeeds[$AF["uniquehash"]] = true;
         }
     }
-    foreach ($feed["xml"]->function_276() as $item) {
+    foreach ($feed["xml"]->getItems() as $item) {
         $item["rssfeedid"] = $rssfeedid;
         if (!empty($item["summary"])) {
-            $description = function_279($item["summary"]);
+            $description = getItemValue($item["summary"]);
         } else {
             if (!empty($item["content:encoded"])) {
-                $description = function_279($item["content:encoded"]);
+                $description = getItemValue($item["content:encoded"]);
             } else {
                 if (!empty($item["content"])) {
-                    $description = function_279($item["content"]);
+                    $description = getItemValue($item["content"]);
                 } else {
-                    $description = function_279($item["description"]);
+                    $description = getItemValue($item["description"]);
                 }
             }
         }
@@ -227,8 +227,8 @@ if ($Act == "run" && ($rssfeedid = intval($_GET["rssfeedid"]))) {
     $output = "<ol>";
     if (!empty($items)) {
         foreach ($items as $uniquehash => $item) {
-            $feedtitle = $feed["xml"]->function_278($feed["titletemplate"], $item);
-            $feedbody = function_277($feed["xml"]->function_278($feed["bodytemplate"], $item), false);
+            $feedtitle = $feed["xml"]->applyTemplate($feed["titletemplate"], $item);
+            $feedbody = stripTagsFromText($feed["xml"]->applyTemplate($feed["bodytemplate"], $item), false);
             $Queries = [];
             $Queries["fid"] = $feed["fid"];
             $Queries["subject"] = "'" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $feedtitle) . "'";
@@ -254,7 +254,7 @@ if ($Act == "run" && ($rssfeedid = intval($_GET["rssfeedid"]))) {
                 mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET $totalposts = totalposts + 1 WHERE `id` = " . $Queries["uid"]);
                 mysqli_query($GLOBALS["DatabaseConnect"], "REPLACE INTO ts_rsslog VALUES (" . $item["rssfeedid"] . ", " . $Queries["tid"] . ", '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $uniquehash) . "', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $item["contenthash"]) . "', " . $Queries["dateline"] . ")");
             }
-            $output .= "<li><a $href = \"./../tsf_forums/showthread.php?$tid = " . $Queries["tid"] . "\" $target = \"_blank\">" . function_277($feedtitle) . "</a></li>";
+            $output .= "<li><a $href = \"./../tsf_forums/showthread.php?$tid = " . $Queries["tid"] . "\" $target = \"_blank\">" . stripTagsFromText($feedtitle) . "</a></li>";
         }
     } else {
         $output .= $Language[39];
@@ -335,7 +335,7 @@ if (empty($Act)) {
     }
     echo "\r\n\t" . showAlertMessage("<a $href = \"index.php?do=rss_feed_manager&amp;$act = new\">" . $Language[11] . "</a>") . "\r\n\t" . $Message . "\r\n\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t<tr>\r\n\t\t\t<td class=\"tcat\" $colspan = \"6\" $align = \"center\">\r\n\t\t\t\t" . $Language[2] . "\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt2\"><b>" . $Language[3] . " &amp; " . $Language[14] . "</b></td>\r\n\t\t\t<td class=\"alt2\"><b>" . $Language[4] . "</b></td>\r\n\t\t\t<td class=\"alt2\"><b>" . $Language[5] . "</b></td>\r\n\t\t\t<td class=\"alt2\"><b>" . $Language[6] . "</b></td>\r\n\t\t\t<td class=\"alt2\"><b>" . $Language[12] . "</b></td>\r\n\t\t\t<td class=\"alt2\" $align = \"center\"><b>" . $Language[7] . "</b></td>\r\n\t\t</tr>\r\n\t\t" . $ListFeeds . "\r\n\t</table>";
 }
-class Class_6
+class BBCodeParser
 {
     public $TSParserVersion = "1.0.2";
     public $options = ["htmlspecialchars" => 1, "auto_url" => 1, "short_url" => 1];
@@ -344,30 +344,30 @@ class Class_6
     public function __construct()
     {
     }
-    public function function_119($message)
+    public function parseMessage($message)
     {
-        $this->function_117();
+        $this->initializeBBCodeCache();
         $this->$message = str_replace("\r", "", $message);
         if ($this->options["htmlspecialchars"]) {
             $this->$message = htmlspecialchars($this->message);
             $this->$message = str_replace("&amp;", "&", $this->message);
         }
-        $this->function_120();
-        $this->function_122();
+        $this->filterJavaScript();
+        $this->parseBBCode();
         $this->$message = nl2br($this->message);
-        $this->function_126();
+        $this->wrapLongWords();
     }
-    public function function_126($wraptext = "  ")
+    public function wrapLongWords($wraptext = "  ")
     {
         $feedId = 136;
         if (!empty($this->message)) {
             $this->$message = preg_replace("\r\n\t\t\t\t#((?>[^\\s&/<>\"\\-\\[\\]]|&[\\#a-z0-9]{1,7};){" . $feedId . "})(?=[^\\s&/<>\"\\-\\[\\]]|&[\\#a-z0-9]{1,7};)#i", "\$0" . $wraptext, $this->message);
         }
     }
-    public function function_122()
+    public function parseBBCode()
     {
         if ($this->options["auto_url"]) {
-            $this->function_130();
+            $this->autoConvertURLs();
         }
         $this->$message = str_replace("\$", "&#36;", $this->message);
         $this->$message = preg_replace($this->tscode_cache["find"], $this->tscode_cache["replacement"], $this->message);
@@ -384,20 +384,20 @@ class Class_6
             return $this->parseMyCodeUrl($matches[1], $matches[2]);
         }, $this->message);
         $this->$message = preg_replace_callback("#\\[email\\](.*?)\\[/email\\]#si", function ($matches) {
-            return $this->function_132($matches[1]);
+            return $this->parseEmailTag($matches[1]);
         }, $this->message);
         $this->$message = preg_replace_callback("#\\[$email = (.*?)\\](.*?)\\[/email\\]#si", function ($matches) {
-            return $this->function_132($matches[1], $matches[2]);
+            return $this->parseEmailTag($matches[1], $matches[2]);
         }, $this->message);
     }
-    public function function_130()
+    public function autoConvertURLs()
     {
         $this->$message = " " . $this->message;
         $this->$message = preg_replace("#([\\>\\s\\(\\)])(https?|ftp|news){1}://([\\w\\-]+\\.([\\w\\-]+\\.)*[\\w]+(:[0-9]+)?(/[^\"\\s<\\[]*)?)#i", "\$1[url]\$2://\$3[/url]", $this->message);
         $this->$message = preg_replace("#([\\>\\s\\(\\)])(www|ftp)\\.(([\\w\\-]+\\.)*[\\w]+(:[0-9]+)?(/[^\"\\s<\\[]*)?)#i", "\$1[url]\$2.\$3[/url]", $this->message);
         $this->$message = substr($this->message, 1);
     }
-    public function function_133($message, $type = "")
+    public function parseListTag($message, $type = "")
     {
         $message = str_replace("\\\"", "\"", $message);
         $message = preg_replace("#\\s*\\[\\*\\]\\s*#", "</li>\n<li>", $message);
@@ -410,19 +410,19 @@ class Class_6
         $formattedListHtml = preg_replace("#<(ol $type = \"" . $type . "\"|ul)>\\s*</li>#", "<\$1>", $formattedListHtml);
         return $formattedListHtml;
     }
-    public function function_134($url)
+    public function parseImageTag($url)
     {
         global $lang;
         $url = str_replace(["  ", "\"", "\\n", "\\r"], "", trim($url));
         return "<img $src = \"" . $url . "\" $border = \"0\" $alt = \"\" />";
     }
-    public function function_120()
+    public function filterJavaScript()
     {
         $urlReplaced = ["#(&\\#(0*)106;|&\\#(0*)74;|j)((&\\#(0*)97;|&\\#(0*)65;|a)(&\\#(0*)118;|&\\#(0*)86;|v)(&\\#(0*)97;|&\\#(0*)65;|a)(\\s)?(&\\#(0*)115;|&\\#(0*)83;|s)(&\\#(0*)99;|&\\#(0*)67;|c)(&\\#(0*)114;|&\\#(0*)82;|r)(&\\#(0*)105;|&\\#(0*)73;|i)(&\\#112;|&\\#(0*)80;|p)(&\\#(0*)116;|&\\#(0*)84;|t)(&\\#(0*)58;|\\:))#i", "#(o)(nmouseover\\s?=)#i", "#(o)(nmouseout\\s?=)#i", "#(o)(nmousedown\\s?=)#i", "#(o)(nmousemove\\s?=)#i", "#(o)(nmouseup\\s?=)#i", "#(o)(nclick\\s?=)#i", "#(o)(ndblclick\\s?=)#i", "#(o)(nload\\s?=)#i", "#(o)(nsubmit\\s?=)#i", "#(o)(nblur\\s?=)#i", "#(o)(nchange\\s?=)#i", "#(o)(nfocus\\s?=)#i", "#(o)(nselect\\s?=)#i", "#(o)(nunload\\s?=)#i", "#(o)(nkeypress\\s?=)#i"];
         $this->$message = preg_replace($urlReplaced, "\$1<strong></strong>\$2\$4", $this->message);
         unset($urlReplaced);
     }
-    public function function_117()
+    public function initializeBBCodeCache()
     {
         $this->$tscode_cache = [];
         $bbcodeTags["b"]["regex"] = "#\\[b\\](.*?)\\[/b\\]#si";
@@ -489,7 +489,16 @@ class Class_6
         $link = "<a $href = \"" . $processedUrl . "\" $target = \"_blank\">" . $name . "</a>";
         return $link;
     }
-    public function function_135($size, $text)
+    public function parseEmailTag($email, $name = "")
+    {
+        if (!$name) {
+            $name = $email;
+        }
+        $email = str_replace(["&amp;", "\\'"], ["&", "'"], $email);
+        $name = str_replace(["&amp;", "\\'"], ["&", "'"], $name);
+        return "<a $href = \"mailto:" . $email . "\">" . $name . "</a>";
+    }
+    public function handleSizeTag($size, $text)
     {
         $size = intval($size) + 10;
         if (50 < $size) {
@@ -499,7 +508,7 @@ class Class_6
         return $text;
     }
 }
-class Class_28
+class RSSFeedParser
 {
     public $xml_string = NULL;
     public $xml_array = NULL;
@@ -509,11 +518,11 @@ class Class_28
     public function __construct($options = NULL)
     {
     }
-    public function function_280(&$xml_string)
+    public function setXMLString(&$xml_string)
     {
         $this->$xml_string = & $xml_string;
     }
-    public function function_272($url)
+    public function fetchFeed($url)
     {
         $xml_string = rssGetFeed($url);
         if ($xml_string === false || empty($xml_string["body"])) {
@@ -523,26 +532,26 @@ class Class_28
         if (preg_match_all("#(<description>)(.*)(</description>)#siU", $xml_string, $matches, PREG_SET_ORDER)) {
             foreach ($matches as $feedItem) {
                 if (strpos(strtoupper($feedItem[2]), "<![CDATA[") === false && strpos($feedItem[2], "<") !== false) {
-                    $output = $feedItem[1] . "<![CDATA[" . $this->function_281($feedItem[2]) . "]]>" . $feedItem[3];
+                    $output = $feedItem[1] . "<![CDATA[" . $this->escapeCDATA($feedItem[2]) . "]]>" . $feedItem[3];
                     $xml_string = str_replace($feedItem[0], $output, $xml_string);
                 }
             }
         }
-        $this->function_280($xml_string);
+        $this->setXMLString($xml_string);
         return true;
     }
-    public function function_281($xml)
+    public function escapeCDATA($xml)
     {
         $xml = preg_replace("#[\\x00-\\x08\\x0B\\x0C\\x0E-\\x1F]#", "", $xml);
         return str_replace(["<![CDATA[", "]]>"], ["�![CDATA[", "]]�"], $xml);
     }
-    public function function_273($target_encoding = false, $ncrencode = false, $override_encoding = false, $escape_html = false)
+    public function parseFeed($target_encoding = false, $ncrencode = false, $override_encoding = false, $escape_html = false)
     {
-        $this->$xml_object = new Class_29($this->xml_string);
-        $this->xml_object->function_282();
-        $this->xml_object->function_283($target_encoding, $ncrencode, $escape_html);
-        $this->xml_object->function_284($override_encoding);
-        if ($this->xml_object->function_273()) {
+        $this->$xml_object = new XMLParser($this->xml_string);
+        $this->xml_object->enableLegacyMode();
+        $this->xml_object->setTargetEncoding($target_encoding, $ncrencode, $escape_html);
+        $this->xml_object->setOverrideEncoding($override_encoding);
+        if ($this->xml_object->parseFeed()) {
             $this->$xml_array = & $this->xml_object->parseddata;
             if (isset($this->xml_array["xmlns"]) && preg_match("#^http://www.w3.org/2005/atom\$#i", $this->xml_array["xmlns"])) {
                 $this->$feedtype = "atom";
@@ -561,7 +570,7 @@ class Class_28
         $this->$feedtype = "";
         return false;
     }
-    public function function_285($id = -1)
+    public function getItem($id = -1)
     {
         switch ($this->feedtype) {
             case "atom":
@@ -572,7 +581,7 @@ class Class_28
                 return rssProcessItem($id);
         }
     }
-    public function function_286($id = -1)
+    public function getAtomEntry($id = -1)
     {
         if (is_array($this->xml_array["entry"][0])) {
             $item =& $this->xml_array["entry"][$id == -1 ? $count++ : $id];
@@ -585,7 +594,7 @@ class Class_28
         }
         return $item;
     }
-    public function function_287($id = -1)
+    public function getRSSItem($id = -1)
     {
         if (is_array($this->xml_array["channel"]["item"][0])) {
             $item =& $this->xml_array["channel"]["item"][$id == -1 ? $count++ : $id];
@@ -598,7 +607,7 @@ class Class_28
         }
         return $item;
     }
-    public function function_276()
+    public function getItems()
     {
         switch ($this->feedtype) {
             case "atom":
@@ -610,48 +619,48 @@ class Class_28
                 return rssValidateFeed($this->xml_array, $feedUrl, true);
         }
     }
-    public function function_288()
+    public function getAllItemsNormalized()
     {
-        $items = $this->function_276();
+        $items = $this->getItems();
         if (empty($items)) {
             return false;
         }
         $feedEnabled = [];
         foreach ($items as $item) {
-            $feedCategory = ["link" => $this->function_289("link", $item), "description" => $this->function_289("description", $item), "title" => $this->function_289("title", $item), "id" => $this->function_289("id", $item), "date" => $this->function_289("date", $item), "enclosure_link" => $this->function_289("enclosure_date", $item), "content" => $this->function_289("content", $item), "author" => $this->function_289("author", $item)];
-            $feedCategory["link"] = $this->function_290($feedCategory["link"]);
-            $feedCategory["enclosure_link"] = $this->function_290($feedCategory["enclosure_link"]);
+            $feedCategory = ["link" => $this->getField("link", $item), "description" => $this->getField("description", $item), "title" => $this->getField("title", $item), "id" => $this->getField("id", $item), "date" => $this->getField("date", $item), "enclosure_link" => $this->getField("enclosure_date", $item), "content" => $this->getField("content", $item), "author" => $this->getField("author", $item)];
+            $feedCategory["link"] = $this->sanitizeURL($feedCategory["link"]);
+            $feedCategory["enclosure_link"] = $this->sanitizeURL($feedCategory["enclosure_link"]);
             $feedEnabled[] = $feedCategory;
         }
         return $feedEnabled;
     }
-    public function function_291($var)
+    public function cleanURL($var)
     {
         return preg_replace($feedInterval, $preg_replace, htmlspecialchars(trim($var)));
     }
-    public function function_290($url)
+    public function sanitizeURL($url)
     {
         if ($query = parse_url($url, PHP_URL_QUERY)) {
             $url = substr($url, 0, strpos($url, "?"));
-            $url = $this->function_291($url);
+            $url = $this->cleanURL($url);
             return $url . "?" . $query;
         }
-        return $this->function_291($url);
+        return $this->cleanURL($url);
     }
-    public function function_278($template, $item, $decodeSecuredHTML = true)
+    public function applyTemplate($template, $item, $decodeSecuredHTML = true)
     {
         if (preg_match_all("#\\{(?:feed|rss):([\\w:\\[\\]]+)\\}#siU", $template, $matches)) {
             foreach ($matches[0] as $feedLastUpdate => $dbTable) {
-                $replacementPatterns = $this->function_289($matches[1][$feedLastUpdate], $item);
+                $replacementPatterns = $this->getField($matches[1][$feedLastUpdate], $item);
                 $template = str_replace($dbTable, $replacementPatterns, $template);
             }
         }
         if ($decodeSecuredHTML) {
-            $template = function_292($template);
+            $template = decodeHTMLEntities($template);
         }
         return $template;
     }
-    public function function_289($field, $item)
+    public function getField($field, $item)
     {
         switch ($this->feedtype) {
             case "atom":
@@ -677,20 +686,20 @@ class Class_28
                         }
                         break;
                     case "description":
-                        return function_279($item["summary"]);
+                        return getItemValue($item["summary"]);
                         break;
                     case "title":
-                        return function_279($item["title"]);
+                        return getItemValue($item["title"]);
                         break;
                     case "id":
-                        return function_279($item["id"]);
+                        return getItemValue($item["id"]);
                         break;
                     case "date":
-                        $apiEndpoint = strtotime(function_279($item["updated"]));
+                        $apiEndpoint = strtotime(getItemValue($item["updated"]));
                         if (0 < $apiEndpoint) {
                             return formatTimestamp($apiEndpoint);
                         }
-                        return function_279($item["updated"]);
+                        return getItemValue($item["updated"]);
                         break;
                     case "enclosure_link":
                         if (empty($item["link"][0])) {
@@ -705,7 +714,7 @@ class Class_28
                     case "content":
                     case "content:encoded":
                         if (empty($item["content"][0])) {
-                            return function_279($item["content"]);
+                            return getItemValue($item["content"]);
                         }
                         $emailHeaderEncoded = [];
                         foreach ($item["content"] as $tableRow) {
@@ -734,7 +743,7 @@ class Class_28
                         return $emailHeaderEncoded["value"];
                         break;
                     case "author":
-                        return function_279($item["author"]["name"]);
+                        return getItemValue($item["author"]["name"]);
                         break;
                     default:
                         if (is_array($item[(string) $field])) {
@@ -762,21 +771,21 @@ class Class_28
                         if (is_array($item["link"]) && isset($item["link"]["href"])) {
                             return $item["link"]["href"];
                         }
-                        return function_279($item["link"]);
+                        return getItemValue($item["link"]);
                         break;
                     case "description":
-                        return function_279($item["description"]);
+                        return getItemValue($item["description"]);
                         break;
                     case "title":
-                        return function_279($item["title"]);
+                        return getItemValue($item["title"]);
                         break;
                     case "id":
                     case "guid":
-                        return function_279($item["guid"]);
+                        return getItemValue($item["guid"]);
                         break;
                     case "pubDate":
                     case "date":
-                        $apiEndpoint = strtotime(function_279($item["pubDate"]));
+                        $apiEndpoint = strtotime(getItemValue($item["pubDate"]));
                         if (0 < $apiEndpoint) {
                             return formatTimestamp($apiEndpoint);
                         }
@@ -791,12 +800,12 @@ class Class_28
                         break;
                     case "content":
                     case "content:encoded":
-                        return function_279($item["content:encoded"]);
+                        return getItemValue($item["content:encoded"]);
                         break;
                     case "author":
                     case "dc:creator":
                         if (isset($item["dc:creator"])) {
-                            return function_279($item["dc:creator"]);
+                            return getItemValue($item["dc:creator"]);
                         }
                         return $item["author"];
                         break;
@@ -813,7 +822,7 @@ class Class_28
         }
     }
 }
-class Class_29
+class XMLParser
 {
     public $xml_parser = NULL;
     public $error_no = 0;
@@ -844,11 +853,11 @@ class Class_29
             }
         }
     }
-    public function &rssSaveFeed($encoding = "ISO-8859-1", $emptydata = true)
+    public function &parseXML($encoding = "ISO-8859-1", $emptydata = true)
     {
         $this->$encoding = $encoding;
         if (!$this->legacy_mode) {
-            $this->function_293();
+            $this->initializeTargetEncoding();
         }
         if (empty($this->xmldata) || 0 < $this->error_no) {
             $this->$error_code = XML_ERROR_NO_ELEMENTS + ("5.2.8" < PHP_VERSION ? 0 : 1);
@@ -877,10 +886,10 @@ class Class_29
         xml_parser_free($this->xml_parser);
         return $this->parseddata;
     }
-    public function function_273()
+    public function parseFeed()
     {
         if ($this->legacy_mode) {
-            return $this->function_294();
+            return $this->parseLegacyMode();
         }
         if (preg_match("#(<?xml.*$encoding = ['\"])(.*?)(['\"].*?>)#m", $this->xmldata, $feedItem)) {
             $encoding = strtoupper($feedItem[2]);
@@ -901,14 +910,14 @@ class Class_29
             }
         }
         if ("UTF-8" !== $this->encoding) {
-            $this->$xmldata = $this->function_295($this->xmldata, $this->encoding);
+            $this->$xmldata = $this->convertEncoding($this->xmldata, $this->encoding);
         }
-        if (!$this->rssSaveFeed("UTF-8")) {
+        if (!$this->parseXML("UTF-8")) {
             return false;
         }
         return true;
     }
-    public function function_295($in, $charset = false, $strip = true)
+    public function convertEncoding($in, $charset = false, $strip = true)
     {
         if ("" === $in || false === $in || is_null($in)) {
             return $in;
@@ -935,7 +944,7 @@ class Class_29
         }
         return $apiResponse;
     }
-    public function function_294()
+    public function parseLegacyMode()
     {
         if (preg_match("#(<?xml.*$encoding = ['\"])(.*?)(['\"].*?>)#m", $this->xmldata, $feedItem)) {
             $xmlElement = strtoupper($feedItem[2]);
@@ -967,32 +976,32 @@ class Class_29
                 $this->$xmldata = & $itemDescription;
             }
         }
-        if ($this->rssSaveFeed($itemTitle)) {
+        if ($this->parseXML($itemTitle)) {
             return true;
         }
         if ($itemLink && ($this->$xmldata = iconv($xmlElement, $target_encoding . "//IGNORE", $xmlAttributes))) {
-            if ($this->rssSaveFeed($itemTitle)) {
+            if ($this->parseXML($itemTitle)) {
                 return true;
             }
             return false;
         }
         return false;
     }
-    public function function_296(&$parser, $data)
+    public function handle_cdata(&$parser, $data)
     {
         $this->cdata .= $data;
     }
-    public function function_297(&$parser, $name, $attribs)
+    public function handle_element_start(&$parser, $name, $attribs)
     {
         $this->$cdata = "";
         foreach ($attribs as $key => $val) {
             if (preg_match("#&[a-z]+;#i", $val)) {
-                $attribs[(string) $key] = function_292($val);
+                $attribs[(string) $key] = decodeHTMLEntities($val);
             }
         }
         array_unshift($this->stack, ["name" => $name, "attribs" => $attribs, "tag_count" => ++$this->tag_count]);
     }
-    public function function_298(&$parser, $name)
+    public function handle_element_end(&$parser, $name)
     {
         $itemDate = array_shift($this->stack);
         if ($itemDate["name"] != $name) {
@@ -1001,13 +1010,13 @@ class Class_29
         $output = $itemDate["attribs"];
         if (trim($this->cdata) !== "" || $itemDate["tag_count"] == $this->tag_count) {
             if (sizeof($output) == 0) {
-                $output = $this->function_299($this->cdata);
+                $output = $this->processCDATA($this->cdata);
             } else {
-                $this->function_300($output, "value", $this->function_299($this->cdata));
+                $this->addToArray($output, "value", $this->processCDATA($this->cdata));
             }
         }
         if (isset($this->stack[0])) {
-            $this->function_300($this->stack[0]["attribs"], $name, $output);
+            $this->addToArray($this->stack[0]["attribs"], $name, $output);
         } else {
             if ($this->include_first_tag) {
                 $this->$parseddata = [$name => $output];
@@ -1017,28 +1026,28 @@ class Class_29
         }
         $this->$cdata = "";
     }
-    public function function_274()
+    public function getErrorString()
     {
-        if ($itemGuid = @xml_error_string(@$this->function_301())) {
+        if ($itemGuid = @xml_error_string(@$this->getErrorCode())) {
             return $itemGuid;
         }
         return "unknown";
     }
-    public function function_275()
+    public function getErrorLine()
     {
         if ($this->error_line) {
             return $this->error_line;
         }
         return 0;
     }
-    public function function_301()
+    public function getErrorCode()
     {
         if ($this->error_code) {
             return $this->error_code;
         }
         return 0;
     }
-    public function function_300(&$children, $name, $value)
+    public function addToArray(&$children, $name, $value)
     {
         if (!is_array($children) || !in_array($name, array_keys($children))) {
             $children[$name] = $value;
@@ -1051,28 +1060,28 @@ class Class_29
             }
         }
     }
-    public function function_299($xml)
+    public function processCDATA($xml)
     {
         if (!is_array($logMessage)) {
             $logMessage = ["�![CDATA[", "]]�", "\r\n", "\n"];
             $replacementPatterns = ["<![CDATA[", "]]>", "\n", "\r\n"];
         }
         if (!$this->legacy_mode && $this->encoding != $this->target_encoding) {
-            $xml = $this->function_194($xml);
+            $xml = $this->convertCharset($xml);
         }
         return str_replace($logMessage, $replacementPatterns, $xml);
     }
-    public function function_284($encoding)
+    public function setOverrideEncoding($encoding)
     {
         $this->$encoding = $encoding;
     }
-    public function function_283($target_encoding, $ncr_encode = false, $escape_html = false)
+    public function setTargetEncoding($target_encoding, $ncr_encode = false, $escape_html = false)
     {
         $this->$target_encoding = $target_encoding;
         $this->$ncr_encode = $ncr_encode;
         $this->$escape_html = $escape_html;
     }
-    public function function_293()
+    public function initializeTargetEncoding()
     {
         if (!$this->target_encoding) {
             $this->$target_encoding = "UTF-8";
@@ -1082,9 +1091,9 @@ class Class_29
             $this->$target_encoding = "WINDOWS-1252";
         }
     }
-    public function function_194($data)
+    public function convertCharset($data)
     {
-        if ($this->$encoding = = $this->target_encoding) {
+        if ($this->encoding == $this->target_encoding) {
             return $data;
         }
         if ($this->escape_html) {
@@ -1095,12 +1104,12 @@ class Class_29
         }
         return rssFormatItem($data, $this->encoding, $this->target_encoding);
     }
-    public function function_282($disable = true)
+    public function enableLegacyMode($disable = true)
     {
         $this->$legacy_mode = !$disable;
     }
 }
-class Class_30
+class XMLBuilder
 {
     public $charset = "windows-1252";
     public $content_type = "text/xml";
@@ -1116,51 +1125,51 @@ class Class_30
         }
         $this->$charset = strtolower($charset) == "iso-8859-1" ? "windows-1252" : $charset;
     }
-    public function function_302()
+    public function getContentTypeHeader()
     {
-        return "Content-Type: " . $this->content_type . ($this->$charset = = "" ? "" : "; $charset = " . $this->charset);
+        return "Content-Type: " . $this->content_type . ($this->charset == "" ? "" : "; $charset = " . $this->charset);
     }
-    public function function_303()
+    public function getContentLengthHeader()
     {
-        return "Content-Length: " . $this->function_304();
+        return "Content-Length: " . $this->getContentLength();
     }
-    public function function_305()
+    public function sendContentTypeHeader()
     {
-        @header("Content-Type: " . $this->content_type . ($this->$charset = = "" ? "" : "; $charset = " . $this->charset));
+        @header("Content-Type: " . $this->content_type . ($this->charset == "" ? "" : "; $charset = " . $this->charset));
     }
-    public function function_306()
+    public function sendContentLengthHeader()
     {
-        @header("Content-Length: " . @$this->function_304());
+        @header("Content-Length: " . @$this->getContentLength());
     }
-    public function function_307()
+    public function getXMLDeclaration()
     {
         return "<?xml $version = \"1.0\" $encoding = \"" . $this->charset . "\"?>" . "\n";
     }
-    public function function_304()
+    public function getContentLength()
     {
-        return strlen($this->doc) + strlen($this->function_307());
+        return strlen($this->doc) + strlen($this->getXMLDeclaration());
     }
-    public function function_308($tag, $attr = [])
+    public function addOpenTag($tag, $attr = [])
     {
         $this->open_tags[] = $tag;
-        $this->doc .= $this->tabs . $this->function_309($tag, $attr) . "\n";
+        $this->doc .= $this->tabs . $this->buildTag($tag, $attr) . "\n";
         $this->tabs .= "\t";
     }
-    public function function_310()
+    public function addCloseTag()
     {
         $tag = array_pop($this->open_tags);
         $this->$tabs = substr($this->tabs, 0, -1);
         $this->doc .= $this->tabs . "</" . $tag . ">\n";
     }
-    public function function_311($tag, $content = "", $attr = [], $cdata = false, $htmlspecialchars = false)
+    public function addTag($tag, $content = "", $attr = [], $cdata = false, $htmlspecialchars = false)
     {
-        $this->doc .= $this->tabs . $this->function_309($tag, $attr, $content === "");
+        $this->doc .= $this->tabs . $this->buildTag($tag, $attr, $content === "");
         if ($content !== "") {
             if ($htmlspecialchars) {
                 $this->doc .= htmlspecialchars($content);
             } else {
                 if ($cdata || preg_match("/[\\<\\>\\&'\\\"\\[\\]]/", $content)) {
-                    $this->doc .= "<![CDATA[" . $this->function_281($content) . "]]>";
+                    $this->doc .= "<![CDATA[" . $this->escapeCDATA($content) . "]]>";
                 } else {
                     $this->doc .= $content;
                 }
@@ -1168,7 +1177,7 @@ class Class_30
             $this->doc .= "</" . $tag . ">\n";
         }
     }
-    public function function_309($tag, $attr, $closing = false)
+    public function buildTag($tag, $attr, $closing = false)
     {
         $loopCounter = "<" . $tag;
         if (!empty($attr)) {
@@ -1182,12 +1191,12 @@ class Class_30
         $loopCounter .= $closing ? " />\n" : ">";
         return $loopCounter;
     }
-    public function function_281($xml)
+    public function escapeCDATA($xml)
     {
         $xml = preg_replace("#[\\x00-\\x08\\x0B\\x0C\\x0E-\\x1F]#", "", $xml);
         return str_replace(["<![CDATA[", "]]>"], ["�![CDATA[", "]]�"], $xml);
     }
-    public function function_312()
+    public function getDocument()
     {
         if (!empty($this->open_tags)) {
             trigger_error("There are still open tags within the document", 256);
@@ -1195,27 +1204,21 @@ class Class_30
         }
         return $this->doc;
     }
-    public function function_313($full_shutdown = false)
+    public function outputAndExit($full_shutdown = false)
     {
-        $this->function_305();
+        $this->sendContentTypeHeader();
         if (strpos($_SERVER["SERVER_SOFTWARE"], "Microsoft-IIS") !== false) {
-            $this->function_306();
+            $this->sendContentLengthHeader();
         }
-        echo $this->function_272();
+        echo $this->getFullDocument();
         exit;
     }
-    public function function_272()
+    public function getFullDocument()
     {
-        return $this->function_307() . $this->function_312();
+        return $this->getXMLDeclaration() . $this->getDocument();
     }
 }
-class Class_31 extends Class_29
-{
-}
-class Class_32 extends Class_30
-{
-}
-function function_271($value)
+function iniSizeToBytes($value)
 {
     $value = trim($value);
     $validFeed = intval($value);
@@ -1284,7 +1287,7 @@ function showAlertMessage($message = "")
 {
     return "<div class=\"alert\"><div>" . $message . "</div></div>";
 }
-function function_292($text, $doUniCode = false)
+function decodeHTMLEntities($text, $doUniCode = false)
 {
     if ($doUniCode) {
         $text = preg_replace_callback("/&#([0-9]+);/siU", function ($matches) {
@@ -1293,11 +1296,11 @@ function function_292($text, $doUniCode = false)
     }
     return str_replace(["&lt;", "&gt;", "&quot;", "&amp;"], ["<", ">", "\"", "&"], $text);
 }
-function function_277($text, $parse = true)
+function stripTagsFromText($text, $parse = true)
 {
     return strip_tags($text);
 }
-function function_314($rawurl, $postfields = [])
+function fetchFileViaSocket($rawurl, $postfields = [])
 {
     $url = @parse_url($rawurl);
     if (!$url || empty($url["host"])) {
@@ -1383,7 +1386,7 @@ function function_314($rawurl, $postfields = [])
     }
     return ["headers" => $matches[1], "body" => $matches[2]];
 }
-function function_144(&$array, $tagname, $reinitialise = false, $depth = 0)
+function extractArrayValues(&$array, $tagname, $reinitialise = false, $depth = 0)
 {
     if ($reinitialise) {
         $output = [];
@@ -1402,14 +1405,14 @@ function function_144(&$array, $tagname, $reinitialise = false, $depth = 0)
                 }
             } else {
                 if (is_array($array[(string) $key]) && $depth < 30) {
-                    pluginActivate($array[(string) $key], $tagname, false, $depth + 1);
+                    extractArrayValues($array[(string) $key], $tagname, false, $depth + 1);
                 }
             }
         }
     }
     return $output;
 }
-function function_279($item)
+function getItemValue($item)
 {
     return is_array($item) ? $item["value"] : $item;
 }
