@@ -1,5 +1,5 @@
 <?php
-class Class_3
+class ImageUpload
 {
     public $version = NULL;
     public $file_src_name = NULL;
