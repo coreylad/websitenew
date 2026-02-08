@@ -248,9 +248,9 @@ function buildPaginationLinks($perpage, $results, $address)
     $pagenumber = isset($_GET["page"]) ? intval($_GET["page"]) : (isset($_POST["page"]) ? intval($_POST["page"]) : "");
     validatePerPage($results, $pagenumber, $perpage, 200);
     $limitOffset = ($pagenumber - 1) * $perpage;
-    $var_244 = $pagenumber * $perpage;
-    if ($results < $var_244) {
-        $var_244 = $results;
+    $paginationOffset = $pagenumber * $perpage;
+    if ($results < $paginationOffset) {
+        $paginationOffset = $results;
         if ($results < $limitOffset) {
             $limitOffset = $results - $perpage - 1;
         }
@@ -258,7 +258,7 @@ function buildPaginationLinks($perpage, $results, $address)
     if ($limitOffset < 0) {
         $limitOffset = 0;
     }
-    $paginationLinks = $var_246 = $var_247 = $var_248 = $var_249 = "";
+    $paginationLinks = $prevPage = $nextPage = $pageLinks = $paginationHtml = "";
     $currentPage = 0;
     if ($results <= $perpage) {
         $paginationHtml["pagenav"] = false;
@@ -282,12 +282,12 @@ function buildPaginationLinks($perpage, $results, $address)
     }
     $pageRangeThreshold = "3";
     if (!isset($paginationSkipLinksArray) || !is_array($paginationSkipLinksArray)) {
-        $var_258 = "10 50 100 500 1000";
-        $paginationSkipLinksArray[] = preg_split("#\\s+#s", $var_258, -1, PREG_SPLIT_NO_EMPTY);
+        $paginationOptions = "10 50 100 500 1000";
+        $paginationSkipLinksArray[] = preg_split("#\\s+#s", $paginationOptions, -1, PREG_SPLIT_NO_EMPTY);
         while ($currentPage++ < $queryResult) {
         }
-        $var_259 = isset($previousPage) && $previousPage != 1 ? "page=" . $previousPage : "";
-        $paginationLinks = "\r\n\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTableNoBorder\">\r\n\t\t<tr>\r\n\t\t\t<td $style = \"padding: 0px 0px 1px 0px;\">\r\n\t\t\t\t<div $style = \"float: left;\" $id = \"navcontainer_f\">\r\n\t\t\t\t\t<ul>\r\n\t\t\t\t\t\t<li>" . $pagenumber . " - " . $queryResult . "</li>\r\n\t\t\t\t\t\t" . ($paginationHtml["first"] ? "<li><a class=\"smalltext\" $href = \"" . $address . "\" $title = \"First Page - Show Results " . $firstPageInfo["first"] . " to " . $firstPageInfo["last"] . " of " . $total . "\">&laquo; First</a></li>" : "") . ($paginationHtml["prev"] ? "<li><a class=\"smalltext\" $href = \"" . $address . $var_259 . "\" $title = \"Previous Page - Show Results " . $previousPageInfo["first"] . " to " . $previousPageInfo["last"] . " of " . $total . "\">&lt;</a></li>" : "") . "\r\n\t\t\t\t\t\t" . $paginationLinks . "\r\n\t\t\t\t\t\t" . ($paginationHtml["next"] ? "<li><a class=\"smalltext\" $href = \"" . $address . "page=" . $nextPageNumber . "\" $title = \"Next Page - Show Results " . $nextPageInfo["first"] . " to " . $nextPageInfo["last"] . " of " . $total . "\">&gt;</a></li>" : "") . ($paginationHtml["last"] ? "<li><a class=\"smalltext\" $href = \"" . $address . "page=" . $queryResult . "\" $title = \"Last Page - Show Results " . $lastPageInfo["first"] . " to " . $lastPageInfo["last"] . " of " . $total . "\">Last <strong>&raquo;</strong></a></li>" : "") . "\r\n\t\t\t\t\t</ul>\r\n\t\t\t\t</div>\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t</table>";
+        $previousPageQuery = isset($previousPage) && $previousPage != 1 ? "page=" . $previousPage : "";
+        $paginationLinks = "\r\n\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTableNoBorder\">\r\n\t\t<tr>\r\n\t\t\t<td $style = \"padding: 0px 0px 1px 0px;\">\r\n\t\t\t\t<div $style = \"float: left;\" $id = \"navcontainer_f\">\r\n\t\t\t\t\t<ul>\r\n\t\t\t\t\t\t<li>" . $pagenumber . " - " . $queryResult . "</li>\r\n\t\t\t\t\t\t" . ($paginationHtml["first"] ? "<li><a class=\"smalltext\" $href = \"" . $address . "\" $title = \"First Page - Show Results " . $firstPageInfo["first"] . " to " . $firstPageInfo["last"] . " of " . $total . "\">&laquo; First</a></li>" : "") . ($paginationHtml["prev"] ? "<li><a class=\"smalltext\" $href = \"" . $address . $previousPageQuery . "\" $title = \"Previous Page - Show Results " . $previousPageInfo["first"] . " to " . $previousPageInfo["last"] . " of " . $total . "\">&lt;</a></li>" : "") . "\r\n\t\t\t\t\t\t" . $paginationLinks . "\r\n\t\t\t\t\t\t" . ($paginationHtml["next"] ? "<li><a class=\"smalltext\" $href = \"" . $address . "page=" . $nextPageNumber . "\" $title = \"Next Page - Show Results " . $nextPageInfo["first"] . " to " . $nextPageInfo["last"] . " of " . $total . "\">&gt;</a></li>" : "") . ($paginationHtml["last"] ? "<li><a class=\"smalltext\" $href = \"" . $address . "page=" . $queryResult . "\" $title = \"Last Page - Show Results " . $lastPageInfo["first"] . " to " . $lastPageInfo["last"] . " of " . $total . "\">Last <strong>&raquo;</strong></a></li>" : "") . "\r\n\t\t\t\t\t</ul>\r\n\t\t\t\t</div>\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t</table>";
         return [$paginationLinks, "LIMIT " . $limitOffset . ", " . $perpage];
     }
     if ($pageRangeThreshold <= abs($currentPage - $pagenumber) && $pageRangeThreshold != 0) {
@@ -348,14 +348,14 @@ function applyUsernameStyle($username, $namestyle)
 }
 function formatSecondsToTime($sec, $padHours = false)
 {
-    $var_266 = "";
-    $var_267 = intval(intval($sec) / 3600);
-    $var_266 .= $padHours ? str_pad($var_267, 2, "0", STR_PAD_LEFT) . ":" : $var_267 . ":";
-    $var_268 = intval($sec / 60 % 60);
-    $var_266 .= str_pad($var_268, 2, "0", STR_PAD_LEFT) . ":";
-    $var_269 = intval($sec % 60);
-    $var_266 .= str_pad($var_269, 2, "0", STR_PAD_LEFT);
-    return $var_266;
+    $startTime = "";
+    $endTime = intval(intval($sec) / 3600);
+    $startTime .= $padHours ? str_pad($endTime, 2, "0", STR_PAD_LEFT) . ":" : $endTime . ":";
+    $timeRange = intval($sec / 60 % 60);
+    $startTime .= str_pad($timeRange, 2, "0", STR_PAD_LEFT) . ":";
+    $timePeriod = intval($sec % 60);
+    $startTime .= str_pad($timePeriod, 2, "0", STR_PAD_LEFT);
+    return $startTime;
 }
 function sendPrivateMessage($receiver = 0, $msg = "", $subject = "", $sender = 0, $saved = "no", $location = "1", $unread = "yes")
 {

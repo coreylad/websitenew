@@ -112,7 +112,7 @@ if ($Act == "save_order") {
         $List1 = implode(" ", function_315($LeftPlugins));
         $List2 = implode(" ", function_315($MiddlePlugins));
         $List3 = implode(" ", function_315($RightPlugins));
-        echo "\r\n\t<script $type = \"text/javascript\">\r\n\t\tvar settings \$t = \r\n\t\t{\r\n\t\t\t" . var_615() . "\r\n\t\t};\r\n\t\tvar $options = \r\n\t\t{\r\n\t\t\tportal \t: \"columns\",\r\n\t\t\teditorEnabled : true,\r\n\t\t\tsaveurl : \"index.php?do=plugins&$act = save_order\",\r\n\t\t\tTSDebug : true\r\n\t\t};\r\n\t\tvar $data = {};\r\n\t\tvar portal;\r\n\t\tEvent.observe(window, \"load\", function()\r\n\t\t{\r\n\t\t\$tportal = new Portal(settings, options, data);\r\n\t\t});\r\n\t</script>\r\n\t" . showAlertMessage("<a $href = \"index.php?do=plugins&$act = new\">" . $Language[9] . "</a>") . "\r\n\t" . $Message . "\r\n\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t<tr>\r\n\t\t\t<td class=\"tcat\" $align = \"center\">\r\n\t\t\t\t" . $Language[2] . "\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\" $align = \"center\">\r\n\t\t\t\t<div $id = \"wrapper\">\r\n\t\t\t\t\t<div $id = \"columns\">\r\n\t\t\t\t\t\t<div $id = \"column-1\" class=\"column menu\"></div>\r\n\t\t\t\t\t\t<div $id = \"column-2\" class=\"column blocks\"></div>\r\n\t\t\t\t\t\t<div $id = \"column-3\" class=\"column sidebar\"></div>\r\n\t\t\t\t\t\t<div class=\"portal-column\" $id = \"portal-column-block-list\" $style = \"display: none;\">\r\n\t\t\t\t\t\t\t" . $List1 . "\r\n\t\t\t\t\t\t\t" . $List2 . "\r\n\t\t\t\t\t\t\t" . $List3 . "\r\n\t\t\t\t\t\t</div>\r\n\t\t\t\t\t</div>\r\n\t\t\t\t\t<div $style = \"clear:both;\"></div>\r\n\t\t\t\t\t<div $id = \"debug\" $style = \"display: none;\">\r\n\t\t\t\t\t\t<p $style = \"margin:0px;\" $id = \"data\"></p>\r\n\t\t\t\t\t</div>\r\n\t\t\t\t</div>\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t</table>";
+        echo "\r\n\t<script $type = \"text/javascript\">\r\n\t\tvar settings \$t = \r\n\t\t{\r\n\t\t\t" . pluginDeactivate() . "\r\n\t\t};\r\n\t\tvar $options = \r\n\t\t{\r\n\t\t\tportal \t: \"columns\",\r\n\t\t\teditorEnabled : true,\r\n\t\t\tsaveurl : \"index.php?do=plugins&$act = save_order\",\r\n\t\t\tTSDebug : true\r\n\t\t};\r\n\t\tvar $data = {};\r\n\t\tvar portal;\r\n\t\tEvent.observe(window, \"load\", function()\r\n\t\t{\r\n\t\t\$tportal = new Portal(settings, options, data);\r\n\t\t});\r\n\t</script>\r\n\t" . showAlertMessage("<a $href = \"index.php?do=plugins&$act = new\">" . $Language[9] . "</a>") . "\r\n\t" . $Message . "\r\n\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t<tr>\r\n\t\t\t<td class=\"tcat\" $align = \"center\">\r\n\t\t\t\t" . $Language[2] . "\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\" $align = \"center\">\r\n\t\t\t\t<div $id = \"wrapper\">\r\n\t\t\t\t\t<div $id = \"columns\">\r\n\t\t\t\t\t\t<div $id = \"column-1\" class=\"column menu\"></div>\r\n\t\t\t\t\t\t<div $id = \"column-2\" class=\"column blocks\"></div>\r\n\t\t\t\t\t\t<div $id = \"column-3\" class=\"column sidebar\"></div>\r\n\t\t\t\t\t\t<div class=\"portal-column\" $id = \"portal-column-block-list\" $style = \"display: none;\">\r\n\t\t\t\t\t\t\t" . $List1 . "\r\n\t\t\t\t\t\t\t" . $List2 . "\r\n\t\t\t\t\t\t\t" . $List3 . "\r\n\t\t\t\t\t\t</div>\r\n\t\t\t\t\t</div>\r\n\t\t\t\t\t<div $style = \"clear:both;\"></div>\r\n\t\t\t\t\t<div $id = \"debug\" $style = \"display: none;\">\r\n\t\t\t\t\t\t<p $style = \"margin:0px;\" $id = \"data\"></p>\r\n\t\t\t\t\t</div>\r\n\t\t\t\t</div>\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t</table>";
     } else {
         echo $List;
     }
@@ -176,28 +176,28 @@ function showAlertMessage($message = "")
 function function_316()
 {
     $plugins = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM ts_plugins ORDER BY sort ASC");
-    $var_616 = [];
+    $pluginId = [];
     while ($plugin = mysqli_fetch_assoc($plugins)) {
-        $var_616["column-" . $plugin["position"]][] = $plugin;
+        $pluginId["column-" . $plugin["position"]][] = $plugin;
     }
-    $var_617 = [];
-    foreach ($var_616 as $var_618 => $plugins) {
-        $var_619 = [];
+    $pluginName = [];
+    foreach ($pluginId as $pluginVersion => $plugins) {
+        $pluginEnabled = [];
         foreach ($plugins as $plugin) {
-            $var_619[] = "'plugin-" . $plugin["pid"] . "'";
+            $pluginEnabled[] = "'plugin-" . $plugin["pid"] . "'";
         }
-        $var_617[] = "'" . $var_618 . "'" . ":[" . implode(",", $var_619) . "]";
+        $pluginName[] = "'" . $pluginVersion . "'" . ":[" . implode(",", $pluginEnabled) . "]";
     }
-    return implode(",", $var_617);
+    return implode(",", $pluginName);
 }
 function function_315($PluginArray)
 {
     global $Language;
-    $var_451 = [];
+    $gameId = [];
     foreach ($PluginArray as $Plugin) {
-        $var_451[] = "\r\n\t\t<div class=\"block\" $id = \"plugin-" . $Plugin["pid"] . "\">\r\n\t\t\t<h1 class=\"draghandle\">\r\n\t\t\t\t" . $Plugin["description"] . "\r\n\t\t\t</h1>\r\n\t\t\t<p>\r\n\t\t\t\t" . ($Plugin["active"] == 1 ? "<a $href = \"index.php?do=plugins&amp;$act = change_status&amp;$pid = " . $Plugin["pid"] . "\"><img $src = \"images/accept.png\" $alt = \"" . trim($Language[15]) . "\" $title = \"" . trim($Language[15]) . "\" $border = \"0\" $style = \"vertical-align: middle;\" /></a>" : "<a $href = \"index.php?do=plugins&amp;$act = change_status&amp;$pid = " . $Plugin["pid"] . "\"><img $src = \"images/cancel.png\" $alt = \"" . trim($Language[14]) . "\" $title = \"" . trim($Language[14]) . "\" $border = \"0\" $style = \"vertical-align: middle;\" /></a>") . "\r\n\t\t\t\t<a $href = \"index.php?do=plugins&amp;$act = edit&amp;$pid = " . $Plugin["pid"] . "\"><img $src = \"images/tool_edit.png\" $alt = \"" . trim($Language[4]) . "\" $title = \"" . trim($Language[4]) . "\" $border = \"0\" $style = \"vertical-align: middle;\" /></a> <a $href = \"index.php?do=plugins&amp;$act = delete&amp;$pid = " . $Plugin["pid"] . "\" $onclick = \"return confirm('" . trim($Language[6]) . "');\"><img $src = \"images/tool_delete.png\" $alt = \"" . trim($Language[5]) . "\" $title = \"" . trim($Language[5]) . "\" $border = \"0\" $style = \"vertical-align: middle;\" /></a>\r\n\t\t\t</p>\r\n\t\t</div>";
+        $gameId[] = "\r\n\t\t<div class=\"block\" $id = \"plugin-" . $Plugin["pid"] . "\">\r\n\t\t\t<h1 class=\"draghandle\">\r\n\t\t\t\t" . $Plugin["description"] . "\r\n\t\t\t</h1>\r\n\t\t\t<p>\r\n\t\t\t\t" . ($Plugin["active"] == 1 ? "<a $href = \"index.php?do=plugins&amp;$act = change_status&amp;$pid = " . $Plugin["pid"] . "\"><img $src = \"images/accept.png\" $alt = \"" . trim($Language[15]) . "\" $title = \"" . trim($Language[15]) . "\" $border = \"0\" $style = \"vertical-align: middle;\" /></a>" : "<a $href = \"index.php?do=plugins&amp;$act = change_status&amp;$pid = " . $Plugin["pid"] . "\"><img $src = \"images/cancel.png\" $alt = \"" . trim($Language[14]) . "\" $title = \"" . trim($Language[14]) . "\" $border = \"0\" $style = \"vertical-align: middle;\" /></a>") . "\r\n\t\t\t\t<a $href = \"index.php?do=plugins&amp;$act = edit&amp;$pid = " . $Plugin["pid"] . "\"><img $src = \"images/tool_edit.png\" $alt = \"" . trim($Language[4]) . "\" $title = \"" . trim($Language[4]) . "\" $border = \"0\" $style = \"vertical-align: middle;\" /></a> <a $href = \"index.php?do=plugins&amp;$act = delete&amp;$pid = " . $Plugin["pid"] . "\" $onclick = \"return confirm('" . trim($Language[6]) . "');\"><img $src = \"images/tool_delete.png\" $alt = \"" . trim($Language[5]) . "\" $title = \"" . trim($Language[5]) . "\" $border = \"0\" $style = \"vertical-align: middle;\" /></a>\r\n\t\t\t</p>\r\n\t\t</div>";
     }
-    return $var_451;
+    return $gameId;
 }
 
 ?>

@@ -147,9 +147,9 @@ function formatTimestamp($timestamp = "")
 function function_270()
 {
     global $MAIN;
-    $var_393 = $MAIN["cache"];
-    if (file_exists("../" . $var_393 . "/news.html")) {
-        unlink("../" . $var_393 . "/news.html");
+    $miscConfig = $MAIN["cache"];
+    if (file_exists("../" . $miscConfig . "/news.html")) {
+        unlink("../" . $miscConfig . "/news.html");
     }
 }
 function applyUsernameStyle($username, $namestyle)

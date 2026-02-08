@@ -129,9 +129,9 @@ function function_264()
 }
 function function_263($tables)
 {
-    $var_567 = "../admin/backup/";
-    if (is_dir($var_567) && is_writable($var_567)) {
-        $file = $var_567 . "backup_" . function_264();
+    $dbHost = "../admin/backup/";
+    if (is_dir($dbHost) && is_writable($dbHost)) {
+        $file = $dbHost . "backup_" . function_264();
         if (function_exists("gzopen")) {
             $fp = gzopen($file . ".sql.gz", "w9");
         } else {
@@ -139,32 +139,32 @@ function function_263($tables)
         }
         $time = date("dS F Y \\a\\t H:i", time());
         $header = "-- -------------------------------------\n-- TS SE Database Backup\n-- Generated: " . $time . "\n-- -------------------------------------\n\n";
-        $var_568 = $header;
-        foreach ($tables as $var_569) {
-            $var_570 = [];
-            $var_571 = var_572($var_569);
-            foreach ($var_571 as $var_573) {
-                $var_570[] = $var_573["Field"];
+        $tableRow = $header;
+        foreach ($tables as $dbUser) {
+            $dbPass = [];
+            $dbName = dbBackup($dbUser);
+            foreach ($dbName as $dbTable) {
+                $dbPass[] = $dbTable["Field"];
             }
-            $var_574 = implode(",", $var_570);
-            $var_575 = var_576($var_569) . ";\n";
-            $var_568 .= $var_575;
-            var_577($fp, $var_568);
-            $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM " . $var_569);
+            $dbQuery = implode(",", $dbPass);
+            $dbResult = dbRestore($dbUser) . ";\n";
+            $tableRow .= $dbResult;
+            dbOptimize($fp, $tableRow);
+            $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM " . $dbUser);
             while ($row = mysqli_fetch_array($query)) {
-                $var_578 = "INSERT INTO " . $var_569 . " (" . $var_574 . ") VALUES (";
-                $var_579 = "";
-                foreach ($var_570 as $var_573) {
-                    if (!isset($row[$var_573]) || trim($row[$var_573]) == "") {
-                        $var_578 .= $var_579 . "''";
+                $dbError = "INSERT INTO " . $dbUser . " (" . $dbQuery . ") VALUES (";
+                $dbConnection = "";
+                foreach ($dbPass as $dbTable) {
+                    if (!isset($row[$dbTable]) || trim($row[$dbTable]) == "") {
+                        $dbError .= $dbConnection . "''";
                     } else {
-                        $var_578 .= $var_579 . "'" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $row[$var_573]) . "'";
+                        $dbError .= $dbConnection . "'" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $row[$dbTable]) . "'";
                     }
-                    $var_579 = ",";
+                    $dbConnection = ",";
                 }
-                $var_578 .= ");\n";
-                $var_568 .= $var_578;
-                var_577($fp, $var_568);
+                $dbError .= ");\n";
+                $tableRow .= $dbError;
+                dbOptimize($fp, $tableRow);
             }
         }
         return true;
@@ -174,18 +174,18 @@ function function_263($tables)
 }
 function function_265($table)
 {
-    $var_580 = [];
+    $dbBackup = [];
     $query = mysqli_query($GLOBALS["DatabaseConnect"], "SHOW FIELDS FROM " . $table);
-    while ($var_573 = mysqli_fetch_array($query)) {
-        $var_580[] = $var_573;
+    while ($dbTable = mysqli_fetch_array($query)) {
+        $dbBackup[] = $dbTable;
     }
-    return $var_580;
+    return $dbBackup;
 }
 function function_266($table)
 {
     $query = mysqli_query($GLOBALS["DatabaseConnect"], "SHOW CREATE TABLE " . $table);
-    $var_575 = mysqli_fetch_array($query);
-    return $var_575["Create Table"];
+    $dbResult = mysqli_fetch_array($query);
+    return $dbResult["Create Table"];
 }
 function function_267($fp, &$contents)
 {

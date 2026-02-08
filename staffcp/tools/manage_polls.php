@@ -11,7 +11,7 @@ $action = isset($_GET["action"]) ? $_GET["action"] : (isset($_POST["action"]) ? 
 $Language = file("languages/" . getStaffLanguage() . "/manage_polls.lang");
 $Message = "";
 define("TSF_PREFIX", "tsf_");
-if ($action == "updatepoll" && var_560($_POST["pollid"])) {
+if ($action == "updatepoll" && twitterValidate($_POST["pollid"])) {
     $_queries = [];
     $pollid = intval($_POST["pollid"]);
     $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM " . TSF_PREFIX . "poll WHERE $pollid = '" . $pollid . "'");
@@ -73,7 +73,7 @@ if ($action == "updatepoll" && var_560($_POST["pollid"])) {
         }
     }
 }
-if ($action == "polledit" && var_560($_GET["pollid"])) {
+if ($action == "polledit" && twitterValidate($_GET["pollid"])) {
     $pollid = intval($_GET["pollid"]);
     $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM " . TSF_PREFIX . "poll WHERE $pollid = '" . $pollid . "'");
     $pollinfo = mysqli_fetch_assoc($query);
@@ -175,7 +175,7 @@ if ($action == "createpoll") {
         echo "\r\n\t\t<form $action = \"index.php?do=manage_polls&$action = createpoll" . (isset($_GET["page"]) ? "&$page = " . intval($_GET["page"]) : "") . "\" $method = \"post\">\r\n\t\t<input $name = \"action\" $value = \"createpoll\" $type = \"hidden\" />\r\n\t\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t<tbody><tr>\r\n\t\t<td class=\"tcat\">\r\n\t\t" . $Language[3] . "\r\n\t\t</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t<td class=\"alt1\" $align = \"center\">\r\n\t\t<div class=\"panel\">\r\n\t\t<div $align = \"left\">\r\n\r\n\t\t<fieldset class=\"fieldset\">\r\n\r\n\t\t<legend>" . $Language[4] . "</legend>\r\n\t\t<table $border = \"0\" $cellpadding = \"3\" $cellspacing = \"0\" $width = \"100%\">\r\n\t\t<tbody><tr>\r\n\t\t<td class=\"none\" $colspan = \"2\">\r\n\t\t<input class=\"bginput\" $name = \"pollquestion\" $value = \"\" $id = \"pollquestion\" $style = \"width: 99%;\" $type = \"text\" />\r\n\t\t</td>\r\n\t\t</tr>\r\n\t\t</tbody></table>\r\n\r\n\t\t</fieldset>\r\n\r\n\t\t<fieldset class=\"fieldset\">\r\n\t\t<legend>" . $Language[20] . "</legend>\r\n\t\t<table $border = \"0\" $cellpadding = \"3\" $cellspacing = \"0\" $width = \"100%\">\r\n\r\n\t\t<tbody>\r\n\t\t" . $options . "\r\n\t\t<tr>\r\n\t\t<td $colspan = \"2\" class=\"none\">" . $Language[23] . "</td>\r\n\t\t</tr>\r\n\t\t</tbody></table>\r\n\r\n\t\t</fieldset>\r\n\r\n\t\t<fieldset class=\"fieldset\">\r\n\t\t<legend>" . $Language[24] . "</legend>\r\n\t\t<table $width = \"100%\" $border = \"0\" $cellpadding = \"3\" $cellspacing = \"0\">\r\n\t\t<tbody><tr>\r\n\t\t<td class=\"none\">" . $Language[25] . "</td>\r\n\t\t</tr>\r\n\r\n\t\t<tr>\r\n\t\t<td class=\"none\"><label for=\"poll_timeout\">" . $Language[26] . " <input class=\"bginput\" $name = \"timeout\" $value = \"0\" $size = \"5\" $id = \"poll_timeout\" $type = \"text\"> " . str_replace("{1}", formatTimestamp(time()), $Language[27]) . "</label></td>\r\n\t\t</tr>\r\n\t\t</tbody></table>\r\n\t\t</fieldset>\r\n\r\n\t\t<fieldset class=\"fieldset\">\r\n\t\t<legend>" . $Language[35] . "</legend>\r\n\r\n\t\t<table $width = \"100%\" $border = \"0\" $cellpadding = \"3\" $cellspacing = \"0\">\r\n\t\t<tbody><tr>\r\n\t\t<td class=\"none\"><label for=\"cb_multiple\"><input $type = \"checkbox\" $name = \"multiple\" $value = \"1\" $id = \"cb_multiple\" $tabindex = \"1\" /> " . $Language[36] . "</label></td>\r\n\t\t</tr>\r\n\t\t</tbody></table>\r\n\t\t</fieldset>\r\n\r\n\t\t<fieldset class=\"fieldset\">\r\n\t\t<legend>" . $Language[19] . "</legend>\r\n\r\n\t\t<table $width = \"100%\" $border = \"0\" $cellpadding = \"3\" $cellspacing = \"0\">\r\n\t\t<tbody><tr>\r\n\t\t<td class=\"none\"><label for=\"cb_public\"><input $name = \"public\" $value = \"1\" $id = \"cb_public\" $tabindex = \"1\" $type = \"checkbox\"> " . $Language[28] . "</label></td>\r\n\t\t</tr>\r\n\t\t</tbody></table>\r\n\t\t</fieldset>\r\n\r\n\t\t<fieldset class=\"fieldset\">\r\n\t\t<legend>" . $Language[41] . "</legend>\r\n\t\t<table $cellpadding = \"3\" $cellspacing = \"0\" $border = \"0\" $width = \"100%\">\r\n\t\t<tr>\r\n\t\t<td class=\"none\"><label for=\"cb_threadid\"><input $type = \"text\" $name = \"tid\" $value = \"0\" $id = \"cb_threadid\" $size = \"10\" /> " . $Language[42] . "</label></td>\r\n\t\t</tr>\r\n\t\t</table>\r\n\t\t</fieldset>\r\n\r\n\t\t</div>\r\n\t\t</div>\r\n\r\n\t\t<div class=\"tcat2\">\r\n\t\t<input class=\"button\" $name = \"sbutton\" $accesskey = \"s\" $value = \"" . $Language[31] . "\" $type = \"submit\">\r\n\t\t<input class=\"button\" $value = \"" . $Language[32] . "\" $type = \"reset\">\r\n\t\t</div>\r\n\r\n\t\t</td>\r\n\t\t</tr>\r\n\t\t</tbody></table>\r\n\r\n\t\t</form>\r\n\t\t";
     }
 }
-if ($action == "deletepoll" && var_560($_GET["pollid"])) {
+if ($action == "deletepoll" && twitterValidate($_GET["pollid"])) {
     $pollid = intval($_GET["pollid"]);
     $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT pollid, question FROM " . TSF_PREFIX . "poll WHERE $pollid = '" . $pollid . "'");
     $pollinfo = mysqli_fetch_assoc($query);
@@ -313,9 +313,9 @@ function buildPaginationLinks($perpage, $results, $address)
     $pagenumber = isset($_GET["page"]) ? intval($_GET["page"]) : (isset($_POST["page"]) ? intval($_POST["page"]) : "");
     validatePerPage($results, $pagenumber, $perpage, 200);
     $limitOffset = ($pagenumber - 1) * $perpage;
-    $var_244 = $pagenumber * $perpage;
-    if ($results < $var_244) {
-        $var_244 = $results;
+    $paginationOffset = $pagenumber * $perpage;
+    if ($results < $paginationOffset) {
+        $paginationOffset = $results;
         if ($results < $limitOffset) {
             $limitOffset = $results - $perpage - 1;
         }
@@ -323,7 +323,7 @@ function buildPaginationLinks($perpage, $results, $address)
     if ($limitOffset < 0) {
         $limitOffset = 0;
     }
-    $paginationLinks = $var_246 = $var_247 = $var_248 = $var_249 = "";
+    $paginationLinks = $prevPage = $nextPage = $pageLinks = $paginationHtml = "";
     $currentPage = 0;
     if ($results <= $perpage) {
         $show["pagenav"] = false;
@@ -347,12 +347,12 @@ function buildPaginationLinks($perpage, $results, $address)
     }
     $pageRangeThreshold = "3";
     if (!isset($paginationSkipLinksArray) || !is_array($paginationSkipLinksArray)) {
-        $var_258 = "10 50 100 500 1000";
-        $paginationSkipLinksArray[] = preg_split("#\\s+#s", $var_258, -1, PREG_SPLIT_NO_EMPTY);
+        $paginationOptions = "10 50 100 500 1000";
+        $paginationSkipLinksArray[] = preg_split("#\\s+#s", $paginationOptions, -1, PREG_SPLIT_NO_EMPTY);
         while ($currentPage++ < $queryResult) {
         }
-        $var_259 = isset($previousPage) && $previousPage != 1 ? "page=" . $previousPage : "";
-        $paginationLinks = "\r\n\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTableNoBorder\">\r\n\t\t<tr>\r\n\t\t\t<td $style = \"padding: 0px 0px 1px 0px;\">\r\n\t\t\t\t<div $style = \"float: left;\" $id = \"navcontainer_f\">\r\n\t\t\t\t\t<ul>\r\n\t\t\t\t\t\t<li>" . $pagenumber . " - " . $queryResult . "</li>\r\n\t\t\t\t\t\t" . ($show["first"] ? "<li><a class=\"smalltext\" $href = \"" . $address . "\" $title = \"First Page - Show Results " . $firstPageInfo["first"] . " to " . $firstPageInfo["last"] . " of " . $total . "\">&laquo; First</a></li>" : "") . ($show["prev"] ? "<li><a class=\"smalltext\" $href = \"" . $address . $var_259 . "\" $title = \"Previous Page - Show Results " . $previousPageInfo["first"] . " to " . $previousPageInfo["last"] . " of " . $total . "\">&lt;</a></li>" : "") . "\r\n\t\t\t\t\t\t" . $paginationLinks . "\r\n\t\t\t\t\t\t" . ($show["next"] ? "<li><a class=\"smalltext\" $href = \"" . $address . "page=" . $nextPageNumber . "\" $title = \"Next Page - Show Results " . $nextPageInfo["first"] . " to " . $nextPageInfo["last"] . " of " . $total . "\">&gt;</a></li>" : "") . ($show["last"] ? "<li><a class=\"smalltext\" $href = \"" . $address . "page=" . $queryResult . "\" $title = \"Last Page - Show Results " . $lastPageInfo["first"] . " to " . $lastPageInfo["last"] . " of " . $total . "\">Last <strong>&raquo;</strong></a></li>" : "") . "\r\n\t\t\t\t\t</ul>\r\n\t\t\t\t</div>\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t</table>";
+        $previousPageQuery = isset($previousPage) && $previousPage != 1 ? "page=" . $previousPage : "";
+        $paginationLinks = "\r\n\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTableNoBorder\">\r\n\t\t<tr>\r\n\t\t\t<td $style = \"padding: 0px 0px 1px 0px;\">\r\n\t\t\t\t<div $style = \"float: left;\" $id = \"navcontainer_f\">\r\n\t\t\t\t\t<ul>\r\n\t\t\t\t\t\t<li>" . $pagenumber . " - " . $queryResult . "</li>\r\n\t\t\t\t\t\t" . ($show["first"] ? "<li><a class=\"smalltext\" $href = \"" . $address . "\" $title = \"First Page - Show Results " . $firstPageInfo["first"] . " to " . $firstPageInfo["last"] . " of " . $total . "\">&laquo; First</a></li>" : "") . ($show["prev"] ? "<li><a class=\"smalltext\" $href = \"" . $address . $previousPageQuery . "\" $title = \"Previous Page - Show Results " . $previousPageInfo["first"] . " to " . $previousPageInfo["last"] . " of " . $total . "\">&lt;</a></li>" : "") . "\r\n\t\t\t\t\t\t" . $paginationLinks . "\r\n\t\t\t\t\t\t" . ($show["next"] ? "<li><a class=\"smalltext\" $href = \"" . $address . "page=" . $nextPageNumber . "\" $title = \"Next Page - Show Results " . $nextPageInfo["first"] . " to " . $nextPageInfo["last"] . " of " . $total . "\">&gt;</a></li>" : "") . ($show["last"] ? "<li><a class=\"smalltext\" $href = \"" . $address . "page=" . $queryResult . "\" $title = \"Last Page - Show Results " . $lastPageInfo["first"] . " to " . $lastPageInfo["last"] . " of " . $total . "\">Last <strong>&raquo;</strong></a></li>" : "") . "\r\n\t\t\t\t\t</ul>\r\n\t\t\t\t</div>\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t</table>";
         return [$paginationLinks, "LIMIT " . $limitOffset . ", " . $perpage];
     }
     if ($pageRangeThreshold <= abs($currentPage - $pagenumber) && $pageRangeThreshold != 0) {

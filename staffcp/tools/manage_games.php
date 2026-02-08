@@ -166,13 +166,13 @@ function showAlertMessage($message = "")
 }
 function function_158($selected = "")
 {
-    $var_451 = "<select $name = \"cid\">";
+    $gameId = "<select $name = \"cid\">";
     $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT cid, cname FROM ts_games_categories ORDER by `sort`");
     while ($Category = mysqli_fetch_assoc($query)) {
-        $var_451 .= "\r\n\t\t<option $value = \"" . $Category["cid"] . "\"" . ($selected == $Category["cid"] ? " $selected = \"selected\"" : "") . ">" . $Category["cname"] . "</option>";
+        $gameId .= "\r\n\t\t<option $value = \"" . $Category["cid"] . "\"" . ($selected == $Category["cid"] ? " $selected = \"selected\"" : "") . ">" . $Category["cname"] . "</option>";
     }
-    $var_451 .= "</select>";
-    return $var_451;
+    $gameId .= "</select>";
+    return $gameId;
 }
 function logStaffAction($log)
 {
@@ -181,8 +181,8 @@ function logStaffAction($log)
 function function_159($cid)
 {
     $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT cname FROM ts_games_categories WHERE `cid` = '" . $cid . "'");
-    $var_20 = mysqli_fetch_assoc($query);
-    return $var_20["cname"];
+    $actionParam = mysqli_fetch_assoc($query);
+    return $actionParam["cname"];
 }
 
 ?>

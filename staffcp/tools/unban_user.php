@@ -155,8 +155,8 @@ class Class_5
         if (!$http_host) {
             $http_host = substr(md5($message), 12, 18) . ".ts_unknown.unknown";
         }
-        $var_288 = "<" . gmdate("YmdHis") . "." . substr(md5($message . microtime()), 0, 12) . "@" . $http_host . ">";
-        $headers .= "Message-ID: " . $var_288 . $delimiter;
+        $emailMessageId = "<" . gmdate("YmdHis") . "." . substr(md5($message . microtime()), 0, 12) . "@" . $http_host . ">";
+        $headers .= "Message-ID: " . $emailMessageId . $delimiter;
         $headers .= preg_replace("#(\r\n|\r|\n)#s", $delimiter, $uheaders);
         unset($uheaders);
         $headers .= "MIME-Version: 1.0" . $delimiter;
@@ -231,8 +231,8 @@ class Class_5
             if (!$this->smtpSendCommand("MAIL FROM:<" . $this->fromemail . ">", 250)) {
                 return $this->smtpDebugError($this->smtpReturn . " Unexpected response from SMTP server during FROM address transmission");
             }
-            $var_290 = explode(",", $this->toemail);
-            foreach ($var_290 as $address) {
+            $emailRecipientsArray = explode(",", $this->toemail);
+            foreach ($emailRecipientsArray as $address) {
                 if (!$this->smtpSendCommand("RCPT TO:<" . trim($address) . ">", 250)) {
                     return $this->smtpDebugError($this->smtpReturn . " Unexpected response from SMTP server during TO address transmission");
                 }
@@ -270,7 +270,7 @@ class Class_5
     {
         if ($doUniCode) {
             $text = preg_replace_callback("/&#([0-9]+);/siU", function ($matches) {
-                return var_291($matches[1]);
+                return convertUtf8Char($matches[1]);
             }, $text);
         }
         return str_replace(["&lt;", "&gt;", "&quot;", "&amp;"], ["<", ">", "\"", "&"], $text);
@@ -282,25 +282,25 @@ class Class_5
             return $text;
         }
         if ($force_encode) {
-            $var_292 = true;
+            $emailEncodingNeeded = true;
         } else {
-            $var_292 = false;
+            $emailEncodingNeeded = false;
             $i = 0;
             while ($i < strlen($text)) {
                 if (127 < ord($text[$i])) {
-                    $var_292 = true;
+                    $emailEncodingNeeded = true;
                 } else {
                     $i++;
                 }
             }
         }
-        if ($var_292) {
-            $var_293 = preg_replace("#([^a-zA-Z0-9!*+\\-/ ])#e", "'=' . strtoupper(dechex(ord(str_replace('\\\"', '\"', '\\1'))))", $text);
-            $var_293 = preg_replace_callback("#([^a-zA-Z0-9!*+\\-/ ])#", function ($matches) {
+        if ($emailEncodingNeeded) {
+            $emailSubjectEncoded = preg_replace("#([^a-zA-Z0-9!*+\\-/ ])#e", "'=' . strtoupper(dechex(ord(str_replace('\\\"', '\"', '\\1'))))", $text);
+            $emailSubjectEncoded = preg_replace_callback("#([^a-zA-Z0-9!*+\\-/ ])#", function ($matches) {
                 return "'=" . strtoupper(dechex(ord(str_replace("\\\\\"", "\\\"", $matches[1]))));
             }, $text);
-            $var_293 = "=?" . $charset . "?q?" . $var_293 . "?=";
-            return $var_293;
+            $emailSubjectEncoded = "=?" . $charset . "?q?" . $emailSubjectEncoded . "?=";
+            return $emailSubjectEncoded;
         }
         if ($quoted_string) {
             $text = str_replace(["\"", "(", ")"], ["\\\"", "\\(", "\\)"], $text);
@@ -336,12 +336,12 @@ function function_100($to, $subject, $body)
     global $MAIN;
     global $SMTP;
     global $THEME;
-    $var_295 = $MAIN["SITENAME"];
+    $emailIsPrepared = $MAIN["SITENAME"];
     $fromemail = $MAIN["SITEEMAIL"];
-    $var_296 = false;
+    $siteNameForEmail = false;
     if (strtoupper(substr(PHP_OS, 0, 3) == "WIN")) {
         $emailLineDelimiter = "\r\n";
-        $var_296 = true;
+        $siteNameForEmail = true;
     } else {
         if (strtoupper(substr(PHP_OS, 0, 3) == "MAC")) {
             $emailLineDelimiter = "\r";
@@ -349,12 +349,12 @@ function function_100($to, $subject, $body)
             $emailLineDelimiter = "\n";
         }
     }
-    $var_298 = md5(uniqid(rand(), true) . time());
-    $var_41 = $_SERVER["SERVER_NAME"];
-    $headers = "From: " . $var_295 . " <" . $fromemail . ">" . $emailLineDelimiter;
-    $headers .= "Reply-To: " . $var_295 . " <" . $fromemail . ">" . $emailLineDelimiter;
-    $headers .= "Return-Path: " . $var_295 . " <" . $fromemail . ">" . $emailLineDelimiter;
-    $headers .= "Message-ID: <" . $var_298 . " thesystem@" . $var_41 . ">" . $emailLineDelimiter;
+    $uniqueEmailId = md5(uniqid(rand(), true) . time());
+    $serverName = $_SERVER["SERVER_NAME"];
+    $headers = "From: " . $emailIsPrepared . " <" . $fromemail . ">" . $emailLineDelimiter;
+    $headers .= "Reply-To: " . $emailIsPrepared . " <" . $fromemail . ">" . $emailLineDelimiter;
+    $headers .= "Return-Path: " . $emailIsPrepared . " <" . $fromemail . ">" . $emailLineDelimiter;
+    $headers .= "Message-ID: <" . $uniqueEmailId . " thesystem@" . $serverName . ">" . $emailLineDelimiter;
     $headers .= "X-Mailer: PHP v" . phpversion() . $emailLineDelimiter;
     $headers .= "MIME-Version: 1.0" . $emailLineDelimiter;
     $headers .= "Content-Transfer-Encoding: 8bit" . $emailLineDelimiter;
@@ -367,24 +367,24 @@ function function_100($to, $subject, $body)
         if (isset($SMTP["smtp"]) && $SMTP["smtp"] == "yes") {
             ini_set("SMTP", $SMTP["smtp_host"]);
             ini_set("smtp_port", $SMTP["smtp_port"]);
-            if ($var_296) {
+            if ($siteNameForEmail) {
                 ini_set("sendmail_from", $SMTP["smtp_from"]);
             }
         }
-        $var_299 = mail($to, $subject, $body, $headers);
+        $emailHeaderEncoded = mail($to, $subject, $body, $headers);
         if (isset($SMTP["smtp"]) && $SMTP["smtp"] == "yes") {
             ini_restore("SMTP");
             ini_restore("smtp_port");
-            if ($var_296) {
+            if ($siteNameForEmail) {
                 ini_restore("sendmail_from");
             }
         }
-        return $var_299;
+        return $emailHeaderEncoded;
     }
-    $var_300 = new Class_5($SMTP);
-    $var_300->function_91($to, trim($subject), trim($body), $fromemail, "", $THEME["charset"], $fromemail, $MAIN["BASEURL"]);
-    $var_301 = $var_300->smtpSendEmail();
-    return $var_301;
+    $emailHandler = new Class_5($SMTP);
+    $emailHandler->function_91($to, trim($subject), trim($body), $fromemail, "", $THEME["charset"], $fromemail, $MAIN["BASEURL"]);
+    $emailSendResult = $emailHandler->smtpSendEmail();
+    return $emailSendResult;
 }
 function showAlertError($Error)
 {
@@ -403,24 +403,24 @@ function sendPrivateMessage($receiver = 0, $msg = "", $subject = "", $sender = 0
 }
 function function_113($userid)
 {
-    $var_335 = [];
+    $userId = [];
     $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT ip FROM iplog WHERE `userid` = '" . $userid . "'");
     if (mysqli_num_rows($query)) {
-        while ($var_336 = mysqli_fetch_assoc($query)) {
-            if ($var_336["ip"]) {
-                $var_335[] = trim($var_336["ip"]);
+        while ($userName = mysqli_fetch_assoc($query)) {
+            if ($userName["ip"]) {
+                $userId[] = trim($userName["ip"]);
             }
         }
     }
-    $var_339 = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT value FROM ipbans WHERE `id` = 1");
-    if (mysqli_num_rows($var_339)) {
-        $Result = mysqli_fetch_assoc($var_339);
+    $userStatus = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT value FROM ipbans WHERE `id` = 1");
+    if (mysqli_num_rows($userStatus)) {
+        $Result = mysqli_fetch_assoc($userStatus);
         $value = trim($Result["value"]);
         $value = explode(" ", $value);
-        if (count($var_335)) {
-            foreach ($var_335 as $var_340) {
-                if (in_array($var_340, $value)) {
-                    $key = array_search($var_340, $value);
+        if (count($userId)) {
+            foreach ($userId as $userData) {
+                if (in_array($userData, $value)) {
+                    $key = array_search($userData, $value);
                     unset($value[$key]);
                 }
             }

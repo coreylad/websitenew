@@ -111,13 +111,13 @@ function showAlertError($Error)
 }
 function generateSecret($length = 20)
 {
-    $var_308 = ["a", "A", "b", "B", "c", "C", "d", "D", "e", "E", "f", "F", "g", "G", "h", "H", "i", "I", "j", "J", "k", "K", "l", "L", "m", "M", "n", "N", "o", "O", "p", "P", "q", "Q", "r", "R", "s", "S", "t", "T", "u", "U", "v", "V", "w", "W", "x", "X", "y", "Y", "z", "Z", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
-    $var_309 = "";
+    $characters = ["a", "A", "b", "B", "c", "C", "d", "D", "e", "E", "f", "F", "g", "G", "h", "H", "i", "I", "j", "J", "k", "K", "l", "L", "m", "M", "n", "N", "o", "O", "p", "P", "q", "Q", "r", "R", "s", "S", "t", "T", "u", "U", "v", "V", "w", "W", "x", "X", "y", "Y", "z", "Z", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
+    $secretString = "";
     for ($i = 1; $i <= $length; $i++) {
-        $ch = rand(0, count($var_308) - 1);
-        $var_309 .= $var_308[$ch];
+        $ch = rand(0, count($characters) - 1);
+        $secretString .= $characters[$ch];
     }
-    return $var_309;
+    return $secretString;
 }
 function logStaffAction($log)
 {

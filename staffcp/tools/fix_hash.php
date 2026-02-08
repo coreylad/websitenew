@@ -125,58 +125,58 @@ class Class_7
     }
     public function getFileList()
     {
-        $var_477 = [];
-        $var_478 = $this->info->getDictionaryValue("length");
-        if ($var_478) {
+        $hashOld = [];
+        $hashNew = $this->info->getDictionaryValue("length");
+        if ($hashNew) {
             $file = new Class_8();
             $file->$name = $this->info->getDictionaryValue("name")->getValue();
             $file->$length = $this->info->getDictionaryValue("length")->getValue();
-            array_push($var_477, $file);
+            array_push($hashOld, $file);
         } else {
             if ($this->info->getDictionaryValue("files")) {
-                $var_479 = $this->info->getDictionaryValue("files")->getValue();
-                while (list($key, $value) = each($var_479)) {
+                $hashEncoded = $this->info->getDictionaryValue("files")->getValue();
+                while (list($key, $value) = each($hashEncoded)) {
                     $file = new Class_8();
-                    $var_480 = $value->getDictionaryValue("path")->getValue();
-                    while (list($key, $var_481) = each($var_480)) {
-                        $file->name .= "/" . $var_481->getValue();
+                    $infoHash = $value->getDictionaryValue("path")->getValue();
+                    while (list($key, $peerId) = each($infoHash)) {
+                        $file->name .= "/" . $peerId->getValue();
                     }
                     $file->$name = ltrim($file->name, "/");
                     $file->$length = $value->getDictionaryValue("length")->getValue();
-                    array_push($var_477, $file);
+                    array_push($hashOld, $file);
                 }
             }
         }
-        return $var_477;
+        return $hashOld;
     }
     public function getTrackerList()
     {
-        $var_482 = [];
+        $peerIp = [];
         if ($this->torrent->getDictionaryValue("announce-list")) {
-            $var_483 = $this->torrent->getDictionaryValue("announce-list")->getValue();
-            while (list($key, $value) = each($var_483)) {
+            $peerPort = $this->torrent->getDictionaryValue("announce-list")->getValue();
+            while (list($key, $value) = each($peerPort)) {
                 if (is_array($value->getValue())) {
-                    while (list($key, $var_481) = each($value)) {
-                        while (list($key, $var_484) = each($var_481)) {
-                            array_push($var_482, $var_484->getValue());
+                    while (list($key, $peerId) = each($value)) {
+                        while (list($key, $peerUploaded) = each($peerId)) {
+                            array_push($peerIp, $peerUploaded->getValue());
                         }
                     }
                 } else {
-                    array_push($var_482, $value->getValue());
+                    array_push($peerIp, $value->getValue());
                 }
             }
         } else {
             if ($this->torrent->getDictionaryValue("announce")) {
-                array_push($var_482, $this->torrent->getDictionaryValue("announce")->getValue());
+                array_push($peerIp, $this->torrent->getDictionaryValue("announce")->getValue());
             }
         }
-        return $var_482;
+        return $peerIp;
     }
     public function addTracker($tracker_url)
     {
-        $var_483 = $this->getTrackerList();
-        $var_483[] = $tracker_url;
-        $this->setTrackerList($var_483);
+        $peerPort = $this->getTrackerList();
+        $peerPort[] = $tracker_url;
+        $this->setTrackerList($peerPort);
     }
     public function removeTorrentKey($Whatever)
     {
@@ -192,14 +192,14 @@ class Class_7
             $this->torrent->setDictionaryValue("announce", $string);
         }
         if (1 < count($trackerlist)) {
-            $var_8 = new Class_10();
+            $formattedListHtml = new Class_10();
             while (list($key, $value) = each($trackerlist)) {
-                $var_485 = new Class_10();
+                $peerDownloaded = new Class_10();
                 $string = new Class_9($value);
-                $var_485->appendToList($string);
-                $var_8->appendToList($var_485);
+                $peerDownloaded->appendToList($string);
+                $formattedListHtml->appendToList($peerDownloaded);
             }
-            $this->torrent->setDictionaryValue("announce-list", $var_8);
+            $this->torrent->setDictionaryValue("announce-list", $formattedListHtml);
         }
     }
     public function setFileList($filelist)
@@ -211,15 +211,15 @@ class Class_7
             $this->info->setDictionaryValue("name", $string);
         } else {
             if ($this->info->getDictionaryValue("files")) {
-                $var_479 = $this->info->getDictionaryValue("files")->getValue();
-                for ($i = 0; $i < count($var_479); $i++) {
-                    $var_486 = split("/", $filelist[$i]);
-                    $var_480 = new Class_10();
-                    foreach ($var_486 as $var_487) {
-                        $string = new Class_9($var_487);
-                        $var_480->appendToList($string);
+                $hashEncoded = $this->info->getDictionaryValue("files")->getValue();
+                for ($i = 0; $i < count($hashEncoded); $i++) {
+                    $peerLeft = split("/", $filelist[$i]);
+                    $infoHash = new Class_10();
+                    foreach ($peerLeft as $peerEvent) {
+                        $string = new Class_9($peerEvent);
+                        $infoHash->appendToList($string);
                     }
-                    $var_479[$i]->setDictionaryValue("path", $var_480);
+                    $hashEncoded[$i]->setDictionaryValue("path", $infoHash);
                 }
             }
         }
@@ -279,8 +279,8 @@ class Class_7
             if ($key) {
                 $key->setValue($value);
             } else {
-                $var_488 = new Class_11($value);
-                $this->torrent->setDictionaryValue($type, $var_488);
+                $peerAgent = new Class_11($value);
+                $this->torrent->setDictionaryValue($type, $peerAgent);
             }
         }
     }
@@ -289,8 +289,8 @@ class Class_7
         if ($value == -1) {
             $this->info->deleteDictionaryKey("private");
         } else {
-            $var_488 = new Class_11($value);
-            $this->info->setDictionaryValue("private", $var_488);
+            $peerAgent = new Class_11($value);
+            $this->info->setDictionaryValue("private", $peerAgent);
         }
     }
     public function getRawBencodeData()
@@ -317,42 +317,42 @@ class BencodeDecoder
         $currentChar = $raw[$offset];
         switch ($currentChar) {
             case "i":
-                $var_488 = new Class_11();
-                $var_488->decodeBencode($raw, $offset);
-                return $var_488;
+                $peerAgent = new Class_11();
+                $peerAgent->decodeBencode($raw, $offset);
+                return $peerAgent;
                 break;
             case "d":
-                $var_489 = new Class_13();
-                if ($check = $var_489->decodeBencode($raw, $offset)) {
+                $peerKey = new Class_13();
+                if ($check = $peerKey->decodeBencode($raw, $offset)) {
                     return $check;
                 }
-                return $var_489;
+                return $peerKey;
                 break;
             case "l":
-                $var_8 = new Class_10();
-                $var_8->decodeBencode($raw, $offset);
-                return $var_8;
+                $formattedListHtml = new Class_10();
+                $formattedListHtml->decodeBencode($raw, $offset);
+                return $formattedListHtml;
                 break;
             case "e":
-                $var_490 = new Class_14();
-                return $var_490;
+                $peerConnectable = new Class_14();
+                return $peerConnectable;
                 break;
             case "0":
             case is_numeric($currentChar):
-                $var_309 = new Class_9();
-                $var_309->decodeBencode($raw, $offset);
-                return $var_309;
+                $secretString = new Class_9();
+                $secretString->decodeBencode($raw, $offset);
+                return $secretString;
                 break;
             default:
-                $var_491 = strpos($raw, ":", $offset) - $offset;
-                if ($var_491 < 0 || 20 < $var_491) {
+                $peerSeeder = strpos($raw, ":", $offset) - $offset;
+                if ($peerSeeder < 0 || 20 < $peerSeeder) {
                     return NULL;
                 }
-                $len = (int) substr($raw, $offset, $var_491);
-                $offset += $var_491 + 1;
-                $var_309 = substr($raw, $offset, $len);
+                $len = (int) substr($raw, $offset, $peerSeeder);
+                $offset += $peerSeeder + 1;
+                $secretString = substr($raw, $offset, $len);
                 $offset += $len;
-                return (string) $var_309;
+                return (string) $secretString;
         }
     }
 }
@@ -415,7 +415,7 @@ class Class_13
     public $value = [];
     public function decodeBencode(&$raw, &$offset)
     {
-        $var_492 = [];
+        $peerStarted = [];
         while (true) {
             $offset++;
             $name = BencodeDecoder::decodeBencode($raw, $offset);
@@ -431,10 +431,10 @@ class Class_13
                 if ($value->getBencodeEnd() == "error") {
                     return $value;
                 }
-                $var_492[$name->getValue()] = $value;
+                $peerStarted[$name->getValue()] = $value;
             }
         }
-        $this->$value = $var_492;
+        $this->$value = $peerStarted;
     }
     public function getDictionaryValue($key)
     {
@@ -446,15 +446,15 @@ class Class_13
     public function encodeToBencode()
     {
         $this->sortKeys();
-        $var_493 = "d";
+        $torrentData = "d";
         while (list($key, $value) = each($this->value)) {
-            $var_494 = new Class_9();
-            $var_494->setValue($key);
-            $var_493 .= $var_494->encodeToBencode();
-            $var_493 .= $value->encodeToBencode();
+            $peerData = new Class_9();
+            $peerData->setValue($key);
+            $torrentData .= $peerData->encodeToBencode();
+            $torrentData .= $value->encodeToBencode();
         }
-        $var_493 .= "e";
-        return $var_493;
+        $torrentData .= "e";
+        return $torrentData;
     }
     public function getBencodeEnd()
     {
@@ -486,7 +486,7 @@ class Class_10
     }
     public function decodeBencode(&$raw, &$offset)
     {
-        $var_8 = [];
+        $formattedListHtml = [];
         while (true) {
             $offset++;
             $value = BencodeDecoder::decodeBencode($raw, $offset);
@@ -494,19 +494,19 @@ class Class_10
                 if ($value->getBencodeEnd() == "error") {
                     return $value;
                 }
-                array_push($var_8, $value);
+                array_push($formattedListHtml, $value);
             }
         }
-        $this->$value = $var_8;
+        $this->$value = $formattedListHtml;
     }
     public function encodeToBencode()
     {
-        $var_493 = "l";
+        $torrentData = "l";
         for ($i = 0; $i < count($this->value); $i++) {
-            $var_493 .= $this->value[$i]->encodeToBencode();
+            $torrentData .= $this->value[$i]->encodeToBencode();
         }
-        $var_493 .= "e";
-        return $var_493;
+        $torrentData .= "e";
+        return $torrentData;
     }
     public function getValue()
     {

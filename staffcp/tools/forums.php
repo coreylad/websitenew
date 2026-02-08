@@ -282,16 +282,16 @@ if ($Act == "edit_forum" && ($fid = intval($_GET["fid"])) || $Act == "new_forum"
         $password = isset($_POST["password"]) ? trim($_POST["password"]) : "";
         if ($Act == "edit_forum") {
             mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE " . TSF_PREFIX . "forums SET $type = '" . $type . "', $name = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $name) . "', $description = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $description) . "', $image = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $image) . "', $moderate = " . $moderate . ", $disporder = " . $disporder . ", $pid = " . $pid . ", $password = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $password) . "' WHERE $fid = " . $fid);
-            $parentlist = var_452($fid);
+            $parentlist = getForumData($fid);
             mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE " . TSF_PREFIX . "forums SET $parentlist = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $parentlist) . "' WHERE $fid = " . $fid);
             $Message = str_replace(["{1}", "{2}"], [$name . " (" . $fid . ")", $_SESSION["ADMIN_USERNAME"]], $Language[34]);
         } else {
             mysqli_query($GLOBALS["DatabaseConnect"], "INSERT INTO " . TSF_PREFIX . "forums (type, name, description, image, moderate, disporder, pid, password) VALUES('" . $type . "', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $name) . "', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $description) . "', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $image) . "', " . $moderate . ",  " . $disporder . ", " . $pid . ", '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $password) . "')");
             $fid = mysqli_insert_id($GLOBALS["DatabaseConnect"]);
-            $parentlist = var_452($fid);
+            $parentlist = getForumData($fid);
             mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE " . TSF_PREFIX . "forums SET $parentlist = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $parentlist) . "' WHERE $fid = " . $fid);
             if ($pid) {
-                $parentlist = var_452($pid);
+                $parentlist = getForumData($pid);
                 mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE " . TSF_PREFIX . "forums SET $parentlist = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $parentlist) . "' WHERE $fid = " . $pid);
             }
             $Message = $Language[37];
@@ -466,26 +466,26 @@ function function_149($file)
 function function_160($fid, $navsep = ",")
 {
     $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT name,fid,pid FROM " . TSF_PREFIX . "forums ORDER BY disporder, pid");
-    $var_453 = [];
-    while ($var_454 = mysqli_fetch_assoc($query)) {
-        $var_453[$var_454["fid"]][$var_454["pid"]] = $var_454;
+    $forumId = [];
+    while ($forumName = mysqli_fetch_assoc($query)) {
+        $forumId[$forumName["fid"]][$forumName["pid"]] = $forumName;
     }
-    reset($var_453);
-    reset($var_453[$fid]);
-    foreach ($var_453[$fid] as $key => $var_454) {
-        if ($fid == $var_454["fid"]) {
-            if (isset($var_453[$var_454["pid"]])) {
-                $var_455 = var_452($var_454["pid"], $navsep) . (isset($var_455) ? $var_455 : "");
+    reset($forumId);
+    reset($forumId[$fid]);
+    foreach ($forumId[$fid] as $key => $forumName) {
+        if ($fid == $forumName["fid"]) {
+            if (isset($forumId[$forumName["pid"]])) {
+                $forumData = getForumData($forumName["pid"], $navsep) . (isset($forumData) ? $forumData : "");
             }
-            if (isset($var_455)) {
-                $var_455 .= $navsep;
-                $var_455 .= $var_454["fid"];
+            if (isset($forumData)) {
+                $forumData .= $navsep;
+                $forumData .= $forumName["fid"];
             } else {
-                $var_455 = $var_454["fid"];
+                $forumData = $forumName["fid"];
             }
         }
     }
-    return $var_455;
+    return $forumData;
 }
 function formatBytes($bytes = 0)
 {

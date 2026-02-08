@@ -248,14 +248,14 @@ function formatTimestamp($timestamp = "")
 function function_89($stamp = "")
 {
     global $Language;
-    $var_270 = 31536000;
+    $dateFrom = 31536000;
     $mosecs = 2678400;
     $wsecs = 604800;
     $dsecs = 86400;
     $hsecs = 3600;
     $msecs = 60;
-    $var_276 = floor($stamp / $var_270);
-    $stamp %= $var_270;
+    $timeDiff = floor($stamp / $dateFrom);
+    $stamp %= $dateFrom;
     $months = floor($stamp / $mosecs);
     $stamp %= $mosecs;
     $weeks = floor($stamp / $wsecs);
@@ -266,62 +266,62 @@ function function_89($stamp = "")
     $stamp %= $hsecs;
     $minutes = floor($stamp / $msecs);
     $stamp %= $msecs;
-    $var_269 = $stamp;
-    if ($var_276 == 1) {
-        $var_280["years"] = "<b>1</b> " . $Language[28];
+    $timePeriod = $stamp;
+    if ($timeDiff == 1) {
+        $timePeriodDisplay["years"] = "<b>1</b> " . $Language[28];
     } else {
-        if (1 < $var_276) {
-            $var_280["years"] = "<b>" . $var_276 . "</b> " . $Language[29];
+        if (1 < $timeDiff) {
+            $timePeriodDisplay["years"] = "<b>" . $timeDiff . "</b> " . $Language[29];
         }
     }
     if ($months == 1) {
-        $var_280["months"] = "<b>1</b> " . $Language[30];
+        $timePeriodDisplay["months"] = "<b>1</b> " . $Language[30];
     } else {
         if (1 < $months) {
-            $var_280["months"] = "<b>" . $months . "</b> " . $Language[31];
+            $timePeriodDisplay["months"] = "<b>" . $months . "</b> " . $Language[31];
         }
     }
     if ($weeks == 1) {
-        $var_280["weeks"] = "<b>1</b> " . $Language[32];
+        $timePeriodDisplay["weeks"] = "<b>1</b> " . $Language[32];
     } else {
         if (1 < $weeks) {
-            $var_280["weeks"] = "<b>" . $weeks . "</b> " . $Language[33];
+            $timePeriodDisplay["weeks"] = "<b>" . $weeks . "</b> " . $Language[33];
         }
     }
     if ($days == 1) {
-        $var_280["days"] = "<b>1</b> " . $Language[34];
+        $timePeriodDisplay["days"] = "<b>1</b> " . $Language[34];
     } else {
         if (1 < $days) {
-            $var_280["days"] = "<b>" . $days . "</b> " . $Language[35];
+            $timePeriodDisplay["days"] = "<b>" . $days . "</b> " . $Language[35];
         }
     }
     if ($hours == 1) {
-        $var_280["hours"] = "<b>1</b> " . $Language[36];
+        $timePeriodDisplay["hours"] = "<b>1</b> " . $Language[36];
     } else {
         if (1 < $hours) {
-            $var_280["hours"] = "<b>" . $hours . "</b> " . $Language[37];
+            $timePeriodDisplay["hours"] = "<b>" . $hours . "</b> " . $Language[37];
         }
     }
     if ($minutes == 1) {
-        $var_280["minutes"] = "<b>1</b> " . $Language[38];
+        $timePeriodDisplay["minutes"] = "<b>1</b> " . $Language[38];
     } else {
         if (1 < $minutes) {
-            $var_280["minutes"] = "<b>" . $minutes . "</b> " . $Language[39];
+            $timePeriodDisplay["minutes"] = "<b>" . $minutes . "</b> " . $Language[39];
         }
     }
-    if ($var_269 == 1) {
-        $var_280["seconds"] = "<b>1</b> " . $Language[40];
+    if ($timePeriod == 1) {
+        $timePeriodDisplay["seconds"] = "<b>1</b> " . $Language[40];
     } else {
-        if (1 < $var_269) {
-            $var_280["seconds"] = "<b>" . $var_269 . "</b> " . $Language[41];
+        if (1 < $timePeriod) {
+            $timePeriodDisplay["seconds"] = "<b>" . $timePeriod . "</b> " . $Language[41];
         }
     }
-    if (isset($var_280) && is_array($var_280)) {
-        $var_528 = implode(", ", $var_280);
+    if (isset($timePeriodDisplay) && is_array($timePeriodDisplay)) {
+        $cronTask = implode(", ", $timePeriodDisplay);
     } else {
-        $var_528 = "0 " . $Language[40];
+        $cronTask = "0 " . $Language[40];
     }
-    return "<small\">" . $var_528 . "</small>";
+    return "<small\">" . $cronTask . "</small>";
 }
 function showAlertMessage($message = "")
 {
@@ -329,14 +329,14 @@ function showAlertMessage($message = "")
 }
 function function_326($stamp)
 {
-    $var_270 = 31536000;
+    $dateFrom = 31536000;
     $mosecs = 2678400;
     $wsecs = 604800;
     $dsecs = 86400;
     $hsecs = 3600;
     $msecs = 60;
-    $var_276 = floor($stamp / $var_270);
-    $stamp %= $var_270;
+    $timeDiff = floor($stamp / $dateFrom);
+    $stamp %= $dateFrom;
     $months = floor($stamp / $mosecs);
     $stamp %= $mosecs;
     $weeks = floor($stamp / $wsecs);
@@ -347,8 +347,8 @@ function function_326($stamp)
     $stamp %= $hsecs;
     $minutes = floor($stamp / $msecs);
     $stamp %= $msecs;
-    $var_269 = $stamp;
-    return ["years" => $var_276, "months" => $months, "weeks" => $weeks, "days" => $days, "hours" => $hours, "minutes" => $minutes];
+    $timePeriod = $stamp;
+    return ["years" => $timeDiff, "months" => $months, "weeks" => $weeks, "days" => $days, "hours" => $hours, "minutes" => $minutes];
 }
 function function_318($expression, $returntrue, $returnfalse = "")
 {

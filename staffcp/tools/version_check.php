@@ -68,12 +68,12 @@ function function_269()
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_USERAGENT, "TSSE via cURL/PHP");
         curl_setopt($ch, CURLOPT_HEADER, 0);
-        $var_20 = curl_exec($ch);
-        define("LATEST_VERSION", $var_20);
+        $actionParam = curl_exec($ch);
+        define("LATEST_VERSION", $actionParam);
         curl_close($ch);
     } else {
-        $var_20 = @file("http://www.templateshares.info/versioncheck/version.txt");
-        define("LATEST_VERSION", $var_20[0]);
+        $actionParam = @file("http://www.templateshares.info/versioncheck/version.txt");
+        define("LATEST_VERSION", $actionParam[0]);
     }
 }
 

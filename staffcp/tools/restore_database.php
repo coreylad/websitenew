@@ -140,21 +140,21 @@ function formatBytes($bytes = 0)
 // DEAD CODE: function_319() is never called. Appears to generate a backup filename with timestamp.
 function function_319()
 {
-    $var_567 = "admin/backup";
-    $var_622 = getdate();
-    $var_623 = $var_622["mday"];
-    if ($var_623 < 10) {
-        $var_623 = "0" . $var_623;
+    $dbHost = "admin/backup";
+    $backupFile = getdate();
+    $sqlContent = $backupFile["mday"];
+    if ($sqlContent < 10) {
+        $sqlContent = "0" . $sqlContent;
     }
-    $var_624 = $var_622["mon"];
-    if ($var_624 < 10) {
-        $var_624 = "0" . $var_624;
+    $sqlLines = $backupFile["mon"];
+    if ($sqlLines < 10) {
+        $sqlLines = "0" . $sqlLines;
     }
-    $var_625 = $var_622["year"];
-    $var_626 = $var_622["hours"];
-    $min = $var_622["minutes"];
-    $var_627 = "00";
-    system(sprintf("mysqldump --opt -h %s -u %s -p%s %s | gzip > %s/%s/%s__%s-%s-%s-%s:%s.gz", MYSQL_HOST, MYSQL_USER, MYSQL_PASS, MYSQL_DB, getenv("DOCUMENT_ROOT"), $var_567, MYSQL_DB, $var_625, $var_624, $var_623, $var_626, $min));
+    $sqlQuery = $backupFile["year"];
+    $restored = $backupFile["hours"];
+    $min = $backupFile["minutes"];
+    $restoreError = "00";
+    system(sprintf("mysqldump --opt -h %s -u %s -p%s %s | gzip > %s/%s/%s__%s-%s-%s-%s:%s.gz", MYSQL_HOST, MYSQL_USER, MYSQL_PASS, MYSQL_DB, getenv("DOCUMENT_ROOT"), $dbHost, MYSQL_DB, $sqlQuery, $sqlLines, $sqlContent, $restored, $min));
 }
 
 ?>

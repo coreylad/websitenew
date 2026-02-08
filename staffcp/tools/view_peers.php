@@ -148,9 +148,9 @@ function buildPaginationLinks($perpage, $results, $address)
     $pagenumber = isset($_GET["page"]) ? intval($_GET["page"]) : (isset($_POST["page"]) ? intval($_POST["page"]) : "");
     validatePerPage($results, $pagenumber, $perpage, 200);
     $limitOffset = ($pagenumber - 1) * $perpage;
-    $var_244 = $pagenumber * $perpage;
-    if ($results < $var_244) {
-        $var_244 = $results;
+    $paginationOffset = $pagenumber * $perpage;
+    if ($results < $paginationOffset) {
+        $paginationOffset = $results;
         if ($results < $limitOffset) {
             $limitOffset = $results - $perpage - 1;
         }
@@ -158,7 +158,7 @@ function buildPaginationLinks($perpage, $results, $address)
     if ($limitOffset < 0) {
         $limitOffset = 0;
     }
-    $paginationLinks = $var_246 = $var_247 = $var_248 = $var_249 = "";
+    $paginationLinks = $prevPage = $nextPage = $pageLinks = $paginationHtml = "";
     $currentPage = 0;
     if ($results <= $perpage) {
         $paginationHtml["pagenav"] = false;
@@ -182,12 +182,12 @@ function buildPaginationLinks($perpage, $results, $address)
     }
     $pageRangeThreshold = "3";
     if (!isset($paginationSkipLinksArray) || !is_array($paginationSkipLinksArray)) {
-        $var_258 = "10 50 100 500 1000";
-        $paginationSkipLinksArray[] = preg_split("#\\s+#s", $var_258, -1, PREG_SPLIT_NO_EMPTY);
+        $paginationOptions = "10 50 100 500 1000";
+        $paginationSkipLinksArray[] = preg_split("#\\s+#s", $paginationOptions, -1, PREG_SPLIT_NO_EMPTY);
         while ($currentPage++ < $queryResult) {
         }
-        $var_259 = isset($previousPage) && $previousPage != 1 ? "page=" . $previousPage : "";
-        $paginationLinks = "\r\n\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTableNoBorder\">\r\n\t\t<tr>\r\n\t\t\t<td $style = \"padding: 0px 0px 1px 0px;\">\r\n\t\t\t\t<div $style = \"float: left;\" $id = \"navcontainer_f\">\r\n\t\t\t\t\t<ul>\r\n\t\t\t\t\t\t<li>" . $pagenumber . " - " . $queryResult . "</li>\r\n\t\t\t\t\t\t" . ($paginationHtml["first"] ? "<li><a class=\"smalltext\" $href = \"" . $address . "\" $title = \"First Page - Show Results " . $firstPageInfo["first"] . " to " . $firstPageInfo["last"] . " of " . $total . "\">&laquo; First</a></li>" : "") . ($paginationHtml["prev"] ? "<li><a class=\"smalltext\" $href = \"" . $address . $var_259 . "\" $title = \"Previous Page - Show Results " . $previousPageInfo["first"] . " to " . $previousPageInfo["last"] . " of " . $total . "\">&lt;</a></li>" : "") . "\r\n\t\t\t\t\t\t" . $paginationLinks . "\r\n\t\t\t\t\t\t" . ($paginationHtml["next"] ? "<li><a class=\"smalltext\" $href = \"" . $address . "page=" . $nextPageNumber . "\" $title = \"Next Page - Show Results " . $nextPageInfo["first"] . " to " . $nextPageInfo["last"] . " of " . $total . "\">&gt;</a></li>" : "") . ($paginationHtml["last"] ? "<li><a class=\"smalltext\" $href = \"" . $address . "page=" . $queryResult . "\" $title = \"Last Page - Show Results " . $lastPageInfo["first"] . " to " . $lastPageInfo["last"] . " of " . $total . "\">Last <strong>&raquo;</strong></a></li>" : "") . "\r\n\t\t\t\t\t</ul>\r\n\t\t\t\t</div>\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t</table>";
+        $previousPageQuery = isset($previousPage) && $previousPage != 1 ? "page=" . $previousPage : "";
+        $paginationLinks = "\r\n\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTableNoBorder\">\r\n\t\t<tr>\r\n\t\t\t<td $style = \"padding: 0px 0px 1px 0px;\">\r\n\t\t\t\t<div $style = \"float: left;\" $id = \"navcontainer_f\">\r\n\t\t\t\t\t<ul>\r\n\t\t\t\t\t\t<li>" . $pagenumber . " - " . $queryResult . "</li>\r\n\t\t\t\t\t\t" . ($paginationHtml["first"] ? "<li><a class=\"smalltext\" $href = \"" . $address . "\" $title = \"First Page - Show Results " . $firstPageInfo["first"] . " to " . $firstPageInfo["last"] . " of " . $total . "\">&laquo; First</a></li>" : "") . ($paginationHtml["prev"] ? "<li><a class=\"smalltext\" $href = \"" . $address . $previousPageQuery . "\" $title = \"Previous Page - Show Results " . $previousPageInfo["first"] . " to " . $previousPageInfo["last"] . " of " . $total . "\">&lt;</a></li>" : "") . "\r\n\t\t\t\t\t\t" . $paginationLinks . "\r\n\t\t\t\t\t\t" . ($paginationHtml["next"] ? "<li><a class=\"smalltext\" $href = \"" . $address . "page=" . $nextPageNumber . "\" $title = \"Next Page - Show Results " . $nextPageInfo["first"] . " to " . $nextPageInfo["last"] . " of " . $total . "\">&gt;</a></li>" : "") . ($paginationHtml["last"] ? "<li><a class=\"smalltext\" $href = \"" . $address . "page=" . $queryResult . "\" $title = \"Last Page - Show Results " . $lastPageInfo["first"] . " to " . $lastPageInfo["last"] . " of " . $total . "\">Last <strong>&raquo;</strong></a></li>" : "") . "\r\n\t\t\t\t\t</ul>\r\n\t\t\t\t</div>\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t</table>";
         return [$paginationLinks, "LIMIT " . $limitOffset . ", " . $perpage];
     }
     if ($pageRangeThreshold <= abs($currentPage - $pagenumber) && $pageRangeThreshold != 0) {
@@ -249,76 +249,76 @@ function applyUsernameStyle($username, $namestyle)
 function function_89($stamp = "")
 {
     global $Language;
-    $var_270 = 31536000;
-    $var_271 = 2678400;
-    $var_272 = 604800;
-    $var_273 = 86400;
-    $var_274 = 3600;
-    $var_275 = 60;
-    $var_276 = floor($stamp / $var_270);
-    $stamp %= $var_270;
-    $var_277 = floor($stamp / $var_271);
-    $stamp %= $var_271;
-    $var_278 = floor($stamp / $var_272);
-    $stamp %= $var_272;
-    $var_279 = floor($stamp / $var_273);
-    $stamp %= $var_273;
-    $var_267 = floor($stamp / $var_274);
-    $stamp %= $var_274;
-    $var_268 = floor($stamp / $var_275);
-    $stamp %= $var_275;
-    $var_269 = $stamp;
-    if ($var_276 == 1) {
-        $var_280["years"] = "<b>1</b> " . $Language[24];
+    $dateFrom = 31536000;
+    $dateTo = 2678400;
+    $dateFormatted = 604800;
+    $timeStamp = 86400;
+    $duration = 3600;
+    $durationFormatted = 60;
+    $timeDiff = floor($stamp / $dateFrom);
+    $stamp %= $dateFrom;
+    $timeString = floor($stamp / $dateTo);
+    $stamp %= $dateTo;
+    $timeDisplay = floor($stamp / $dateFormatted);
+    $stamp %= $dateFormatted;
+    $periodDisplay = floor($stamp / $timeStamp);
+    $stamp %= $timeStamp;
+    $endTime = floor($stamp / $duration);
+    $stamp %= $duration;
+    $timeRange = floor($stamp / $durationFormatted);
+    $stamp %= $durationFormatted;
+    $timePeriod = $stamp;
+    if ($timeDiff == 1) {
+        $timePeriodDisplay["years"] = "<b>1</b> " . $Language[24];
     } else {
-        if (1 < $var_276) {
-            $var_280["years"] = "<b>" . $var_276 . "</b> " . $Language[25];
+        if (1 < $timeDiff) {
+            $timePeriodDisplay["years"] = "<b>" . $timeDiff . "</b> " . $Language[25];
         }
     }
-    if ($var_277 == 1) {
-        $var_280["months"] = "<b>1</b> " . $Language[26];
+    if ($timeString == 1) {
+        $timePeriodDisplay["months"] = "<b>1</b> " . $Language[26];
     } else {
-        if (1 < $var_277) {
-            $var_280["months"] = "<b>" . $var_277 . "</b> " . $Language[27];
+        if (1 < $timeString) {
+            $timePeriodDisplay["months"] = "<b>" . $timeString . "</b> " . $Language[27];
         }
     }
-    if ($var_278 == 1) {
-        $var_280["weeks"] = "<b>1</b> " . $Language[28];
+    if ($timeDisplay == 1) {
+        $timePeriodDisplay["weeks"] = "<b>1</b> " . $Language[28];
     } else {
-        if (1 < $var_278) {
-            $var_280["weeks"] = "<b>" . $var_278 . "</b> " . $Language[29];
+        if (1 < $timeDisplay) {
+            $timePeriodDisplay["weeks"] = "<b>" . $timeDisplay . "</b> " . $Language[29];
         }
     }
-    if ($var_279 == 1) {
-        $var_280["days"] = "<b>1</b> " . $Language[30];
+    if ($periodDisplay == 1) {
+        $timePeriodDisplay["days"] = "<b>1</b> " . $Language[30];
     } else {
-        if (1 < $var_279) {
-            $var_280["days"] = "<b>" . $var_279 . "</b> " . $Language[31];
+        if (1 < $periodDisplay) {
+            $timePeriodDisplay["days"] = "<b>" . $periodDisplay . "</b> " . $Language[31];
         }
     }
-    if ($var_267 == 1) {
-        $var_280["hours"] = "<b>1</b> " . $Language[32];
+    if ($endTime == 1) {
+        $timePeriodDisplay["hours"] = "<b>1</b> " . $Language[32];
     } else {
-        if (1 < $var_267) {
-            $var_280["hours"] = "<b>" . $var_267 . "</b> " . $Language[33];
+        if (1 < $endTime) {
+            $timePeriodDisplay["hours"] = "<b>" . $endTime . "</b> " . $Language[33];
         }
     }
-    if ($var_268 == 1) {
-        $var_280["minutes"] = "<b>1</b> " . $Language[34];
+    if ($timeRange == 1) {
+        $timePeriodDisplay["minutes"] = "<b>1</b> " . $Language[34];
     } else {
-        if (1 < $var_268) {
-            $var_280["minutes"] = "<b>" . $var_268 . "</b> " . $Language[35];
+        if (1 < $timeRange) {
+            $timePeriodDisplay["minutes"] = "<b>" . $timeRange . "</b> " . $Language[35];
         }
     }
-    if ($var_269 == 1) {
-        $var_280["seconds"] = "<b>1</b> " . $Language[36];
+    if ($timePeriod == 1) {
+        $timePeriodDisplay["seconds"] = "<b>1</b> " . $Language[36];
     } else {
-        if (1 < $var_269) {
-            $var_280["seconds"] = "<b>" . $var_269 . "</b> " . $Language[37];
+        if (1 < $timePeriod) {
+            $timePeriodDisplay["seconds"] = "<b>" . $timePeriod . "</b> " . $Language[37];
         }
     }
-    if (isset($var_280) && is_array($var_280)) {
-        $total = implode(", ", $var_280);
+    if (isset($timePeriodDisplay) && is_array($timePeriodDisplay)) {
+        $total = implode(", ", $timePeriodDisplay);
     } else {
         $total = "0 " . $Language[36];
     }

@@ -337,10 +337,10 @@ function formatBytes($bytes = 0)
 function identifyUserAgentBot($Data = "")
 {
     global $Language;
-    $var_562 = ["msnbot" => "MSN Bot", "google" => "Google Bot", "yahoo" => "Yahoo! Bot", "alexa" => "AleXa Bot", "sogou" => "Sogou Web Spider", "baiduspider" => "Baidu Spider", "w3c_validator" => "W3C Validator", "mlbot" => "MLBoT", "yandex" => "YanDeX"];
-    foreach ($var_562 as $var_563 => $var_564) {
-        if (preg_match("@" . $var_563 . "@Uis", strtolower($Data))) {
-            return "<b><i><font $color = \"#FF6633\">" . $var_564 . "</font></i></b>";
+    $currentVersion = ["msnbot" => "MSN Bot", "google" => "Google Bot", "yahoo" => "Yahoo! Bot", "alexa" => "AleXa Bot", "sogou" => "Sogou Web Spider", "baiduspider" => "Baidu Spider", "w3c_validator" => "W3C Validator", "mlbot" => "MLBoT", "yandex" => "YanDeX"];
+    foreach ($currentVersion as $latestVersion => $versionCheck) {
+        if (preg_match("@" . $latestVersion . "@Uis", strtolower($Data))) {
+            return "<b><i><font $color = \"#FF6633\">" . $versionCheck . "</font></i></b>";
         }
     }
     return "<b><i><font $color = \"#990066\">" . $Language[10] . "</font></i></b>";

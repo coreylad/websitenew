@@ -69,12 +69,12 @@ if ($Act == "import_theme") {
         if (($Theme = $_FILES["theme"]) && $Theme["name"] && $Theme["tmp_name"] && function_149($Theme["name"]) == "xml" && 0 < $Theme["size"] && $Theme["error"] == "0") {
             if ($Contents = file_get_contents($Theme["tmp_name"])) {
                 @unlink($Theme["tmp_name"]);
-                $name = var_628($Contents, "name");
-                $description = var_628($Contents, "description");
-                $required_version = var_628($Contents, "required_version");
-                $theme_version = var_628($Contents, "theme_version");
-                $author = var_628($Contents, "author");
-                $style = var_628($Contents, "style.css");
+                $name = themeInstall($Contents, "name");
+                $description = themeInstall($Contents, "description");
+                $required_version = themeInstall($Contents, "required_version");
+                $theme_version = themeInstall($Contents, "theme_version");
+                $author = themeInstall($Contents, "author");
+                $style = themeInstall($Contents, "style.css");
                 if ($name && $description && $required_version && $theme_version && $author && $style) {
                     $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM ts_themes WHERE $name = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $name) . "'");
                     if (mysqli_num_rows($query)) {
@@ -360,26 +360,26 @@ function function_149($file)
 // DEAD CODE: function_321() is never called. XML parser function to extract values by tag name.
 function function_321($inXmlset, $needle)
 {
-    $var_629 = "";
-    $var_630 = xml_parser_create();
-    xml_parser_set_option($var_630, XML_OPTION_SKIP_WHITE, 0);
-    xml_parse_into_struct($var_630, $inXmlset, $var_631);
-    xml_parser_free($var_630);
-    for ($i = 0; $i < count($var_631); $i++) {
-        if ($var_631[$i]["tag"] == strtoupper($needle)) {
-            $var_629 = $var_631[$i]["value"];
+    $themeId = "";
+    $themeName = xml_parser_create();
+    xml_parser_set_option($themeName, XML_OPTION_SKIP_WHITE, 0);
+    xml_parse_into_struct($themeName, $inXmlset, $themeDir);
+    xml_parser_free($themeName);
+    for ($i = 0; $i < count($themeDir); $i++) {
+        if ($themeDir[$i]["tag"] == strtoupper($needle)) {
+            $themeId = $themeDir[$i]["value"];
         }
     }
-    return $var_629;
+    return $themeId;
 }
 function function_320()
 {
-    $var_632 = [];
+    $themeActive = [];
     $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM ts_themes ORDER BY isdefault, name");
     while ($T = mysqli_fetch_assoc($query)) {
-        $var_632[] = $T["name"];
+        $themeActive[] = $T["name"];
     }
-    mysqli_query($GLOBALS["DatabaseConnect"], "REPLACE INTO `ts_cache` VALUES ('ts_themes', '" . implode(",", $var_632) . "', " . time() . ")");
+    mysqli_query($GLOBALS["DatabaseConnect"], "REPLACE INTO `ts_cache` VALUES ('ts_themes', '" . implode(",", $themeActive) . "', " . time() . ")");
 }
 
 ?>

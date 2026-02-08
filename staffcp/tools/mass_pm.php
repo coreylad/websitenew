@@ -51,9 +51,9 @@ function loadTinyMCEEditor($type = 1, $mode = "textareas", $elements = "")
     $configQuery = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'MAIN'");
     $configRow = mysqli_fetch_assoc($configQuery);
     $configData = unserialize($configRow["content"]);
-    $var_282 = $configData["pic_base_url"];
-    unset($var_27);
-    define("PIC_BASEURL", $var_282);
+    $formMethod2 = $configData["pic_base_url"];
+    unset($formAction);
+    define("PIC_BASEURL", $formMethod2);
     ob_start();
     include "./../tinymce.php";
     $editorContent = ob_get_contents();

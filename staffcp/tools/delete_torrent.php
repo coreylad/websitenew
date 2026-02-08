@@ -67,37 +67,37 @@ function function_151($id)
     $configQuery = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'MAIN'");
     $configRow = mysqli_fetch_assoc($configQuery);
     $configData = unserialize($configRow["content"]);
-    $var_427 = "../" . $configData["torrent_dir"];
+    $fileHandle = "../" . $configData["torrent_dir"];
     $id = intval($id);
     if (!$id) {
         return NULL;
     }
-    $file = $var_427 . "/" . $id . ".torrent";
+    $file = $fileHandle . "/" . $id . ".torrent";
     if (@file_exists($file)) {
         @unlink($file);
     }
-    $var_428 = ["gif", "jpg", "png"];
-    foreach ($var_428 as $var_361) {
-        if (@file_exists($var_427 . "/images/" . $id . "." . $var_361)) {
-            @unlink($var_427 . "/images/" . $id . "." . $var_361);
+    $fileContent = ["gif", "jpg", "png"];
+    foreach ($fileContent as $smileyFileExt) {
+        if (@file_exists($fileHandle . "/images/" . $id . "." . $smileyFileExt)) {
+            @unlink($fileHandle . "/images/" . $id . "." . $smileyFileExt);
         }
     }
     $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT t_link FROM torrents WHERE `id` = " . $id);
     if (mysqli_num_rows($query)) {
-        $var_20 = mysqli_fetch_assoc($query);
-        $var_429 = $var_20["t_link"];
-        $var_97 = "#https://www.imdb.com/title/(.*)/#U";
-        preg_match($var_97, $var_429, $var_430);
-        $var_430 = $var_430[1];
-        foreach ($var_428 as $var_361) {
-            if (@file_exists($var_427 . "/images/" . $var_430 . "." . $var_361)) {
-                @unlink($var_427 . "/images/" . $var_430 . "." . $var_361);
+        $actionParam = mysqli_fetch_assoc($query);
+        $fileName = $actionParam["t_link"];
+        $resultSet = "#https://www.imdb.com/title/(.*)/#U";
+        preg_match($resultSet, $fileName, $fileSize);
+        $fileSize = $fileSize[1];
+        foreach ($fileContent as $smileyFileExt) {
+            if (@file_exists($fileHandle . "/images/" . $fileSize . "." . $smileyFileExt)) {
+                @unlink($fileHandle . "/images/" . $fileSize . "." . $smileyFileExt);
             }
         }
         for ($i = 0; $i <= 10; $i++) {
-            foreach ($var_428 as $var_361) {
-                if (@file_exists($var_427 . "/images/" . $var_430 . "_photo" . $i . "." . $var_361)) {
-                    @unlink($var_427 . "/images/" . $var_430 . "_photo" . $i . "." . $var_361);
+            foreach ($fileContent as $smileyFileExt) {
+                if (@file_exists($fileHandle . "/images/" . $fileSize . "_photo" . $i . "." . $smileyFileExt)) {
+                    @unlink($fileHandle . "/images/" . $fileSize . "_photo" . $i . "." . $smileyFileExt);
                 }
             }
         }

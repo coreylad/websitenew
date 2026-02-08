@@ -44,7 +44,7 @@ foreach ($Files as $File) {
     if (isset($FileTypes[$Ext])) {
         $Icon = $FileTypes[$Ext];
     }
-    $FileList .= "\r\n\t<tr>\r\n\t\t<td class=\"alt1\">\r\n\t\t\t<img $src = \"images/filetypes/" . $Icon . "\" $alt = \"\" $title = \"\" $border = \"0\" $style = \"vertical-align: middle;\" /> <a $href = \"index.php?do=directory_listing&amp;$f = " . $CurrentDirectory . $File . "\">" . $File . "</a>\r\n\t\t</td>\r\n\t\t<td class=\"alt1\">\r\n\t\t\t" . formatBytes(filesize($CurrentDirectory . $File)) . "\r\n\t\t</td>\r\n\t\t<td class=\"alt1\">\r\n\t\t\t" . formatTimestamp(filemtime($CurrentDirectory . $File)) . "\r\n\t\t</td>\r\n\t\t<td class=\"alt1\">\r\n\t\t\t" . var_425($CurrentDirectory . $File) . "\r\n\t\t</td>\r\n\t</tr>";
+    $FileList .= "\r\n\t<tr>\r\n\t\t<td class=\"alt1\">\r\n\t\t\t<img $src = \"images/filetypes/" . $Icon . "\" $alt = \"\" $title = \"\" $border = \"0\" $style = \"vertical-align: middle;\" /> <a $href = \"index.php?do=directory_listing&amp;$f = " . $CurrentDirectory . $File . "\">" . $File . "</a>\r\n\t\t</td>\r\n\t\t<td class=\"alt1\">\r\n\t\t\t" . formatBytes(filesize($CurrentDirectory . $File)) . "\r\n\t\t</td>\r\n\t\t<td class=\"alt1\">\r\n\t\t\t" . formatTimestamp(filemtime($CurrentDirectory . $File)) . "\r\n\t\t</td>\r\n\t\t<td class=\"alt1\">\r\n\t\t\t" . generateToken($CurrentDirectory . $File) . "\r\n\t\t</td>\r\n\t</tr>";
 }
 echo "\t\t\t\r\n" . $Message . "\r\n<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t<tr>\r\n\t\t<td class=\"tcat\" $colspan = \"4\" $align = \"center\">\r\n\t\t\t<span $style = \"float: right;\"><small>" . $CurrentDirectory . "</small></span>\r\n\t\t\t" . $Language[1] . "\r\n\t\t</td>\r\n\t</tr>\r\n\t<tr>\r\n\t\t<td class=\"alt2\">\r\n\t\t\t" . $Language[2] . "\r\n\t\t</td>\r\n\t\t<td class=\"alt2\">\r\n\t\t\t" . $Language[3] . "\r\n\t\t</td>\r\n\t\t<td class=\"alt2\">\r\n\t\t\t" . $Language[4] . "\r\n\t\t</td>\r\n\t\t<td class=\"alt2\">\r\n\t\t\t" . $Language[5] . "\r\n\t\t</td>\r\n\t</tr>\r\n\t" . $FileList . "\r\n</table>\r\n";
 function getStaffLanguage()
@@ -108,26 +108,26 @@ function function_149($file = "")
 }
 function function_150($file)
 {
-    $var_426 = fileperms($file);
-    if (($var_426 & 49152) == 49152) {
+    $filePermissions = fileperms($file);
+    if (($filePermissions & 49152) == 49152) {
         $info = "s";
     } else {
-        if (($var_426 & 40960) == 40960) {
+        if (($filePermissions & 40960) == 40960) {
             $info = "l";
         } else {
-            if (($var_426 & 32768) == 32768) {
+            if (($filePermissions & 32768) == 32768) {
                 $info = "-";
             } else {
-                if (($var_426 & 24576) == 24576) {
+                if (($filePermissions & 24576) == 24576) {
                     $info = "b";
                 } else {
-                    if (($var_426 & 16384) == 16384) {
+                    if (($filePermissions & 16384) == 16384) {
                         $info = "d";
                     } else {
-                        if (($var_426 & 8192) == 8192) {
+                        if (($filePermissions & 8192) == 8192) {
                             $info = "c";
                         } else {
-                            if (($var_426 & 4096) == 4096) {
+                            if (($filePermissions & 4096) == 4096) {
                                 $info = "p";
                             } else {
                                 $info = "u";
@@ -138,15 +138,15 @@ function function_150($file)
             }
         }
     }
-    $info .= $var_426 & 256 ? "r" : "-";
-    $info .= $var_426 & 128 ? "w" : "-";
-    $info .= $var_426 & 64 ? $var_426 & 2048 ? "s" : "x" : ($var_426 & 2048 ? "S" : "-");
-    $info .= $var_426 & 32 ? "r" : "-";
-    $info .= $var_426 & 16 ? "w" : "-";
-    $info .= $var_426 & 8 ? $var_426 & 1024 ? "s" : "x" : ($var_426 & 1024 ? "S" : "-");
-    $info .= $var_426 & 4 ? "r" : "-";
-    $info .= $var_426 & 2 ? "w" : "-";
-    $info .= $var_426 & 1 ? $var_426 & 512 ? "t" : "x" : ($var_426 & 512 ? "T" : "-");
+    $info .= $filePermissions & 256 ? "r" : "-";
+    $info .= $filePermissions & 128 ? "w" : "-";
+    $info .= $filePermissions & 64 ? $filePermissions & 2048 ? "s" : "x" : ($filePermissions & 2048 ? "S" : "-");
+    $info .= $filePermissions & 32 ? "r" : "-";
+    $info .= $filePermissions & 16 ? "w" : "-";
+    $info .= $filePermissions & 8 ? $filePermissions & 1024 ? "s" : "x" : ($filePermissions & 1024 ? "S" : "-");
+    $info .= $filePermissions & 4 ? "r" : "-";
+    $info .= $filePermissions & 2 ? "w" : "-";
+    $info .= $filePermissions & 1 ? $filePermissions & 512 ? "t" : "x" : ($filePermissions & 512 ? "T" : "-");
     return $info;
 }
 

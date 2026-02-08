@@ -33,7 +33,7 @@ if (isset($_GET["cache"])) {
     if (file_put_contents($_filename, $_cachecontents)) {
         echo function_323();
     } else {
-        echo var_633();
+        echo cacheError();
     }
     echo function_322("Smilies");
     $SimilieArray = "\$smilies = array (";
@@ -48,7 +48,7 @@ if (isset($_GET["cache"])) {
     if (file_put_contents($_filename, $_cachecontents)) {
         echo function_323();
     } else {
-        echo var_633();
+        echo cacheError();
     }
     echo function_322("Index Stats");
     $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'ANNOUNCE'");
@@ -88,7 +88,7 @@ if (isset($_GET["cache"])) {
     if (file_put_contents($_filename, $_cachecontents)) {
         echo function_323();
     } else {
-        echo var_633();
+        echo cacheError();
     }
     $Message = str_replace(["{1}", "{2}"], ["Categories, Smilies, Index Stats ", $_SESSION["ADMIN_USERNAME"]], $Language[3]);
     logStaffAction($Message);

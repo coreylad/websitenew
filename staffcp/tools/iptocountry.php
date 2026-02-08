@@ -73,20 +73,20 @@ function showAlertError($Error)
 }
 function function_103($url, $data, $optional_headers = NULL)
 {
-    $var_310 = ["http" => ["method" => "POST", "content" => $data]];
+    $ipAddress = ["http" => ["method" => "POST", "content" => $data]];
     if ($optional_headers !== NULL) {
-        $var_310["http"]["header"] = $optional_headers;
+        $ipAddress["http"]["header"] = $optional_headers;
     }
-    $var_311 = stream_context_create($var_310);
-    $fp = @fopen($url, "rb", false, $var_311);
+    $ipLong = stream_context_create($ipAddress);
+    $fp = @fopen($url, "rb", false, $ipLong);
     if (!$fp) {
         return "";
     }
-    $var_312 = @stream_get_contents($fp);
-    if ($var_312 === false) {
+    $ipCountry = @stream_get_contents($fp);
+    if ($ipCountry === false) {
         return "";
     }
-    return $var_312;
+    return $ipCountry;
 }
 
 ?>

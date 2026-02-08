@@ -158,24 +158,24 @@ function showAlertMessage($message = "")
 }
 function function_101($selected = "")
 {
-    $var_302 = [];
+    $subscriptionId = [];
     $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT currency FROM ts_subscriptions_api");
-    while ($var_303 = mysqli_fetch_assoc($query)) {
-        $var_302[] = $var_303["currency"];
+    while ($subscriptionUser = mysqli_fetch_assoc($query)) {
+        $subscriptionId[] = $subscriptionUser["currency"];
     }
-    $var_304 = "<select $name = \"currency\">";
-    $var_305 = [];
-    foreach ($var_302 as $var_306) {
-        $var_306 = explode(",", $var_306);
-        foreach ($var_306 as $var_307) {
-            if (!in_array($var_307, $var_305)) {
-                $var_305[] = trim($var_307);
-                $var_304 .= "<option $value = \"" . $var_307 . "\"" . ($selected == $var_307 ? " $selected = \"selected\"" : "") . ">" . strtoupper($var_307) . "</option>";
+    $configValue = "<select $name = \"currency\">";
+    $subscriptionType = [];
+    foreach ($subscriptionId as $subscriptionExpiry) {
+        $subscriptionExpiry = explode(",", $subscriptionExpiry);
+        foreach ($subscriptionExpiry as $subscriptionData) {
+            if (!in_array($subscriptionData, $subscriptionType)) {
+                $subscriptionType[] = trim($subscriptionData);
+                $configValue .= "<option $value = \"" . $subscriptionData . "\"" . ($selected == $subscriptionData ? " $selected = \"selected\"" : "") . ">" . strtoupper($subscriptionData) . "</option>";
             }
         }
     }
-    $var_304 .= "</select>";
-    return $var_304;
+    $configValue .= "</select>";
+    return $configValue;
 }
 
 ?>
