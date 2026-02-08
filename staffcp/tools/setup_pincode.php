@@ -1,11 +1,4 @@
 <?php
-/*
- * @ https://EasyToYou.eu - IonCube v11 Decoder Online
- * @ PHP 7.2 & 7.3
- * @ Decoder version: 1.0.6
- * @ Release: 10/08/2022
- */
-
 checkStaffAuthentication();
 $Language = file("languages/" . getStaffLanguage() . "/setup_pincode.lang");
 $Act = isset($_GET["act"]) ? trim($_GET["act"]) : (isset($_POST["act"]) ? trim($_POST["act"]) : "");

@@ -1,11 +1,4 @@
 <?php
-/*
- * @ https://EasyToYou.eu - IonCube v11 Decoder Online
- * @ PHP 7.2 & 7.3
- * @ Decoder version: 1.0.6
- * @ Release: 10/08/2022
- */
-
 $SafeModeCheck = new SafeModeCheckClass();
 $Sifrele = new EncryptorClass("TSSE8.02020httpstemplateshares.net!");
 $__step = isset($_POST["step"]) ? intval($_POST["step"]) : (isset($_GET["step"]) ? intval($_GET["step"]) : 0);

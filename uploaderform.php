@@ -1,11 +1,4 @@
 <?php
-/*
- * @ https://EasyToYou.eu - IonCube v11 Decoder Online
- * @ PHP 7.2 & 7.3
- * @ Decoder version: 1.0.6
- * @ Release: 10/08/2022
- */
-
 define("CSRF_PROTECTION", true);
 define("UF_VERSION", "v.2.0 by xam");
 define("THIS_SCRIPT", "uploaderform.php");

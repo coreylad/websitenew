@@ -1,11 +1,4 @@
 <?php
-/*
- * @ https://EasyToYou.eu - IonCube v11 Decoder Online
- * @ PHP 7.2 & 7.3
- * @ Decoder version: 1.0.6
- * @ Release: 10/08/2022
- */
-
 if (@ini_get("output_handler") == "ob_gzhandler" && @ob_get_length() !== false) {
     @ob_end_clean();
     header("Content-Encoding:");

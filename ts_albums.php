@@ -1,11 +1,4 @@
 <?php
-/*
- * @ https://EasyToYou.eu - IonCube v11 Decoder Online
- * @ PHP 7.2 & 7.3
- * @ Decoder version: 1.0.6
- * @ Release: 10/08/2022
- */
-
 define("TSA_VERSION", "2.1 by xam");
 $albumAction = isset($_GET["do"]) ? $_GET["do"] : (isset($_POST["do"]) ? $_POST["do"] : "");
 $albumid = isset($_GET["albumid"]) ? intval($_GET["albumid"]) : (isset($_POST["albumid"]) ? intval($_POST["albumid"]) : 0);

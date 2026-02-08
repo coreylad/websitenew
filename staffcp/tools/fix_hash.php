@@ -1,11 +1,4 @@
 <?php
-/*
- * @ https://EasyToYou.eu - IonCube v11 Decoder Online
- * @ PHP 7.2 & 7.3
- * @ Decoder version: 1.0.6
- * @ Release: 10/08/2022
- */
-
 @ini_set("upload_max_filesize", 10485760);
 @ini_set("memory_limit", "20000M");
 @set_time_limit(0);
