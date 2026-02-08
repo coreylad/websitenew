@@ -359,22 +359,22 @@ class Class_3
         }
         if (!$file) {
             $this->$uploaded = false;
-            $this->$error = $this->function_40("file_error");
+            $this->$error = $this->translateString("file_error");
         }
         if (!is_array($file)) {
             if (empty($file)) {
                 $this->$uploaded = false;
-                $this->$error = $this->function_40("file_error");
+                $this->$error = $this->translateString("file_error");
             } else {
                 $this->$no_upload_check = true;
-                $this->log .= "<b>" . $this->function_40("source is a local file") . " " . $file . "</b><br />";
+                $this->log .= "<b>" . $this->translateString("source is a local file") . " " . $file . "</b><br />";
                 if ($this->uploaded && !file_exists($file)) {
                     $this->$uploaded = false;
-                    $this->$error = $this->function_40("local_file_missing");
+                    $this->$error = $this->translateString("local_file_missing");
                 }
                 if ($this->uploaded && !is_readable($file)) {
                     $this->$uploaded = false;
-                    $this->$error = $this->function_40("local_file_not_readable");
+                    $this->$error = $this->translateString("local_file_not_readable");
                 }
                 if ($this->uploaded) {
                     $this->$file_src_pathname = $file;
@@ -402,35 +402,35 @@ class Class_3
                         break;
                     case UPLOAD_ERR_INI_SIZE:
                         $this->$uploaded = false;
-                        $this->$error = $this->function_40("uploaded_too_big_ini");
+                        $this->$error = $this->translateString("uploaded_too_big_ini");
                         break;
                     case UPLOAD_ERR_FORM_SIZE:
                         $this->$uploaded = false;
-                        $this->$error = $this->function_40("uploaded_too_big_html");
+                        $this->$error = $this->translateString("uploaded_too_big_html");
                         break;
                     case UPLOAD_ERR_PARTIAL:
                         $this->$uploaded = false;
-                        $this->$error = $this->function_40("uploaded_partial");
+                        $this->$error = $this->translateString("uploaded_partial");
                         break;
                     case UPLOAD_ERR_NO_FILE:
                         $this->$uploaded = false;
-                        $this->$error = $this->function_40("uploaded_missing");
+                        $this->$error = $this->translateString("uploaded_missing");
                         break;
                     case UPLOAD_ERR_NO_TMP_DIR:
                         $this->$uploaded = false;
-                        $this->$error = $this->function_40("uploaded_no_tmp_dir");
+                        $this->$error = $this->translateString("uploaded_no_tmp_dir");
                         break;
                     case UPLOAD_ERR_CANT_WRITE:
                         $this->$uploaded = false;
-                        $this->$error = $this->function_40("uploaded_cant_write");
+                        $this->$error = $this->translateString("uploaded_cant_write");
                         break;
                     case UPLOAD_ERR_EXTENSION:
                         $this->$uploaded = false;
-                        $this->$error = $this->function_40("uploaded_err_extension");
+                        $this->$error = $this->translateString("uploaded_err_extension");
                         break;
                     default:
                         $this->$uploaded = false;
-                        $this->$error = $this->function_40("uploaded_unknown") . " (" . $this->file_src_error . ")";
+                        $this->$error = $this->translateString("uploaded_unknown") . " (" . $this->file_src_error . ")";
                 }
             }
             if ($this->uploaded) {
@@ -438,7 +438,7 @@ class Class_3
                 $this->$file_src_name = $file["name"];
                 if ($this->$file_src_name = = "") {
                     $this->$uploaded = false;
-                    $this->$error = $this->function_40("try_again");
+                    $this->$error = $this->translateString("try_again");
                 }
             }
             if ($this->uploaded) {
@@ -841,7 +841,7 @@ class Class_3
                         $this->$file_is_image = false;
                         $this->$uploaded = false;
                         $this->log .= "- can't retrieve image information, image may have been tampered with<br />";
-                        $this->$error = $this->function_40("incorrect_file");
+                        $this->$error = $this->translateString("incorrect_file");
                     }
                 } else {
                     $this->log .= "- can't read source file directly. open_basedir restriction in place?<br />";
@@ -904,7 +904,7 @@ class Class_3
         umask($var_99);
         return $res;
     }
-    public function function_40($str, $tokens = [])
+    public function translateString($str, $tokens = [])
     {
         if (array_key_exists($str, $this->translation)) {
             $str = $this->translation[$str];
@@ -1021,7 +1021,7 @@ class Class_3
         $var_120 = false;
         $var_121 = NULL;
         if (!$this->uploaded) {
-            $this->$error = $this->function_40("file_not_uploaded");
+            $this->$error = $this->translateString("file_not_uploaded");
             $this->$processed = false;
         }
         if ($this->processed) {
@@ -1044,7 +1044,7 @@ class Class_3
         if ($this->processed) {
             if ($this->file_max_size < $this->file_src_size) {
                 $this->$processed = false;
-                $this->$error = $this->function_40("file_too_big");
+                $this->$error = $this->translateString("file_too_big");
             } else {
                 $this->log .= "- file size OK<br />";
             }
@@ -1057,7 +1057,7 @@ class Class_3
             }
             if ($this->mime_check && empty($this->file_src_mime)) {
                 $this->$processed = false;
-                $this->$error = $this->function_40("no_mime");
+                $this->$error = $this->translateString("no_mime");
             } else {
                 if ($this->mime_check && !empty($this->file_src_mime) && strpos($this->file_src_mime, "/") !== false) {
                     list($var_122, $var_123) = explode("/", $this->file_src_mime);
@@ -1072,7 +1072,7 @@ class Class_3
                                     $allowed = false;
                                     if (!$allowed) {
                                         $this->$processed = false;
-                                        $this->$error = $this->function_40("incorrect_file");
+                                        $this->$error = $this->translateString("incorrect_file");
                                     } else {
                                         $this->log .= "- file mime OK : " . $this->file_src_mime . "<br />";
                                     }
@@ -1089,35 +1089,35 @@ class Class_3
                     $var_127 = $this->image_src_x / $this->image_src_y;
                     if (!is_null($this->image_max_width) && $this->image_max_width < $this->image_src_x) {
                         $this->$processed = false;
-                        $this->$error = $this->function_40("image_too_wide");
+                        $this->$error = $this->translateString("image_too_wide");
                     }
                     if (!is_null($this->image_min_width) && $this->image_src_x < $this->image_min_width) {
                         $this->$processed = false;
-                        $this->$error = $this->function_40("image_too_narrow");
+                        $this->$error = $this->translateString("image_too_narrow");
                     }
                     if (!is_null($this->image_max_height) && $this->image_max_height < $this->image_src_y) {
                         $this->$processed = false;
-                        $this->$error = $this->function_40("image_too_high");
+                        $this->$error = $this->translateString("image_too_high");
                     }
                     if (!is_null($this->image_min_height) && $this->image_src_y < $this->image_min_height) {
                         $this->$processed = false;
-                        $this->$error = $this->function_40("image_too_short");
+                        $this->$error = $this->translateString("image_too_short");
                     }
                     if (!is_null($this->image_max_ratio) && $this->image_max_ratio < $var_127) {
                         $this->$processed = false;
-                        $this->$error = $this->function_40("ratio_too_high");
+                        $this->$error = $this->translateString("ratio_too_high");
                     }
                     if (!is_null($this->image_min_ratio) && $var_127 < $this->image_min_ratio) {
                         $this->$processed = false;
-                        $this->$error = $this->function_40("ratio_too_low");
+                        $this->$error = $this->translateString("ratio_too_low");
                     }
                     if (!is_null($this->image_max_pixels) && $this->image_max_pixels < $this->image_src_pixels) {
                         $this->$processed = false;
-                        $this->$error = $this->function_40("too_many_pixels");
+                        $this->$error = $this->translateString("too_many_pixels");
                     }
                     if (!is_null($this->image_min_pixels) && $this->image_src_pixels < $this->image_min_pixels) {
                         $this->$processed = false;
-                        $this->$error = $this->function_40("not_enough_pixels");
+                        $this->$error = $this->translateString("not_enough_pixels");
                     }
                 } else {
                     $this->log .= "- no image properties available, can't enforce dimension checks : " . $this->file_src_mime . "<br />";
@@ -1205,7 +1205,7 @@ class Class_3
                 } else {
                     if (@file_exists($this->file_dst_pathname)) {
                         $this->$processed = false;
-                        $this->$error = $this->function_40("already_exists", [$this->file_dst_name]);
+                        $this->$error = $this->translateString("already_exists", [$this->file_dst_name]);
                     } else {
                         $this->log .= "- " . $this->file_dst_name . " doesn't exist already<br />";
                     }
@@ -1218,18 +1218,18 @@ class Class_3
                 $this->$file_src_pathname = $this->file_src_temp;
                 if (!file_exists($this->file_src_pathname)) {
                     $this->$processed = false;
-                    $this->$error = $this->function_40("temp_file_missing");
+                    $this->$error = $this->translateString("temp_file_missing");
                 }
             } else {
                 if (!$this->no_upload_check) {
                     if (!is_uploaded_file($this->file_src_pathname)) {
                         $this->$processed = false;
-                        $this->$error = $this->function_40("source_missing");
+                        $this->$error = $this->translateString("source_missing");
                     }
                 } else {
                     if (!file_exists($this->file_src_pathname)) {
                         $this->$processed = false;
-                        $this->$error = $this->function_40("source_missing");
+                        $this->$error = $this->translateString("source_missing");
                     }
                 }
             }
@@ -1240,17 +1240,17 @@ class Class_3
                         if (!$this->function_41($this->file_dst_path, $this->dir_chmod)) {
                             $this->log .= " failed<br />";
                             $this->$processed = false;
-                            $this->$error = $this->function_40("destination_dir");
+                            $this->$error = $this->translateString("destination_dir");
                         } else {
                             $this->log .= " success<br />";
                         }
                     } else {
-                        $this->$error = $this->function_40("destination_dir_missing");
+                        $this->$error = $this->translateString("destination_dir_missing");
                     }
                 }
                 if ($this->processed && !is_dir($this->file_dst_path)) {
                     $this->$processed = false;
-                    $this->$error = $this->function_40("destination_path_not_dir");
+                    $this->$error = $this->translateString("destination_path_not_dir");
                 }
                 $hash = md5($this->file_dst_name_body . rand(1, 1000));
                 if ($this->processed && !($f = @fopen($this->file_dst_path . $hash . "." . $this->file_dst_name_ext, "a+"))) {
@@ -1259,19 +1259,19 @@ class Class_3
                         if (!@chmod($this->file_dst_path, $this->dir_chmod)) {
                             $this->log .= " failed<br />";
                             $this->$processed = false;
-                            $this->$error = $this->function_40("destination_dir_write");
+                            $this->$error = $this->translateString("destination_dir_write");
                         } else {
                             $this->log .= " success<br />";
                             if (!($f = @fopen($this->file_dst_path . $hash . "." . $this->file_dst_name_ext, "a+"))) {
                                 $this->$processed = false;
-                                $this->$error = $this->function_40("destination_dir_write");
+                                $this->$error = $this->translateString("destination_dir_write");
                             } else {
                                 @fclose($f);
                             }
                         }
                     } else {
                         $this->$processed = false;
-                        $this->$error = $this->function_40("destination_path_write");
+                        $this->$error = $this->translateString("destination_path_write");
                     }
                 } else {
                     if ($this->processed) {
@@ -1290,7 +1290,7 @@ class Class_3
                     } else {
                         $this->log .= " failed<br />";
                         $this->$processed = false;
-                        $this->$error = $this->function_40("temp_file");
+                        $this->$error = $this->translateString("temp_file");
                     }
                 }
             }
@@ -1303,7 +1303,7 @@ class Class_3
             if ($var_128) {
                 if ($this->processed && !($f = @fopen($this->file_src_pathname, "r"))) {
                     $this->$processed = false;
-                    $this->$error = $this->function_40("source_not_readable");
+                    $this->$error = $this->translateString("source_not_readable");
                 } else {
                     @fclose($f);
                 }
@@ -1313,12 +1313,12 @@ class Class_3
                         case "jpg":
                             if (!function_exists("imagecreatefromjpeg")) {
                                 $this->$processed = false;
-                                $this->$error = $this->function_40("no_create_support", ["JPEG"]);
+                                $this->$error = $this->translateString("no_create_support", ["JPEG"]);
                             } else {
                                 $var_131 = @imagecreatefromjpeg($this->file_src_pathname);
                                 if (!$var_131) {
                                     $this->$processed = false;
-                                    $this->$error = $this->function_40("create_error", ["JPEG"]);
+                                    $this->$error = $this->translateString("create_error", ["JPEG"]);
                                 } else {
                                     $this->log .= "- source image is JPEG<br />";
                                 }
@@ -1327,12 +1327,12 @@ class Class_3
                         case "png":
                             if (!function_exists("imagecreatefrompng")) {
                                 $this->$processed = false;
-                                $this->$error = $this->function_40("no_create_support", ["PNG"]);
+                                $this->$error = $this->translateString("no_create_support", ["PNG"]);
                             } else {
                                 $var_131 = @imagecreatefrompng($this->file_src_pathname);
                                 if (!$var_131) {
                                     $this->$processed = false;
-                                    $this->$error = $this->function_40("create_error", ["PNG"]);
+                                    $this->$error = $this->translateString("create_error", ["PNG"]);
                                 } else {
                                     $this->log .= "- source image is PNG<br />";
                                 }
@@ -1341,12 +1341,12 @@ class Class_3
                         case "gif":
                             if (!function_exists("imagecreatefromgif")) {
                                 $this->$processed = false;
-                                $this->$error = $this->function_40("no_create_support", ["GIF"]);
+                                $this->$error = $this->translateString("no_create_support", ["GIF"]);
                             } else {
                                 $var_131 = @imagecreatefromgif($this->file_src_pathname);
                                 if (!$var_131) {
                                     $this->$processed = false;
-                                    $this->$error = $this->function_40("create_error", ["GIF"]);
+                                    $this->$error = $this->translateString("create_error", ["GIF"]);
                                 } else {
                                     $this->log .= "- source image is GIF<br />";
                                 }
@@ -1355,12 +1355,12 @@ class Class_3
                         case "bmp":
                             if (!method_exists($this, "imagecreatefrombmp")) {
                                 $this->$processed = false;
-                                $this->$error = $this->function_40("no_create_support", ["BMP"]);
+                                $this->$error = $this->translateString("no_create_support", ["BMP"]);
                             } else {
                                 $var_131 = @$this->function_48($this->file_src_pathname);
                                 if (!$var_131) {
                                     $this->$processed = false;
-                                    $this->$error = $this->function_40("create_error", ["BMP"]);
+                                    $this->$error = $this->translateString("create_error", ["BMP"]);
                                 } else {
                                     $this->log .= "- source image is BMP<br />";
                                 }
@@ -1368,11 +1368,11 @@ class Class_3
                             break;
                         default:
                             $this->$processed = false;
-                            $this->$error = $this->function_40("source_invalid");
+                            $this->$error = $this->translateString("source_invalid");
                     }
                 } else {
                     $this->$processed = false;
-                    $this->$error = $this->function_40("gd_missing");
+                    $this->$error = $this->translateString("gd_missing");
                 }
                 if ($this->processed && $var_131) {
                     if (empty($this->image_convert)) {
@@ -2004,11 +2004,11 @@ class Class_3
                         $var_162 = false;
                         if ($var_161 == IMAGETYPE_GIF) {
                             if (!function_exists("imagecreatefromgif")) {
-                                $this->$error = $this->function_40("watermark_no_create_support", ["GIF"]);
+                                $this->$error = $this->translateString("watermark_no_create_support", ["GIF"]);
                             } else {
                                 $var_144 = @imagecreatefromgif($this->image_watermark);
                                 if (!$var_144) {
-                                    $this->$error = $this->function_40("watermark_create_error", ["GIF"]);
+                                    $this->$error = $this->translateString("watermark_create_error", ["GIF"]);
                                 } else {
                                     $this->log .= "&nbsp;&nbsp;&nbsp;&nbsp;watermark source image is GIF<br />";
                                     $var_162 = true;
@@ -2017,11 +2017,11 @@ class Class_3
                         } else {
                             if ($var_161 == IMAGETYPE_JPEG) {
                                 if (!function_exists("imagecreatefromjpeg")) {
-                                    $this->$error = $this->function_40("watermark_no_create_support", ["JPEG"]);
+                                    $this->$error = $this->translateString("watermark_no_create_support", ["JPEG"]);
                                 } else {
                                     $var_144 = @imagecreatefromjpeg($this->image_watermark);
                                     if (!$var_144) {
-                                        $this->$error = $this->function_40("watermark_create_error", ["JPEG"]);
+                                        $this->$error = $this->translateString("watermark_create_error", ["JPEG"]);
                                     } else {
                                         $this->log .= "&nbsp;&nbsp;&nbsp;&nbsp;watermark source image is JPEG<br />";
                                         $var_162 = true;
@@ -2030,11 +2030,11 @@ class Class_3
                             } else {
                                 if ($var_161 == IMAGETYPE_PNG) {
                                     if (!function_exists("imagecreatefrompng")) {
-                                        $this->$error = $this->function_40("watermark_no_create_support", ["PNG"]);
+                                        $this->$error = $this->translateString("watermark_no_create_support", ["PNG"]);
                                     } else {
                                         $var_144 = @imagecreatefrompng($this->image_watermark);
                                         if (!$var_144) {
-                                            $this->$error = $this->function_40("watermark_create_error", ["PNG"]);
+                                            $this->$error = $this->translateString("watermark_create_error", ["PNG"]);
                                         } else {
                                             $this->log .= "&nbsp;&nbsp;&nbsp;&nbsp;watermark source image is PNG<br />";
                                             $var_162 = true;
@@ -2043,18 +2043,18 @@ class Class_3
                                 } else {
                                     if ($var_161 == IMAGETYPE_BMP) {
                                         if (!method_exists($this, "imagecreatefrombmp")) {
-                                            $this->$error = $this->function_40("watermark_no_create_support", ["BMP"]);
+                                            $this->$error = $this->translateString("watermark_no_create_support", ["BMP"]);
                                         } else {
                                             $var_144 = @$this->function_48($this->image_watermark);
                                             if (!$var_144) {
-                                                $this->$error = $this->function_40("watermark_create_error", ["BMP"]);
+                                                $this->$error = $this->translateString("watermark_create_error", ["BMP"]);
                                             } else {
                                                 $this->log .= "&nbsp;&nbsp;&nbsp;&nbsp;watermark source image is BMP<br />";
                                                 $var_162 = true;
                                             }
                                         }
                                     } else {
-                                        $this->$error = $this->function_40("watermark_invalid");
+                                        $this->$error = $this->translateString("watermark_invalid");
                                     }
                                 }
                             }
@@ -2100,7 +2100,7 @@ class Class_3
                             }
                             imagecopyresampled($workingImage, $var_144, $var_165, $var_166, 0, 0, $var_163, $var_164, $var_163, $var_164);
                         } else {
-                            $this->$error = $this->function_40("watermark_invalid");
+                            $this->$error = $this->translateString("watermark_invalid");
                         }
                     }
                     if (!empty($this->image_text)) {
@@ -2415,7 +2415,7 @@ class Class_3
                                     }
                                     if (!$result) {
                                         $this->$processed = false;
-                                        $this->$error = $this->function_40("file_create", ["JPEG"]);
+                                        $this->$error = $this->translateString("file_create", ["JPEG"]);
                                     } else {
                                         $this->log .= "&nbsp;&nbsp;&nbsp;&nbsp;JPEG image created<br />";
                                     }
@@ -2433,7 +2433,7 @@ class Class_3
                                     }
                                     if (!$result) {
                                         $this->$processed = false;
-                                        $this->$error = $this->function_40("file_create", ["PNG"]);
+                                        $this->$error = $this->translateString("file_create", ["PNG"]);
                                     } else {
                                         $this->log .= "&nbsp;&nbsp;&nbsp;&nbsp;PNG image created<br />";
                                     }
@@ -2449,7 +2449,7 @@ class Class_3
                                     }
                                     if (!$result) {
                                         $this->$processed = false;
-                                        $this->$error = $this->function_40("file_create", ["GIF"]);
+                                        $this->$error = $this->translateString("file_create", ["GIF"]);
                                     } else {
                                         $this->log .= "&nbsp;&nbsp;&nbsp;&nbsp;GIF image created<br />";
                                     }
@@ -2465,14 +2465,14 @@ class Class_3
                                     }
                                     if (!$result) {
                                         $this->$processed = false;
-                                        $this->$error = $this->function_40("file_create", ["BMP"]);
+                                        $this->$error = $this->translateString("file_create", ["BMP"]);
                                     } else {
                                         $this->log .= "&nbsp;&nbsp;&nbsp;&nbsp;BMP image created<br />";
                                     }
                                     break;
                                 default:
                                     $this->$processed = false;
-                                    $this->$error = $this->function_40("no_conversion_type");
+                                    $this->$error = $this->translateString("no_conversion_type");
                                     if ($this->processed) {
                                         if (is_resource($var_131)) {
                                             imagedestroy($var_131);
@@ -2490,13 +2490,13 @@ class Class_3
                 if (!$var_120) {
                     if (!copy($this->file_src_pathname, $this->file_dst_pathname)) {
                         $this->$processed = false;
-                        $this->$error = $this->function_40("copy_failed");
+                        $this->$error = $this->translateString("copy_failed");
                     }
                 } else {
                     $var_121 = @file_get_contents($this->file_src_pathname);
                     if ($var_121 === false) {
                         $this->$processed = false;
-                        $this->$error = $this->function_40("reading_failed");
+                        $this->$error = $this->translateString("reading_failed");
                     }
                 }
             }

@@ -250,16 +250,16 @@ class Class_6
         $this->$message = str_replace("\$", "&#36;", $this->message);
         $this->$message = preg_replace($this->tscode_cache["find"], $this->tscode_cache["replacement"], $this->message);
         $this->$message = preg_replace_callback("#\\[url\\]([a-z]+?://)([^\r\n\"<]+?)\\[/url\\]#si", function ($matches) {
-            return $this->function_131($matches[1] . $matches[2]);
+            return $this->parseMyCodeUrl($matches[1] . $matches[2]);
         }, $this->message);
         $this->$message = preg_replace_callback("#\\[url\\]([^\r\n\"<]+?)\\[/url\\]#si", function ($matches) {
-            return $this->function_131($matches[1]);
+            return $this->parseMyCodeUrl($matches[1]);
         }, $this->message);
         $this->$message = preg_replace_callback("#\\[$url = ([a-z]+?://)([^\r\n\"<]+?)\\](.+?)\\[/url\\]#si", function ($matches) {
-            return $this->function_131($matches[1] . $matches[2], $matches[3]);
+            return $this->parseMyCodeUrl($matches[1] . $matches[2], $matches[3]);
         }, $this->message);
         $this->$message = preg_replace_callback("#\\[$url = ([^\r\n\"<&\\(\\)]+?)\\](.+?)\\[/url\\]#si", function ($matches) {
-            return $this->function_131($matches[1], $matches[2]);
+            return $this->parseMyCodeUrl($matches[1], $matches[2]);
         }, $this->message);
         $this->$message = preg_replace_callback("#\\[email\\](.*?)\\[/email\\]#si", function ($matches) {
             return $this->function_132($matches[1]);
@@ -377,7 +377,7 @@ class Class_6
             $this->tscode_cache["replacement"][] = $code["replacement"];
         }
     }
-    public function function_131($url, $name = "")
+    public function parseMyCodeUrl($url, $name = "")
     {
         $var_364 = false;
         if ($name) {
