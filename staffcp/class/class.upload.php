@@ -120,27 +120,27 @@ class Class_3
     public $forbidden = NULL;
     public $translation = NULL;
     public $language = NULL;
-    public function function_38()
+    public function resetDefaults()
     {
-        $this->$file_new_name_body = "";
-        $this->$file_name_body_add = "";
-        $this->$file_name_body_pre = "";
-        $this->$file_new_name_ext = "";
-        $this->$file_safe_name = true;
-        $this->$file_overwrite = false;
-        $this->$file_auto_rename = true;
-        $this->$dir_auto_create = true;
-        $this->$dir_auto_chmod = true;
-        $this->$dir_chmod = 511;
-        $this->$mime_check = true;
-        $this->$mime_fileinfo = true;
-        $this->$mime_file = true;
-        $this->$mime_magic = true;
-        $this->$mime_getimagesize = true;
-        $this->$no_script = true;
+        $this->file_new_name_body = "";
+        $this->file_name_body_add = "";
+        $this->file_name_body_pre = "";
+        $this->file_new_name_ext = "";
+        $this->file_safe_name = true;
+        $this->file_overwrite = false;
+        $this->file_auto_rename = true;
+        $this->dir_auto_create = true;
+        $this->dir_auto_chmod = true;
+        $this->dir_chmod = 511;
+        $this->mime_check = true;
+        $this->mime_fileinfo = true;
+        $this->mime_file = true;
+        $this->mime_magic = true;
+        $this->mime_getimagesize = true;
+        $this->no_script = true;
         $val = trim(ini_get("upload_max_filesize"));
-        $var_89 = strtolower($val[strlen($val) - 1]);
-        switch ($var_89) {
+        $unit_suffix = strtolower($val[strlen($val) - 1]);
+        switch ($unit_suffix) {
             case "g":
                 $val *= 1024;
                 break;
@@ -151,116 +151,116 @@ class Class_3
                 $val *= 1024;
                 break;
             default:
-                $this->$file_max_size = $val;
-                $this->$image_resize = false;
-                $this->$image_convert = "";
-                $this->$image_x = 150;
-                $this->$image_y = 150;
-                $this->$image_ratio = false;
-                $this->$image_ratio_crop = false;
-                $this->$image_ratio_fill = false;
-                $this->$image_ratio_pixels = false;
-                $this->$image_ratio_no_zoom_in = false;
-                $this->$image_ratio_no_zoom_out = false;
-                $this->$image_ratio_x = false;
-                $this->$image_ratio_y = false;
-                $this->$jpeg_quality = 85;
-                $this->$jpeg_size = NULL;
-                $this->$preserve_transparency = false;
-                $this->$image_is_transparent = false;
-                $this->$image_transparent_color = NULL;
-                $this->$image_background_color = NULL;
-                $this->$image_default_color = "#ffffff";
-                $this->$image_is_palette = false;
-                $this->$image_max_width = NULL;
-                $this->$image_max_height = NULL;
-                $this->$image_max_pixels = NULL;
-                $this->$image_max_ratio = NULL;
-                $this->$image_min_width = NULL;
-                $this->$image_min_height = NULL;
-                $this->$image_min_pixels = NULL;
-                $this->$image_min_ratio = NULL;
-                $this->$image_brightness = NULL;
-                $this->$image_contrast = NULL;
-                $this->$image_threshold = NULL;
-                $this->$image_tint_color = NULL;
-                $this->$image_overlay_color = NULL;
-                $this->$image_overlay_percent = NULL;
-                $this->$image_negative = false;
-                $this->$image_greyscale = false;
-                $this->$image_text = NULL;
-                $this->$image_text_direction = NULL;
-                $this->$image_text_color = "#FFFFFF";
-                $this->$image_text_percent = 100;
-                $this->$image_text_background = NULL;
-                $this->$image_text_background_percent = 100;
-                $this->$image_text_font = 5;
-                $this->$image_text_x = NULL;
-                $this->$image_text_y = NULL;
-                $this->$image_text_position = NULL;
-                $this->$image_text_padding = 0;
-                $this->$image_text_padding_x = NULL;
-                $this->$image_text_padding_y = NULL;
-                $this->$image_text_alignment = "C";
-                $this->$image_text_line_spacing = 0;
-                $this->$image_reflection_height = NULL;
-                $this->$image_reflection_space = 2;
-                $this->$image_reflection_color = "#ffffff";
-                $this->$image_reflection_opacity = 60;
-                $this->$image_watermark = NULL;
-                $this->$image_watermark_x = NULL;
-                $this->$image_watermark_y = NULL;
-                $this->$image_watermark_position = NULL;
-                $this->$image_flip = NULL;
-                $this->$image_rotate = NULL;
-                $this->$image_crop = NULL;
-                $this->$image_precrop = NULL;
-                $this->$image_bevel = NULL;
-                $this->$image_bevel_color1 = "#FFFFFF";
-                $this->$image_bevel_color2 = "#000000";
-                $this->$image_border = NULL;
-                $this->$image_border_color = "#FFFFFF";
-                $this->$image_frame = NULL;
-                $this->$image_frame_colors = "#FFFFFF #999999 #666666 #000000";
-                $this->$forbidden = [];
-                $this->$allowed = ["application/arj", "application/excel", "application/gnutar", "application/mspowerpoint", "application/msword", "application/octet-stream", "application/onenote", "application/pdf", "application/plain", "application/postscript", "application/powerpoint", "application/rar", "application/rtf", "application/vnd.ms-excel", "application/vnd.ms-excel.addin.macroEnabled.12", "application/vnd.ms-excel.sheet.binary.macroEnabled.12", "application/vnd.ms-excel.sheet.macroEnabled.12", "application/vnd.ms-excel.template.macroEnabled.12", "application/vnd.ms-office", "application/vnd.ms-officetheme", "application/vnd.ms-powerpoint", "application/vnd.ms-powerpoint.addin.macroEnabled.12", "application/vnd.ms-powerpoint.presentation.macroEnabled.12", "application/vnd.ms-powerpoint.slide.macroEnabled.12", "application/vnd.ms-powerpoint.slideshow.macroEnabled.12", "application/vnd.ms-powerpoint.template.macroEnabled.12", "application/vnd.ms-word", "application/vnd.ms-word.document.macroEnabled.12", "application/vnd.ms-word.template.macroEnabled.12", "application/vnd.oasis.opendocument.chart", "application/vnd.oasis.opendocument.database", "application/vnd.oasis.opendocument.formula", "application/vnd.oasis.opendocument.graphics", "application/vnd.oasis.opendocument.graphics-template", "application/vnd.oasis.opendocument.image", "application/vnd.oasis.opendocument.presentation", "application/vnd.oasis.opendocument.presentation-template", "application/vnd.oasis.opendocument.spreadsheet", "application/vnd.oasis.opendocument.spreadsheet-template", "application/vnd.oasis.opendocument.text", "application/vnd.oasis.opendocument.text-master", "application/vnd.oasis.opendocument.text-template", "application/vnd.oasis.opendocument.text-web", "application/vnd.openofficeorg.extension", "application/vnd.openxmlformats-officedocument.presentationml.presentation", "application/vnd.openxmlformats-officedocument.presentationml.slide", "application/vnd.openxmlformats-officedocument.presentationml.slideshow", "application/vnd.openxmlformats-officedocument.presentationml.template", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "application/vnd.openxmlformats-officedocument.spreadsheetml.template", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "application/vnd.openxmlformats-officedocument.wordprocessingml.template", "application/vocaltec-media-file", "application/wordperfect", "application/x-bittorrent", "application/x-bzip", "application/x-bzip2", "application/x-compressed", "application/x-excel", "application/x-gzip", "application/x-latex", "application/x-midi", "application/xml", "application/x-msexcel", "application/x-rar-compressed", "application/x-rtf", "application/x-shockwave-flash", "application/x-sit", "application/x-stuffit", "application/x-troff-msvideo", "application/x-zip", "application/x-zip-compressed", "application/zip", "audio/*", "image/*", "multipart/x-gzip", "multipart/x-zip", "text/plain", "text/richtext", "text/xml", "video/*"];
+                $this->file_max_size = $val;
+                $this->image_resize = false;
+                $this->image_convert = "";
+                $this->image_x = 150;
+                $this->image_y = 150;
+                $this->image_ratio = false;
+                $this->image_ratio_crop = false;
+                $this->image_ratio_fill = false;
+                $this->image_ratio_pixels = false;
+                $this->image_ratio_no_zoom_in = false;
+                $this->image_ratio_no_zoom_out = false;
+                $this->image_ratio_x = false;
+                $this->image_ratio_y = false;
+                $this->jpeg_quality = 85;
+                $this->jpeg_size = NULL;
+                $this->preserve_transparency = false;
+                $this->image_is_transparent = false;
+                $this->image_transparent_color = NULL;
+                $this->image_background_color = NULL;
+                $this->image_default_color = "#ffffff";
+                $this->image_is_palette = false;
+                $this->image_max_width = NULL;
+                $this->image_max_height = NULL;
+                $this->image_max_pixels = NULL;
+                $this->image_max_ratio = NULL;
+                $this->image_min_width = NULL;
+                $this->image_min_height = NULL;
+                $this->image_min_pixels = NULL;
+                $this->image_min_ratio = NULL;
+                $this->image_brightness = NULL;
+                $this->image_contrast = NULL;
+                $this->image_threshold = NULL;
+                $this->image_tint_color = NULL;
+                $this->image_overlay_color = NULL;
+                $this->image_overlay_percent = NULL;
+                $this->image_negative = false;
+                $this->image_greyscale = false;
+                $this->image_text = NULL;
+                $this->image_text_direction = NULL;
+                $this->image_text_color = "#FFFFFF";
+                $this->image_text_percent = 100;
+                $this->image_text_background = NULL;
+                $this->image_text_background_percent = 100;
+                $this->image_text_font = 5;
+                $this->image_text_x = NULL;
+                $this->image_text_y = NULL;
+                $this->image_text_position = NULL;
+                $this->image_text_padding = 0;
+                $this->image_text_padding_x = NULL;
+                $this->image_text_padding_y = NULL;
+                $this->image_text_alignment = "C";
+                $this->image_text_line_spacing = 0;
+                $this->image_reflection_height = NULL;
+                $this->image_reflection_space = 2;
+                $this->image_reflection_color = "#ffffff";
+                $this->image_reflection_opacity = 60;
+                $this->image_watermark = NULL;
+                $this->image_watermark_x = NULL;
+                $this->image_watermark_y = NULL;
+                $this->image_watermark_position = NULL;
+                $this->image_flip = NULL;
+                $this->image_rotate = NULL;
+                $this->image_crop = NULL;
+                $this->image_precrop = NULL;
+                $this->image_bevel = NULL;
+                $this->image_bevel_color1 = "#FFFFFF";
+                $this->image_bevel_color2 = "#000000";
+                $this->image_border = NULL;
+                $this->image_border_color = "#FFFFFF";
+                $this->image_frame = NULL;
+                $this->image_frame_colors = "#FFFFFF #999999 #666666 #000000";
+                $this->forbidden = [];
+                $this->allowed = ["application/arj", "application/excel", "application/gnutar", "application/mspowerpoint", "application/msword", "application/octet-stream", "application/onenote", "application/pdf", "application/plain", "application/postscript", "application/powerpoint", "application/rar", "application/rtf", "application/vnd.ms-excel", "application/vnd.ms-excel.addin.macroEnabled.12", "application/vnd.ms-excel.sheet.binary.macroEnabled.12", "application/vnd.ms-excel.sheet.macroEnabled.12", "application/vnd.ms-excel.template.macroEnabled.12", "application/vnd.ms-office", "application/vnd.ms-officetheme", "application/vnd.ms-powerpoint", "application/vnd.ms-powerpoint.addin.macroEnabled.12", "application/vnd.ms-powerpoint.presentation.macroEnabled.12", "application/vnd.ms-powerpoint.slide.macroEnabled.12", "application/vnd.ms-powerpoint.slideshow.macroEnabled.12", "application/vnd.ms-powerpoint.template.macroEnabled.12", "application/vnd.ms-word", "application/vnd.ms-word.document.macroEnabled.12", "application/vnd.ms-word.template.macroEnabled.12", "application/vnd.oasis.opendocument.chart", "application/vnd.oasis.opendocument.database", "application/vnd.oasis.opendocument.formula", "application/vnd.oasis.opendocument.graphics", "application/vnd.oasis.opendocument.graphics-template", "application/vnd.oasis.opendocument.image", "application/vnd.oasis.opendocument.presentation", "application/vnd.oasis.opendocument.presentation-template", "application/vnd.oasis.opendocument.spreadsheet", "application/vnd.oasis.opendocument.spreadsheet-template", "application/vnd.oasis.opendocument.text", "application/vnd.oasis.opendocument.text-master", "application/vnd.oasis.opendocument.text-template", "application/vnd.oasis.opendocument.text-web", "application/vnd.openofficeorg.extension", "application/vnd.openxmlformats-officedocument.presentationml.presentation", "application/vnd.openxmlformats-officedocument.presentationml.slide", "application/vnd.openxmlformats-officedocument.presentationml.slideshow", "application/vnd.openxmlformats-officedocument.presentationml.template", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "application/vnd.openxmlformats-officedocument.spreadsheetml.template", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "application/vnd.openxmlformats-officedocument.wordprocessingml.template", "application/vocaltec-media-file", "application/wordperfect", "application/x-bittorrent", "application/x-bzip", "application/x-bzip2", "application/x-compressed", "application/x-excel", "application/x-gzip", "application/x-latex", "application/x-midi", "application/xml", "application/x-msexcel", "application/x-rar-compressed", "application/x-rtf", "application/x-shockwave-flash", "application/x-sit", "application/x-stuffit", "application/x-troff-msvideo", "application/x-zip", "application/x-zip-compressed", "application/zip", "audio/*", "image/*", "multipart/x-gzip", "multipart/x-zip", "text/plain", "text/richtext", "text/xml", "video/*"];
         }
     }
     public function __construct($file, $lang = "en_GB")
     {
-        $this->$version = "0.29";
-        $this->$file_src_name = "";
-        $this->$file_src_name_body = "";
-        $this->$file_src_name_ext = "";
-        $this->$file_src_mime = "";
-        $this->$file_src_size = "";
-        $this->$file_src_error = "";
-        $this->$file_src_pathname = "";
-        $this->$file_src_temp = "";
-        $this->$file_dst_path = "";
-        $this->$file_dst_name = "";
-        $this->$file_dst_name_body = "";
-        $this->$file_dst_name_ext = "";
-        $this->$file_dst_pathname = "";
-        $this->$image_src_x = NULL;
-        $this->$image_src_y = NULL;
-        $this->$image_src_bits = NULL;
-        $this->$image_src_type = NULL;
-        $this->$image_src_pixels = NULL;
-        $this->$image_dst_x = 0;
-        $this->$image_dst_y = 0;
-        $this->$uploaded = true;
-        $this->$no_upload_check = false;
-        $this->$processed = true;
-        $this->$error = "";
-        $this->$log = "";
-        $this->$allowed = [];
-        $this->$forbidden = [];
-        $this->$file_is_image = false;
-        $this->function_38();
+        $this->version = "0.29";
+        $this->file_src_name = "";
+        $this->file_src_name_body = "";
+        $this->file_src_name_ext = "";
+        $this->file_src_mime = "";
+        $this->file_src_size = "";
+        $this->file_src_error = "";
+        $this->file_src_pathname = "";
+        $this->file_src_temp = "";
+        $this->file_dst_path = "";
+        $this->file_dst_name = "";
+        $this->file_dst_name_body = "";
+        $this->file_dst_name_ext = "";
+        $this->file_dst_pathname = "";
+        $this->image_src_x = NULL;
+        $this->image_src_y = NULL;
+        $this->image_src_bits = NULL;
+        $this->image_src_type = NULL;
+        $this->image_src_pixels = NULL;
+        $this->image_dst_x = 0;
+        $this->image_dst_y = 0;
+        $this->uploaded = true;
+        $this->no_upload_check = false;
+        $this->processed = true;
+        $this->error = "";
+        $this->log = "";
+        $this->allowed = [];
+        $this->forbidden = [];
+        $this->file_is_image = false;
+        $this->resetDefaults();
         $info = NULL;
         $mime_from_browser = NULL;
-        $this->$translation = [];
+        $this->translation = [];
         $this->translation["file_error"] = "File error. Please try again.";
         $this->translation["local_file_missing"] = "Local file doesn't exist.";
         $this->translation["local_file_not_readable"] = "Local file is not readable.";
@@ -306,18 +306,18 @@ class Class_3
         $this->translation["no_conversion_type"] = "No conversion type defined.";
         $this->translation["copy_failed"] = "Error copying file on the server. copy() failed.";
         $this->translation["reading_failed"] = "Error reading the file.";
-        $this->$lang = $lang;
+        $this->lang = $lang;
         if ($this->lang != "en_GB" && file_exists(dirname(__FILE__) . "/lang") && file_exists(dirname(__FILE__) . "/lang/class.upload." . $lang . ".php")) {
             $translation = NULL;
             include dirname(__FILE__) . "/lang/class.upload." . $lang . ".php";
             if (is_array($translation)) {
-                $this->$translation = array_merge($this->translation, $translation);
+                $this->translation = array_merge($this->translation, $translation);
             } else {
-                $this->$lang = "en_GB";
+                $this->lang = "en_GB";
             }
         }
-        $this->$image_supported = [];
-        if ($this->function_39()) {
+        $this->image_supported = [];
+        if ($this->getGdVersion()) {
             if (imagetypes() & IMG_GIF) {
                 $this->image_supported["image/gif"] = "gif";
             }
@@ -340,7 +340,7 @@ class Class_3
             $this->log .= "<b>system information</b><br />";
             $inis = ini_get_all();
             $open_basedir = array_key_exists("open_basedir", $inis) && array_key_exists("local_value", $inis["open_basedir"]) && !empty($inis["open_basedir"]["local_value"]) ? $inis["open_basedir"]["local_value"] : false;
-            $gd = $this->function_39() ? $this->function_39(true) : "GD not present";
+            $gd = $this->getGdVersion() ? $this->getGdVersion(true) : "GD not present";
             $supported = trim((in_array("png", $this->image_supported) ? "png" : "") . " " . (in_array("jpg", $this->image_supported) ? "jpg" : "") . " " . (in_array("gif", $this->image_supported) ? "gif" : "") . " " . (in_array("bmp", $this->image_supported) ? "bmp" : ""));
             $this->log .= "-&nbsp;class version           : " . $this->version . "<br />";
             $this->log .= "-&nbsp;operating system        : " . PHP_OS . "<br />";
@@ -351,112 +351,112 @@ class Class_3
             $this->log .= "-&nbsp;language                : " . $this->lang . "<br />";
         }
         if (!$file) {
-            $this->$uploaded = false;
-            $this->$error = $this->translateString("file_error");
+            $this->uploaded = false;
+            $this->error = $this->translateString("file_error");
         }
         if (!is_array($file)) {
             if (empty($file)) {
-                $this->$uploaded = false;
-                $this->$error = $this->translateString("file_error");
+                $this->uploaded = false;
+                $this->error = $this->translateString("file_error");
             } else {
-                $this->$no_upload_check = true;
+                $this->no_upload_check = true;
                 $this->log .= "<b>" . $this->translateString("source is a local file") . " " . $file . "</b><br />";
                 if ($this->uploaded && !file_exists($file)) {
-                    $this->$uploaded = false;
-                    $this->$error = $this->translateString("local_file_missing");
+                    $this->uploaded = false;
+                    $this->error = $this->translateString("local_file_missing");
                 }
                 if ($this->uploaded && !is_readable($file)) {
-                    $this->$uploaded = false;
-                    $this->$error = $this->translateString("local_file_not_readable");
+                    $this->uploaded = false;
+                    $this->error = $this->translateString("local_file_not_readable");
                 }
                 if ($this->uploaded) {
-                    $this->$file_src_pathname = $file;
-                    $this->$file_src_name = basename($file);
+                    $this->file_src_pathname = $file;
+                    $this->file_src_name = basename($file);
                     $this->log .= "- local file name OK<br />";
                     preg_match("/\\.([^\\.]*\$)/", $this->file_src_name, $extension);
                     if (is_array($extension) && 0 < sizeof($extension)) {
-                        $this->$file_src_name_ext = strtolower($extension[1]);
-                        $this->$file_src_name_body = substr($this->file_src_name, 0, strlen($this->file_src_name) - strlen($this->file_src_name_ext) - 1);
+                        $this->file_src_name_ext = strtolower($extension[1]);
+                        $this->file_src_name_body = substr($this->file_src_name, 0, strlen($this->file_src_name) - strlen($this->file_src_name_ext) - 1);
                     } else {
-                        $this->$file_src_name_ext = "";
-                        $this->$file_src_name_body = $this->file_src_name;
+                        $this->file_src_name_ext = "";
+                        $this->file_src_name_body = $this->file_src_name;
                     }
-                    $this->$file_src_size = file_exists($file) ? filesize($file) : 0;
+                    $this->file_src_size = file_exists($file) ? filesize($file) : 0;
                 }
-                $this->$file_src_error = 0;
+                $this->file_src_error = 0;
             }
         } else {
             $this->log .= "<b>source is an uploaded file</b><br />";
             if ($this->uploaded) {
-                $this->$file_src_error = trim($file["error"]);
+                $this->file_src_error = trim($file["error"]);
                 switch ($this->file_src_error) {
                     case UPLOAD_ERR_OK:
                         $this->log .= "- upload OK<br />";
                         break;
                     case UPLOAD_ERR_INI_SIZE:
-                        $this->$uploaded = false;
-                        $this->$error = $this->translateString("uploaded_too_big_ini");
+                        $this->uploaded = false;
+                        $this->error = $this->translateString("uploaded_too_big_ini");
                         break;
                     case UPLOAD_ERR_FORM_SIZE:
-                        $this->$uploaded = false;
-                        $this->$error = $this->translateString("uploaded_too_big_html");
+                        $this->uploaded = false;
+                        $this->error = $this->translateString("uploaded_too_big_html");
                         break;
                     case UPLOAD_ERR_PARTIAL:
-                        $this->$uploaded = false;
-                        $this->$error = $this->translateString("uploaded_partial");
+                        $this->uploaded = false;
+                        $this->error = $this->translateString("uploaded_partial");
                         break;
                     case UPLOAD_ERR_NO_FILE:
-                        $this->$uploaded = false;
-                        $this->$error = $this->translateString("uploaded_missing");
+                        $this->uploaded = false;
+                        $this->error = $this->translateString("uploaded_missing");
                         break;
                     case UPLOAD_ERR_NO_TMP_DIR:
-                        $this->$uploaded = false;
-                        $this->$error = $this->translateString("uploaded_no_tmp_dir");
+                        $this->uploaded = false;
+                        $this->error = $this->translateString("uploaded_no_tmp_dir");
                         break;
                     case UPLOAD_ERR_CANT_WRITE:
-                        $this->$uploaded = false;
-                        $this->$error = $this->translateString("uploaded_cant_write");
+                        $this->uploaded = false;
+                        $this->error = $this->translateString("uploaded_cant_write");
                         break;
                     case UPLOAD_ERR_EXTENSION:
-                        $this->$uploaded = false;
-                        $this->$error = $this->translateString("uploaded_err_extension");
+                        $this->uploaded = false;
+                        $this->error = $this->translateString("uploaded_err_extension");
                         break;
                     default:
-                        $this->$uploaded = false;
-                        $this->$error = $this->translateString("uploaded_unknown") . " (" . $this->file_src_error . ")";
+                        $this->uploaded = false;
+                        $this->error = $this->translateString("uploaded_unknown") . " (" . $this->file_src_error . ")";
                 }
             }
             if ($this->uploaded) {
-                $this->$file_src_pathname = $file["tmp_name"];
-                $this->$file_src_name = $file["name"];
-                if ($this->$file_src_name = = "") {
-                    $this->$uploaded = false;
-                    $this->$error = $this->translateString("try_again");
+                $this->file_src_pathname = $file["tmp_name"];
+                $this->file_src_name = $file["name"];
+                if ($this->file_src_name=="") {
+                    $this->uploaded = false;
+                    $this->error = $this->translateString("try_again");
                 }
             }
             if ($this->uploaded) {
                 $this->log .= "- file name OK<br />";
                 preg_match("/\\.([^\\.]*\$)/", $this->file_src_name, $extension);
                 if (is_array($extension) && 0 < sizeof($extension)) {
-                    $this->$file_src_name_ext = strtolower($extension[1]);
-                    $this->$file_src_name_body = substr($this->file_src_name, 0, strlen($this->file_src_name) - strlen($this->file_src_name_ext) - 1);
+                    $this->file_src_name_ext = strtolower($extension[1]);
+                    $this->file_src_name_body = substr($this->file_src_name, 0, strlen($this->file_src_name) - strlen($this->file_src_name_ext) - 1);
                 } else {
-                    $this->$file_src_name_ext = "";
-                    $this->$file_src_name_body = $this->file_src_name;
+                    $this->file_src_name_ext = "";
+                    $this->file_src_name_body = $this->file_src_name;
                 }
-                $this->$file_src_size = $file["size"];
+                $this->file_src_size = $file["size"];
                 $mime_from_browser = $file["type"];
             }
         }
         if ($this->uploaded) {
             $this->log .= "<b>determining MIME type</b><br />";
-            $this->$file_src_mime = NULL;
+            $this->file_src_mime = NULL;
             if (!$this->file_src_mime || !is_string($this->file_src_mime) || empty($this->file_src_mime) || strpos($this->file_src_mime, "/") === false) {
                 if ($this->mime_fileinfo) {
                     $this->log .= "- Checking MIME type with Fileinfo PECL extension<br />";
                     if (function_exists("finfo_open")) {
                         if ($this->mime_fileinfo !== "") {
-                            if ($this->$mime_fileinfo = == true) {
+                            if ($this->mime_fileinfo == true) {
                                 if (getenv("MAGIC") === false) {
                                     if (substr(PHP_OS, 0, 3) == "WIN") {
                                         $path = realpath(ini_get("extension_dir") . "/../") . "extras/magic";
@@ -472,36 +472,36 @@ class Class_3
                                 $path = $this->mime_fileinfo;
                                 $this->log .= "&nbsp;&nbsp;&nbsp;&nbsp;MAGIC path is set to " . $path . "<br />";
                             }
-                            $f = @var_90(FILEINFO_MIME, $path);
+                            $f = @finfo_open(FILEINFO_MIME, $path);
                         } else {
                             $this->log .= "&nbsp;&nbsp;&nbsp;&nbsp;MAGIC path will not be used<br />";
-                            $f = @var_90(FILEINFO_MIME);
+                            $f = @finfo_open(FILEINFO_MIME);
                         }
                         if (is_resource($f)) {
-                            $mime = var_91($f, realpath($this->file_src_pathname));
-                            var_92($f);
-                            $this->$file_src_mime = $mime;
+                            $mime = finfo_file($f, realpath($this->file_src_pathname));
+                            finfo_close($f);
+                            $this->file_src_mime = $mime;
                             $this->log .= "&nbsp;&nbsp;&nbsp;&nbsp;MIME type detected as " . $this->file_src_mime . " by Fileinfo PECL extension<br />";
                             if (preg_match("/^([\\.-\\w]+)\\/([\\.-\\w]+)(.*)\$/i", $this->file_src_mime)) {
-                                $this->$file_src_mime = preg_replace("/^([\\.-\\w]+)\\/([\\.-\\w]+)(.*)\$/i", "\$1/\$2", $this->file_src_mime);
+                                $this->file_src_mime = preg_replace("/^([\\.-\\w]+)\\/([\\.-\\w]+)(.*)\$/i", "\$1/\$2", $this->file_src_mime);
                                 $this->log .= "-&nbsp;MIME validated as " . $this->file_src_mime . "<br />";
                             } else {
-                                $this->$file_src_mime = NULL;
+                                $this->file_src_mime = NULL;
                             }
                         } else {
                             $this->log .= "&nbsp;&nbsp;&nbsp;&nbsp;Fileinfo PECL extension failed (finfo_open)<br />";
                         }
                     } else {
                         if (class_exists("finfo")) {
-                            $f = new var_93(FILEINFO_MIME);
+                            $f = new finfo(FILEINFO_MIME);
                             if ($f) {
-                                $this->$file_src_mime = $f->var_94(realpath($this->file_src_pathname));
+                                $this->file_src_mime = $f->file(realpath($this->file_src_pathname));
                                 $this->log .= "- MIME type detected as " . $this->file_src_mime . " by Fileinfo PECL extension<br />";
                                 if (preg_match("/^([\\.-\\w]+)\\/([\\.-\\w]+)(.*)\$/i", $this->file_src_mime)) {
-                                    $this->$file_src_mime = preg_replace("/^([\\.-\\w]+)\\/([\\.-\\w]+)(.*)\$/i", "\$1/\$2", $this->file_src_mime);
+                                    $this->file_src_mime = preg_replace("/^([\\.-\\w]+)\\/([\\.-\\w]+)(.*)\$/i", "\$1/\$2", $this->file_src_mime);
                                     $this->log .= "-&nbsp;MIME validated as " . $this->file_src_mime . "<br />";
                                 } else {
-                                    $this->$file_src_mime = NULL;
+                                    $this->file_src_mime = NULL;
                                 }
                             } else {
                                 $this->log .= "&nbsp;&nbsp;&nbsp;&nbsp;Fileinfo PECL extension failed (finfo)<br />";
@@ -519,13 +519,13 @@ class Class_3
                     $this->log .= "- Checking MIME type with UNIX file() command<br />";
                     if (substr(PHP_OS, 0, 3) != "WIN") {
                         if (strlen($mime = @exec("file -bi " . @escapeshellarg($this->file_src_pathname))) != 0) {
-                            $this->$file_src_mime = trim($mime);
+                            $this->file_src_mime = trim($mime);
                             $this->log .= "&nbsp;&nbsp;&nbsp;&nbsp;MIME type detected as " . $this->file_src_mime . " by UNIX file() command<br />";
                             if (preg_match("/^([\\.-\\w]+)\\/([\\.-\\w]+)(.*)\$/i", $this->file_src_mime)) {
-                                $this->$file_src_mime = preg_replace("/^([\\.-\\w]+)\\/([\\.-\\w]+)(.*)\$/i", "\$1/\$2", $this->file_src_mime);
+                                $this->file_src_mime = preg_replace("/^([\\.-\\w]+)\\/([\\.-\\w]+)(.*)\$/i", "\$1/\$2", $this->file_src_mime);
                                 $this->log .= "-&nbsp;MIME validated as " . $this->file_src_mime . "<br />";
                             } else {
-                                $this->$file_src_mime = NULL;
+                                $this->file_src_mime = NULL;
                             }
                         } else {
                             $this->log .= "&nbsp;&nbsp;&nbsp;&nbsp;UNIX file() command failed<br />";
@@ -541,13 +541,13 @@ class Class_3
                 if ($this->mime_magic) {
                     $this->log .= "- Checking MIME type with mime.magic file (mime_content_type())<br />";
                     if (function_exists("mime_content_type")) {
-                        $this->$file_src_mime = var_95($this->file_src_pathname);
+                        $this->file_src_mime = mime_content_type($this->file_src_pathname);
                         $this->log .= "&nbsp;&nbsp;&nbsp;&nbsp;MIME type detected as " . $this->file_src_mime . " by mime_content_type()<br />";
                         if (preg_match("/^([\\.-\\w]+)\\/([\\.-\\w]+)(.*)\$/i", $this->file_src_mime)) {
-                            $this->$file_src_mime = preg_replace("/^([\\.-\\w]+)\\/([\\.-\\w]+)(.*)\$/i", "\$1/\$2", $this->file_src_mime);
+                            $this->file_src_mime = preg_replace("/^([\\.-\\w]+)\\/([\\.-\\w]+)(.*)\$/i", "\$1/\$2", $this->file_src_mime);
                             $this->log .= "-&nbsp;MIME validated as " . $this->file_src_mime . "<br />";
                         } else {
-                            $this->$file_src_mime = NULL;
+                            $this->file_src_mime = NULL;
                         }
                     } else {
                         $this->log .= "&nbsp;&nbsp;&nbsp;&nbsp;mime_content_type() is not available<br />";
@@ -561,18 +561,18 @@ class Class_3
                     $this->log .= "- Checking MIME type with getimagesize()<br />";
                     $info = getimagesize($this->file_src_pathname);
                     if (is_array($info) && array_key_exists("mime", $info)) {
-                        $this->$file_src_mime = trim($info["mime"]);
+                        $this->file_src_mime = trim($info["mime"]);
                         if (empty($this->file_src_mime)) {
                             $this->log .= "&nbsp;&nbsp;&nbsp;&nbsp;MIME empty, guessing from type<br />";
                             $mime = is_array($info) && array_key_exists(2, $info) ? $info[2] : NULL;
-                            $this->$file_src_mime = $mime == IMAGETYPE_GIF ? "image/gif" : ($mime == IMAGETYPE_JPEG ? "image/jpeg" : ($mime == IMAGETYPE_PNG ? "image/png" : ($mime == IMAGETYPE_BMP ? "image/bmp" : NULL)));
+                            $this->file_src_mime = $mime == IMAGETYPE_GIF ? "image/gif" : ($mime == IMAGETYPE_JPEG ? "image/jpeg" : ($mime == IMAGETYPE_PNG ? "image/png" : ($mime == IMAGETYPE_BMP ? "image/bmp" : NULL)));
                         }
                         $this->log .= "&nbsp;&nbsp;&nbsp;&nbsp;MIME type detected as " . $this->file_src_mime . " by PHP getimagesize() function<br />";
                         if (preg_match("/^([\\.-\\w]+)\\/([\\.-\\w]+)(.*)\$/i", $this->file_src_mime)) {
-                            $this->$file_src_mime = preg_replace("/^([\\.-\\w]+)\\/([\\.-\\w]+)(.*)\$/i", "\$1/\$2", $this->file_src_mime);
+                            $this->file_src_mime = preg_replace("/^([\\.-\\w]+)\\/([\\.-\\w]+)(.*)\$/i", "\$1/\$2", $this->file_src_mime);
                             $this->log .= "-&nbsp;MIME validated as " . $this->file_src_mime . "<br />";
                         } else {
-                            $this->$file_src_mime = NULL;
+                            $this->file_src_mime = NULL;
                         }
                     } else {
                         $this->log .= "&nbsp;&nbsp;&nbsp;&nbsp;getimagesize() failed<br />";
@@ -582,17 +582,17 @@ class Class_3
                 }
             }
             if (!empty($mime_from_browser) && !$this->file_src_mime || !is_string($this->file_src_mime) || empty($this->file_src_mime)) {
-                $this->$file_src_mime = $mime_from_browser;
+                $this->file_src_mime = $mime_from_browser;
                 $this->log .= "- MIME type detected as " . $this->file_src_mime . " by browser<br />";
                 if (preg_match("/^([\\.-\\w]+)\\/([\\.-\\w]+)(.*)\$/i", $this->file_src_mime)) {
-                    $this->$file_src_mime = preg_replace("/^([\\.-\\w]+)\\/([\\.-\\w]+)(.*)\$/i", "\$1/\$2", $this->file_src_mime);
+                    $this->file_src_mime = preg_replace("/^([\\.-\\w]+)\\/([\\.-\\w]+)(.*)\$/i", "\$1/\$2", $this->file_src_mime);
                     $this->log .= "-&nbsp;MIME validated as " . $this->file_src_mime . "<br />";
                 } else {
-                    $this->$file_src_mime = NULL;
+                    $this->file_src_mime = NULL;
                 }
             }
-            if ($this->$file_src_mime = = "application/octet-stream" || !$this->file_src_mime || !is_string($this->file_src_mime) || empty($this->file_src_mime) || strpos($this->file_src_mime, "/") === false) {
-                if ($this->$file_src_mime = = "application/octet-stream") {
+            if ($this->file_src_mime=="application/octet-stream" || !$this->file_src_mime || !is_string($this->file_src_mime) || empty($this->file_src_mime) || strpos($this->file_src_mime, "/") === false) {
+                if ($this->file_src_mime=="application/octet-stream") {
                     $this->log .= "- Flash may be rewriting MIME as application/octet-stream<br />";
                 }
                 $this->log .= "- Try to guess MIME type from file extension (" . $this->file_src_name_ext . "): ";
@@ -600,38 +600,38 @@ class Class_3
                     case "jpg":
                     case "jpeg":
                     case "jpe":
-                        $this->$file_src_mime = "image/jpeg";
+                        $this->file_src_mime = "image/jpeg";
                         break;
                     case "gif":
-                        $this->$file_src_mime = "image/gif";
+                        $this->file_src_mime = "image/gif";
                         break;
                     case "png":
-                        $this->$file_src_mime = "image/png";
+                        $this->file_src_mime = "image/png";
                         break;
                     case "bmp":
-                        $this->$file_src_mime = "image/bmp";
+                        $this->file_src_mime = "image/bmp";
                         break;
                     case "flv":
-                        $this->$file_src_mime = "video/x-flv";
+                        $this->file_src_mime = "video/x-flv";
                         break;
                     case "js":
-                        $this->$file_src_mime = "application/x-javascript";
+                        $this->file_src_mime = "application/x-javascript";
                         break;
                     case "json":
-                        $this->$file_src_mime = "application/json";
+                        $this->file_src_mime = "application/json";
                         break;
                     case "tiff":
-                        $this->$file_src_mime = "image/tiff";
+                        $this->file_src_mime = "image/tiff";
                         break;
                     case "css":
-                        $this->$file_src_mime = "text/css";
+                        $this->file_src_mime = "text/css";
                         break;
                     case "xml":
-                        $this->$file_src_mime = "application/xml";
+                        $this->file_src_mime = "application/xml";
                         break;
                     case "doc":
                     case "docx":
-                        $this->$file_src_mime = "application/msword";
+                        $this->file_src_mime = "application/msword";
                         break;
                     case "xls":
                     case "xlt":
@@ -641,172 +641,172 @@ class Class_3
                     case "xlc":
                     case "xlw":
                     case "xll":
-                        $this->$file_src_mime = "application/vnd.ms-excel";
+                        $this->file_src_mime = "application/vnd.ms-excel";
                         break;
                     case "ppt":
                     case "pps":
-                        $this->$file_src_mime = "application/vnd.ms-powerpoint";
+                        $this->file_src_mime = "application/vnd.ms-powerpoint";
                         break;
                     case "rtf":
-                        $this->$file_src_mime = "application/rtf";
+                        $this->file_src_mime = "application/rtf";
                         break;
                     case "pdf":
-                        $this->$file_src_mime = "application/pdf";
+                        $this->file_src_mime = "application/pdf";
                         break;
                     case "html":
                     case "htm":
                     case "php":
-                        $this->$file_src_mime = "text/html";
+                        $this->file_src_mime = "text/html";
                         break;
                     case "txt":
-                        $this->$file_src_mime = "text/plain";
+                        $this->file_src_mime = "text/plain";
                         break;
                     case "mpeg":
                     case "mpg":
                     case "mpe":
-                        $this->$file_src_mime = "video/mpeg";
+                        $this->file_src_mime = "video/mpeg";
                         break;
                     case "mp3":
-                        $this->$file_src_mime = "audio/mpeg3";
+                        $this->file_src_mime = "audio/mpeg3";
                         break;
                     case "wav":
-                        $this->$file_src_mime = "audio/wav";
+                        $this->file_src_mime = "audio/wav";
                         break;
                     case "aiff":
                     case "aif":
-                        $this->$file_src_mime = "audio/aiff";
+                        $this->file_src_mime = "audio/aiff";
                         break;
                     case "avi":
-                        $this->$file_src_mime = "video/msvideo";
+                        $this->file_src_mime = "video/msvideo";
                         break;
                     case "wmv":
-                        $this->$file_src_mime = "video/x-ms-wmv";
+                        $this->file_src_mime = "video/x-ms-wmv";
                         break;
                     case "mov":
-                        $this->$file_src_mime = "video/quicktime";
+                        $this->file_src_mime = "video/quicktime";
                         break;
                     case "zip":
-                        $this->$file_src_mime = "application/zip";
+                        $this->file_src_mime = "application/zip";
                         break;
                     case "tar":
-                        $this->$file_src_mime = "application/x-tar";
+                        $this->file_src_mime = "application/x-tar";
                         break;
                     case "swf":
-                        $this->$file_src_mime = "application/x-shockwave-flash";
+                        $this->file_src_mime = "application/x-shockwave-flash";
                         break;
                     case "odt":
-                        $this->$file_src_mime = "application/vnd.oasis.opendocument.text";
+                        $this->file_src_mime = "application/vnd.oasis.opendocument.text";
                         break;
                     case "ott":
-                        $this->$file_src_mime = "application/vnd.oasis.opendocument.text-template";
+                        $this->file_src_mime = "application/vnd.oasis.opendocument.text-template";
                         break;
                     case "oth":
-                        $this->$file_src_mime = "application/vnd.oasis.opendocument.text-web";
+                        $this->file_src_mime = "application/vnd.oasis.opendocument.text-web";
                         break;
                     case "odm":
-                        $this->$file_src_mime = "application/vnd.oasis.opendocument.text-master";
+                        $this->file_src_mime = "application/vnd.oasis.opendocument.text-master";
                         break;
                     case "odg":
-                        $this->$file_src_mime = "application/vnd.oasis.opendocument.graphics";
+                        $this->file_src_mime = "application/vnd.oasis.opendocument.graphics";
                         break;
                     case "otg":
-                        $this->$file_src_mime = "application/vnd.oasis.opendocument.graphics-template";
+                        $this->file_src_mime = "application/vnd.oasis.opendocument.graphics-template";
                         break;
                     case "odp":
-                        $this->$file_src_mime = "application/vnd.oasis.opendocument.presentation";
+                        $this->file_src_mime = "application/vnd.oasis.opendocument.presentation";
                         break;
                     case "otp":
-                        $this->$file_src_mime = "application/vnd.oasis.opendocument.presentation-template";
+                        $this->file_src_mime = "application/vnd.oasis.opendocument.presentation-template";
                         break;
                     case "ods":
-                        $this->$file_src_mime = "application/vnd.oasis.opendocument.spreadsheet";
+                        $this->file_src_mime = "application/vnd.oasis.opendocument.spreadsheet";
                         break;
                     case "ots":
-                        $this->$file_src_mime = "application/vnd.oasis.opendocument.spreadsheet-template";
+                        $this->file_src_mime = "application/vnd.oasis.opendocument.spreadsheet-template";
                         break;
                     case "odc":
-                        $this->$file_src_mime = "application/vnd.oasis.opendocument.chart";
+                        $this->file_src_mime = "application/vnd.oasis.opendocument.chart";
                         break;
                     case "odf":
-                        $this->$file_src_mime = "application/vnd.oasis.opendocument.formula";
+                        $this->file_src_mime = "application/vnd.oasis.opendocument.formula";
                         break;
                     case "odb":
-                        $this->$file_src_mime = "application/vnd.oasis.opendocument.database";
+                        $this->file_src_mime = "application/vnd.oasis.opendocument.database";
                         break;
                     case "odi":
-                        $this->$file_src_mime = "application/vnd.oasis.opendocument.image";
+                        $this->file_src_mime = "application/vnd.oasis.opendocument.image";
                         break;
                     case "oxt":
-                        $this->$file_src_mime = "application/vnd.openofficeorg.extension";
+                        $this->file_src_mime = "application/vnd.openofficeorg.extension";
                         break;
                     case "docx":
-                        $this->$file_src_mime = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+                        $this->file_src_mime = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
                         break;
                     case "docm":
-                        $this->$file_src_mime = "application/vnd.ms-word.document.macroEnabled.12";
+                        $this->file_src_mime = "application/vnd.ms-word.document.macroEnabled.12";
                         break;
                     case "dotx":
-                        $this->$file_src_mime = "application/vnd.openxmlformats-officedocument.wordprocessingml.template";
+                        $this->file_src_mime = "application/vnd.openxmlformats-officedocument.wordprocessingml.template";
                         break;
                     case "dotm":
-                        $this->$file_src_mime = "application/vnd.ms-word.template.macroEnabled.12";
+                        $this->file_src_mime = "application/vnd.ms-word.template.macroEnabled.12";
                         break;
                     case "xlsx":
-                        $this->$file_src_mime = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                        $this->file_src_mime = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
                         break;
                     case "xlsm":
-                        $this->$file_src_mime = "application/vnd.ms-excel.sheet.macroEnabled.12";
+                        $this->file_src_mime = "application/vnd.ms-excel.sheet.macroEnabled.12";
                         break;
                     case "xltx":
-                        $this->$file_src_mime = "application/vnd.openxmlformats-officedocument.spreadsheetml.template";
+                        $this->file_src_mime = "application/vnd.openxmlformats-officedocument.spreadsheetml.template";
                         break;
                     case "xltm":
-                        $this->$file_src_mime = "application/vnd.ms-excel.template.macroEnabled.12";
+                        $this->file_src_mime = "application/vnd.ms-excel.template.macroEnabled.12";
                         break;
                     case "xlsb":
-                        $this->$file_src_mime = "application/vnd.ms-excel.sheet.binary.macroEnabled.12";
+                        $this->file_src_mime = "application/vnd.ms-excel.sheet.binary.macroEnabled.12";
                         break;
                     case "xlam":
-                        $this->$file_src_mime = "application/vnd.ms-excel.addin.macroEnabled.12";
+                        $this->file_src_mime = "application/vnd.ms-excel.addin.macroEnabled.12";
                         break;
                     case "pptx":
-                        $this->$file_src_mime = "application/vnd.openxmlformats-officedocument.presentationml.presentation";
+                        $this->file_src_mime = "application/vnd.openxmlformats-officedocument.presentationml.presentation";
                         break;
                     case "pptm":
-                        $this->$file_src_mime = "application/vnd.ms-powerpoint.presentation.macroEnabled.12";
+                        $this->file_src_mime = "application/vnd.ms-powerpoint.presentation.macroEnabled.12";
                         break;
                     case "ppsx":
-                        $this->$file_src_mime = "application/vnd.openxmlformats-officedocument.presentationml.slideshow";
+                        $this->file_src_mime = "application/vnd.openxmlformats-officedocument.presentationml.slideshow";
                         break;
                     case "ppsm":
-                        $this->$file_src_mime = "application/vnd.ms-powerpoint.slideshow.macroEnabled.12";
+                        $this->file_src_mime = "application/vnd.ms-powerpoint.slideshow.macroEnabled.12";
                         break;
                     case "potx":
-                        $this->$file_src_mime = "application/vnd.openxmlformats-officedocument.presentationml.template";
+                        $this->file_src_mime = "application/vnd.openxmlformats-officedocument.presentationml.template";
                         break;
                     case "potm":
-                        $this->$file_src_mime = "application/vnd.ms-powerpoint.template.macroEnabled.12";
+                        $this->file_src_mime = "application/vnd.ms-powerpoint.template.macroEnabled.12";
                         break;
                     case "ppam":
-                        $this->$file_src_mime = "application/vnd.ms-powerpoint.addin.macroEnabled.12";
+                        $this->file_src_mime = "application/vnd.ms-powerpoint.addin.macroEnabled.12";
                         break;
                     case "sldx":
-                        $this->$file_src_mime = "application/vnd.openxmlformats-officedocument.presentationml.slide";
+                        $this->file_src_mime = "application/vnd.openxmlformats-officedocument.presentationml.slide";
                         break;
                     case "sldm":
-                        $this->$file_src_mime = "application/vnd.ms-powerpoint.slide.macroEnabled.12";
+                        $this->file_src_mime = "application/vnd.ms-powerpoint.slide.macroEnabled.12";
                         break;
                     case "thmx":
-                        $this->$file_src_mime = "application/vnd.ms-officetheme";
+                        $this->file_src_mime = "application/vnd.ms-officetheme";
                         break;
                     case "onetoc":
                     case "onetoc2":
                     case "onetmp":
                     case "onepkg":
-                        $this->$file_src_mime = "application/onenote";
+                        $this->file_src_mime = "application/onenote";
                         break;
                     default:
-                        if ($this->$file_src_mime = = "application/octet-stream") {
+                        if ($this->file_src_mime=="application/octet-stream") {
                             $this->log .= "doesn't look like anything known<br />";
                         } else {
                             $this->log .= "MIME type set to " . $this->file_src_mime . "<br />";
@@ -817,8 +817,8 @@ class Class_3
                 $this->log .= "- MIME type couldn't be detected! (" . (string) $this->file_src_mime . ")<br />";
             }
             if ($this->file_src_mime && is_string($this->file_src_mime) && !empty($this->file_src_mime) && array_key_exists($this->file_src_mime, $this->image_supported)) {
-                $this->$file_is_image = true;
-                $this->$image_src_type = $this->image_supported[$this->file_src_mime];
+                $this->file_is_image = true;
+                $this->image_src_type = $this->image_supported[$this->file_src_mime];
             }
             if ($this->file_is_image) {
                 if ($h = fopen($this->file_src_pathname, "r")) {
@@ -826,15 +826,15 @@ class Class_3
                     $info = getimagesize($this->file_src_pathname);
                     if (is_array($info)) {
                         list($this->image_src_x, $this->image_src_y) = $info;
-                        $this->$image_dst_x = $this->image_src_x;
-                        $this->$image_dst_y = $this->image_src_y;
-                        $this->$image_src_pixels = $this->image_src_x * $this->image_src_y;
-                        $this->$image_src_bits = array_key_exists("bits", $info) ? $info["bits"] : NULL;
+                        $this->image_dst_x = $this->image_src_x;
+                        $this->image_dst_y = $this->image_src_y;
+                        $this->image_src_pixels = $this->image_src_x * $this->image_src_y;
+                        $this->image_src_bits = array_key_exists("bits", $info) ? $info["bits"] : NULL;
                     } else {
-                        $this->$file_is_image = false;
-                        $this->$uploaded = false;
+                        $this->file_is_image = false;
+                        $this->uploaded = false;
                         $this->log .= "- can't retrieve image information, image may have been tampered with<br />";
-                        $this->$error = $this->translateString("incorrect_file");
+                        $this->error = $this->translateString("incorrect_file");
                     }
                 } else {
                     $this->log .= "- can't read source file directly. open_basedir restriction in place?<br />";
@@ -859,42 +859,42 @@ class Class_3
             }
         }
     }
-    public function function_39($full = false)
+    public function getGdVersion($full = false)
     {
-        if ($var_96 === NULL) {
+        if ($gd_version === NULL) {
             if (function_exists("gd_info")) {
                 $gd = gd_info();
                 $gd = $gd["GD Version"];
-                $var_97 = "/([\\d\\.]+)/i";
+                $gd_pattern = "/([\\d\\.]+)/i";
             } else {
                 ob_start();
                 phpinfo(8);
                 $gd = ob_get_contents();
                 ob_end_clean();
-                $var_97 = "/\\bgd\\s+version\\b[^\\d\n\r]+?([\\d\\.]+)/i";
+                $gd_pattern = "/\\bgd\\s+version\\b[^\\d\n\r]+?([\\d\\.]+)/i";
             }
-            if (preg_match($var_97, $gd, $m)) {
-                $var_98 = (string) $m[1];
-                $var_96 = (double) $m[1];
+            if (preg_match($gd_pattern, $gd, $m)) {
+                $gd_version_string = (string) $m[1];
+                $gd_version = (double) $m[1];
             } else {
-                $var_98 = "none";
-                $var_96 = 0;
+                $gd_version_string = "none";
+                $gd_version = 0;
             }
         }
         if ($full) {
-            return $var_98;
+            return $gd_version_string;
         }
-        return $var_96;
+        return $gd_version;
     }
-    public function function_41($path, $mode = 511)
+    public function createDirectoryRecursive($path, $mode = 511)
     {
-        return is_dir($path) || $this->function_41(dirname($path), $mode) && $this->function_42($path, $mode);
+        return is_dir($path) || $this->createDirectoryRecursive(dirname($path), $mode) && $this->createDirectoryWithPermissions($path, $mode);
     }
-    public function function_42($path, $mode = 511)
+    public function createDirectoryWithPermissions($path, $mode = 511)
     {
-        $var_99 = umask(0);
+        $old_umask = umask(0);
         $res = @mkdir($path, $mode);
-        umask($var_99);
+        umask($old_umask);
         return $res;
     }
     public function translateString($str, $tokens = [])
@@ -907,15 +907,15 @@ class Class_3
         }
         return $str;
     }
-    public function function_43($color)
+    public function parseColor($color)
     {
-        $var_100 = sscanf($color, "#%2x%2x%2x");
-        $var_101 = array_key_exists(0, $var_100) && is_numeric($var_100[0]) ? $var_100[0] : 0;
-        $var_102 = array_key_exists(1, $var_100) && is_numeric($var_100[1]) ? $var_100[1] : 0;
-        $var_103 = array_key_exists(2, $var_100) && is_numeric($var_100[2]) ? $var_100[2] : 0;
-        return [$var_101, $var_102, $var_103];
+        $rgb_array = sscanf($color, "#%2x%2x%2x");
+        $red = array_key_exists(0, $rgb_array) && is_numeric($rgb_array[0]) ? $rgb_array[0] : 0;
+        $green = array_key_exists(1, $rgb_array) && is_numeric($rgb_array[1]) ? $rgb_array[1] : 0;
+        $blue = array_key_exists(2, $rgb_array) && is_numeric($rgb_array[2]) ? $rgb_array[2] : 0;
+        return [$red, $green, $blue];
     }
-    public function function_44($x, $y, $fill = true, $trsp = false)
+    public function createImageResource($x, $y, $fill = true, $trsp = false)
     {
         if ($x < 1) {
             $x = 1;
@@ -923,27 +923,27 @@ class Class_3
         if ($y < 1) {
             $y = 1;
         }
-        if (2 <= $this->function_39() && !$this->image_is_palette) {
-            $var_104 = imagecreatetruecolor($x, $y);
+        if (2 <= $this->getGdVersion() && !$this->image_is_palette) {
+            $image_resource = imagecreatetruecolor($x, $y);
             if (empty($this->image_background_color) || $trsp) {
-                imagealphablending($var_104, false);
-                imagefilledrectangle($var_104, 0, 0, $x, $y, imagecolorallocatealpha($var_104, 0, 0, 0, 127));
+                imagealphablending($image_resource, false);
+                imagefilledrectangle($image_resource, 0, 0, $x, $y, imagecolorallocatealpha($image_resource, 0, 0, 0, 127));
             }
         } else {
-            $var_104 = imagecreate($x, $y);
+            $image_resource = imagecreate($x, $y);
             if ($fill && $this->image_is_transparent && empty($this->image_background_color) || $trsp) {
-                imagefilledrectangle($var_104, 0, 0, $x, $y, $this->image_transparent_color);
-                imagecolortransparent($var_104, $this->image_transparent_color);
+                imagefilledrectangle($image_resource, 0, 0, $x, $y, $this->image_transparent_color);
+                imagecolortransparent($image_resource, $this->image_transparent_color);
             }
         }
         if ($fill && !empty($this->image_background_color) && !$trsp) {
-            list($var_101, $var_102, $var_103) = $this->function_43($this->image_background_color);
-            $var_105 = imagecolorallocate($var_104, $var_101, $var_102, $var_103);
-            imagefilledrectangle($var_104, 0, 0, $x, $y, $var_105);
+            list($red, $green, $blue) = $this->parseColor($this->image_background_color);
+            $bg_color = imagecolorallocate($image_resource, $red, $green, $blue);
+            imagefilledrectangle($image_resource, 0, 0, $x, $y, $bg_color);
         }
-        return $var_104;
+        return $image_resource;
     }
-    public function function_45($src_im, $dst_im)
+    public function copyImage($src_im, $dst_im)
     {
         if (is_resource($dst_im)) {
             imagedestroy($dst_im);
@@ -951,7 +951,7 @@ class Class_3
         $dst_im =& $src_im;
         return $dst_im;
     }
-    public function function_46(&$dst_im, &$src_im, $dst_x, $dst_y, $src_x, $src_y, $src_w, $src_h, $pct = 0)
+    public function mergeImagesWithAlpha(&$dst_im, &$src_im, $dst_x, $dst_y, $src_x, $src_y, $src_w, $src_h, $pct = 0)
     {
         $dst_x = (int) $dst_x;
         $dst_y = (int) $dst_y;
@@ -960,46 +960,46 @@ class Class_3
         $src_w = (int) $src_w;
         $src_h = (int) $src_h;
         $pct = (int) $pct;
-        $var_106 = imagesx($dst_im);
-        $var_107 = imagesy($dst_im);
+        $dst_width = imagesx($dst_im);
+        $dst_height = imagesy($dst_im);
         for ($y = $src_y; $y < $src_h; $y++) {
             for ($x = $src_x; $x < $src_w; $x++) {
-                if (0 <= $x + $dst_x && $x + $dst_x < $var_106 && 0 <= $x + $src_x && $x + $src_x < $src_w && 0 <= $y + $dst_y && $y + $dst_y < $var_107 && 0 <= $y + $src_y && $y + $src_y < $src_h) {
-                    $var_108 = imagecolorsforindex($dst_im, imagecolorat($dst_im, $x + $dst_x, $y + $dst_y));
-                    $var_109 = imagecolorsforindex($src_im, imagecolorat($src_im, $x + $src_x, $y + $src_y));
-                    $var_110 = 1 - $var_109["alpha"] / 127;
-                    $var_111 = 1 - $var_108["alpha"] / 127;
-                    $var_112 = $var_110 * $pct / 100;
-                    if ($var_112 <= $var_111) {
-                        $var_113 = $var_111;
+                if (0 <= $x + $dst_x && $x + $dst_x < $dst_width && 0 <= $x + $src_x && $x + $src_x < $src_w && 0 <= $y + $dst_y && $y + $dst_y < $dst_height && 0 <= $y + $src_y && $y + $src_y < $src_h) {
+                    $dst_color = imagecolorsforindex($dst_im, imagecolorat($dst_im, $x + $dst_x, $y + $dst_y));
+                    $src_color = imagecolorsforindex($src_im, imagecolorat($src_im, $x + $src_x, $y + $src_y));
+                    $src_alpha_pct = 1 - $src_color["alpha"] / 127;
+                    $dst_alpha_pct = 1 - $dst_color["alpha"] / 127;
+                    $alpha_pct = $src_alpha_pct * $pct / 100;
+                    if ($alpha_pct <= $dst_alpha_pct) {
+                        $new_alpha = $dst_alpha_pct;
                     }
-                    if ($var_111 < $var_112) {
-                        $var_113 = $var_112;
+                    if ($dst_alpha_pct < $alpha_pct) {
+                        $new_alpha = $alpha_pct;
                     }
-                    if (1 < $var_113) {
-                        $var_113 = 1;
+                    if (1 < $new_alpha) {
+                        $new_alpha = 1;
                     }
-                    if (0 < $var_112) {
-                        $var_114 = round($var_108["red"] * $var_111 * (1 - $var_112));
-                        $var_115 = round($var_108["green"] * $var_111 * (1 - $var_112));
-                        $var_116 = round($var_108["blue"] * $var_111 * (1 - $var_112));
-                        $var_117 = round($var_109["red"] * $var_112);
-                        $var_118 = round($var_109["green"] * $var_112);
-                        $var_119 = round($var_109["blue"] * $var_112);
-                        $var_101 = round(($var_114 + $var_117) / ($var_111 * (1 - $var_112) + $var_112));
-                        $var_102 = round(($var_115 + $var_118) / ($var_111 * (1 - $var_112) + $var_112));
-                        $var_103 = round(($var_116 + $var_119) / ($var_111 * (1 - $var_112) + $var_112));
-                        if (255 < $var_101) {
-                            $var_101 = 255;
+                    if (0 < $alpha_pct) {
+                        $dst_red_weighted = round($dst_color["red"] * $dst_alpha_pct * (1 - $alpha_pct));
+                        $dst_green_weighted = round($dst_color["green"] * $dst_alpha_pct * (1 - $alpha_pct));
+                        $dst_blue_weighted = round($dst_color["blue"] * $dst_alpha_pct * (1 - $alpha_pct));
+                        $src_red_weighted = round($src_color["red"] * $alpha_pct);
+                        $src_green_weighted = round($src_color["green"] * $alpha_pct);
+                        $src_blue_weighted = round($src_color["blue"] * $alpha_pct);
+                        $red = round(($dst_red_weighted + $src_red_weighted) / ($dst_alpha_pct * (1 - $alpha_pct) + $alpha_pct));
+                        $green = round(($dst_green_weighted + $src_green_weighted) / ($dst_alpha_pct * (1 - $alpha_pct) + $alpha_pct));
+                        $blue = round(($dst_blue_weighted + $src_blue_weighted) / ($dst_alpha_pct * (1 - $alpha_pct) + $alpha_pct));
+                        if (255 < $red) {
+                            $red = 255;
                         }
-                        if (255 < $var_102) {
-                            $var_102 = 255;
+                        if (255 < $green) {
+                            $green = 255;
                         }
-                        if (255 < $var_103) {
-                            $var_103 = 255;
+                        if (255 < $blue) {
+                            $blue = 255;
                         }
-                        $var_113 = round((1 - $var_113) * 127);
-                        $color = imagecolorallocatealpha($dst_im, $var_101, $var_102, $var_103, $var_113);
+                        $new_alpha = round((1 - $new_alpha) * 127);
+                        $color = imagecolorallocatealpha($dst_im, $red, $green, $blue, $new_alpha);
                         imagesetpixel($dst_im, $x + $dst_x, $y + $dst_y, $color);
                     }
                 }
@@ -1007,20 +1007,20 @@ class Class_3
         }
         return true;
     }
-    public function function_47($server_path = NULL)
+    public function process($server_path = NULL)
     {
-        $this->$error = "";
-        $this->$processed = true;
-        $var_120 = false;
-        $var_121 = NULL;
+        $this->error = "";
+        $this->processed = true;
+        $return_content = false;
+        $content_buffer = NULL;
         if (!$this->uploaded) {
-            $this->$error = $this->translateString("file_not_uploaded");
-            $this->$processed = false;
+            $this->error = $this->translateString("file_not_uploaded");
+            $this->processed = false;
         }
         if ($this->processed) {
             if (empty($server_path) || is_null($server_path)) {
                 $this->log .= "<b>process file and return the content</b><br />";
-                $var_120 = true;
+                $return_content = true;
             } else {
                 if (strtolower(substr(PHP_OS, 0, 3)) === "win") {
                     if (substr($server_path, -1, 1) != "\\") {
@@ -1036,36 +1036,36 @@ class Class_3
         }
         if ($this->processed) {
             if ($this->file_max_size < $this->file_src_size) {
-                $this->$processed = false;
-                $this->$error = $this->translateString("file_too_big");
+                $this->processed = false;
+                $this->error = $this->translateString("file_too_big");
             } else {
                 $this->log .= "- file size OK<br />";
             }
         }
         if ($this->processed) {
             if ($this->no_script && ((substr($this->file_src_mime, 0, 5) == "text/" || strpos($this->file_src_mime, "javascript") !== false) && substr($this->file_src_name, -4) != ".txt" || preg_match("/\\.(php|pl|py|cgi|asp)\$/i", $this->file_src_name) || empty($this->file_src_name_ext))) {
-                $this->$file_src_mime = "text/plain";
+                $this->file_src_mime = "text/plain";
                 $this->log .= "- script " . $this->file_src_name . " renamed as " . $this->file_src_name . ".txt!<br />";
                 $this->file_src_name_ext .= empty($this->file_src_name_ext) ? "txt" : ".txt";
             }
             if ($this->mime_check && empty($this->file_src_mime)) {
-                $this->$processed = false;
-                $this->$error = $this->translateString("no_mime");
+                $this->processed = false;
+                $this->error = $this->translateString("no_mime");
             } else {
                 if ($this->mime_check && !empty($this->file_src_mime) && strpos($this->file_src_mime, "/") !== false) {
-                    list($var_122, $var_123) = explode("/", $this->file_src_mime);
+                    list($mime_type, $mime_subtype) = explode("/", $this->file_src_mime);
                     $allowed = false;
-                    foreach ($this->allowed as $k => $var_124) {
-                        list($var_125, $var_126) = explode("/", $var_124);
-                        if ($var_125 == "*" && $var_126 == "*" || $var_125 == $var_122 && ($var_126 == $var_123 || $var_126 == "*")) {
+                    foreach ($this->allowed as $k => $allowed_mime) {
+                        list($allowed_type, $allowed_subtype) = explode("/", $allowed_mime);
+                        if ($allowed_type == "*" && $allowed_subtype == "*" || $allowed_type == $mime_type && ($allowed_subtype == $mime_subtype || $allowed_subtype == "*")) {
                             $allowed = true;
-                            foreach ($this->forbidden as $k => $var_124) {
-                                list($var_125, $var_126) = explode("/", $var_124);
-                                if ($var_125 == "*" && $var_126 == "*" || $var_125 == $var_122 && ($var_126 == $var_123 || $var_126 == "*")) {
+                            foreach ($this->forbidden as $k => $allowed_mime) {
+                                list($allowed_type, $allowed_subtype) = explode("/", $allowed_mime);
+                                if ($allowed_type == "*" && $allowed_subtype == "*" || $allowed_type == $mime_type && ($allowed_subtype == $mime_subtype || $allowed_subtype == "*")) {
                                     $allowed = false;
                                     if (!$allowed) {
-                                        $this->$processed = false;
-                                        $this->$error = $this->translateString("incorrect_file");
+                                        $this->processed = false;
+                                        $this->error = $this->translateString("incorrect_file");
                                     } else {
                                         $this->log .= "- file mime OK : " . $this->file_src_mime . "<br />";
                                     }
@@ -1079,38 +1079,38 @@ class Class_3
             }
             if ($this->file_is_image) {
                 if (is_numeric($this->image_src_x) && is_numeric($this->image_src_y)) {
-                    $var_127 = $this->image_src_x / $this->image_src_y;
+                    $image_ratio = $this->image_src_x / $this->image_src_y;
                     if (!is_null($this->image_max_width) && $this->image_max_width < $this->image_src_x) {
-                        $this->$processed = false;
-                        $this->$error = $this->translateString("image_too_wide");
+                        $this->processed = false;
+                        $this->error = $this->translateString("image_too_wide");
                     }
                     if (!is_null($this->image_min_width) && $this->image_src_x < $this->image_min_width) {
-                        $this->$processed = false;
-                        $this->$error = $this->translateString("image_too_narrow");
+                        $this->processed = false;
+                        $this->error = $this->translateString("image_too_narrow");
                     }
                     if (!is_null($this->image_max_height) && $this->image_max_height < $this->image_src_y) {
-                        $this->$processed = false;
-                        $this->$error = $this->translateString("image_too_high");
+                        $this->processed = false;
+                        $this->error = $this->translateString("image_too_high");
                     }
                     if (!is_null($this->image_min_height) && $this->image_src_y < $this->image_min_height) {
-                        $this->$processed = false;
-                        $this->$error = $this->translateString("image_too_short");
+                        $this->processed = false;
+                        $this->error = $this->translateString("image_too_short");
                     }
-                    if (!is_null($this->image_max_ratio) && $this->image_max_ratio < $var_127) {
-                        $this->$processed = false;
-                        $this->$error = $this->translateString("ratio_too_high");
+                    if (!is_null($this->image_max_ratio) && $this->image_max_ratio < $image_ratio) {
+                        $this->processed = false;
+                        $this->error = $this->translateString("ratio_too_high");
                     }
-                    if (!is_null($this->image_min_ratio) && $var_127 < $this->image_min_ratio) {
-                        $this->$processed = false;
-                        $this->$error = $this->translateString("ratio_too_low");
+                    if (!is_null($this->image_min_ratio) && $image_ratio < $this->image_min_ratio) {
+                        $this->processed = false;
+                        $this->error = $this->translateString("ratio_too_low");
                     }
                     if (!is_null($this->image_max_pixels) && $this->image_max_pixels < $this->image_src_pixels) {
-                        $this->$processed = false;
-                        $this->$error = $this->translateString("too_many_pixels");
+                        $this->processed = false;
+                        $this->error = $this->translateString("too_many_pixels");
                     }
                     if (!is_null($this->image_min_pixels) && $this->image_src_pixels < $this->image_min_pixels) {
-                        $this->$processed = false;
-                        $this->$error = $this->translateString("not_enough_pixels");
+                        $this->processed = false;
+                        $this->error = $this->translateString("not_enough_pixels");
                     }
                 } else {
                     $this->log .= "- no image properties available, can't enforce dimension checks : " . $this->file_src_mime . "<br />";
@@ -1118,36 +1118,36 @@ class Class_3
             }
         }
         if ($this->processed) {
-            $this->$file_dst_path = $server_path;
-            $this->$file_dst_name = $this->file_src_name;
-            $this->$file_dst_name_body = $this->file_src_name_body;
-            $this->$file_dst_name_ext = $this->file_src_name_ext;
+            $this->file_dst_path = $server_path;
+            $this->file_dst_name = $this->file_src_name;
+            $this->file_dst_name_body = $this->file_src_name_body;
+            $this->file_dst_name_ext = $this->file_src_name_ext;
             if ($this->file_overwrite) {
-                $this->$file_auto_rename = false;
+                $this->file_auto_rename = false;
             }
             if ($this->image_convert != "") {
-                $this->$file_dst_name_ext = $this->image_convert;
+                $this->file_dst_name_ext = $this->image_convert;
                 $this->log .= "- new file name ext : " . $this->image_convert . "<br />";
             }
             if ($this->file_new_name_body != "") {
-                $this->$file_dst_name_body = $this->file_new_name_body;
+                $this->file_dst_name_body = $this->file_new_name_body;
                 $this->log .= "- new file name body : " . $this->file_new_name_body . "<br />";
             }
             if ($this->file_new_name_ext != "") {
-                $this->$file_dst_name_ext = $this->file_new_name_ext;
+                $this->file_dst_name_ext = $this->file_new_name_ext;
                 $this->log .= "- new file name ext : " . $this->file_new_name_ext . "<br />";
             }
             if ($this->file_name_body_add != "") {
-                $this->$file_dst_name_body = $this->file_dst_name_body . $this->file_name_body_add;
+                $this->file_dst_name_body = $this->file_dst_name_body . $this->file_name_body_add;
                 $this->log .= "- file name body append : " . $this->file_name_body_add . "<br />";
             }
             if ($this->file_name_body_pre != "") {
-                $this->$file_dst_name_body = $this->file_name_body_pre . $this->file_dst_name_body;
+                $this->file_dst_name_body = $this->file_name_body_pre . $this->file_dst_name_body;
                 $this->log .= "- file name body prepend : " . $this->file_name_body_pre . "<br />";
             }
             if ($this->file_safe_name) {
-                $this->$file_dst_name_body = str_replace([" ", "-"], ["_", "_"], $this->file_dst_name_body);
-                $this->$file_dst_name_body = preg_replace("/[^A-Za-z0-9_]/", "", $this->file_dst_name_body);
+                $this->file_dst_name_body = str_replace([" ", "-"], ["_", "_"], $this->file_dst_name_body);
+                $this->file_dst_name_body = preg_replace("/[^A-Za-z0-9_]/", "", $this->file_dst_name_body);
                 $this->log .= "- file name safe format<br />";
             }
             $this->log .= "- destination variables<br />";
@@ -1158,35 +1158,35 @@ class Class_3
             }
             $this->log .= "&nbsp;&nbsp;&nbsp;&nbsp;file_dst_name_body    : " . $this->file_dst_name_body . "<br />";
             $this->log .= "&nbsp;&nbsp;&nbsp;&nbsp;file_dst_name_ext     : " . $this->file_dst_name_ext . "<br />";
-            $var_128 = $this->file_is_image && ($this->image_resize || $this->image_convert != "" || is_numeric($this->image_brightness) || is_numeric($this->image_contrast) || is_numeric($this->image_threshold) || !empty($this->image_tint_color) || !empty($this->image_overlay_color) || !empty($this->image_text) || $this->image_greyscale || $this->image_negative || !empty($this->image_watermark) || is_numeric($this->image_rotate) || is_numeric($this->jpeg_size) || !empty($this->image_flip) || !empty($this->image_crop) || !empty($this->image_precrop) || !empty($this->image_border) || 0 < $this->image_frame || 0 < $this->image_bevel || $this->image_reflection_height);
-            if ($var_128) {
-                if ($this->$image_convert = = "") {
-                    $this->$file_dst_name = $this->file_dst_name_body . (!empty($this->file_dst_name_ext) ? "." . $this->file_dst_name_ext : "");
+            $requires_processing = $this->file_is_image && ($this->image_resize || $this->image_convert != "" || is_numeric($this->image_brightness) || is_numeric($this->image_contrast) || is_numeric($this->image_threshold) || !empty($this->image_tint_color) || !empty($this->image_overlay_color) || !empty($this->image_text) || $this->image_greyscale || $this->image_negative || !empty($this->image_watermark) || is_numeric($this->image_rotate) || is_numeric($this->jpeg_size) || !empty($this->image_flip) || !empty($this->image_crop) || !empty($this->image_precrop) || !empty($this->image_border) || 0 < $this->image_frame || 0 < $this->image_bevel || $this->image_reflection_height);
+            if ($requires_processing) {
+                if ($this->image_convert=="") {
+                    $this->file_dst_name = $this->file_dst_name_body . (!empty($this->file_dst_name_ext) ? "." . $this->file_dst_name_ext : "");
                     $this->log .= "- image operation, keep extension<br />";
                 } else {
-                    $this->$file_dst_name = $this->file_dst_name_body . "." . $this->image_convert;
+                    $this->file_dst_name = $this->file_dst_name_body . "." . $this->image_convert;
                     $this->log .= "- image operation, change extension for conversion type<br />";
                 }
             } else {
-                $this->$file_dst_name = $this->file_dst_name_body . (!empty($this->file_dst_name_ext) ? "." . $this->file_dst_name_ext : "");
+                $this->file_dst_name = $this->file_dst_name_body . (!empty($this->file_dst_name_ext) ? "." . $this->file_dst_name_ext : "");
                 $this->log .= "- no image operation, keep extension<br />";
             }
-            if (!$var_120) {
+            if (!$return_content) {
                 if (!$this->file_auto_rename) {
                     $this->log .= "- no auto_rename if same filename exists<br />";
-                    $this->$file_dst_pathname = $this->file_dst_path . $this->file_dst_name;
+                    $this->file_dst_pathname = $this->file_dst_path . $this->file_dst_name;
                 } else {
                     $this->log .= "- checking for auto_rename<br />";
-                    $this->$file_dst_pathname = $this->file_dst_path . $this->file_dst_name;
-                    $var_129 = $this->file_dst_name_body;
-                    $var_130 = 1;
+                    $this->file_dst_pathname = $this->file_dst_path . $this->file_dst_name;
+                    $original_name_body = $this->file_dst_name_body;
+                    $rename_counter = 1;
                     while (@file_exists($this->file_dst_pathname)) {
-                        $this->$file_dst_name_body = $var_129 . "_" . $var_130;
-                        $this->$file_dst_name = $this->file_dst_name_body . (!empty($this->file_dst_name_ext) ? "." . $this->file_dst_name_ext : "");
-                        $var_130++;
-                        $this->$file_dst_pathname = $this->file_dst_path . $this->file_dst_name;
+                        $this->file_dst_name_body = $original_name_body . "_" . $rename_counter;
+                        $this->file_dst_name = $this->file_dst_name_body . (!empty($this->file_dst_name_ext) ? "." . $this->file_dst_name_ext : "");
+                        $rename_counter++;
+                        $this->file_dst_pathname = $this->file_dst_path . $this->file_dst_name;
                     }
-                    if (1 < $var_130) {
+                    if (1 < $rename_counter) {
                         $this->log .= "&nbsp;&nbsp;&nbsp;&nbsp;auto_rename to " . $this->file_dst_name . "<br />";
                     }
                 }
@@ -1197,8 +1197,8 @@ class Class_3
                     $this->log .= "- no overwrite checking<br />";
                 } else {
                     if (@file_exists($this->file_dst_pathname)) {
-                        $this->$processed = false;
-                        $this->$error = $this->translateString("already_exists", [$this->file_dst_name]);
+                        $this->processed = false;
+                        $this->error = $this->translateString("already_exists", [$this->file_dst_name]);
                     } else {
                         $this->log .= "- " . $this->file_dst_name . " doesn't exist already<br />";
                     }
@@ -1208,42 +1208,42 @@ class Class_3
         if ($this->processed) {
             if (!empty($this->file_src_temp)) {
                 $this->log .= "- use the temp file instead of the original file since it is a second process<br />";
-                $this->$file_src_pathname = $this->file_src_temp;
+                $this->file_src_pathname = $this->file_src_temp;
                 if (!file_exists($this->file_src_pathname)) {
-                    $this->$processed = false;
-                    $this->$error = $this->translateString("temp_file_missing");
+                    $this->processed = false;
+                    $this->error = $this->translateString("temp_file_missing");
                 }
             } else {
                 if (!$this->no_upload_check) {
                     if (!is_uploaded_file($this->file_src_pathname)) {
-                        $this->$processed = false;
-                        $this->$error = $this->translateString("source_missing");
+                        $this->processed = false;
+                        $this->error = $this->translateString("source_missing");
                     }
                 } else {
                     if (!file_exists($this->file_src_pathname)) {
-                        $this->$processed = false;
-                        $this->$error = $this->translateString("source_missing");
+                        $this->processed = false;
+                        $this->error = $this->translateString("source_missing");
                     }
                 }
             }
-            if (!$var_120) {
+            if (!$return_content) {
                 if ($this->processed && !file_exists($this->file_dst_path)) {
                     if ($this->dir_auto_create) {
                         $this->log .= "- " . $this->file_dst_path . " doesn't exist. Attempting creation:";
-                        if (!$this->function_41($this->file_dst_path, $this->dir_chmod)) {
+                        if (!$this->createDirectoryRecursive($this->file_dst_path, $this->dir_chmod)) {
                             $this->log .= " failed<br />";
-                            $this->$processed = false;
-                            $this->$error = $this->translateString("destination_dir");
+                            $this->processed = false;
+                            $this->error = $this->translateString("destination_dir");
                         } else {
                             $this->log .= " success<br />";
                         }
                     } else {
-                        $this->$error = $this->translateString("destination_dir_missing");
+                        $this->error = $this->translateString("destination_dir_missing");
                     }
                 }
                 if ($this->processed && !is_dir($this->file_dst_path)) {
-                    $this->$processed = false;
-                    $this->$error = $this->translateString("destination_path_not_dir");
+                    $this->processed = false;
+                    $this->error = $this->translateString("destination_path_not_dir");
                 }
                 $hash = md5($this->file_dst_name_body . rand(1, 1000));
                 if ($this->processed && !($f = @fopen($this->file_dst_path . $hash . "." . $this->file_dst_name_ext, "a+"))) {
@@ -1251,20 +1251,20 @@ class Class_3
                         $this->log .= "- " . $this->file_dst_path . " is not writeable. Attempting chmod:";
                         if (!@chmod($this->file_dst_path, $this->dir_chmod)) {
                             $this->log .= " failed<br />";
-                            $this->$processed = false;
-                            $this->$error = $this->translateString("destination_dir_write");
+                            $this->processed = false;
+                            $this->error = $this->translateString("destination_dir_write");
                         } else {
                             $this->log .= " success<br />";
                             if (!($f = @fopen($this->file_dst_path . $hash . "." . $this->file_dst_name_ext, "a+"))) {
-                                $this->$processed = false;
-                                $this->$error = $this->translateString("destination_dir_write");
+                                $this->processed = false;
+                                $this->error = $this->translateString("destination_dir_write");
                             } else {
                                 @fclose($f);
                             }
                         }
                     } else {
-                        $this->$processed = false;
-                        $this->$error = $this->translateString("destination_path_write");
+                        $this->processed = false;
+                        $this->error = $this->translateString("destination_path_write");
                     }
                 } else {
                     if ($this->processed) {
@@ -1276,42 +1276,42 @@ class Class_3
                     $this->log .= "- attempting to use a temp file:";
                     $hash = md5($this->file_dst_name_body . rand(1, 1000));
                     if (move_uploaded_file($this->file_src_pathname, $this->file_dst_path . $hash . "." . $this->file_dst_name_ext)) {
-                        $this->$file_src_pathname = $this->file_dst_path . $hash . "." . $this->file_dst_name_ext;
-                        $this->$file_src_temp = $this->file_src_pathname;
+                        $this->file_src_pathname = $this->file_dst_path . $hash . "." . $this->file_dst_name_ext;
+                        $this->file_src_temp = $this->file_src_pathname;
                         $this->log .= " file created<br />";
                         $this->log .= "&nbsp;&nbsp;&nbsp;&nbsp;temp file is: " . $this->file_src_temp . "<br />";
                     } else {
                         $this->log .= " failed<br />";
-                        $this->$processed = false;
-                        $this->$error = $this->translateString("temp_file");
+                        $this->processed = false;
+                        $this->error = $this->translateString("temp_file");
                     }
                 }
             }
         }
         if ($this->processed) {
-            if ($var_128 && !@getimagesize($this->file_src_pathname)) {
+            if ($requires_processing && !@getimagesize($this->file_src_pathname)) {
                 $this->log .= "- the file is not an image!<br />";
-                $var_128 = false;
+                $requires_processing = false;
             }
-            if ($var_128) {
+            if ($requires_processing) {
                 if ($this->processed && !($f = @fopen($this->file_src_pathname, "r"))) {
-                    $this->$processed = false;
-                    $this->$error = $this->translateString("source_not_readable");
+                    $this->processed = false;
+                    $this->error = $this->translateString("source_not_readable");
                 } else {
                     @fclose($f);
                 }
                 $this->log .= "- image resizing or conversion wanted<br />";
-                if ($this->function_39()) {
+                if ($this->getGdVersion()) {
                     switch ($this->image_src_type) {
                         case "jpg":
                             if (!function_exists("imagecreatefromjpeg")) {
-                                $this->$processed = false;
-                                $this->$error = $this->translateString("no_create_support", ["JPEG"]);
+                                $this->processed = false;
+                                $this->error = $this->translateString("no_create_support", ["JPEG"]);
                             } else {
-                                $var_131 = @imagecreatefromjpeg($this->file_src_pathname);
-                                if (!$var_131) {
-                                    $this->$processed = false;
-                                    $this->$error = $this->translateString("create_error", ["JPEG"]);
+                                $source_image = @imagecreatefromjpeg($this->file_src_pathname);
+                                if (!$source_image) {
+                                    $this->processed = false;
+                                    $this->error = $this->translateString("create_error", ["JPEG"]);
                                 } else {
                                     $this->log .= "- source image is JPEG<br />";
                                 }
@@ -1319,13 +1319,13 @@ class Class_3
                             break;
                         case "png":
                             if (!function_exists("imagecreatefrompng")) {
-                                $this->$processed = false;
-                                $this->$error = $this->translateString("no_create_support", ["PNG"]);
+                                $this->processed = false;
+                                $this->error = $this->translateString("no_create_support", ["PNG"]);
                             } else {
-                                $var_131 = @imagecreatefrompng($this->file_src_pathname);
-                                if (!$var_131) {
-                                    $this->$processed = false;
-                                    $this->$error = $this->translateString("create_error", ["PNG"]);
+                                $source_image = @imagecreatefrompng($this->file_src_pathname);
+                                if (!$source_image) {
+                                    $this->processed = false;
+                                    $this->error = $this->translateString("create_error", ["PNG"]);
                                 } else {
                                     $this->log .= "- source image is PNG<br />";
                                 }
@@ -1333,13 +1333,13 @@ class Class_3
                             break;
                         case "gif":
                             if (!function_exists("imagecreatefromgif")) {
-                                $this->$processed = false;
-                                $this->$error = $this->translateString("no_create_support", ["GIF"]);
+                                $this->processed = false;
+                                $this->error = $this->translateString("no_create_support", ["GIF"]);
                             } else {
-                                $var_131 = @imagecreatefromgif($this->file_src_pathname);
-                                if (!$var_131) {
-                                    $this->$processed = false;
-                                    $this->$error = $this->translateString("create_error", ["GIF"]);
+                                $source_image = @imagecreatefromgif($this->file_src_pathname);
+                                if (!$source_image) {
+                                    $this->processed = false;
+                                    $this->error = $this->translateString("create_error", ["GIF"]);
                                 } else {
                                     $this->log .= "- source image is GIF<br />";
                                 }
@@ -1347,75 +1347,75 @@ class Class_3
                             break;
                         case "bmp":
                             if (!method_exists($this, "imagecreatefrombmp")) {
-                                $this->$processed = false;
-                                $this->$error = $this->translateString("no_create_support", ["BMP"]);
+                                $this->processed = false;
+                                $this->error = $this->translateString("no_create_support", ["BMP"]);
                             } else {
-                                $var_131 = @$this->function_48($this->file_src_pathname);
-                                if (!$var_131) {
-                                    $this->$processed = false;
-                                    $this->$error = $this->translateString("create_error", ["BMP"]);
+                                $source_image = @$this->saveImageToFile($this->file_src_pathname);
+                                if (!$source_image) {
+                                    $this->processed = false;
+                                    $this->error = $this->translateString("create_error", ["BMP"]);
                                 } else {
                                     $this->log .= "- source image is BMP<br />";
                                 }
                             }
                             break;
                         default:
-                            $this->$processed = false;
-                            $this->$error = $this->translateString("source_invalid");
+                            $this->processed = false;
+                            $this->error = $this->translateString("source_invalid");
                     }
                 } else {
-                    $this->$processed = false;
-                    $this->$error = $this->translateString("gd_missing");
+                    $this->processed = false;
+                    $this->error = $this->translateString("gd_missing");
                 }
-                if ($this->processed && $var_131) {
+                if ($this->processed && $source_image) {
                     if (empty($this->image_convert)) {
                         $this->log .= "- setting destination file type to " . $this->file_src_name_ext . "<br />";
-                        $this->$image_convert = $this->file_src_name_ext;
+                        $this->image_convert = $this->file_src_name_ext;
                     }
                     if (!in_array($this->image_convert, $this->image_supported)) {
-                        $this->$image_convert = "jpg";
+                        $this->image_convert = "jpg";
                     }
                     if ($this->image_convert != "png" && $this->image_convert != "gif" && !empty($this->image_default_color) && empty($this->image_background_color)) {
-                        $this->$image_background_color = $this->image_default_color;
+                        $this->image_background_color = $this->image_default_color;
                     }
                     if (!empty($this->image_background_color)) {
-                        $this->$image_default_color = $this->image_background_color;
+                        $this->image_default_color = $this->image_background_color;
                     }
                     if (empty($this->image_default_color)) {
-                        $this->$image_default_color = "#FFFFFF";
+                        $this->image_default_color = "#FFFFFF";
                     }
-                    $this->$image_src_x = imagesx($var_131);
-                    $this->$image_src_y = imagesy($var_131);
-                    $var_96 = $this->function_39();
+                    $this->image_src_x = imagesx($source_image);
+                    $this->image_src_y = imagesy($source_image);
+                    $gd_version = $this->getGdVersion();
                     $cropOffsets = NULL;
-                    if (!imageistruecolor($var_131)) {
+                    if (!imageistruecolor($source_image)) {
                         $this->log .= "- image is detected as having a palette<br />";
-                        $this->$image_is_palette = true;
-                        $this->$image_transparent_color = imagecolortransparent($var_131);
-                        if (0 <= $this->image_transparent_color && $this->image_transparent_color < imagecolorstotal($var_131)) {
-                            $this->$image_is_transparent = true;
+                        $this->image_is_palette = true;
+                        $this->image_transparent_color = imagecolortransparent($source_image);
+                        if (0 <= $this->image_transparent_color && $this->image_transparent_color < imagecolorstotal($source_image)) {
+                            $this->image_is_transparent = true;
                             $this->log .= "&nbsp;&nbsp;&nbsp;&nbsp;palette image is detected as transparent<br />";
                         }
                         $this->log .= "&nbsp;&nbsp;&nbsp;&nbsp;convert palette image to true color<br />";
-                        $var_133 = imagecreatetruecolor($this->image_src_x, $this->image_src_y);
-                        imagealphablending($var_133, false);
-                        imagesavealpha($var_133, true);
+                        $temp_image = imagecreatetruecolor($this->image_src_x, $this->image_src_y);
+                        imagealphablending($temp_image, false);
+                        imagesavealpha($temp_image, true);
                         for ($x = 0; $x < $this->image_src_x; $x++) {
                             for ($y = 0; $y < $this->image_src_y; $y++) {
-                                if (0 <= $this->image_transparent_color && imagecolorat($var_131, $x, $y) == $this->image_transparent_color) {
-                                    imagesetpixel($var_133, $x, $y, 2130706432);
+                                if (0 <= $this->image_transparent_color && imagecolorat($source_image, $x, $y) == $this->image_transparent_color) {
+                                    imagesetpixel($temp_image, $x, $y, 2130706432);
                                 } else {
-                                    $var_134 = imagecolorsforindex($var_131, imagecolorat($var_131, $x, $y));
-                                    imagesetpixel($var_133, $x, $y, $var_134["alpha"] << 24 | $var_134["red"] << 16 | $var_134["green"] << 8 | $var_134["blue"]);
+                                    $image_format = imagecolorsforindex($source_image, imagecolorat($source_image, $x, $y));
+                                    imagesetpixel($temp_image, $x, $y, $image_format["alpha"] << 24 | $image_format["red"] << 16 | $image_format["green"] << 8 | $image_format["blue"]);
                                 }
                             }
                         }
-                        $var_131 = $this->function_45($var_133, $var_131);
-                        imagealphablending($var_131, false);
-                        imagesavealpha($var_131, true);
-                        $this->$image_is_palette = false;
+                        $source_image = $this->copyImage($temp_image, $source_image);
+                        imagealphablending($source_image, false);
+                        imagesavealpha($source_image, true);
+                        $this->image_is_palette = false;
                     }
-                    $workingImage =& $var_131;
+                    $workingImage =& $source_image;
                     if (!empty($this->image_precrop)) {
                         if (is_array($this->image_precrop)) {
                             $vars = $this->image_precrop;
@@ -1466,20 +1466,20 @@ class Class_3
                         $cropBottom = (int) $cropBottom;
                         $cropLeft = (int) $cropLeft;
                         $this->log .= "- pre-crop image : " . $cropTop . " " . $cropRight . " " . $cropBottom . " " . $cropLeft . " <br />";
-                        $this->$image_src_x = $this->image_src_x - $cropLeft - $cropRight;
-                        $this->$image_src_y = $this->image_src_y - $cropTop - $cropBottom;
+                        $this->image_src_x = $this->image_src_x - $cropLeft - $cropRight;
+                        $this->image_src_y = $this->image_src_y - $cropTop - $cropBottom;
                         if ($this->image_src_x < 1) {
-                            $this->$image_src_x = 1;
+                            $this->image_src_x = 1;
                         }
                         if ($this->image_src_y < 1) {
-                            $this->$image_src_y = 1;
+                            $this->image_src_y = 1;
                         }
-                        $tempImage = $this->function_44($this->image_src_x, $this->image_src_y);
+                        $tempImage = $this->createImageResource($this->image_src_x, $this->image_src_y);
                         imagecopy($tempImage, $workingImage, 0, 0, $cropLeft, $cropTop, $this->image_src_x, $this->image_src_y);
                         if ($cropTop < 0 || $cropRight < 0 || $cropBottom < 0 || $cropLeft < 0) {
                             if (!empty($this->image_background_color)) {
-                                list($var_101, $var_102, $var_103) = $this->function_43($this->image_background_color);
-                                $fill = imagecolorallocate($tempImage, $var_101, $var_102, $var_103);
+                                list($red, $green, $blue) = $this->parseColor($this->image_background_color);
+                                $fill = imagecolorallocate($tempImage, $red, $green, $blue);
                             } else {
                                 $fill = imagecolorallocatealpha($tempImage, 0, 0, 0, 127);
                             }
@@ -1496,40 +1496,40 @@ class Class_3
                                 imagefilledrectangle($tempImage, 0, 0, -1 * $cropLeft, $this->image_src_y, $fill);
                             }
                         }
-                        $workingImage = $this->function_45($tempImage, $workingImage);
+                        $workingImage = $this->copyImage($tempImage, $workingImage);
                     }
                     if ($this->image_resize) {
                         $this->log .= "- resizing...<br />";
                         if ($this->image_ratio_x) {
                             $this->log .= "&nbsp;&nbsp;&nbsp;&nbsp;calculate x size<br />";
-                            $this->$image_dst_x = round($this->image_src_x * $this->image_y / $this->image_src_y);
-                            $this->$image_dst_y = $this->image_y;
+                            $this->image_dst_x = round($this->image_src_x * $this->image_y / $this->image_src_y);
+                            $this->image_dst_y = $this->image_y;
                         } else {
                             if ($this->image_ratio_y) {
                                 $this->log .= "&nbsp;&nbsp;&nbsp;&nbsp;calculate y size<br />";
-                                $this->$image_dst_x = $this->image_x;
-                                $this->$image_dst_y = round($this->image_src_y * $this->image_x / $this->image_src_x);
+                                $this->image_dst_x = $this->image_x;
+                                $this->image_dst_y = round($this->image_src_y * $this->image_x / $this->image_src_x);
                             } else {
                                 if (is_numeric($this->image_ratio_pixels)) {
                                     $this->log .= "&nbsp;&nbsp;&nbsp;&nbsp;calculate x/y size to match a number of pixels<br />";
-                                    $var_141 = $this->image_src_y * $this->image_src_x;
-                                    $var_142 = sqrt($this->image_ratio_pixels / $var_141);
-                                    $this->$image_dst_x = round($this->image_src_x * $var_142);
-                                    $this->$image_dst_y = round($this->image_src_y * $var_142);
+                                    $total_pixels = $this->image_src_y * $this->image_src_x;
+                                    $scale_factor = sqrt($this->image_ratio_pixels / $total_pixels);
+                                    $this->image_dst_x = round($this->image_src_x * $scale_factor);
+                                    $this->image_dst_y = round($this->image_src_y * $scale_factor);
                                 } else {
                                     if ($this->image_ratio || $this->image_ratio_crop || $this->image_ratio_fill || $this->image_ratio_no_zoom_in || $this->image_ratio_no_zoom_out) {
                                         $this->log .= "&nbsp;&nbsp;&nbsp;&nbsp;check x/y sizes<br />";
                                         if (!$this->image_ratio_no_zoom_in && !$this->image_ratio_no_zoom_out || $this->image_ratio_no_zoom_in && ($this->image_x < $this->image_src_x || $this->image_y < $this->image_src_y) || $this->image_ratio_no_zoom_out && $this->image_src_x < $this->image_x && $this->image_src_y < $this->image_y) {
-                                            $this->$image_dst_x = $this->image_x;
-                                            $this->$image_dst_y = $this->image_y;
+                                            $this->image_dst_x = $this->image_x;
+                                            $this->image_dst_y = $this->image_y;
                                             if ($this->image_ratio_crop) {
                                                 if (!is_string($this->image_ratio_crop)) {
-                                                    $this->$image_ratio_crop = "";
+                                                    $this->image_ratio_crop = "";
                                                 }
-                                                $this->$image_ratio_crop = strtolower($this->image_ratio_crop);
+                                                $this->image_ratio_crop = strtolower($this->image_ratio_crop);
                                                 if ($this->image_src_y / $this->image_y < $this->image_src_x / $this->image_x) {
-                                                    $this->$image_dst_y = $this->image_y;
-                                                    $this->$image_dst_x = intval($this->image_src_x * $this->image_y / $this->image_src_y);
+                                                    $this->image_dst_y = $this->image_y;
+                                                    $this->image_dst_x = intval($this->image_src_x * $this->image_y / $this->image_src_y);
                                                     $cropOffsets = [];
                                                     $cropOffsets["x"] = $this->image_dst_x - $this->image_x;
                                                     if (strpos($this->image_ratio_crop, "l") !== false) {
@@ -1546,11 +1546,11 @@ class Class_3
                                                     }
                                                     $this->log .= "&nbsp;&nbsp;&nbsp;&nbsp;ratio_crop_x         : " . $cropOffsets["x"] . " (" . $cropOffsets["l"] . ";" . $cropOffsets["r"] . ")<br />";
                                                     if (is_null($this->image_crop)) {
-                                                        $this->$image_crop = [0, 0, 0, 0];
+                                                        $this->image_crop = [0, 0, 0, 0];
                                                     }
                                                 } else {
-                                                    $this->$image_dst_x = $this->image_x;
-                                                    $this->$image_dst_y = intval($this->image_src_y * $this->image_x / $this->image_src_x);
+                                                    $this->image_dst_x = $this->image_x;
+                                                    $this->image_dst_y = intval($this->image_src_y * $this->image_x / $this->image_src_x);
                                                     $cropOffsets = [];
                                                     $cropOffsets["y"] = $this->image_dst_y - $this->image_y;
                                                     if (strpos($this->image_ratio_crop, "t") !== false) {
@@ -1567,18 +1567,18 @@ class Class_3
                                                     }
                                                     $this->log .= "&nbsp;&nbsp;&nbsp;&nbsp;ratio_crop_y         : " . $cropOffsets["y"] . " (" . $cropOffsets["t"] . ";" . $cropOffsets["b"] . ")<br />";
                                                     if (is_null($this->image_crop)) {
-                                                        $this->$image_crop = [0, 0, 0, 0];
+                                                        $this->image_crop = [0, 0, 0, 0];
                                                     }
                                                 }
                                             } else {
                                                 if ($this->image_ratio_fill) {
                                                     if (!is_string($this->image_ratio_fill)) {
-                                                        $this->$image_ratio_fill = "";
+                                                        $this->image_ratio_fill = "";
                                                     }
-                                                    $this->$image_ratio_fill = strtolower($this->image_ratio_fill);
+                                                    $this->image_ratio_fill = strtolower($this->image_ratio_fill);
                                                     if ($this->image_src_x / $this->image_x < $this->image_src_y / $this->image_y) {
-                                                        $this->$image_dst_y = $this->image_y;
-                                                        $this->$image_dst_x = intval($this->image_src_x * $this->image_y / $this->image_src_y);
+                                                        $this->image_dst_y = $this->image_y;
+                                                        $this->image_dst_x = intval($this->image_src_x * $this->image_y / $this->image_src_y);
                                                         $cropOffsets = [];
                                                         $cropOffsets["x"] = $this->image_dst_x - $this->image_x;
                                                         if (strpos($this->image_ratio_fill, "l") !== false) {
@@ -1595,11 +1595,11 @@ class Class_3
                                                         }
                                                         $this->log .= "&nbsp;&nbsp;&nbsp;&nbsp;ratio_fill_x         : " . $cropOffsets["x"] . " (" . $cropOffsets["l"] . ";" . $cropOffsets["r"] . ")<br />";
                                                         if (is_null($this->image_crop)) {
-                                                            $this->$image_crop = [0, 0, 0, 0];
+                                                            $this->image_crop = [0, 0, 0, 0];
                                                         }
                                                     } else {
-                                                        $this->$image_dst_x = $this->image_x;
-                                                        $this->$image_dst_y = intval($this->image_src_y * $this->image_x / $this->image_src_x);
+                                                        $this->image_dst_x = $this->image_x;
+                                                        $this->image_dst_y = intval($this->image_src_y * $this->image_x / $this->image_src_x);
                                                         $cropOffsets = [];
                                                         $cropOffsets["y"] = $this->image_dst_y - $this->image_y;
                                                         if (strpos($this->image_ratio_fill, "t") !== false) {
@@ -1616,51 +1616,51 @@ class Class_3
                                                         }
                                                         $this->log .= "&nbsp;&nbsp;&nbsp;&nbsp;ratio_fill_y         : " . $cropOffsets["y"] . " (" . $cropOffsets["t"] . ";" . $cropOffsets["b"] . ")<br />";
                                                         if (is_null($this->image_crop)) {
-                                                            $this->$image_crop = [0, 0, 0, 0];
+                                                            $this->image_crop = [0, 0, 0, 0];
                                                         }
                                                     }
                                                 } else {
                                                     if ($this->image_src_y / $this->image_y < $this->image_src_x / $this->image_x) {
-                                                        $this->$image_dst_x = $this->image_x;
-                                                        $this->$image_dst_y = intval($this->image_src_y * $this->image_x / $this->image_src_x);
+                                                        $this->image_dst_x = $this->image_x;
+                                                        $this->image_dst_y = intval($this->image_src_y * $this->image_x / $this->image_src_x);
                                                     } else {
-                                                        $this->$image_dst_y = $this->image_y;
-                                                        $this->$image_dst_x = intval($this->image_src_x * $this->image_y / $this->image_src_y);
+                                                        $this->image_dst_y = $this->image_y;
+                                                        $this->image_dst_x = intval($this->image_src_x * $this->image_y / $this->image_src_y);
                                                     }
                                                 }
                                             }
                                         } else {
                                             $this->log .= "&nbsp;&nbsp;&nbsp;&nbsp;doesn't calculate x/y sizes<br />";
-                                            $this->$image_dst_x = $this->image_src_x;
-                                            $this->$image_dst_y = $this->image_src_y;
+                                            $this->image_dst_x = $this->image_src_x;
+                                            $this->image_dst_y = $this->image_src_y;
                                         }
                                     } else {
                                         $this->log .= "&nbsp;&nbsp;&nbsp;&nbsp;use plain sizes<br />";
-                                        $this->$image_dst_x = $this->image_x;
-                                        $this->$image_dst_y = $this->image_y;
+                                        $this->image_dst_x = $this->image_x;
+                                        $this->image_dst_y = $this->image_y;
                                     }
                                 }
                             }
                         }
                         if ($this->image_dst_x < 1) {
-                            $this->$image_dst_x = 1;
+                            $this->image_dst_x = 1;
                         }
                         if ($this->image_dst_y < 1) {
-                            $this->$image_dst_y = 1;
+                            $this->image_dst_y = 1;
                         }
-                        $tempImage = $this->function_44($this->image_dst_x, $this->image_dst_y);
-                        if (2 <= $var_96) {
-                            $res = imagecopyresampled($tempImage, $var_131, 0, 0, 0, 0, $this->image_dst_x, $this->image_dst_y, $this->image_src_x, $this->image_src_y);
+                        $tempImage = $this->createImageResource($this->image_dst_x, $this->image_dst_y);
+                        if (2 <= $gd_version) {
+                            $res = imagecopyresampled($tempImage, $source_image, 0, 0, 0, 0, $this->image_dst_x, $this->image_dst_y, $this->image_src_x, $this->image_src_y);
                         } else {
-                            $res = imagecopyresized($tempImage, $var_131, 0, 0, 0, 0, $this->image_dst_x, $this->image_dst_y, $this->image_src_x, $this->image_src_y);
+                            $res = imagecopyresized($tempImage, $source_image, 0, 0, 0, 0, $this->image_dst_x, $this->image_dst_y, $this->image_src_x, $this->image_src_y);
                         }
                         $this->log .= "&nbsp;&nbsp;&nbsp;&nbsp;resized image object created<br />";
                         $this->log .= "&nbsp;&nbsp;&nbsp;&nbsp;image_src_x y        : " . $this->image_src_x . " x " . $this->image_src_y . "<br />";
                         $this->log .= "&nbsp;&nbsp;&nbsp;&nbsp;image_dst_x y        : " . $this->image_dst_x . " x " . $this->image_dst_y . "<br />";
-                        $workingImage = $this->function_45($tempImage, $workingImage);
+                        $workingImage = $this->copyImage($tempImage, $workingImage);
                     } else {
-                        $this->$image_dst_x = $this->image_src_x;
-                        $this->$image_dst_y = $this->image_src_y;
+                        $this->image_dst_x = $this->image_src_x;
+                        $this->image_dst_y = $this->image_src_y;
                     }
                     if (!empty($this->image_crop) || !is_null($cropOffsets)) {
                         if (is_array($this->image_crop)) {
@@ -1726,20 +1726,20 @@ class Class_3
                             }
                         }
                         $this->log .= "- crop image : " . $cropTop . " " . $cropRight . " " . $cropBottom . " " . $cropLeft . " <br />";
-                        $this->$image_dst_x = $this->image_dst_x - $cropLeft - $cropRight;
-                        $this->$image_dst_y = $this->image_dst_y - $cropTop - $cropBottom;
+                        $this->image_dst_x = $this->image_dst_x - $cropLeft - $cropRight;
+                        $this->image_dst_y = $this->image_dst_y - $cropTop - $cropBottom;
                         if ($this->image_dst_x < 1) {
-                            $this->$image_dst_x = 1;
+                            $this->image_dst_x = 1;
                         }
                         if ($this->image_dst_y < 1) {
-                            $this->$image_dst_y = 1;
+                            $this->image_dst_y = 1;
                         }
-                        $tempImage = $this->function_44($this->image_dst_x, $this->image_dst_y);
+                        $tempImage = $this->createImageResource($this->image_dst_x, $this->image_dst_y);
                         imagecopy($tempImage, $workingImage, 0, 0, $cropLeft, $cropTop, $this->image_dst_x, $this->image_dst_y);
                         if ($cropTop < 0 || $cropRight < 0 || $cropBottom < 0 || $cropLeft < 0) {
                             if (!empty($this->image_background_color)) {
-                                list($var_101, $var_102, $var_103) = $this->function_43($this->image_background_color);
-                                $fill = imagecolorallocate($tempImage, $var_101, $var_102, $var_103);
+                                list($red, $green, $blue) = $this->parseColor($this->image_background_color);
+                                $fill = imagecolorallocate($tempImage, $red, $green, $blue);
                             } else {
                                 $fill = imagecolorallocatealpha($tempImage, 0, 0, 0, 127);
                             }
@@ -1756,12 +1756,12 @@ class Class_3
                                 imagefilledrectangle($tempImage, 0, 0, -1 * $cropLeft, $this->image_dst_y, $fill);
                             }
                         }
-                        $workingImage = $this->function_45($tempImage, $workingImage);
+                        $workingImage = $this->copyImage($tempImage, $workingImage);
                     }
-                    if (2 <= $var_96 && !empty($this->image_flip)) {
-                        $this->$image_flip = strtolower($this->image_flip);
+                    if (2 <= $gd_version && !empty($this->image_flip)) {
+                        $this->image_flip = strtolower($this->image_flip);
                         $this->log .= "- flip image : " . $this->image_flip . "<br />";
-                        $tempImage = $this->function_44($this->image_dst_x, $this->image_dst_y);
+                        $tempImage = $this->createImageResource($this->image_dst_x, $this->image_dst_y);
                         for ($x = 0; $x < $this->image_dst_x; $x++) {
                             for ($y = 0; $y < $this->image_dst_y; $y++) {
                                 if (strpos($this->image_flip, "v") !== false) {
@@ -1771,28 +1771,28 @@ class Class_3
                                 }
                             }
                         }
-                        $workingImage = $this->function_45($tempImage, $workingImage);
+                        $workingImage = $this->copyImage($tempImage, $workingImage);
                     }
-                    if (2 <= $var_96 && is_numeric($this->image_rotate)) {
+                    if (2 <= $gd_version && is_numeric($this->image_rotate)) {
                         if (!in_array($this->image_rotate, [0, 90, 180, 270])) {
-                            $this->$image_rotate = 0;
+                            $this->image_rotate = 0;
                         }
                         if ($this->image_rotate != 0) {
-                            if ($this->$image_rotate = = 90 || $this->$image_rotate = = 270) {
-                                $tempImage = $this->function_44($this->image_dst_y, $this->image_dst_x);
+                            if ($this->image_rotate==90 || $this->image_rotate==270) {
+                                $tempImage = $this->createImageResource($this->image_dst_y, $this->image_dst_x);
                             } else {
-                                $tempImage = $this->function_44($this->image_dst_x, $this->image_dst_y);
+                                $tempImage = $this->createImageResource($this->image_dst_x, $this->image_dst_y);
                             }
                             $this->log .= "- rotate image : " . $this->image_rotate . "<br />";
                             for ($x = 0; $x < $this->image_dst_x; $x++) {
                                 for ($y = 0; $y < $this->image_dst_y; $y++) {
-                                    if ($this->$image_rotate = = 90) {
+                                    if ($this->image_rotate==90) {
                                         imagecopy($tempImage, $workingImage, $y, $x, $x, $this->image_dst_y - $y - 1, 1, 1);
                                     } else {
-                                        if ($this->$image_rotate = = 180) {
+                                        if ($this->image_rotate==180) {
                                             imagecopy($tempImage, $workingImage, $x, $y, $this->image_dst_x - $x - 1, $this->image_dst_y - $y - 1, 1, 1);
                                         } else {
-                                            if ($this->$image_rotate = = 270) {
+                                            if ($this->image_rotate==270) {
                                                 imagecopy($tempImage, $workingImage, $y, $x, $this->image_dst_x - $x - 1, $y, 1, 1);
                                             } else {
                                                 imagecopy($tempImage, $workingImage, $x, $y, $x, $y, 1, 1);
@@ -1801,80 +1801,80 @@ class Class_3
                                     }
                                 }
                             }
-                            if ($this->$image_rotate = = 90 || $this->$image_rotate = = 270) {
-                                $var_143 = $this->image_dst_y;
-                                $this->$image_dst_y = $this->image_dst_x;
-                                $this->$image_dst_x = $var_143;
+                            if ($this->image_rotate==90 || $this->image_rotate==270) {
+                                $temp_dimension = $this->image_dst_y;
+                                $this->image_dst_y = $this->image_dst_x;
+                                $this->image_dst_x = $temp_dimension;
                             }
-                            $workingImage = $this->function_45($tempImage, $workingImage);
+                            $workingImage = $this->copyImage($tempImage, $workingImage);
                         }
                     }
-                    if (2 <= $var_96 && is_numeric($this->image_overlay_percent) && 0 < $this->image_overlay_percent && !empty($this->image_overlay_color)) {
+                    if (2 <= $gd_version && is_numeric($this->image_overlay_percent) && 0 < $this->image_overlay_percent && !empty($this->image_overlay_color)) {
                         $this->log .= "- apply color overlay<br />";
-                        list($var_101, $var_102, $var_103) = $this->function_43($this->image_overlay_color);
-                        $var_144 = imagecreatetruecolor($this->image_dst_x, $this->image_dst_y);
-                        $color = imagecolorallocate($var_144, $var_101, $var_102, $var_103);
-                        imagefilledrectangle($var_144, 0, 0, $this->image_dst_x, $this->image_dst_y, $color);
-                        $this->function_46($workingImage, $var_144, 0, 0, 0, 0, $this->image_dst_x, $this->image_dst_y, $this->image_overlay_percent);
-                        imagedestroy($var_144);
+                        list($red, $green, $blue) = $this->parseColor($this->image_overlay_color);
+                        $overlay_image = imagecreatetruecolor($this->image_dst_x, $this->image_dst_y);
+                        $color = imagecolorallocate($overlay_image, $red, $green, $blue);
+                        imagefilledrectangle($overlay_image, 0, 0, $this->image_dst_x, $this->image_dst_y, $color);
+                        $this->mergeImagesWithAlpha($workingImage, $overlay_image, 0, 0, 0, 0, $this->image_dst_x, $this->image_dst_y, $this->image_overlay_percent);
+                        imagedestroy($overlay_image);
                     }
-                    if (2 <= $var_96 && ($this->image_negative || $this->image_greyscale || is_numeric($this->image_threshold) || is_numeric($this->image_brightness) || is_numeric($this->image_contrast) || !empty($this->image_tint_color))) {
+                    if (2 <= $gd_version && ($this->image_negative || $this->image_greyscale || is_numeric($this->image_threshold) || is_numeric($this->image_brightness) || is_numeric($this->image_contrast) || !empty($this->image_tint_color))) {
                         $this->log .= "- apply tint, light, contrast correction, negative, greyscale and threshold<br />";
                         if (!empty($this->image_tint_color)) {
-                            list($var_145, $var_146, $var_147) = $this->function_43($this->image_tint_color);
+                            list($tint_red, $tint_green, $tint_blue) = $this->parseColor($this->image_tint_color);
                         }
                         imagealphablending($workingImage, true);
                         for ($y = 0; $y < $this->image_dst_y; $y++) {
                             for ($x = 0; $x < $this->image_dst_x; $x++) {
                                 if ($this->image_greyscale) {
                                     $pixelColor = imagecolorsforindex($workingImage, imagecolorat($workingImage, $x, $y));
-                                    $var_100 = $var_149 = $b = round(0 * $pixelColor["red"] + 0 * $pixelColor["green"] + 0 * $pixelColor["blue"]);
-                                    $color = imagecolorallocatealpha($workingImage, $var_100, $var_149, $b, $pixelColor["alpha"]);
+                                    $rgb_array = $g = $b = round(0 * $pixelColor["red"] + 0 * $pixelColor["green"] + 0 * $pixelColor["blue"]);
+                                    $color = imagecolorallocatealpha($workingImage, $rgb_array, $g, $b, $pixelColor["alpha"]);
                                     imagesetpixel($workingImage, $x, $y, $color);
                                 }
                                 if (is_numeric($this->image_threshold)) {
                                     $pixelColor = imagecolorsforindex($workingImage, imagecolorat($workingImage, $x, $y));
                                     $c = round($pixelColor["red"] + $pixelColor["green"] + $pixelColor["blue"]) / 3 - 127;
-                                    $var_100 = $var_149 = $b = $this->image_threshold < $c ? 255 : 0;
-                                    $color = imagecolorallocatealpha($workingImage, $var_100, $var_149, $b, $pixelColor["alpha"]);
+                                    $rgb_array = $g = $b = $this->image_threshold < $c ? 255 : 0;
+                                    $color = imagecolorallocatealpha($workingImage, $rgb_array, $g, $b, $pixelColor["alpha"]);
                                     imagesetpixel($workingImage, $x, $y, $color);
                                 }
                                 if (is_numeric($this->image_brightness)) {
                                     $pixelColor = imagecolorsforindex($workingImage, imagecolorat($workingImage, $x, $y));
-                                    $var_100 = max(min(round($pixelColor["red"] + $this->image_brightness * 2), 255), 0);
-                                    $var_149 = max(min(round($pixelColor["green"] + $this->image_brightness * 2), 255), 0);
+                                    $rgb_array = max(min(round($pixelColor["red"] + $this->image_brightness * 2), 255), 0);
+                                    $g = max(min(round($pixelColor["green"] + $this->image_brightness * 2), 255), 0);
                                     $b = max(min(round($pixelColor["blue"] + $this->image_brightness * 2), 255), 0);
-                                    $color = imagecolorallocatealpha($workingImage, $var_100, $var_149, $b, $pixelColor["alpha"]);
+                                    $color = imagecolorallocatealpha($workingImage, $rgb_array, $g, $b, $pixelColor["alpha"]);
                                     imagesetpixel($workingImage, $x, $y, $color);
                                 }
                                 if (is_numeric($this->image_contrast)) {
                                     $pixelColor = imagecolorsforindex($workingImage, imagecolorat($workingImage, $x, $y));
-                                    $var_100 = max(min(round(($this->image_contrast + 128) * $pixelColor["red"] / 128), 255), 0);
-                                    $var_149 = max(min(round(($this->image_contrast + 128) * $pixelColor["green"] / 128), 255), 0);
+                                    $rgb_array = max(min(round(($this->image_contrast + 128) * $pixelColor["red"] / 128), 255), 0);
+                                    $g = max(min(round(($this->image_contrast + 128) * $pixelColor["green"] / 128), 255), 0);
                                     $b = max(min(round(($this->image_contrast + 128) * $pixelColor["blue"] / 128), 255), 0);
-                                    $color = imagecolorallocatealpha($workingImage, $var_100, $var_149, $b, $pixelColor["alpha"]);
+                                    $color = imagecolorallocatealpha($workingImage, $rgb_array, $g, $b, $pixelColor["alpha"]);
                                     imagesetpixel($workingImage, $x, $y, $color);
                                 }
                                 if (!empty($this->image_tint_color)) {
                                     $pixelColor = imagecolorsforindex($workingImage, imagecolorat($workingImage, $x, $y));
-                                    $var_100 = min(round($var_145 * $pixelColor["red"] / 169), 255);
-                                    $var_149 = min(round($var_146 * $pixelColor["green"] / 169), 255);
-                                    $b = min(round($var_147 * $pixelColor["blue"] / 169), 255);
-                                    $color = imagecolorallocatealpha($workingImage, $var_100, $var_149, $b, $pixelColor["alpha"]);
+                                    $rgb_array = min(round($tint_red * $pixelColor["red"] / 169), 255);
+                                    $g = min(round($tint_green * $pixelColor["green"] / 169), 255);
+                                    $b = min(round($tint_blue * $pixelColor["blue"] / 169), 255);
+                                    $color = imagecolorallocatealpha($workingImage, $rgb_array, $g, $b, $pixelColor["alpha"]);
                                     imagesetpixel($workingImage, $x, $y, $color);
                                 }
                                 if (!empty($this->image_negative)) {
                                     $pixelColor = imagecolorsforindex($workingImage, imagecolorat($workingImage, $x, $y));
-                                    $var_100 = round(255 - $pixelColor["red"]);
-                                    $var_149 = round(255 - $pixelColor["green"]);
+                                    $rgb_array = round(255 - $pixelColor["red"]);
+                                    $g = round(255 - $pixelColor["green"]);
                                     $b = round(255 - $pixelColor["blue"]);
-                                    $color = imagecolorallocatealpha($workingImage, $var_100, $var_149, $b, $pixelColor["alpha"]);
+                                    $color = imagecolorallocatealpha($workingImage, $rgb_array, $g, $b, $pixelColor["alpha"]);
                                     imagesetpixel($workingImage, $x, $y, $color);
                                 }
                             }
                         }
                     }
-                    if (2 <= $var_96 && !empty($this->image_border)) {
+                    if (2 <= $gd_version && !empty($this->image_border)) {
                         if (is_array($this->image_border)) {
                             $vars = $this->image_border;
                             $this->log .= "- add border : " . implode(" ", $this->image_border) . "<br />";
@@ -1925,16 +1925,16 @@ class Class_3
                         $cropRight = (int) $cropRight;
                         $cropBottom = (int) $cropBottom;
                         $cropLeft = (int) $cropLeft;
-                        $this->$image_dst_x = $this->image_dst_x + $cropLeft + $cropRight;
-                        $this->$image_dst_y = $this->image_dst_y + $cropTop + $cropBottom;
+                        $this->image_dst_x = $this->image_dst_x + $cropLeft + $cropRight;
+                        $this->image_dst_y = $this->image_dst_y + $cropTop + $cropBottom;
                         if (!empty($this->image_border_color)) {
-                            list($var_101, $var_102, $var_103) = $this->function_43($this->image_border_color);
+                            list($red, $green, $blue) = $this->parseColor($this->image_border_color);
                         }
-                        $tempImage = $this->function_44($this->image_dst_x, $this->image_dst_y);
-                        $var_150 = imagecolorallocatealpha($tempImage, $var_101, $var_102, $var_103, 0);
-                        imagefilledrectangle($tempImage, 0, 0, $this->image_dst_x, $this->image_dst_y, $var_150);
+                        $tempImage = $this->createImageResource($this->image_dst_x, $this->image_dst_y);
+                        $border_color = imagecolorallocatealpha($tempImage, $red, $green, $blue, 0);
+                        imagefilledrectangle($tempImage, 0, 0, $this->image_dst_x, $this->image_dst_y, $border_color);
                         imagecopy($tempImage, $workingImage, $cropLeft, $cropTop, 0, 0, $this->image_dst_x - $cropRight - $cropLeft, $this->image_dst_y - $cropBottom - $cropTop);
-                        $workingImage = $this->function_45($tempImage, $workingImage);
+                        $workingImage = $this->copyImage($tempImage, $workingImage);
                     }
                     if (is_numeric($this->image_frame)) {
                         if (is_array($this->image_frame_colors)) {
@@ -1944,294 +1944,294 @@ class Class_3
                             $this->log .= "- add frame : " . $this->image_frame_colors . "<br />";
                             $vars = explode(" ", $this->image_frame_colors);
                         }
-                        $var_151 = sizeof($vars);
-                        $this->$image_dst_x = $this->image_dst_x + $var_151 * 2;
-                        $this->$image_dst_y = $this->image_dst_y + $var_151 * 2;
-                        $tempImage = $this->function_44($this->image_dst_x, $this->image_dst_y);
-                        imagecopy($tempImage, $workingImage, $var_151, $var_151, 0, 0, $this->image_dst_x - $var_151 * 2, $this->image_dst_y - $var_151 * 2);
-                        for ($i = 0; $i < $var_151; $i++) {
-                            list($var_101, $var_102, $var_103) = $this->function_43($vars[$i]);
-                            $c = imagecolorallocate($tempImage, $var_101, $var_102, $var_103);
-                            if ($this->$image_frame = = 1) {
+                        $frame_width = sizeof($vars);
+                        $this->image_dst_x = $this->image_dst_x + $frame_width * 2;
+                        $this->image_dst_y = $this->image_dst_y + $frame_width * 2;
+                        $tempImage = $this->createImageResource($this->image_dst_x, $this->image_dst_y);
+                        imagecopy($tempImage, $workingImage, $frame_width, $frame_width, 0, 0, $this->image_dst_x - $frame_width * 2, $this->image_dst_y - $frame_width * 2);
+                        for ($i = 0; $i < $frame_width; $i++) {
+                            list($red, $green, $blue) = $this->parseColor($vars[$i]);
+                            $c = imagecolorallocate($tempImage, $red, $green, $blue);
+                            if ($this->image_frame==1) {
                                 imageline($tempImage, $i, $i, $this->image_dst_x - $i - 1, $i, $c);
                                 imageline($tempImage, $this->image_dst_x - $i - 1, $this->image_dst_y - $i - 1, $this->image_dst_x - $i - 1, $i, $c);
                                 imageline($tempImage, $this->image_dst_x - $i - 1, $this->image_dst_y - $i - 1, $i, $this->image_dst_y - $i - 1, $c);
                                 imageline($tempImage, $i, $i, $i, $this->image_dst_y - $i - 1, $c);
                             } else {
                                 imageline($tempImage, $i, $i, $this->image_dst_x - $i - 1, $i, $c);
-                                imageline($tempImage, $this->image_dst_x - $var_151 + $i, $this->image_dst_y - $var_151 + $i, $this->image_dst_x - $var_151 + $i, $var_151 - $i, $c);
-                                imageline($tempImage, $this->image_dst_x - $var_151 + $i, $this->image_dst_y - $var_151 + $i, $var_151 - $i, $this->image_dst_y - $var_151 + $i, $c);
+                                imageline($tempImage, $this->image_dst_x - $frame_width + $i, $this->image_dst_y - $frame_width + $i, $this->image_dst_x - $frame_width + $i, $frame_width - $i, $c);
+                                imageline($tempImage, $this->image_dst_x - $frame_width + $i, $this->image_dst_y - $frame_width + $i, $frame_width - $i, $this->image_dst_y - $frame_width + $i, $c);
                                 imageline($tempImage, $i, $i, $i, $this->image_dst_y - $i - 1, $c);
                             }
                         }
-                        $workingImage = $this->function_45($tempImage, $workingImage);
+                        $workingImage = $this->copyImage($tempImage, $workingImage);
                     }
                     if (0 < $this->image_bevel) {
                         if (empty($this->image_bevel_color1)) {
-                            $this->$image_bevel_color1 = "#FFFFFF";
+                            $this->image_bevel_color1 = "#FFFFFF";
                         }
                         if (empty($this->image_bevel_color2)) {
-                            $this->$image_bevel_color2 = "#000000";
+                            $this->image_bevel_color2 = "#000000";
                         }
-                        list($var_152, $var_153, $var_154) = $this->function_43($this->image_bevel_color1);
-                        list($var_155, $var_156, $var_157) = $this->function_43($this->image_bevel_color2);
-                        $tempImage = $this->function_44($this->image_dst_x, $this->image_dst_y);
+                        list($frame_color1, $frame_color2, $frame_color3) = $this->parseColor($this->image_bevel_color1);
+                        list($frame_color4, $bevel_width, $bevel_color1) = $this->parseColor($this->image_bevel_color2);
+                        $tempImage = $this->createImageResource($this->image_dst_x, $this->image_dst_y);
                         imagecopy($tempImage, $workingImage, 0, 0, 0, 0, $this->image_dst_x, $this->image_dst_y);
                         imagealphablending($tempImage, true);
                         for ($i = 0; $i < $this->image_bevel; $i++) {
-                            $var_113 = round($i / $this->image_bevel * 127);
-                            $var_158 = imagecolorallocatealpha($tempImage, $var_152, $var_153, $var_154, $var_113);
-                            $var_159 = imagecolorallocatealpha($tempImage, $var_155, $var_156, $var_157, $var_113);
-                            imageline($tempImage, $i, $i, $this->image_dst_x - $i - 1, $i, $var_158);
-                            imageline($tempImage, $this->image_dst_x - $i - 1, $this->image_dst_y - $i, $this->image_dst_x - $i - 1, $i, $var_159);
-                            imageline($tempImage, $this->image_dst_x - $i - 1, $this->image_dst_y - $i - 1, $i, $this->image_dst_y - $i - 1, $var_159);
-                            imageline($tempImage, $i, $i, $i, $this->image_dst_y - $i - 1, $var_158);
+                            $new_alpha = round($i / $this->image_bevel * 127);
+                            $bevel_color2 = imagecolorallocatealpha($tempImage, $frame_color1, $frame_color2, $frame_color3, $new_alpha);
+                            $reflection_height = imagecolorallocatealpha($tempImage, $frame_color4, $bevel_width, $bevel_color1, $new_alpha);
+                            imageline($tempImage, $i, $i, $this->image_dst_x - $i - 1, $i, $bevel_color2);
+                            imageline($tempImage, $this->image_dst_x - $i - 1, $this->image_dst_y - $i, $this->image_dst_x - $i - 1, $i, $reflection_height);
+                            imageline($tempImage, $this->image_dst_x - $i - 1, $this->image_dst_y - $i - 1, $i, $this->image_dst_y - $i - 1, $reflection_height);
+                            imageline($tempImage, $i, $i, $i, $this->image_dst_y - $i - 1, $bevel_color2);
                         }
-                        $workingImage = $this->function_45($tempImage, $workingImage);
+                        $workingImage = $this->copyImage($tempImage, $workingImage);
                     }
                     if ($this->image_watermark != "" && file_exists($this->image_watermark)) {
                         $this->log .= "- add watermark<br />";
-                        $this->$image_watermark_position = strtolower($this->image_watermark_position);
-                        $var_160 = getimagesize($this->image_watermark);
-                        $var_161 = array_key_exists(2, $var_160) ? $var_160[2] : NULL;
-                        $var_162 = false;
-                        if ($var_161 == IMAGETYPE_GIF) {
+                        $this->image_watermark_position = strtolower($this->image_watermark_position);
+                        $line = getimagesize($this->image_watermark);
+                        $opacity = array_key_exists(2, $line) ? $line[2] : NULL;
+                        $alpha = false;
+                        if ($opacity == IMAGETYPE_GIF) {
                             if (!function_exists("imagecreatefromgif")) {
-                                $this->$error = $this->translateString("watermark_no_create_support", ["GIF"]);
+                                $this->error = $this->translateString("watermark_no_create_support", ["GIF"]);
                             } else {
-                                $var_144 = @imagecreatefromgif($this->image_watermark);
-                                if (!$var_144) {
-                                    $this->$error = $this->translateString("watermark_create_error", ["GIF"]);
+                                $overlay_image = @imagecreatefromgif($this->image_watermark);
+                                if (!$overlay_image) {
+                                    $this->error = $this->translateString("watermark_create_error", ["GIF"]);
                                 } else {
                                     $this->log .= "&nbsp;&nbsp;&nbsp;&nbsp;watermark source image is GIF<br />";
-                                    $var_162 = true;
+                                    $alpha = true;
                                 }
                             }
                         } else {
-                            if ($var_161 == IMAGETYPE_JPEG) {
+                            if ($opacity == IMAGETYPE_JPEG) {
                                 if (!function_exists("imagecreatefromjpeg")) {
-                                    $this->$error = $this->translateString("watermark_no_create_support", ["JPEG"]);
+                                    $this->error = $this->translateString("watermark_no_create_support", ["JPEG"]);
                                 } else {
-                                    $var_144 = @imagecreatefromjpeg($this->image_watermark);
-                                    if (!$var_144) {
-                                        $this->$error = $this->translateString("watermark_create_error", ["JPEG"]);
+                                    $overlay_image = @imagecreatefromjpeg($this->image_watermark);
+                                    if (!$overlay_image) {
+                                        $this->error = $this->translateString("watermark_create_error", ["JPEG"]);
                                     } else {
                                         $this->log .= "&nbsp;&nbsp;&nbsp;&nbsp;watermark source image is JPEG<br />";
-                                        $var_162 = true;
+                                        $alpha = true;
                                     }
                                 }
                             } else {
-                                if ($var_161 == IMAGETYPE_PNG) {
+                                if ($opacity == IMAGETYPE_PNG) {
                                     if (!function_exists("imagecreatefrompng")) {
-                                        $this->$error = $this->translateString("watermark_no_create_support", ["PNG"]);
+                                        $this->error = $this->translateString("watermark_no_create_support", ["PNG"]);
                                     } else {
-                                        $var_144 = @imagecreatefrompng($this->image_watermark);
-                                        if (!$var_144) {
-                                            $this->$error = $this->translateString("watermark_create_error", ["PNG"]);
+                                        $overlay_image = @imagecreatefrompng($this->image_watermark);
+                                        if (!$overlay_image) {
+                                            $this->error = $this->translateString("watermark_create_error", ["PNG"]);
                                         } else {
                                             $this->log .= "&nbsp;&nbsp;&nbsp;&nbsp;watermark source image is PNG<br />";
-                                            $var_162 = true;
+                                            $alpha = true;
                                         }
                                     }
                                 } else {
-                                    if ($var_161 == IMAGETYPE_BMP) {
+                                    if ($opacity == IMAGETYPE_BMP) {
                                         if (!method_exists($this, "imagecreatefrombmp")) {
-                                            $this->$error = $this->translateString("watermark_no_create_support", ["BMP"]);
+                                            $this->error = $this->translateString("watermark_no_create_support", ["BMP"]);
                                         } else {
-                                            $var_144 = @$this->function_48($this->image_watermark);
-                                            if (!$var_144) {
-                                                $this->$error = $this->translateString("watermark_create_error", ["BMP"]);
+                                            $overlay_image = @$this->saveImageToFile($this->image_watermark);
+                                            if (!$overlay_image) {
+                                                $this->error = $this->translateString("watermark_create_error", ["BMP"]);
                                             } else {
                                                 $this->log .= "&nbsp;&nbsp;&nbsp;&nbsp;watermark source image is BMP<br />";
-                                                $var_162 = true;
+                                                $alpha = true;
                                             }
                                         }
                                     } else {
-                                        $this->$error = $this->translateString("watermark_invalid");
+                                        $this->error = $this->translateString("watermark_invalid");
                                     }
                                 }
                             }
                         }
-                        if ($var_162) {
-                            $var_163 = imagesx($var_144);
-                            $var_164 = imagesy($var_144);
-                            $var_165 = 0;
-                            $var_166 = 0;
+                        if ($alpha) {
+                            $watermark_width = imagesx($overlay_image);
+                            $watermark_height = imagesy($overlay_image);
+                            $watermark_x = 0;
+                            $watermark_y = 0;
                             if (is_numeric($this->image_watermark_x)) {
                                 if ($this->image_watermark_x < 0) {
-                                    $var_165 = $this->image_dst_x - $var_163 + $this->image_watermark_x;
+                                    $watermark_x = $this->image_dst_x - $watermark_width + $this->image_watermark_x;
                                 } else {
-                                    $var_165 = $this->image_watermark_x;
+                                    $watermark_x = $this->image_watermark_x;
                                 }
                             } else {
                                 if (strpos($this->image_watermark_position, "r") !== false) {
-                                    $var_165 = $this->image_dst_x - $var_163;
+                                    $watermark_x = $this->image_dst_x - $watermark_width;
                                 } else {
                                     if (strpos($this->image_watermark_position, "l") !== false) {
-                                        $var_165 = 0;
+                                        $watermark_x = 0;
                                     } else {
-                                        $var_165 = ($this->image_dst_x - $var_163) / 2;
+                                        $watermark_x = ($this->image_dst_x - $watermark_width) / 2;
                                     }
                                 }
                             }
                             if (is_numeric($this->image_watermark_y)) {
                                 if ($this->image_watermark_y < 0) {
-                                    $var_166 = $this->image_dst_y - $var_164 + $this->image_watermark_y;
+                                    $watermark_y = $this->image_dst_y - $watermark_height + $this->image_watermark_y;
                                 } else {
-                                    $var_166 = $this->image_watermark_y;
+                                    $watermark_y = $this->image_watermark_y;
                                 }
                             } else {
                                 if (strpos($this->image_watermark_position, "b") !== false) {
-                                    $var_166 = $this->image_dst_y - $var_164;
+                                    $watermark_y = $this->image_dst_y - $watermark_height;
                                 } else {
                                     if (strpos($this->image_watermark_position, "t") !== false) {
-                                        $var_166 = 0;
+                                        $watermark_y = 0;
                                     } else {
-                                        $var_166 = ($this->image_dst_y - $var_164) / 2;
+                                        $watermark_y = ($this->image_dst_y - $watermark_height) / 2;
                                     }
                                 }
                             }
-                            imagecopyresampled($workingImage, $var_144, $var_165, $var_166, 0, 0, $var_163, $var_164, $var_163, $var_164);
+                            imagecopyresampled($workingImage, $overlay_image, $watermark_x, $watermark_y, 0, 0, $watermark_width, $watermark_height, $watermark_width, $watermark_height);
                         } else {
-                            $this->$error = $this->translateString("watermark_invalid");
+                            $this->error = $this->translateString("watermark_invalid");
                         }
                     }
                     if (!empty($this->image_text)) {
                         $this->log .= "- add text<br />";
-                        $var_167 = $this->file_src_size / 1024;
-                        $var_168 = number_format($var_167 / 1024, 1, ".", " ");
-                        $var_169 = number_format($var_167, 1, ".", " ");
-                        $var_170 = 1024 < $var_167 ? $var_168 . " MB" : $var_169 . " kb";
-                        $this->$image_text = str_replace(["[src_name]", "[src_name_body]", "[src_name_ext]", "[src_pathname]", "[src_mime]", "[src_size]", "[src_size_kb]", "[src_size_mb]", "[src_size_human]", "[src_x]", "[src_y]", "[src_pixels]", "[src_type]", "[src_bits]", "[dst_path]", "[dst_name_body]", "[dst_name_ext]", "[dst_name]", "[dst_pathname]", "[dst_x]", "[dst_y]", "[date]", "[time]", "[host]", "[server]", "[ip]", "[gd_version]"], [$this->file_src_name, $this->file_src_name_body, $this->file_src_name_ext, $this->file_src_pathname, $this->file_src_mime, $this->file_src_size, $var_169, $var_168, $var_170, $this->image_src_x, $this->image_src_y, $this->image_src_pixels, $this->image_src_type, $this->image_src_bits, $this->file_dst_path, $this->file_dst_name_body, $this->file_dst_name_ext, $this->file_dst_name, $this->file_dst_pathname, $this->image_dst_x, $this->image_dst_y, date("Y-m-d"), date("H:i:s"), isset($_SERVER["HTTP_HOST"]) ? $_SERVER["HTTP_HOST"] : "n/a", isset($_SERVER["SERVER_NAME"]) ? $_SERVER["SERVER_NAME"] : "n/a", isset($_SERVER["REMOTE_ADDR"]) ? $_SERVER["REMOTE_ADDR"] : "n/a", $this->function_39(true)], $this->image_text);
+                        $text_x_pos = $this->file_src_size / 1024;
+                        $text_y_pos = number_format($text_x_pos / 1024, 1, ".", " ");
+                        $text_width = number_format($text_x_pos, 1, ".", " ");
+                        $text_height = 1024 < $text_x_pos ? $text_y_pos . " MB" : $text_width . " kb";
+                        $this->image_text = str_replace(["[src_name]", "[src_name_body]", "[src_name_ext]", "[src_pathname]", "[src_mime]", "[src_size]", "[src_size_kb]", "[src_size_mb]", "[src_size_human]", "[src_x]", "[src_y]", "[src_pixels]", "[src_type]", "[src_bits]", "[dst_path]", "[dst_name_body]", "[dst_name_ext]", "[dst_name]", "[dst_pathname]", "[dst_x]", "[dst_y]", "[date]", "[time]", "[host]", "[server]", "[ip]", "[gd_version]"], [$this->file_src_name, $this->file_src_name_body, $this->file_src_name_ext, $this->file_src_pathname, $this->file_src_mime, $this->file_src_size, $text_width, $text_y_pos, $text_height, $this->image_src_x, $this->image_src_y, $this->image_src_pixels, $this->image_src_type, $this->image_src_bits, $this->file_dst_path, $this->file_dst_name_body, $this->file_dst_name_ext, $this->file_dst_name, $this->file_dst_pathname, $this->image_dst_x, $this->image_dst_y, date("Y-m-d"), date("H:i:s"), isset($_SERVER["HTTP_HOST"]) ? $_SERVER["HTTP_HOST"] : "n/a", isset($_SERVER["SERVER_NAME"]) ? $_SERVER["SERVER_NAME"] : "n/a", isset($_SERVER["REMOTE_ADDR"]) ? $_SERVER["REMOTE_ADDR"] : "n/a", $this->getGdVersion(true)], $this->image_text);
                         if (!is_numeric($this->image_text_padding)) {
-                            $this->$image_text_padding = 0;
+                            $this->image_text_padding = 0;
                         }
                         if (!is_numeric($this->image_text_line_spacing)) {
-                            $this->$image_text_line_spacing = 0;
+                            $this->image_text_line_spacing = 0;
                         }
                         if (!is_numeric($this->image_text_padding_x)) {
-                            $this->$image_text_padding_x = $this->image_text_padding;
+                            $this->image_text_padding_x = $this->image_text_padding;
                         }
                         if (!is_numeric($this->image_text_padding_y)) {
-                            $this->$image_text_padding_y = $this->image_text_padding;
+                            $this->image_text_padding_y = $this->image_text_padding;
                         }
-                        $this->$image_text_position = strtolower($this->image_text_position);
-                        $this->$image_text_direction = strtolower($this->image_text_direction);
-                        $this->$image_text_alignment = strtolower($this->image_text_alignment);
+                        $this->image_text_position = strtolower($this->image_text_position);
+                        $this->image_text_direction = strtolower($this->image_text_direction);
+                        $this->image_text_alignment = strtolower($this->image_text_alignment);
                         if (!is_numeric($this->image_text_font) && 4 < strlen($this->image_text_font) && substr(strtolower($this->image_text_font), -4) == ".gdf") {
                             $this->log .= "&nbsp;&nbsp;&nbsp;&nbsp;try to load font " . $this->image_text_font . "... ";
-                            if ($this->$image_text_font = @imageloadfont($this->image_text_font)) {
+                            if ($this->image_text_font = @imageloadfont($this->image_text_font)) {
                                 $this->log .= "success<br />";
                             } else {
                                 $this->log .= "error<br />";
-                                $this->$image_text_font = 5;
+                                $this->image_text_font = 5;
                             }
                         }
-                        $var_171 = explode("\n", $this->image_text);
-                        $var_172 = imagefontwidth($this->image_text_font);
-                        $var_173 = imagefontheight($this->image_text_font);
-                        $var_174 = 0;
-                        $var_175 = 0;
-                        $var_176 = 0;
-                        $var_177 = 0;
-                        foreach ($var_171 as $k => $var_124) {
-                            if ($this->$image_text_direction = = "v") {
-                                $h = $var_172 * strlen($var_124);
-                                if ($var_174 < $h) {
-                                    $var_174 = $h;
+                        $text_font_width = explode("\n", $this->image_text);
+                        $text_font_height = imagefontwidth($this->image_text_font);
+                        $text_lines = imagefontheight($this->image_text_font);
+                        $text_bg_width = 0;
+                        $text_bg_height = 0;
+                        $text_color = 0;
+                        $text_color_alpha = 0;
+                        foreach ($text_font_width as $k => $allowed_mime) {
+                            if ($this->image_text_direction=="v") {
+                                $h = $text_font_height * strlen($allowed_mime);
+                                if ($text_bg_width < $h) {
+                                    $text_bg_width = $h;
                                 }
-                                $var_177 = $var_173;
-                                $var_175 += $var_177 + ($k < sizeof($var_171) - 1 ? $this->image_text_line_spacing : 0);
+                                $text_color_alpha = $text_lines;
+                                $text_bg_height += $text_color_alpha + ($k < sizeof($text_font_width) - 1 ? $this->image_text_line_spacing : 0);
                             } else {
-                                $var_178 = $var_172 * strlen($var_124);
-                                if ($var_175 < $var_178) {
-                                    $var_175 = $var_178;
+                                $char = $text_font_height * strlen($allowed_mime);
+                                if ($text_bg_height < $char) {
+                                    $text_bg_height = $char;
                                 }
-                                $var_176 = $var_173;
-                                $var_174 += $var_176 + ($k < sizeof($var_171) - 1 ? $this->image_text_line_spacing : 0);
+                                $text_color = $text_lines;
+                                $text_bg_width += $text_color + ($k < sizeof($text_font_width) - 1 ? $this->image_text_line_spacing : 0);
                             }
                         }
-                        $var_175 += 2 * $this->image_text_padding_x;
-                        $var_174 += 2 * $this->image_text_padding_y;
-                        $var_179 = 0;
-                        $var_180 = 0;
+                        $text_bg_height += 2 * $this->image_text_padding_x;
+                        $text_bg_width += 2 * $this->image_text_padding_y;
+                        $text_bg_x = 0;
+                        $text_bg_y = 0;
                         if (is_numeric($this->image_text_x)) {
                             if ($this->image_text_x < 0) {
-                                $var_179 = $this->image_dst_x - $var_175 + $this->image_text_x;
+                                $text_bg_x = $this->image_dst_x - $text_bg_height + $this->image_text_x;
                             } else {
-                                $var_179 = $this->image_text_x;
+                                $text_bg_x = $this->image_text_x;
                             }
                         } else {
                             if (strpos($this->image_text_position, "r") !== false) {
-                                $var_179 = $this->image_dst_x - $var_175;
+                                $text_bg_x = $this->image_dst_x - $text_bg_height;
                             } else {
                                 if (strpos($this->image_text_position, "l") !== false) {
-                                    $var_179 = 0;
+                                    $text_bg_x = 0;
                                 } else {
-                                    $var_179 = ($this->image_dst_x - $var_175) / 2;
+                                    $text_bg_x = ($this->image_dst_x - $text_bg_height) / 2;
                                 }
                             }
                         }
                         if (is_numeric($this->image_text_y)) {
                             if ($this->image_text_y < 0) {
-                                $var_180 = $this->image_dst_y - $var_174 + $this->image_text_y;
+                                $text_bg_y = $this->image_dst_y - $text_bg_width + $this->image_text_y;
                             } else {
-                                $var_180 = $this->image_text_y;
+                                $text_bg_y = $this->image_text_y;
                             }
                         } else {
                             if (strpos($this->image_text_position, "b") !== false) {
-                                $var_180 = $this->image_dst_y - $var_174;
+                                $text_bg_y = $this->image_dst_y - $text_bg_width;
                             } else {
                                 if (strpos($this->image_text_position, "t") !== false) {
-                                    $var_180 = 0;
+                                    $text_bg_y = 0;
                                 } else {
-                                    $var_180 = ($this->image_dst_y - $var_174) / 2;
+                                    $text_bg_y = ($this->image_dst_y - $text_bg_width) / 2;
                                 }
                             }
                         }
                         if (!empty($this->image_text_background)) {
-                            list($var_101, $var_102, $var_103) = $this->function_43($this->image_text_background);
-                            if (2 <= $var_96 && is_numeric($this->image_text_background_percent) && 0 <= $this->image_text_background_percent && $this->image_text_background_percent <= 100) {
-                                $var_144 = imagecreatetruecolor($var_175, $var_174);
-                                $var_105 = imagecolorallocate($var_144, $var_101, $var_102, $var_103);
-                                imagefilledrectangle($var_144, 0, 0, $var_175, $var_174, $var_105);
-                                $this->function_46($workingImage, $var_144, $var_179, $var_180, 0, 0, $var_175, $var_174, $this->image_text_background_percent);
-                                imagedestroy($var_144);
+                            list($red, $green, $blue) = $this->parseColor($this->image_text_background);
+                            if (2 <= $gd_version && is_numeric($this->image_text_background_percent) && 0 <= $this->image_text_background_percent && $this->image_text_background_percent <= 100) {
+                                $overlay_image = imagecreatetruecolor($text_bg_height, $text_bg_width);
+                                $bg_color = imagecolorallocate($overlay_image, $red, $green, $blue);
+                                imagefilledrectangle($overlay_image, 0, 0, $text_bg_height, $text_bg_width, $bg_color);
+                                $this->mergeImagesWithAlpha($workingImage, $overlay_image, $text_bg_x, $text_bg_y, 0, 0, $text_bg_height, $text_bg_width, $this->image_text_background_percent);
+                                imagedestroy($overlay_image);
                             } else {
-                                $var_105 = imagecolorallocate($workingImage, $var_101, $var_102, $var_103);
-                                imagefilledrectangle($workingImage, $var_179, $var_180, $var_179 + $var_175, $var_180 + $var_174, $var_105);
+                                $bg_color = imagecolorallocate($workingImage, $red, $green, $blue);
+                                imagefilledrectangle($workingImage, $text_bg_x, $text_bg_y, $text_bg_x + $text_bg_height, $text_bg_y + $text_bg_width, $bg_color);
                             }
                         }
-                        $var_179 += $this->image_text_padding_x;
-                        $var_180 += $this->image_text_padding_y;
-                        $var_181 = $var_175 - 2 * $this->image_text_padding_x;
-                        $var_182 = $var_174 - 2 * $this->image_text_padding_y;
-                        list($var_101, $var_102, $var_103) = $this->function_43($this->image_text_color);
-                        if (2 <= $var_96 && is_numeric($this->image_text_percent) && 0 <= $this->image_text_percent && $this->image_text_percent <= 100) {
-                            if ($var_181 < 0) {
-                                $var_181 = 0;
+                        $text_bg_x += $this->image_text_padding_x;
+                        $text_bg_y += $this->image_text_padding_y;
+                        $reflection_width = $text_bg_height - 2 * $this->image_text_padding_x;
+                        $reflection_total_height = $text_bg_width - 2 * $this->image_text_padding_y;
+                        list($red, $green, $blue) = $this->parseColor($this->image_text_color);
+                        if (2 <= $gd_version && is_numeric($this->image_text_percent) && 0 <= $this->image_text_percent && $this->image_text_percent <= 100) {
+                            if ($reflection_width < 0) {
+                                $reflection_width = 0;
                             }
-                            if ($var_182 < 0) {
-                                $var_182 = 0;
+                            if ($reflection_total_height < 0) {
+                                $reflection_total_height = 0;
                             }
-                            $var_144 = $this->function_44($var_181, $var_182, false, true);
-                            $var_183 = imagecolorallocate($var_144, $var_101, $var_102, $var_103);
-                            foreach ($var_171 as $k => $var_124) {
-                                if ($this->$image_text_direction = = "v") {
-                                    imagestringup($var_144, $this->image_text_font, $k * ($var_177 + (0 < $k && $k < sizeof($var_171) ? $this->image_text_line_spacing : 0)), $var_174 - 2 * $this->image_text_padding_y - ($this->$image_text_alignment = = "l" ? 0 : ($var_182 - strlen($var_124) * $var_172) / ($this->$image_text_alignment = = "r" ? 1 : 2)), $var_124, $var_183);
+                            $overlay_image = $this->createImageResource($reflection_width, $reflection_total_height, false, true);
+                            $reflection_y = imagecolorallocate($overlay_image, $red, $green, $blue);
+                            foreach ($text_font_width as $k => $allowed_mime) {
+                                if ($this->image_text_direction=="v") {
+                                    imagestringup($overlay_image, $this->image_text_font, $k * ($text_color_alpha + (0 < $k && $k < sizeof($text_font_width) ? $this->image_text_line_spacing : 0)), $text_bg_width - 2 * $this->image_text_padding_y - ($this->image_text_alignment=="l" ? 0 : ($reflection_total_height - strlen($allowed_mime) * $text_font_height) / ($this->image_text_alignment=="r" ? 1 : 2)), $allowed_mime, $reflection_y);
                                 } else {
-                                    imagestring($var_144, $this->image_text_font, $this->$image_text_alignment = = "l" ? 0 : ($var_181 - strlen($var_124) * $var_172) / ($this->$image_text_alignment = = "r" ? 1 : 2), $k * ($var_176 + (0 < $k && $k < sizeof($var_171) ? $this->image_text_line_spacing : 0)), $var_124, $var_183);
+                                    imagestring($overlay_image, $this->image_text_font, $this->image_text_alignment=="l" ? 0 : ($reflection_width - strlen($allowed_mime) * $text_font_height) / ($this->image_text_alignment=="r" ? 1 : 2), $k * ($text_color + (0 < $k && $k < sizeof($text_font_width) ? $this->image_text_line_spacing : 0)), $allowed_mime, $reflection_y);
                                 }
                             }
-                            $this->function_46($workingImage, $var_144, $var_179, $var_180, 0, 0, $var_181, $var_182, $this->image_text_percent);
-                            imagedestroy($var_144);
+                            $this->mergeImagesWithAlpha($workingImage, $overlay_image, $text_bg_x, $text_bg_y, 0, 0, $reflection_width, $reflection_total_height, $this->image_text_percent);
+                            imagedestroy($overlay_image);
                         } else {
-                            $var_183 = var_184($workingImage, $var_101, $var_102, $var_103);
-                            foreach ($var_171 as $k => $var_124) {
-                                if ($this->$image_text_direction = = "v") {
-                                    imagestringup($workingImage, $this->image_text_font, $var_179 + $k * ($var_177 + (0 < $k && $k < sizeof($var_171) ? $this->image_text_line_spacing : 0)), $var_180 + $var_174 - 2 * $this->image_text_padding_y - ($this->$image_text_alignment = = "l" ? 0 : ($var_182 - strlen($var_124) * $var_172) / ($this->$image_text_alignment = = "r" ? 1 : 2)), $var_124, $var_183);
+                            $reflection_y = imagecolorallocate($workingImage, $red, $green, $blue);
+                            foreach ($text_font_width as $k => $allowed_mime) {
+                                if ($this->image_text_direction=="v") {
+                                    imagestringup($workingImage, $this->image_text_font, $text_bg_x + $k * ($text_color_alpha + (0 < $k && $k < sizeof($text_font_width) ? $this->image_text_line_spacing : 0)), $text_bg_y + $text_bg_width - 2 * $this->image_text_padding_y - ($this->image_text_alignment=="l" ? 0 : ($reflection_total_height - strlen($allowed_mime) * $text_font_height) / ($this->image_text_alignment=="r" ? 1 : 2)), $allowed_mime, $reflection_y);
                                 } else {
-                                    imagestring($workingImage, $this->image_text_font, $var_179 + ($this->$image_text_alignment = = "l" ? 0 : ($var_181 - strlen($var_124) * $var_172) / ($this->$image_text_alignment = = "r" ? 1 : 2)), $var_180 + $k * ($var_176 + (0 < $k && $k < sizeof($var_171) ? $this->image_text_line_spacing : 0)), $var_124, $var_183);
+                                    imagestring($workingImage, $this->image_text_font, $text_bg_x + ($this->image_text_alignment=="l" ? 0 : ($reflection_width - strlen($allowed_mime) * $text_font_height) / ($this->image_text_alignment=="r" ? 1 : 2)), $text_bg_y + $k * ($text_color + (0 < $k && $k < sizeof($text_font_width) ? $this->image_text_line_spacing : 0)), $allowed_mime, $reflection_y);
                                 }
                             }
                         }
@@ -2250,15 +2250,15 @@ class Class_3
                             $image_reflection_height = $this->image_dst_y;
                         }
                         if (empty($this->image_reflection_opacity)) {
-                            $this->$image_reflection_opacity = 60;
+                            $this->image_reflection_opacity = 60;
                         }
-                        $tempImage = $this->function_44($this->image_dst_x, $this->image_dst_y + $image_reflection_height + $this->image_reflection_space, true);
-                        $var_185 = $this->image_reflection_opacity;
+                        $tempImage = $this->createImageResource($this->image_dst_x, $this->image_dst_y + $image_reflection_height + $this->image_reflection_space, true);
+                        $reflection_opacity_line = $this->image_reflection_opacity;
                         imagecopy($tempImage, $workingImage, 0, 0, 0, 0, $this->image_dst_x, $this->image_dst_y + ($this->image_reflection_space < 0 ? $this->image_reflection_space : 0));
                         if (0 < $image_reflection_height + $this->image_reflection_space) {
                             if (!empty($this->image_background_color)) {
-                                list($var_101, $var_102, $var_103) = $this->function_43($this->image_background_color);
-                                $fill = imagecolorallocate($tempImage, $var_101, $var_102, $var_103);
+                                list($red, $green, $blue) = $this->parseColor($this->image_background_color);
+                                $fill = imagecolorallocate($tempImage, $red, $green, $blue);
                             } else {
                                 $fill = imagecolorallocatealpha($tempImage, 0, 0, 0, 127);
                             }
@@ -2266,60 +2266,60 @@ class Class_3
                         }
                         for ($y = 0; $y < $image_reflection_height; $y++) {
                             for ($x = 0; $x < $this->image_dst_x; $x++) {
-                                $var_186 = imagecolorsforindex($tempImage, imagecolorat($tempImage, $x, $y + $this->image_dst_y + $this->image_reflection_space));
-                                $var_187 = imagecolorsforindex($workingImage, imagecolorat($workingImage, $x, $this->image_dst_y - $y - 1 + ($this->image_reflection_space < 0 ? $this->image_reflection_space : 0)));
-                                $var_188 = 1 - $var_187["alpha"] / 127;
-                                $var_189 = 1 - $var_186["alpha"] / 127;
-                                $var_112 = $var_188 * $var_185 / 100;
-                                if (0 < $var_112) {
-                                    $var_101 = round(($var_187["red"] * $var_112 + $var_186["red"] * $var_189) / ($var_189 + $var_112));
-                                    $var_102 = round(($var_187["green"] * $var_112 + $var_186["green"] * $var_189) / ($var_189 + $var_112));
-                                    $var_103 = round(($var_187["blue"] * $var_112 + $var_186["blue"] * $var_189) / ($var_189 + $var_112));
-                                    $var_113 = $var_112 + $var_189;
-                                    if (1 < $var_113) {
-                                        $var_113 = 1;
+                                $reflection_alpha = imagecolorsforindex($tempImage, imagecolorat($tempImage, $x, $y + $this->image_dst_y + $this->image_reflection_space));
+                                $reflection_color_rgb = imagecolorsforindex($workingImage, imagecolorat($workingImage, $x, $this->image_dst_y - $y - 1 + ($this->image_reflection_space < 0 ? $this->image_reflection_space : 0)));
+                                $reflection_color = 1 - $reflection_color_rgb["alpha"] / 127;
+                                $quality = 1 - $reflection_alpha["alpha"] / 127;
+                                $alpha_pct = $reflection_color * $reflection_opacity_line / 100;
+                                if (0 < $alpha_pct) {
+                                    $red = round(($reflection_color_rgb["red"] * $alpha_pct + $reflection_alpha["red"] * $quality) / ($quality + $alpha_pct));
+                                    $green = round(($reflection_color_rgb["green"] * $alpha_pct + $reflection_alpha["green"] * $quality) / ($quality + $alpha_pct));
+                                    $blue = round(($reflection_color_rgb["blue"] * $alpha_pct + $reflection_alpha["blue"] * $quality) / ($quality + $alpha_pct));
+                                    $new_alpha = $alpha_pct + $quality;
+                                    if (1 < $new_alpha) {
+                                        $new_alpha = 1;
                                     }
-                                    $var_113 = round((1 - $var_113) * 127);
-                                    $color = imagecolorallocatealpha($tempImage, $var_101, $var_102, $var_103, $var_113);
+                                    $new_alpha = round((1 - $new_alpha) * 127);
+                                    $color = imagecolorallocatealpha($tempImage, $red, $green, $blue, $new_alpha);
                                     imagesetpixel($tempImage, $x, $y + $this->image_dst_y + $this->image_reflection_space, $color);
                                 }
                             }
-                            if (0 < $var_185) {
-                                $var_185 = $var_185 - $this->image_reflection_opacity / $image_reflection_height;
+                            if (0 < $reflection_opacity_line) {
+                                $reflection_opacity_line = $reflection_opacity_line - $this->image_reflection_opacity / $image_reflection_height;
                             }
                         }
-                        $this->$image_dst_y = $this->image_dst_y + $image_reflection_height + $this->image_reflection_space;
-                        $workingImage = $this->function_45($tempImage, $workingImage);
+                        $this->image_dst_y = $this->image_dst_y + $image_reflection_height + $this->image_reflection_space;
+                        $workingImage = $this->copyImage($tempImage, $workingImage);
                     }
-                    if (is_numeric($this->jpeg_size) && 0 < $this->jpeg_size && ($this->$image_convert = = "jpeg" || $this->$image_convert = = "jpg")) {
+                    if (is_numeric($this->jpeg_size) && 0 < $this->jpeg_size && ($this->image_convert=="jpeg" || $this->image_convert=="jpg")) {
                         $this->log .= "- JPEG desired file size : " . $this->jpeg_size . "<br />";
                         ob_start();
                         imagejpeg($workingImage, "", 75);
-                        $var_190 = ob_get_contents();
+                        $size_before = ob_get_contents();
                         ob_end_clean();
-                        $var_191 = strlen($var_190);
+                        $size_after = strlen($size_before);
                         ob_start();
                         imagejpeg($workingImage, "", 50);
-                        $var_190 = ob_get_contents();
+                        $size_before = ob_get_contents();
                         ob_end_clean();
-                        $var_192 = strlen($var_190);
+                        $temp_filename = strlen($size_before);
                         ob_start();
                         imagejpeg($workingImage, "", 25);
-                        $var_190 = ob_get_contents();
+                        $size_before = ob_get_contents();
                         ob_end_clean();
-                        $var_193 = strlen($var_190);
-                        $var_194 = 25 / ($var_192 - $var_193);
-                        $var_195 = 25 / ($var_191 - $var_192);
-                        $var_196 = 50 / ($var_191 - $var_193);
-                        $var_197 = ($var_194 + $var_195 + $var_196) / 3;
-                        $var_198 = round($var_197 * ($this->jpeg_size - $var_192) + 50);
-                        if ($var_198 < 1) {
-                            $this->$jpeg_quality = 1;
+                        $quality_min = strlen($size_before);
+                        $quality_max = 25 / ($temp_filename - $quality_min);
+                        $quality_mid = 25 / ($size_after - $temp_filename);
+                        $crop_values = 50 / ($size_after - $quality_min);
+                        $crop_x = ($quality_max + $quality_mid + $crop_values) / 3;
+                        $crop_y = round($crop_x * ($this->jpeg_size - $temp_filename) + 50);
+                        if ($crop_y < 1) {
+                            $this->jpeg_quality = 1;
                         } else {
-                            if (100 < $var_198) {
-                                $this->$jpeg_quality = 100;
+                            if (100 < $crop_y) {
+                                $this->jpeg_quality = 100;
                             } else {
-                                $this->$jpeg_quality = $var_198;
+                                $this->jpeg_quality = $crop_y;
                             }
                         }
                         $this->log .= "&nbsp;&nbsp;&nbsp;&nbsp;JPEG quality factor set to " . $this->jpeg_quality . "<br />";
@@ -2329,22 +2329,22 @@ class Class_3
                         case "gif":
                             if (imageistruecolor($workingImage)) {
                                 $this->log .= "&nbsp;&nbsp;&nbsp;&nbsp;true color to palette<br />";
-                                $var_199 = [[]];
+                                $crop_width = [[]];
                                 for ($x = 0; $x < $this->image_dst_x; $x++) {
                                     for ($y = 0; $y < $this->image_dst_y; $y++) {
                                         $pixelColor = imagecolorsforindex($workingImage, imagecolorat($workingImage, $x, $y));
-                                        $var_199[$x][$y] = $pixelColor["alpha"];
+                                        $crop_width[$x][$y] = $pixelColor["alpha"];
                                     }
                                 }
-                                list($var_101, $var_102, $var_103) = $this->function_43($this->image_default_color);
+                                list($red, $green, $blue) = $this->parseColor($this->image_default_color);
                                 for ($x = 0; $x < $this->image_dst_x; $x++) {
                                     for ($y = 0; $y < $this->image_dst_y; $y++) {
-                                        if (0 < $var_199[$x][$y]) {
+                                        if (0 < $crop_width[$x][$y]) {
                                             $pixelColor = imagecolorsforindex($workingImage, imagecolorat($workingImage, $x, $y));
-                                            $var_113 = $var_199[$x][$y] / 127;
-                                            $pixelColor["red"] = round($pixelColor["red"] * (1 - $var_113) + $var_101 * $var_113);
-                                            $pixelColor["green"] = round($pixelColor["green"] * (1 - $var_113) + $var_102 * $var_113);
-                                            $pixelColor["blue"] = round($pixelColor["blue"] * (1 - $var_113) + $var_103 * $var_113);
+                                            $new_alpha = $crop_width[$x][$y] / 127;
+                                            $pixelColor["red"] = round($pixelColor["red"] * (1 - $new_alpha) + $red * $new_alpha);
+                                            $pixelColor["green"] = round($pixelColor["green"] * (1 - $new_alpha) + $green * $new_alpha);
+                                            $pixelColor["blue"] = round($pixelColor["blue"] * (1 - $new_alpha) + $blue * $new_alpha);
                                             $color = imagecolorallocate($workingImage, $pixelColor["red"], $pixelColor["green"], $pixelColor["blue"]);
                                             imagesetpixel($workingImage, $x, $y, $color);
                                         }
@@ -2352,40 +2352,40 @@ class Class_3
                                 }
                                 if (empty($this->image_background_color)) {
                                     imagetruecolortopalette($workingImage, true, 255);
-                                    $var_185 = imagecolorallocate($workingImage, 254, 1, 253);
-                                    imagecolortransparent($workingImage, $var_185);
+                                    $reflection_opacity_line = imagecolorallocate($workingImage, 254, 1, 253);
+                                    imagecolortransparent($workingImage, $reflection_opacity_line);
                                     for ($x = 0; $x < $this->image_dst_x; $x++) {
                                         for ($y = 0; $y < $this->image_dst_y; $y++) {
-                                            if (120 < $var_199[$x][$y]) {
-                                                imagesetpixel($workingImage, $x, $y, $var_185);
+                                            if (120 < $crop_width[$x][$y]) {
+                                                imagesetpixel($workingImage, $x, $y, $reflection_opacity_line);
                                             }
                                         }
                                     }
                                 }
-                                unset($var_199);
+                                unset($crop_width);
                             }
                             break;
                         case "jpg":
                         case "bmp":
                             $this->log .= "&nbsp;&nbsp;&nbsp;&nbsp;fills in transparency with default color<br />";
-                            list($var_101, $var_102, $var_103) = $this->function_43($this->image_default_color);
-                            $var_185 = imagecolorallocate($workingImage, $var_101, $var_102, $var_103);
+                            list($red, $green, $blue) = $this->parseColor($this->image_default_color);
+                            $reflection_opacity_line = imagecolorallocate($workingImage, $red, $green, $blue);
                             for ($x = 0; $x < $this->image_dst_x; $x++) {
                                 for ($y = 0; $y < $this->image_dst_y; $y++) {
                                     if (imageistruecolor($workingImage)) {
-                                        $var_200 = imagecolorat($workingImage, $x, $y);
-                                        $pixelColor = ["red" => $var_200 >> 16 & 255, "green" => $var_200 >> 8 & 255, "blue" => $var_200 & 255, "alpha" => ($var_200 & 2130706432) >> 24];
+                                        $crop_height = imagecolorat($workingImage, $x, $y);
+                                        $pixelColor = ["red" => $crop_height >> 16 & 255, "green" => $crop_height >> 8 & 255, "blue" => $crop_height & 255, "alpha" => ($crop_height & 2130706432) >> 24];
                                     } else {
                                         $pixelColor = imagecolorsforindex($workingImage, imagecolorat($workingImage, $x, $y));
                                     }
                                     if ($pixelColor["alpha"] == 127) {
-                                        imagesetpixel($workingImage, $x, $y, $var_185);
+                                        imagesetpixel($workingImage, $x, $y, $reflection_opacity_line);
                                     } else {
                                         if (0 < $pixelColor["alpha"]) {
-                                            $var_113 = $pixelColor["alpha"] / 127;
-                                            $pixelColor["red"] = round($pixelColor["red"] * (1 - $var_113) + $var_101 * $var_113);
-                                            $pixelColor["green"] = round($pixelColor["green"] * (1 - $var_113) + $var_102 * $var_113);
-                                            $pixelColor["blue"] = round($pixelColor["blue"] * (1 - $var_113) + $var_103 * $var_113);
+                                            $new_alpha = $pixelColor["alpha"] / 127;
+                                            $pixelColor["red"] = round($pixelColor["red"] * (1 - $new_alpha) + $red * $new_alpha);
+                                            $pixelColor["green"] = round($pixelColor["green"] * (1 - $new_alpha) + $green * $new_alpha);
+                                            $pixelColor["blue"] = round($pixelColor["blue"] * (1 - $new_alpha) + $blue * $new_alpha);
                                             $color = imagecolorclosest($workingImage, $pixelColor["red"], $pixelColor["green"], $pixelColor["blue"]);
                                             imagesetpixel($workingImage, $x, $y, $color);
                                         }
@@ -2398,17 +2398,17 @@ class Class_3
                             switch ($this->image_convert) {
                                 case "jpeg":
                                 case "jpg":
-                                    if (!$var_120) {
+                                    if (!$return_content) {
                                         $result = @imagejpeg($workingImage, $this->file_dst_pathname, $this->jpeg_quality);
                                     } else {
                                         ob_start();
                                         $result = @imagejpeg($workingImage, "", $this->jpeg_quality);
-                                        $var_121 = ob_get_contents();
+                                        $content_buffer = ob_get_contents();
                                         ob_end_clean();
                                     }
                                     if (!$result) {
-                                        $this->$processed = false;
-                                        $this->$error = $this->translateString("file_create", ["JPEG"]);
+                                        $this->processed = false;
+                                        $this->error = $this->translateString("file_create", ["JPEG"]);
                                     } else {
                                         $this->log .= "&nbsp;&nbsp;&nbsp;&nbsp;JPEG image created<br />";
                                     }
@@ -2416,59 +2416,59 @@ class Class_3
                                 case "png":
                                     imagealphablending($workingImage, false);
                                     imagesavealpha($workingImage, true);
-                                    if (!$var_120) {
+                                    if (!$return_content) {
                                         $result = @imagepng($workingImage, $this->file_dst_pathname);
                                     } else {
                                         ob_start();
                                         $result = @imagepng($workingImage);
-                                        $var_121 = ob_get_contents();
+                                        $content_buffer = ob_get_contents();
                                         ob_end_clean();
                                     }
                                     if (!$result) {
-                                        $this->$processed = false;
-                                        $this->$error = $this->translateString("file_create", ["PNG"]);
+                                        $this->processed = false;
+                                        $this->error = $this->translateString("file_create", ["PNG"]);
                                     } else {
                                         $this->log .= "&nbsp;&nbsp;&nbsp;&nbsp;PNG image created<br />";
                                     }
                                     break;
                                 case "gif":
-                                    if (!$var_120) {
+                                    if (!$return_content) {
                                         $result = @imagegif($workingImage, $this->file_dst_pathname);
                                     } else {
                                         ob_start();
                                         $result = @imagegif($workingImage);
-                                        $var_121 = ob_get_contents();
+                                        $content_buffer = ob_get_contents();
                                         ob_end_clean();
                                     }
                                     if (!$result) {
-                                        $this->$processed = false;
-                                        $this->$error = $this->translateString("file_create", ["GIF"]);
+                                        $this->processed = false;
+                                        $this->error = $this->translateString("file_create", ["GIF"]);
                                     } else {
                                         $this->log .= "&nbsp;&nbsp;&nbsp;&nbsp;GIF image created<br />";
                                     }
                                     break;
                                 case "bmp":
-                                    if (!$var_120) {
-                                        $result = $this->function_49($workingImage, $this->file_dst_pathname);
+                                    if (!$return_content) {
+                                        $result = $this->displayImage($workingImage, $this->file_dst_pathname);
                                     } else {
                                         ob_start();
-                                        $result = $this->function_49($workingImage);
-                                        $var_121 = ob_get_contents();
+                                        $result = $this->displayImage($workingImage);
+                                        $content_buffer = ob_get_contents();
                                         ob_end_clean();
                                     }
                                     if (!$result) {
-                                        $this->$processed = false;
-                                        $this->$error = $this->translateString("file_create", ["BMP"]);
+                                        $this->processed = false;
+                                        $this->error = $this->translateString("file_create", ["BMP"]);
                                     } else {
                                         $this->log .= "&nbsp;&nbsp;&nbsp;&nbsp;BMP image created<br />";
                                     }
                                     break;
                                 default:
-                                    $this->$processed = false;
-                                    $this->$error = $this->translateString("no_conversion_type");
+                                    $this->processed = false;
+                                    $this->error = $this->translateString("no_conversion_type");
                                     if ($this->processed) {
-                                        if (is_resource($var_131)) {
-                                            imagedestroy($var_131);
+                                        if (is_resource($source_image)) {
+                                            imagedestroy($source_image);
                                         }
                                         if (is_resource($workingImage)) {
                                             imagedestroy($workingImage);
@@ -2480,16 +2480,16 @@ class Class_3
                 }
             } else {
                 $this->log .= "- no image processing wanted<br />";
-                if (!$var_120) {
+                if (!$return_content) {
                     if (!copy($this->file_src_pathname, $this->file_dst_pathname)) {
-                        $this->$processed = false;
-                        $this->$error = $this->translateString("copy_failed");
+                        $this->processed = false;
+                        $this->error = $this->translateString("copy_failed");
                     }
                 } else {
-                    $var_121 = @file_get_contents($this->file_src_pathname);
-                    if ($var_121 === false) {
-                        $this->$processed = false;
-                        $this->$error = $this->translateString("reading_failed");
+                    $content_buffer = @file_get_contents($this->file_src_pathname);
+                    if ($content_buffer === false) {
+                        $this->processed = false;
+                        $this->error = $this->translateString("reading_failed");
                     }
                 }
             }
@@ -2499,95 +2499,95 @@ class Class_3
         } else {
             $this->log .= "- <b>error</b>: " . $this->error . "<br />";
         }
-        $this->function_38();
-        if ($var_120) {
-            return $var_121;
+        $this->resetDefaults();
+        if ($return_content) {
+            return $content_buffer;
         }
     }
-    public function function_50()
+    public function cleanup()
     {
         $this->log .= "<b>cleanup</b><br />";
         $this->log .= "- delete temp file " . $this->file_src_pathname . "<br />";
         @unlink($this->file_src_pathname);
     }
-    public function function_48($filename)
+    public function saveImageToFile($filename)
     {
-        if (!($var_201 = fopen($filename, "rb"))) {
+        if (!($rotate_angle = fopen($filename, "rb"))) {
             return false;
         }
-        $file = unpack("vfile_type/Vfile_size/Vreserved/Vbitmap_offset", fread($var_201, 14));
+        $file = unpack("vfile_type/Vfile_size/Vreserved/Vbitmap_offset", fread($rotate_angle, 14));
         if ($file["file_type"] != 19778) {
             return false;
         }
-        $var_202 = unpack("Vheader_size/Vwidth/Vheight/vplanes/vbits_per_pixel/Vcompression/Vsize_bitmap/Vhoriz_resolution/Vvert_resolution/Vcolors_used/Vcolors_important", fread($var_201, 40));
-        $var_202["colors"] = pow(2, $var_202["bits_per_pixel"]);
-        if ($var_202["size_bitmap"] == 0) {
-            $var_202["size_bitmap"] = $file["file_size"] - $file["bitmap_offset"];
+        $rotate_color = unpack("Vheader_size/Vwidth/Vheight/vplanes/vbits_per_pixel/Vcompression/Vsize_bitmap/Vhoriz_resolution/Vvert_resolution/Vcolors_used/Vcolors_important", fread($rotate_angle, 40));
+        $rotate_color["colors"] = pow(2, $rotate_color["bits_per_pixel"]);
+        if ($rotate_color["size_bitmap"] == 0) {
+            $rotate_color["size_bitmap"] = $file["file_size"] - $file["bitmap_offset"];
         }
-        $var_202["bytes_per_pixel"] = $var_202["bits_per_pixel"] / 8;
-        $var_202["bytes_per_pixel2"] = ceil($var_202["bytes_per_pixel"]);
-        $var_202["decal"] = $var_202["width"] * $var_202["bytes_per_pixel"] / 4;
-        $var_202["decal"] -= floor($var_202["width"] * $var_202["bytes_per_pixel"] / 4);
-        $var_202["decal"] = 4 - 4 * $var_202["decal"];
-        if ($var_202["decal"] == 4) {
-            $var_202["decal"] = 0;
+        $rotate_color["bytes_per_pixel"] = $rotate_color["bits_per_pixel"] / 8;
+        $rotate_color["bytes_per_pixel2"] = ceil($rotate_color["bytes_per_pixel"]);
+        $rotate_color["decal"] = $rotate_color["width"] * $rotate_color["bytes_per_pixel"] / 4;
+        $rotate_color["decal"] -= floor($rotate_color["width"] * $rotate_color["bytes_per_pixel"] / 4);
+        $rotate_color["decal"] = 4 - 4 * $rotate_color["decal"];
+        if ($rotate_color["decal"] == 4) {
+            $rotate_color["decal"] = 0;
         }
-        $var_203 = [];
-        if ($var_202["colors"] < 16777216) {
-            $var_203 = unpack("V" . $var_202["colors"], fread($var_201, $var_202["colors"] * 4));
+        $flip_mode = [];
+        if ($rotate_color["colors"] < 16777216) {
+            $flip_mode = unpack("V" . $rotate_color["colors"], fread($rotate_angle, $rotate_color["colors"] * 4));
         }
-        $var_204 = fread($var_201, $var_202["size_bitmap"]);
-        $var_205 = chr(0);
-        $res = imagecreatetruecolor($var_202["width"], $var_202["height"]);
-        $var_206 = 0;
-        $var_207 = $var_202["height"] - 1;
-        while (0 <= $var_207) {
-            $var_208 = 0;
-            while ($var_208 < $var_202["width"]) {
-                if ($var_202["bits_per_pixel"] == 24) {
-                    $color = unpack("V", substr($var_204, $var_206, 3) . $var_205);
+        $convolution_matrix = fread($rotate_angle, $rotate_color["size_bitmap"]);
+        $convolution_div = chr(0);
+        $res = imagecreatetruecolor($rotate_color["width"], $rotate_color["height"]);
+        $convolution_offset = 0;
+        $output_filename = $rotate_color["height"] - 1;
+        while (0 <= $output_filename) {
+            $mime_type_output = 0;
+            while ($mime_type_output < $rotate_color["width"]) {
+                if ($rotate_color["bits_per_pixel"] == 24) {
+                    $color = unpack("V", substr($convolution_matrix, $convolution_offset, 3) . $convolution_div);
                 } else {
-                    if ($var_202["bits_per_pixel"] == 16) {
-                        $color = unpack("n", substr($var_204, $var_206, 2));
-                        $color[1] = $var_203[$color[1] + 1];
+                    if ($rotate_color["bits_per_pixel"] == 16) {
+                        $color = unpack("n", substr($convolution_matrix, $convolution_offset, 2));
+                        $color[1] = $flip_mode[$color[1] + 1];
                     } else {
-                        if ($var_202["bits_per_pixel"] == 8) {
-                            $color = unpack("n", $var_205 . substr($var_204, $var_206, 1));
-                            $color[1] = $var_203[$color[1] + 1];
+                        if ($rotate_color["bits_per_pixel"] == 8) {
+                            $color = unpack("n", $convolution_div . substr($convolution_matrix, $convolution_offset, 1));
+                            $color[1] = $flip_mode[$color[1] + 1];
                         } else {
-                            if ($var_202["bits_per_pixel"] == 4) {
-                                $color = unpack("n", $var_205 . substr($var_204, floor($var_206), 1));
-                                if ($var_206 * 2 % 2 == 0) {
+                            if ($rotate_color["bits_per_pixel"] == 4) {
+                                $color = unpack("n", $convolution_div . substr($convolution_matrix, floor($convolution_offset), 1));
+                                if ($convolution_offset * 2 % 2 == 0) {
                                     $color[1] = $color[1] >> 4;
                                 } else {
                                     $color[1] = $color[1] & 15;
                                 }
-                                $color[1] = $var_203[$color[1] + 1];
+                                $color[1] = $flip_mode[$color[1] + 1];
                             } else {
-                                if ($var_202["bits_per_pixel"] == 1) {
-                                    $color = unpack("n", $var_205 . substr($var_204, floor($var_206), 1));
-                                    if ($var_206 * 8 % 8 == 0) {
+                                if ($rotate_color["bits_per_pixel"] == 1) {
+                                    $color = unpack("n", $convolution_div . substr($convolution_matrix, floor($convolution_offset), 1));
+                                    if ($convolution_offset * 8 % 8 == 0) {
                                         $color[1] = $color[1] >> 7;
                                     } else {
-                                        if ($var_206 * 8 % 8 == 1) {
+                                        if ($convolution_offset * 8 % 8 == 1) {
                                             $color[1] = ($color[1] & 64) >> 6;
                                         } else {
-                                            if ($var_206 * 8 % 8 == 2) {
+                                            if ($convolution_offset * 8 % 8 == 2) {
                                                 $color[1] = ($color[1] & 32) >> 5;
                                             } else {
-                                                if ($var_206 * 8 % 8 == 3) {
+                                                if ($convolution_offset * 8 % 8 == 3) {
                                                     $color[1] = ($color[1] & 16) >> 4;
                                                 } else {
-                                                    if ($var_206 * 8 % 8 == 4) {
+                                                    if ($convolution_offset * 8 % 8 == 4) {
                                                         $color[1] = ($color[1] & 8) >> 3;
                                                     } else {
-                                                        if ($var_206 * 8 % 8 == 5) {
+                                                        if ($convolution_offset * 8 % 8 == 5) {
                                                             $color[1] = ($color[1] & 4) >> 2;
                                                         } else {
-                                                            if ($var_206 * 8 % 8 == 6) {
+                                                            if ($convolution_offset * 8 % 8 == 6) {
                                                                 $color[1] = ($color[1] & 2) >> 1;
                                                             } else {
-                                                                if ($var_206 * 8 % 8 == 7) {
+                                                                if ($convolution_offset * 8 % 8 == 7) {
                                                                     $color[1] = $color[1] & 1;
                                                                 }
                                                             }
@@ -2597,7 +2597,7 @@ class Class_3
                                             }
                                         }
                                     }
-                                    $color[1] = $var_203[$color[1] + 1];
+                                    $color[1] = $flip_mode[$color[1] + 1];
                                 } else {
                                     return false;
                                 }
@@ -2605,46 +2605,46 @@ class Class_3
                         }
                     }
                 }
-                imagesetpixel($res, $var_208, $var_207, $color[1]);
-                $var_208++;
-                $var_206 += $var_202["bytes_per_pixel"];
+                imagesetpixel($res, $mime_type_output, $output_filename, $color[1]);
+                $mime_type_output++;
+                $convolution_offset += $rotate_color["bytes_per_pixel"];
             }
-            $var_207--;
-            $var_206 += $var_202["decal"];
+            $output_filename--;
+            $convolution_offset += $rotate_color["decal"];
         }
-        fclose($var_201);
+        fclose($rotate_angle);
         return $res;
     }
-    public function function_49(&$im, $filename = "")
+    public function displayImage(&$im, $filename = "")
     {
         if (!$im) {
             return false;
         }
-        $var_178 = imagesx($im);
+        $char = imagesx($im);
         $h = imagesy($im);
         $result = "";
         if (!imageistruecolor($im)) {
-            $tempImage = imagecreatetruecolor($var_178, $h);
-            imagecopy($tempImage, $im, 0, 0, 0, 0, $var_178, $h);
+            $tempImage = imagecreatetruecolor($char, $h);
+            imagecopy($tempImage, $im, 0, 0, 0, 0, $char, $h);
             imagedestroy($im);
             $im =& $tempImage;
         }
-        $var_209 = $var_178 * 3;
-        $var_210 = $var_209 + 3 & -4;
-        $var_211 = $var_210 * $h;
-        $var_212 = 54;
-        $var_213 = $var_212 + $var_211;
+        $output_success = $char * 3;
+        $file_handle = $output_success + 3 & -4;
+        $chunk_size = $file_handle * $h;
+        $file_data = 54;
+        $copy_result = $file_data + $chunk_size;
         $result .= substr("BM", 0, 2);
-        $result .= pack("VvvV", $var_213, 0, 0, $var_212);
-        $result .= pack("VVVvvVVVVVV", 40, $var_178, $h, 1, 24, 0, $var_211, 0, 0, 0, 0);
-        $var_214 = $var_210 - $var_209;
+        $result .= pack("VvvV", $copy_result, 0, 0, $file_data);
+        $result .= pack("VVVvvVVVVVV", 40, $char, $h, 1, 24, 0, $chunk_size, 0, 0, 0, 0);
+        $output_format = $file_handle - $output_success;
         $y = $h - 1;
         while (0 <= $y) {
-            for ($x = 0; $x < $var_178; $x++) {
-                $var_215 = imagecolorat($im, $x, $y);
-                $result .= substr(pack("V", $var_215), 0, 3);
+            for ($x = 0; $x < $char; $x++) {
+                $output_quality = imagecolorat($im, $x, $y);
+                $result .= substr(pack("V", $output_quality), 0, 3);
             }
-            for ($i = 0; $i < $var_214; $i++) {
+            for ($i = 0; $i < $output_format; $i++) {
                 $result .= pack("C", 0);
             }
             --$y;
