@@ -129,21 +129,21 @@ class Class_5
         if ((strtolower($charset) == "iso-8859-1" || $charset == "") && preg_match("/&[a-z0-9#]+;/i", $message)) {
             $message = utf8_encode($message);
             $subject = utf8_encode($subject);
-            $var_285 = "UTF-8";
-            $var_286 = true;
+            $emailCharset = "UTF-8";
+            $isUtf8Encoded = true;
         } else {
-            $var_285 = $charset;
-            $var_286 = false;
+            $emailCharset = $charset;
+            $isUtf8Encoded = false;
         }
-        $message = $this->decodeHtmlEntities($message, $var_286);
-        $subject = $this->encodeEmailHeaderRFC2047($this->decodeHtmlEntities($subject, $var_286), $var_285, false, false);
+        $message = $this->decodeHtmlEntities($message, $isUtf8Encoded);
+        $subject = $this->encodeEmailHeaderRFC2047($this->decodeHtmlEntities($subject, $isUtf8Encoded), $emailCharset, false, false);
         $from = $this->sanitizeEmailText($from);
         if (empty($from)) {
             $emailFromHeader = "PHP/" . phpversion() . " via the PHP TS SE SMTP Class";
-            if ($var_286) {
+            if ($isUtf8Encoded) {
                 $emailFromHeader = utf8_encode($emailFromHeader);
             }
-            $emailFromHeader = $this->encodeEmailHeaderRFC2047($this->decodeHtmlEntities($emailFromHeader, $var_286), $var_285);
+            $emailFromHeader = $this->encodeEmailHeaderRFC2047($this->decodeHtmlEntities($emailFromHeader, $isUtf8Encoded), $emailCharset);
             if (!isset($headers)) {
                 $headers = "";
             }
@@ -151,10 +151,10 @@ class Class_5
             $headers .= "Auto-Submitted: auto-generated" . $delimiter;
         } else {
             $emailFromHeader = $from;
-            if ($var_286) {
+            if ($isUtf8Encoded) {
                 $emailFromHeader = utf8_encode($emailFromHeader);
             }
-            $emailFromHeader = $this->encodeEmailHeaderRFC2047($this->decodeHtmlEntities($emailFromHeader, $var_286), $var_285);
+            $emailFromHeader = $this->encodeEmailHeaderRFC2047($this->decodeHtmlEntities($emailFromHeader, $isUtf8Encoded), $emailCharset);
             if (!isset($headers)) {
                 $headers = "";
             }
@@ -171,7 +171,7 @@ class Class_5
         $headers .= preg_replace("#(\r\n|\r|\n)#s", $delimiter, $uheaders);
         unset($uheaders);
         $headers .= "MIME-Version: 1.0" . $delimiter;
-        $headers .= "Content-Type: text/html" . ($var_285 ? "; $charset = \"" . $var_285 . "\"" : "") . $delimiter;
+        $headers .= "Content-Type: text/html" . ($emailCharset ? "; $charset = \"" . $emailCharset . "\"" : "") . $delimiter;
         $headers .= "Content-Transfer-Encoding: 8bit" . $delimiter;
         $headers .= "X-Priority: 3" . $delimiter;
         $headers .= "X-Mailer: TS SE Mail via PHP" . $delimiter;
@@ -483,25 +483,25 @@ function buildPaginationLinks($perpage, $results, $address)
     $paginationHtml["prev"] = $paginationHtml["next"];
     if (1 < $pagenumber) {
         $previousPage = $pagenumber - 1;
-        $var_253 = calculatePagination($previousPage, $perpage, $results);
+        $previousPageInfo = calculatePagination($previousPage, $perpage, $results);
         $paginationHtml["prev"] = true;
     }
     if ($pagenumber < $queryResult) {
-        $var_254 = $pagenumber + 1;
-        $var_255 = calculatePagination($var_254, $perpage, $results);
+        $nextPageNumber = $pagenumber + 1;
+        $nextPageInfo = calculatePagination($nextPageNumber, $perpage, $results);
         $paginationHtml["next"] = true;
     }
-    $var_256 = "3";
+    $pageRangeThreshold = "3";
     if (!isset($paginationSkipLinksArray) || !is_array($paginationSkipLinksArray)) {
         $var_258 = "10 50 100 500 1000";
         $paginationSkipLinksArray[] = preg_split("#\\s+#s", $var_258, -1, PREG_SPLIT_NO_EMPTY);
         while ($currentPage++ < $queryResult) {
         }
         $var_259 = isset($previousPage) && $previousPage != 1 ? "page=" . $previousPage : "";
-        $paginationLinks = "\r\n\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTableNoBorder\">\r\n\t\t<tr>\r\n\t\t\t<td $style = \"padding: 0px 0px 1px 0px;\">\r\n\t\t\t\t<div $style = \"float: left;\" $id = \"navcontainer_f\">\r\n\t\t\t\t\t<ul>\r\n\t\t\t\t\t\t<li>" . $pagenumber . " - " . $queryResult . "</li>\r\n\t\t\t\t\t\t" . ($paginationHtml["first"] ? "<li><a class=\"smalltext\" $href = \"" . $address . "\" $title = \"First Page - Show Results " . $firstPageInfo["first"] . " to " . $firstPageInfo["last"] . " of " . $total . "\">&laquo; First</a></li>" : "") . ($paginationHtml["prev"] ? "<li><a class=\"smalltext\" $href = \"" . $address . $var_259 . "\" $title = \"Previous Page - Show Results " . $var_253["first"] . " to " . $var_253["last"] . " of " . $total . "\">&lt;</a></li>" : "") . "\r\n\t\t\t\t\t\t" . $paginationLinks . "\r\n\t\t\t\t\t\t" . ($paginationHtml["next"] ? "<li><a class=\"smalltext\" $href = \"" . $address . "page=" . $var_254 . "\" $title = \"Next Page - Show Results " . $var_255["first"] . " to " . $var_255["last"] . " of " . $total . "\">&gt;</a></li>" : "") . ($paginationHtml["last"] ? "<li><a class=\"smalltext\" $href = \"" . $address . "page=" . $queryResult . "\" $title = \"Last Page - Show Results " . $lastPageInfo["first"] . " to " . $lastPageInfo["last"] . " of " . $total . "\">Last <strong>&raquo;</strong></a></li>" : "") . "\r\n\t\t\t\t\t</ul>\r\n\t\t\t\t</div>\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t</table>";
+        $paginationLinks = "\r\n\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTableNoBorder\">\r\n\t\t<tr>\r\n\t\t\t<td $style = \"padding: 0px 0px 1px 0px;\">\r\n\t\t\t\t<div $style = \"float: left;\" $id = \"navcontainer_f\">\r\n\t\t\t\t\t<ul>\r\n\t\t\t\t\t\t<li>" . $pagenumber . " - " . $queryResult . "</li>\r\n\t\t\t\t\t\t" . ($paginationHtml["first"] ? "<li><a class=\"smalltext\" $href = \"" . $address . "\" $title = \"First Page - Show Results " . $firstPageInfo["first"] . " to " . $firstPageInfo["last"] . " of " . $total . "\">&laquo; First</a></li>" : "") . ($paginationHtml["prev"] ? "<li><a class=\"smalltext\" $href = \"" . $address . $var_259 . "\" $title = \"Previous Page - Show Results " . $previousPageInfo["first"] . " to " . $previousPageInfo["last"] . " of " . $total . "\">&lt;</a></li>" : "") . "\r\n\t\t\t\t\t\t" . $paginationLinks . "\r\n\t\t\t\t\t\t" . ($paginationHtml["next"] ? "<li><a class=\"smalltext\" $href = \"" . $address . "page=" . $nextPageNumber . "\" $title = \"Next Page - Show Results " . $nextPageInfo["first"] . " to " . $nextPageInfo["last"] . " of " . $total . "\">&gt;</a></li>" : "") . ($paginationHtml["last"] ? "<li><a class=\"smalltext\" $href = \"" . $address . "page=" . $queryResult . "\" $title = \"Last Page - Show Results " . $lastPageInfo["first"] . " to " . $lastPageInfo["last"] . " of " . $total . "\">Last <strong>&raquo;</strong></a></li>" : "") . "\r\n\t\t\t\t\t</ul>\r\n\t\t\t\t</div>\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t</table>";
         return [$paginationLinks, "LIMIT " . $limitOffset . ", " . $perpage];
     }
-    if ($var_256 <= abs($currentPage - $pagenumber) && $var_256 != 0) {
+    if ($pageRangeThreshold <= abs($currentPage - $pagenumber) && $pageRangeThreshold != 0) {
         if ($currentPage == 1) {
             $firstPageInfo = calculatePagination(1, $perpage, $results);
             $paginationHtml["first"] = true;

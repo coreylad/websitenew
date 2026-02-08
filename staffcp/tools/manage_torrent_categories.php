@@ -228,9 +228,9 @@ function function_154($file)
 }
 function function_153()
 {
-    $var_281 = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'MAIN'");
-    $var_20 = mysqli_fetch_assoc($var_281);
-    $var_27 = unserialize($var_20["content"]);
+    $configQuery = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'MAIN'");
+    $configRow = mysqli_fetch_assoc($configQuery);
+    $configData = unserialize($configRow["content"]);
     $var_436 = [];
     $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM categories WHERE $type = 'c' ORDER by name,id");
     while ($var_418 = mysqli_fetch_assoc($query)) {
@@ -243,7 +243,7 @@ function function_153()
     }
     $var_438 = var_export($var_436, true);
     $var_439 = var_export($var_437, true);
-    $var_440 = "../" . $var_27["cache"] . "/categories.php";
+    $var_440 = "../" . $configData["cache"] . "/categories.php";
     $var_441 = @fopen((string) $var_440, "w");
     $var_442 = "<?php\n/** TS Generated Cache#7 - Do Not Alter\n * Cache Name: Categories\n * Generated: " . gmdate("r") . "\n*/\n\n";
     $var_442 .= "\$_categoriesC = " . $var_438 . ";\n\n";
@@ -253,19 +253,19 @@ function function_153()
 }
 function function_155($selected = "")
 {
-    $var_281 = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'MAIN'");
-    $var_20 = mysqli_fetch_assoc($var_281);
-    $var_27 = unserialize($var_20["content"]);
+    $configQuery = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'MAIN'");
+    $configRow = mysqli_fetch_assoc($configQuery);
+    $configData = unserialize($configRow["content"]);
     if (is_dir("../images")) {
-        $var_443 = "../images/" . $var_27["table_cat"] . "/";
+        $var_443 = "../images/" . $configData["table_cat"] . "/";
     } else {
         if (is_dir("../pic")) {
-            $var_443 = "../pic/" . $var_27["table_cat"] . "/";
+            $var_443 = "../pic/" . $configData["table_cat"] . "/";
         } else {
             return "<select $name = \"image\"></select>";
         }
     }
-    $var_444 = $var_27["pic_base_url"] . $var_27["table_cat"] . "/";
+    $var_444 = $configData["pic_base_url"] . $configData["table_cat"] . "/";
     $var_445 = scandir($var_443);
     $var_446 = "<select $name = \"image\">";
     foreach ($var_445 as $var_447) {

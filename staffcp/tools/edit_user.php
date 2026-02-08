@@ -100,7 +100,7 @@ function formatBytes($bytes = 0)
     }
     return number_format($bytes / 0, 2) . " TB";
 }
-function function_107($Option)
+function checkEditUserPermission($Option)
 {
     global $var_318;
     $var_304 = ["changeusername" => "0", "changepassword" => "1", "changeemail" => "2", "changeusergroup" => "3", "managedonationstatus" => "4", "managetimeoptions" => "5", "manageaccountdetails" => "6", "manageaccountpermissions" => "7", "manageaccountwarningdetails" => "8", "manageaccounthistory" => "9", "managesupportoptions" => "10", "managecontactdetails" => "11"];

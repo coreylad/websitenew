@@ -64,10 +64,10 @@ function logStaffAction($log)
 }
 function function_151($id)
 {
-    $var_281 = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'MAIN'");
-    $var_20 = mysqli_fetch_assoc($var_281);
-    $var_27 = unserialize($var_20["content"]);
-    $var_427 = "../" . $var_27["torrent_dir"];
+    $configQuery = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'MAIN'");
+    $configRow = mysqli_fetch_assoc($configQuery);
+    $configData = unserialize($configRow["content"]);
+    $var_427 = "../" . $configData["torrent_dir"];
     $id = intval($id);
     if (!$id) {
         return NULL;

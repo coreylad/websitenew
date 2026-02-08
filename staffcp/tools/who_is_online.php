@@ -81,235 +81,235 @@ function applyUsernameStyle($username, $namestyle)
 }
 function identifyUserLocation($location)
 {
-    $var_281 = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'MAIN'");
-    $var_20 = mysqli_fetch_assoc($var_281);
-    $var_27 = unserialize($var_20["content"]);
-    $function_259 = "<font $color = \"red\"><b>Unknown Location!</b></font>";
+    $configQuery = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'MAIN'");
+    $configRow = mysqli_fetch_assoc($configQuery);
+    $configData = unserialize($configRow["content"]);
+    $userLocationDescription = "<font $color = \"red\"><b>Unknown Location!</b></font>";
     if (strstr($location, "tsf_forums") && !strstr($location, "returnto")) {
         preg_match_all("#\\/tsf_forums\\/(.*)\\.php#U", $location, $results, PREG_SET_ORDER);
         switch ($results[0][1]) {
             case "index":
-                $function_259 = "Viewing Index.";
+                $userLocationDescription = "Viewing Index.";
                 break;
             case "forumdisplay":
-                $function_259 = "Viewing Forum.";
+                $userLocationDescription = "Viewing Forum.";
                 break;
             case "showthread":
-                $function_259 = "Viewing Thread.";
+                $userLocationDescription = "Viewing Thread.";
                 break;
             case "announcement":
-                $function_259 = "Viewing Announcement.";
+                $userLocationDescription = "Viewing Announcement.";
                 break;
             case "deletepost":
             case "massdelete":
-                $function_259 = "Deleting Post.";
+                $userLocationDescription = "Deleting Post.";
                 break;
             case "editpost":
-                $function_259 = "Editing Post.";
+                $userLocationDescription = "Editing Post.";
                 break;
             case "moderation":
-                $function_259 = "Moderating Thread/Post.";
+                $userLocationDescription = "Moderating Thread/Post.";
                 break;
             case "newreply":
-                $function_259 = "Posting Reply.";
+                $userLocationDescription = "Posting Reply.";
                 break;
             case "newthread":
-                $function_259 = "Creating Thread.";
+                $userLocationDescription = "Creating Thread.";
                 break;
             case "poll":
-                $function_259 = "Voting Poll.";
+                $userLocationDescription = "Voting Poll.";
                 break;
             case "subscription":
-                $function_259 = "Subscription Thread.";
+                $userLocationDescription = "Subscription Thread.";
                 break;
             case "threadrate":
-                $function_259 = "Rating Thread.";
+                $userLocationDescription = "Rating Thread.";
                 break;
             case "tsf_search":
-                $function_259 = "Searching Forums.";
+                $userLocationDescription = "Searching Forums.";
                 break;
             case "attachment":
-                $function_259 = "Viewing Attachment.";
+                $userLocationDescription = "Viewing Attachment.";
                 break;
             case "top_stats":
-                $function_259 = "Viewing Top 10 Forum Stats.";
+                $userLocationDescription = "Viewing Top 10 Forum Stats.";
                 break;
             case "syndication":
-                $function_259 = "TSF Forums RSS Feeds";
+                $userLocationDescription = "TSF Forums RSS Feeds";
                 break;
             default:
-                $function_259 = "<b>Forum:</b> " . $function_259;
+                $userLocationDescription = "<b>Forum:</b> " . $userLocationDescription;
         }
     } else {
         if (strstr($location, "/ts_games/")) {
-            $function_259 = "<b>Viewing/Playing Arcade.</b>";
+            $userLocationDescription = "<b>Viewing/Playing Arcade.</b>";
         } else {
             if (strstr($location, "/ts_shoutbox/")) {
-                $function_259 = "<b>Viewing Shoutbox.</b>";
+                $userLocationDescription = "<b>Viewing Shoutbox.</b>";
             } else {
                 if (strstr($location, "/admin/")) {
-                    $function_259 = "<b>Viewing Admin Panel.</b>";
+                    $userLocationDescription = "<b>Viewing Admin Panel.</b>";
                 } else {
-                    if (strstr($location, "/" . $var_27["staffcp_path"] . "/")) {
-                        $function_259 = "<b>Viewing Staff Control Panel.</b>";
+                    if (strstr($location, "/" . $configData["staffcp_path"] . "/")) {
+                        $userLocationDescription = "<b>Viewing Staff Control Panel.</b>";
                     } else {
                         if (strstr($location, "/shoutcast/")) {
-                            $function_259 = "<b>Shoutcast:</b> Listening Music.";
+                            $userLocationDescription = "<b>Shoutcast:</b> Listening Music.";
                         } else {
                             if (strstr($location, "/pbar/")) {
-                                $function_259 = "Viewing Donation Status.";
+                                $userLocationDescription = "Viewing Donation Status.";
                             } else {
                                 preg_match_all("#\\/(.*)\\.php#U", $location, $results, PREG_SET_ORDER);
                                 switch ($results[0][1]) {
                                     case "ts_error":
-                                        $function_259 = "<strong>Viewing Error Message</strong>";
+                                        $userLocationDescription = "<strong>Viewing Error Message</strong>";
                                         break;
                                     case "listen":
-                                        $function_259 = "Listening Image Verification Code";
+                                        $userLocationDescription = "Listening Image Verification Code";
                                         break;
                                     case "ok":
-                                        $function_259 = "Viewing Confirmation Page.";
+                                        $userLocationDescription = "Viewing Confirmation Page.";
                                         break;
                                     case "index":
-                                        $function_259 = "Viewing Index Page.";
+                                        $userLocationDescription = "Viewing Index Page.";
                                         break;
                                     case "browse":
-                                        $function_259 = "Viewing Browse Page.";
+                                        $userLocationDescription = "Viewing Browse Page.";
                                         break;
                                     case "comment":
-                                        $function_259 = "Viewing Comment Page.";
+                                        $userLocationDescription = "Viewing Comment Page.";
                                         break;
                                     case "donate":
-                                        $function_259 = "Viewing Donation Page.";
+                                        $userLocationDescription = "Viewing Donation Page.";
                                         break;
                                     case "edit":
-                                        $function_259 = "Editing Torrent.";
+                                        $userLocationDescription = "Editing Torrent.";
                                         break;
                                     case "faq":
-                                        $function_259 = "Viewing FAQ Page.";
+                                        $userLocationDescription = "Viewing FAQ Page.";
                                         break;
                                     case "finduser":
-                                        $function_259 = "Searching User.";
+                                        $userLocationDescription = "Searching User.";
                                         break;
                                     case "friends":
-                                        $function_259 = "Viewing Friends Page.";
+                                        $userLocationDescription = "Viewing Friends Page.";
                                         break;
                                     case "getrss":
                                     case "rss":
-                                        $function_259 = "Viewing RSS Page.";
+                                        $userLocationDescription = "Viewing RSS Page.";
                                         break;
                                     case "invite":
-                                        $function_259 = "Viewing Invite Page.";
+                                        $userLocationDescription = "Viewing Invite Page.";
                                         break;
                                     case "logout":
-                                        $function_259 = "Logout.";
+                                        $userLocationDescription = "Logout.";
                                         break;
                                     case "messages":
-                                        $function_259 = "Viewing Messages.";
+                                        $userLocationDescription = "Viewing Messages.";
                                         break;
                                     case "sendmessage":
-                                        $function_259 = "Sending PM.";
+                                        $userLocationDescription = "Sending PM.";
                                         break;
                                     case "mybonus":
-                                        $function_259 = "Viewing Bonus Page.";
+                                        $userLocationDescription = "Viewing Bonus Page.";
                                         break;
                                     case "referrals":
-                                        $function_259 = "Viewing Referrals Page.";
+                                        $userLocationDescription = "Viewing Referrals Page.";
                                         break;
                                     case "topten":
-                                        $function_259 = "Viewing TOPTEN Page.";
+                                        $userLocationDescription = "Viewing TOPTEN Page.";
                                         break;
                                     case "viewsnatches":
-                                        $function_259 = "Viewing Snatches Page.";
+                                        $userLocationDescription = "Viewing Snatches Page.";
                                         break;
                                     case "userdetails":
-                                        $function_259 = "Viewing Userdetails Page.";
+                                        $userLocationDescription = "Viewing Userdetails Page.";
                                         break;
                                     case "details":
-                                        $function_259 = "Viewing Torrent Details.";
+                                        $userLocationDescription = "Viewing Torrent Details.";
                                         break;
                                     case "upload":
-                                        $function_259 = "Uploading Torrent.";
+                                        $userLocationDescription = "Uploading Torrent.";
                                         break;
                                     case "ts_subtitles":
-                                        $function_259 = "Viewing Subtitles Page.";
+                                        $userLocationDescription = "Viewing Subtitles Page.";
                                         break;
                                     case "download":
-                                        $function_259 = "Downloading Torrent.";
+                                        $userLocationDescription = "Downloading Torrent.";
                                         break;
                                     case "badusers":
-                                        $function_259 = "Viewing BadUsers Page.";
+                                        $userLocationDescription = "Viewing BadUsers Page.";
                                         break;
                                     case "usercp":
-                                        $function_259 = "Viewing User Control Panel.";
+                                        $userLocationDescription = "Viewing User Control Panel.";
                                         break;
                                     case "bookmarks":
-                                        $function_259 = "Viewing Bookmarks Page.";
+                                        $userLocationDescription = "Viewing Bookmarks Page.";
                                         break;
                                     case "users":
-                                        $function_259 = "Viewing Member List.";
+                                        $userLocationDescription = "Viewing Member List.";
                                         break;
                                     case "rules":
-                                        $function_259 = "Viewing Rules Page.";
+                                        $userLocationDescription = "Viewing Rules Page.";
                                         break;
                                     case "takerate":
-                                        $function_259 = "Rating Torrent.";
+                                        $userLocationDescription = "Rating Torrent.";
                                         break;
                                     case "image":
-                                        $function_259 = "Showing Image Verification String.";
+                                        $userLocationDescription = "Showing Image Verification String.";
                                         break;
                                     case "login":
                                     case "takelogin":
-                                        $function_259 = "Logging.";
+                                        $userLocationDescription = "Logging.";
                                         break;
                                     case "signup":
-                                        $function_259 = "Registering.";
+                                        $userLocationDescription = "Registering.";
                                         break;
                                     case "recover":
                                     case "recoverhint":
-                                        $function_259 = "Recovering Password.";
+                                        $userLocationDescription = "Recovering Password.";
                                         break;
                                     case "confirm":
-                                        $function_259 = "Confirming account.";
+                                        $userLocationDescription = "Confirming account.";
                                         break;
                                     case "staff":
-                                        $function_259 = "Viewing Staff Page.";
+                                        $userLocationDescription = "Viewing Staff Page.";
                                         break;
                                     case "contactstaff":
-                                        $function_259 = "Sending Message to Staff.";
+                                        $userLocationDescription = "Sending Message to Staff.";
                                         break;
                                     case "contactus":
-                                        $function_259 = "Viewing Contact Us Page.";
+                                        $userLocationDescription = "Viewing Contact Us Page.";
                                         break;
                                     case "links":
-                                        $function_259 = "Viewing Useful Links Page.";
+                                        $userLocationDescription = "Viewing Useful Links Page.";
                                         break;
                                     case "redirector_footer":
-                                        $function_259 = "Redirecting.";
+                                        $userLocationDescription = "Redirecting.";
                                         break;
                                     case "stats":
-                                        $function_259 = "Viewing Tracker Statistics Page.";
+                                        $userLocationDescription = "Viewing Tracker Statistics Page.";
                                         break;
                                     case "ts_applications":
-                                        $function_259 = "Viewing Applications Page";
+                                        $userLocationDescription = "Viewing Applications Page";
                                         break;
                                     case "ts_social_groups":
-                                        $function_259 = "Viewing Social Groups";
+                                        $userLocationDescription = "Viewing Social Groups";
                                         break;
                                     case "viewrequests":
-                                        $function_259 = "Viewing Request Page";
+                                        $userLocationDescription = "Viewing Request Page";
                                         break;
                                     case "ts_blog":
-                                        $function_259 = "Viewing Blogs";
+                                        $userLocationDescription = "Viewing Blogs";
                                         break;
                                     case "ts_tags":
-                                        $function_259 = "Viewing Search Cloud";
+                                        $userLocationDescription = "Viewing Search Cloud";
                                         break;
                                     case "report":
-                                        $function_259 = "Reporting...";
+                                        $userLocationDescription = "Reporting...";
                                         break;
                                     case "ts_albums":
-                                        $function_259 = "Viewing Albums";
+                                        $userLocationDescription = "Viewing Albums";
                                         break;
                                 }
                             }
@@ -319,7 +319,7 @@ function identifyUserLocation($location)
             }
         }
     }
-    return $function_259;
+    return $userLocationDescription;
 }
 function formatBytes($bytes = 0)
 {
