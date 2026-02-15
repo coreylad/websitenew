@@ -21,7 +21,7 @@ if (isset($_POST['tid'])) {
 
 if (strtoupper($_SERVER['REQUEST_METHOD']) === 'POST' && $tid > 0) {
     if (!validateFormToken($_POST['form_token'] ?? '')) {
-        $Message = showAlertErrorModern($Language[6] ?? 'Invalid form token');
+        $Message = showAlertErrorModern($Language[10] ?? 'Invalid form token');
     } else {
         $reason = trim($_POST['reason'] ?? '');
         

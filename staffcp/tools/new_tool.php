@@ -96,7 +96,7 @@ try {
             );
             
             if ($canShow) {
-                $checked = (in_array($UG['gid'], $usergroups, true) || $UG['cansettingspanel'] === 'yes') ? ' checked="checked"' : '';
+                $checked = (in_array($UG['gid'], $usergroups, false) || $UG['cansettingspanel'] === 'yes') ? ' checked="checked"' : '';
                 $groupName = strip_tags(str_replace('{username}', $UG['title'], $UG['namestyle']), '<b><span><strong><em><i><u>');
                 
                 $showusergroups .= '<div style="margin-bottom: 3px;">
@@ -117,7 +117,7 @@ try {
     $result = $TSDatabase->query('SELECT cid, name FROM ts_staffcp ORDER BY sort ASC');
     if ($result) {
         while ($cats = $result->fetch(PDO::FETCH_ASSOC)) {
-            $selected = ($category === $cats['cid']) ? ' selected="selected"' : '';
+            $selected = ($category == $cats['cid']) ? ' selected="selected"' : '';
             $showcategories .= '<option value="' . (int)$cats['cid'] . '"' . $selected . '>' . escape_html($cats['name']) . '</option>';
         }
     }

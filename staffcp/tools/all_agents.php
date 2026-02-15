@@ -52,7 +52,7 @@ if (!$STOP) {
             $DONE = [];
             
             while ($R = $result->fetch(PDO::FETCH_ASSOC)) {
-                $Peer_ID = substr(escape_html($R['peer_id']), 0, 8);
+                $Peer_ID = htmlspecialchars(substr($R['peer_id'], 0, 8));
                 if (!in_array($Peer_ID, $DONE, true)) {
                     $DONE[] = $Peer_ID;
                     $checked = in_array($Peer_ID, $allowed_clients, true) ? ' checked="checked"' : '';

@@ -70,7 +70,7 @@ try {
                 $sgids .= '</tr><tr>';
             }
             
-            $checked = in_array((string)$gid['gid'], $UploaderGroups, true) ? ' checked="checked"' : '';
+            $checked = in_array($gid['gid'], $UploaderGroups, false) ? ' checked="checked"' : '';
             $groupName = str_replace('{username}', $gid['title'], $gid['namestyle']);
             
             $sgids .= '<td class="alt1">
@@ -96,7 +96,7 @@ try {
     
     if ($result) {
         while ($udgid = $result->fetch(PDO::FETCH_ASSOC)) {
-            $selected = ($UI['DemoteTo'] === $udgid['gid']) ? ' selected="selected"' : '';
+            $selected = ($UI['DemoteTo'] == $udgid['gid']) ? ' selected="selected"' : '';
             $udgids .= '<option value="' . (int)$udgid['gid'] . '"' . $selected . '>' . escape_html($udgid['title']) . '</option>';
         }
     }

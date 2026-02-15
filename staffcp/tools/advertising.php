@@ -60,7 +60,7 @@ function loadTinyMCEEditor(int $type = 1, string $mode = 'textareas', string $el
     $editorContent = ob_get_contents();
     ob_end_clean();
     
-    return $editorContent;
+    return $editorContent !== false ? $editorContent : '';
 }
 
 echo loadTinyMCEEditor(1, 'exact', 'ads');
