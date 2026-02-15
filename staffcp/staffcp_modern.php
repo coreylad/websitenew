@@ -161,9 +161,10 @@ function logStaffActionModern(string $action): bool
     
     try {
         if ($TSDatabase && method_exists($TSDatabase, 'query')) {
+            // Use correct table name from original implementation
             $TSDatabase->query(
-                'INSERT INTO ts_stafflog (date, user, action) VALUES (?, ?, ?)',
-                [time(), $_SESSION['ADMIN_USERNAME'], $action]
+                'INSERT INTO ts_staffcp_logs (uid, date, log) VALUES (?, ?, ?)',
+                [$_SESSION['ADMIN_ID'], time(), $action]
             );
             return true;
         }
@@ -204,10 +205,19 @@ function redirectTo(string $url, int $statusCode = 302): void
 function generateSecret(int $length = 20): string
 {
     try {
-        return bin2hex(random_bytes($length));
+        // Generate random bytes and convert to alphanumeric string
+        // Returns exactly $length characters
+        $bytes = random_bytes(ceil($length / 2));
+        $hex = bin2hex($bytes);
+        return substr($hex, 0, $length);
     } catch (Exception $e) {
         // Fallback to less secure method
-        return md5(uniqid((string)mt_rand(), true));
+        $result = '';
+        $chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        for ($i = 0; $i < $length; $i++) {
+            $result .= $chars[random_int(0, strlen($chars) - 1)];
+        }
+        return $result;
     }
 }
 

@@ -73,10 +73,26 @@ if (strtoupper($_SERVER['REQUEST_METHOD']) === 'POST') {
                         if ($TSDatabase->rowCount() > 0) {
                             $userId = $User['id'];
                             
+                            // Delete all user-related records to maintain data integrity
                             $TSDatabase->query('DELETE FROM ts_support WHERE userid = ?', [$userId]);
                             $TSDatabase->query('DELETE FROM ts_u_perm WHERE userid = ?', [$userId]);
+                            $TSDatabase->query('DELETE FROM ts_social_group_members WHERE userid = ?', [$userId]);
+                            $TSDatabase->query('DELETE FROM ts_profilevisitor WHERE userid = ?', [$userId]);
+                            $TSDatabase->query('DELETE FROM addedrequests WHERE userid = ?', [$userId]);
                             $TSDatabase->query('DELETE FROM bookmarks WHERE userid = ?', [$userId]);
                             $TSDatabase->query('DELETE FROM comments WHERE user = ?', [$userId]);
+                            $TSDatabase->query('DELETE FROM friends WHERE userid = ? OR friendid = ?', [$userId, $userId]);
+                            $TSDatabase->query('DELETE FROM ts_visitor_messages WHERE userid = ? OR visitorid = ?', [$userId, $userId]);
+                            $TSDatabase->query('DELETE FROM ts_thanks WHERE uid = ?', [$userId]);
+                            $TSDatabase->query('DELETE FROM ts_shoutbox WHERE uid = ?', [$userId]);
+                            $TSDatabase->query('DELETE FROM ts_secret_questions WHERE userid = ?', [$userId]);
+                            $TSDatabase->query('DELETE FROM ts_blogs_comments WHERE uid = ?', [$userId]);
+                            $TSDatabase->query('DELETE FROM ts_awards_users WHERE uid = ?', [$userId]);
+                            
+                            // Delete forum subscriptions if forum is enabled
+                            if (defined('TSF_PREFIX')) {
+                                $TSDatabase->query('DELETE FROM ' . TSF_PREFIX . 'subscribe WHERE userid = ?', [$userId]);
+                            }
                             
                             $TSDatabase->commit();
                             
