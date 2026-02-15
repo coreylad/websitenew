@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 function ts_get_array_cookie($name, $id)
 {
     if (isset($_COOKIE["tsf"][$name]) && ($cookie = unserialize(stripslashes($_COOKIE["tsf"][$name]))) && isset($cookie[$id])) {

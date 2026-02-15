@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 function clean_keywords_ft($keywords)
 {
     if (!$keywords) {
