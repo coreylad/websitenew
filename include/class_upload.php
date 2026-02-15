@@ -594,8 +594,8 @@ class upload
                     $this->$file_src_mime = NULL;
                 }
             }
-            if ($this->$file_src_mime = = "application/octet-stream" || !$this->file_src_mime || !is_string($this->file_src_mime) || empty($this->file_src_mime) || strpos($this->file_src_mime, "/") === false) {
-                if ($this->$file_src_mime = = "application/octet-stream") {
+            if ($this->file_src_mime == "application/octet-stream" || !$this->file_src_mime || !is_string($this->file_src_mime) || empty($this->file_src_mime) || strpos($this->file_src_mime, "/") === false) {
+                if ($this->file_src_mime == "application/octet-stream") {
                     $this->log .= "- Flash may be rewriting MIME as application/octet-stream<br />";
                 }
                 $this->log .= "- Try to guess MIME type from file extension (" . $this->file_src_name_ext . "): ";
@@ -809,7 +809,7 @@ class upload
                         $this->$file_src_mime = "application/onenote";
                         break;
                     default:
-                        if ($this->$file_src_mime = = "application/octet-stream") {
+                        if ($this->file_src_mime == "application/octet-stream") {
                             $this->log .= "doesn't look like anything known<br />";
                         } else {
                             $this->log .= "MIME type set to " . $this->file_src_mime . "<br />";
@@ -1163,7 +1163,7 @@ class upload
             $this->log .= "&nbsp;&nbsp;&nbsp;&nbsp;file_dst_name_ext     : " . $this->file_dst_name_ext . "<br />";
             $image_manipulation = $this->file_is_image && ($this->image_resize || $this->image_convert != "" || is_numeric($this->image_brightness) || is_numeric($this->image_contrast) || is_numeric($this->image_threshold) || !empty($this->image_tint_color) || !empty($this->image_overlay_color) || !empty($this->image_text) || $this->image_greyscale || $this->image_negative || !empty($this->image_watermark) || is_numeric($this->image_rotate) || is_numeric($this->jpeg_size) || !empty($this->image_flip) || !empty($this->image_crop) || !empty($this->image_precrop) || !empty($this->image_border) || 0 < $this->image_frame || 0 < $this->image_bevel || $this->image_reflection_height);
             if ($image_manipulation) {
-                if ($this->$image_convert = = "") {
+                if ($this->image_convert == "") {
                     $this->$file_dst_name = $this->file_dst_name_body . (!empty($this->file_dst_name_ext) ? "." . $this->file_dst_name_ext : "");
                     $this->log .= "- image operation, keep extension<br />";
                 } else {
@@ -1781,7 +1781,7 @@ class upload
                             $this->$image_rotate = 0;
                         }
                         if ($this->image_rotate != 0) {
-                            if ($this->$image_rotate = = 90 || $this->$image_rotate = = 270) {
+                            if ($this->image_rotate == 90 || $this->image_rotate == 270) {
                                 $tmp = $this->imagecreatenew($this->image_dst_y, $this->image_dst_x);
                             } else {
                                 $tmp = $this->imagecreatenew($this->image_dst_x, $this->image_dst_y);
@@ -1789,13 +1789,13 @@ class upload
                             $this->log .= "- rotate image : " . $this->image_rotate . "<br />";
                             for ($x = 0; $x < $this->image_dst_x; $x++) {
                                 for ($y = 0; $y < $this->image_dst_y; $y++) {
-                                    if ($this->$image_rotate = = 90) {
+                                    if ($this->image_rotate == 90) {
                                         imagecopy($tmp, $image_dst, $y, $x, $x, $this->image_dst_y - $y - 1, 1, 1);
                                     } else {
-                                        if ($this->$image_rotate = = 180) {
+                                        if ($this->image_rotate == 180) {
                                             imagecopy($tmp, $image_dst, $x, $y, $this->image_dst_x - $x - 1, $this->image_dst_y - $y - 1, 1, 1);
                                         } else {
-                                            if ($this->$image_rotate = = 270) {
+                                            if ($this->image_rotate == 270) {
                                                 imagecopy($tmp, $image_dst, $y, $x, $this->image_dst_x - $x - 1, $y, 1, 1);
                                             } else {
                                                 imagecopy($tmp, $image_dst, $x, $y, $x, $y, 1, 1);
@@ -1804,7 +1804,7 @@ class upload
                                     }
                                 }
                             }
-                            if ($this->$image_rotate = = 90 || $this->$image_rotate = = 270) {
+                            if ($this->image_rotate == 90 || $this->image_rotate == 270) {
                                 $t = $this->image_dst_y;
                                 $this->$image_dst_y = $this->image_dst_x;
                                 $this->$image_dst_x = $t;
@@ -1955,7 +1955,7 @@ class upload
                         for ($i = 0; $i < $nb; $i++) {
                             list($red, $green, $blue) = $this->getcolors($vars[$i]);
                             $c = imagecolorallocate($tmp, $red, $green, $blue);
-                            if ($this->$image_frame = = 1) {
+                            if ($this->image_frame == 1) {
                                 imageline($tmp, $i, $i, $this->image_dst_x - $i - 1, $i, $c);
                                 imageline($tmp, $this->image_dst_x - $i - 1, $this->image_dst_y - $i - 1, $this->image_dst_x - $i - 1, $i, $c);
                                 imageline($tmp, $this->image_dst_x - $i - 1, $this->image_dst_y - $i - 1, $i, $this->image_dst_y - $i - 1, $c);
@@ -2138,7 +2138,7 @@ class upload
                         $line_height = 0;
                         $line_width = 0;
                         foreach ($text as $k => $v) {
-                            if ($this->$image_text_direction = = "v") {
+                            if ($this->image_text_direction == "v") {
                                 $h = $char_width * strlen($v);
                                 if ($text_height < $h) {
                                     $text_height = $h;
@@ -2220,10 +2220,10 @@ class upload
                             $filter = $this->imagecreatenew($t_width, $t_height, false, true);
                             $text_color = imagecolorallocate($filter, $red, $green, $blue);
                             foreach ($text as $k => $v) {
-                                if ($this->$image_text_direction = = "v") {
-                                    imagestringup($filter, $this->image_text_font, $k * ($line_width + (0 < $k && $k < sizeof($text) ? $this->image_text_line_spacing : 0)), $text_height - 2 * $this->image_text_padding_y - ($this->$image_text_alignment = = "l" ? 0 : ($t_height - strlen($v) * $char_width) / ($this->$image_text_alignment = = "r" ? 1 : 2)), $v, $text_color);
+                                if ($this->image_text_direction == "v") {
+                                    imagestringup($filter, $this->image_text_font, $k * ($line_width + (0 < $k && $k < sizeof($text) ? $this->image_text_line_spacing : 0)), $text_height - 2 * $this->image_text_padding_y - ($this->image_text_alignment == "l" ? 0 : ($t_height - strlen($v) * $char_width) / ($this->image_text_alignment == "r" ? 1 : 2)), $v, $text_color);
                                 } else {
-                                    imagestring($filter, $this->image_text_font, $this->$image_text_alignment = = "l" ? 0 : ($t_width - strlen($v) * $char_width) / ($this->$image_text_alignment = = "r" ? 1 : 2), $k * ($line_height + (0 < $k && $k < sizeof($text) ? $this->image_text_line_spacing : 0)), $v, $text_color);
+                                    imagestring($filter, $this->image_text_font, $this->image_text_alignment == "l" ? 0 : ($t_width - strlen($v) * $char_width) / ($this->image_text_alignment == "r" ? 1 : 2), $k * ($line_height + (0 < $k && $k < sizeof($text) ? $this->image_text_line_spacing : 0)), $v, $text_color);
                                 }
                             }
                             $this->imagecopymergealpha($image_dst, $filter, $text_x, $text_y, 0, 0, $t_width, $t_height, $this->image_text_percent);
@@ -2231,10 +2231,10 @@ class upload
                         } else {
                             $text_color = imageColorAllocate($image_dst, $red, $green, $blue);
                             foreach ($text as $k => $v) {
-                                if ($this->$image_text_direction = = "v") {
-                                    imagestringup($image_dst, $this->image_text_font, $text_x + $k * ($line_width + (0 < $k && $k < sizeof($text) ? $this->image_text_line_spacing : 0)), $text_y + $text_height - 2 * $this->image_text_padding_y - ($this->$image_text_alignment = = "l" ? 0 : ($t_height - strlen($v) * $char_width) / ($this->$image_text_alignment = = "r" ? 1 : 2)), $v, $text_color);
+                                if ($this->image_text_direction == "v") {
+                                    imagestringup($image_dst, $this->image_text_font, $text_x + $k * ($line_width + (0 < $k && $k < sizeof($text) ? $this->image_text_line_spacing : 0)), $text_y + $text_height - 2 * $this->image_text_padding_y - ($this->image_text_alignment == "l" ? 0 : ($t_height - strlen($v) * $char_width) / ($this->image_text_alignment == "r" ? 1 : 2)), $v, $text_color);
                                 } else {
-                                    imagestring($image_dst, $this->image_text_font, $text_x + ($this->$image_text_alignment = = "l" ? 0 : ($t_width - strlen($v) * $char_width) / ($this->$image_text_alignment = = "r" ? 1 : 2)), $text_y + $k * ($line_height + (0 < $k && $k < sizeof($text) ? $this->image_text_line_spacing : 0)), $v, $text_color);
+                                    imagestring($image_dst, $this->image_text_font, $text_x + ($this->image_text_alignment == "l" ? 0 : ($t_width - strlen($v) * $char_width) / ($this->image_text_alignment == "r" ? 1 : 2)), $text_y + $k * ($line_height + (0 < $k && $k < sizeof($text) ? $this->image_text_line_spacing : 0)), $v, $text_color);
                                 }
                             }
                         }
@@ -2294,7 +2294,7 @@ class upload
                         $this->$image_dst_y = $this->image_dst_y + $image_reflection_height + $this->image_reflection_space;
                         $image_dst = $this->imagetransfer($tmp, $image_dst);
                     }
-                    if (is_numeric($this->jpeg_size) && 0 < $this->jpeg_size && ($this->$image_convert = = "jpeg" || $this->$image_convert = = "jpg")) {
+                    if (is_numeric($this->jpeg_size) && 0 < $this->jpeg_size && ($this->image_convert == "jpeg" || $this->image_convert == "jpg")) {
                         $this->log .= "- JPEG desired file size : " . $this->jpeg_size . "<br />";
                         ob_start();
                         imagejpeg($image_dst, "", 75);
