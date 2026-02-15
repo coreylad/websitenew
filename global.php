@@ -1,102 +1,158 @@
 <?php
-@error_reporting(32759);
-@ini_set("display_errors", 0);
-@ini_set("display_startup_errors", 0);
-@ini_set("pcre.backtrack_limit", -1);
-@set_time_limit(0);
-if (!defined("DEBUGMODE")) {
-    $GLOBALS["ts_start_time"] = array_sum(explode(" ", microtime()));
+
+declare(strict_types=1);
+
+// PHP 8.5+ Modernized - Version 10.0
+// Remove error suppression and use proper error handling
+error_reporting(E_ALL & ~E_DEPRECATED & ~E_STRICT);
+ini_set('display_errors', '0');
+ini_set('display_startup_errors', '0');
+ini_set('pcre.backtrack_limit', '-1');
+set_time_limit(0);
+
+if (!defined('DEBUGMODE')) {
+    $GLOBALS['ts_start_time'] = array_sum(explode(' ', microtime()));
 }
-define("DEMOMODE", false);
-define("GLOBAL_LOADED", true);
-define("IN_TRACKER", true);
-define("O_SCRIPT_VERSION", "7.5");
-define("TSDIR", dirname(__FILE__));
-define("INC_PATH", TSDIR . "/include");
-$rootpath = isset($rootpath) ? $rootpath : TSDIR;
-require INC_PATH . "/php_default_timezone_set.php";
-define("TIMENOW", time());
-require_once INC_PATH . "/class_ts_database.php";
+
+define('DEMOMODE', false);
+define('GLOBAL_LOADED', true);
+define('IN_TRACKER', true);
+define('O_SCRIPT_VERSION', '10.0');
+define('TSDIR', dirname(__FILE__));
+define('INC_PATH', TSDIR . '/include');
+
+$rootpath = $rootpath ?? TSDIR;
+
+// Load timezone configuration
+require INC_PATH . '/php_default_timezone_set.php';
+
+define('TIMENOW', time());
+
+// Load autoloader for modern classes
+require_once INC_PATH . '/autoloader.php';
+
+// Load security functions
+require_once INC_PATH . '/security_functions.php';
+
+// Initialize modern database connection with PDO
+require_once INC_PATH . '/class_ts_database.php';
 $TSDatabase = new TSDatabase();
 $TSDatabase->connect();
-require_once INC_PATH . "/class_config.php";
+
+// Load mysqli compatibility layer for legacy code
+require_once INC_PATH . '/mysqli_compat.php';
+
+// Load configuration and cache classes
+require_once INC_PATH . '/class_config.php';
 $TSSEConfig = new TSConfig();
-include_once INC_PATH . "/class_cache.php";
+
+include_once INC_PATH . '/class_cache.php';
 $TSSECache = new TSSECache();
-if (defined("THIS_SCRIPT") && THIS_SCRIPT === "index.php") {
-    $TSSEConfig->TSLoadConfig(["MAIN", "SECURITY", "TWEAK", "EXTRA", "THEME", "DATETIME", "FORUMCP", "PLUGIN"]);
+
+// Load configuration based on script context
+if (defined('THIS_SCRIPT') && THIS_SCRIPT === 'index.php') {
+    $TSSEConfig->TSLoadConfig(['MAIN', 'SECURITY', 'TWEAK', 'EXTRA', 'THEME', 'DATETIME', 'FORUMCP', 'PLUGIN']);
 } else {
-    $TSSEConfig->TSLoadConfig(["MAIN", "SECURITY", "TWEAK", "EXTRA", "THEME", "DATETIME", "FORUMCP"]);
+    $TSSEConfig->TSLoadConfig(['MAIN', 'SECURITY', 'TWEAK', 'EXTRA', 'THEME', 'DATETIME', 'FORUMCP']);
 }
-if (!empty($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] !== "off" || $_SERVER["SERVER_PORT"] == 443) {
-    if (substr($BASEURL, 0, 7) == "http://") {
-        $BASEURL = str_replace(substr($BASEURL, 0, 7), "https://", $BASEURL);
-    } else {
-        if (substr($BASEURL, 0, 4) == "www.") {
-            $BASEURL = str_replace(substr($BASEURL, 0, 4), "https://www.", $BASEURL);
-        }
+
+// Force HTTPS if available
+if ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || $_SERVER['SERVER_PORT'] == 443) {
+    if (str_starts_with($BASEURL, 'http://')) {
+        $BASEURL = str_replace('http://', 'https://', $BASEURL);
+    } elseif (str_starts_with($BASEURL, 'www.')) {
+        $BASEURL = 'https://' . $BASEURL;
     }
-    if (substr($pic_base_url, 0, 7) == "http://") {
-        $pic_base_url = str_replace(substr($pic_base_url, 0, 7), "https://", $pic_base_url);
-    } else {
-        if (substr($pic_base_url, 0, 4) == "www.") {
-            $pic_base_url = str_replace(substr($pic_base_url, 0, 4), "https://www.", $pic_base_url);
-        }
+    
+    if (str_starts_with($pic_base_url, 'http://')) {
+        $pic_base_url = str_replace('http://', 'https://', $pic_base_url);
+    } elseif (str_starts_with($pic_base_url, 'www.')) {
+        $pic_base_url = 'https://' . $pic_base_url;
     }
 }
+
+// Initialize Memcached if available
 $UseMemcached = false;
-if (isset($memcached_enabled) && $memcached_enabled == "yes" && isset($memcached_host) && !empty($memcached_host) && isset($memcached_port) && intval($memcached_port) && class_exists("Memcache", false)) {
-    require_once INC_PATH . "/class_ts_memcache.php";
+if (isset($memcached_enabled) && $memcached_enabled === 'yes' && 
+    isset($memcached_host) && !empty($memcached_host) && 
+    isset($memcached_port) && intval($memcached_port) && 
+    class_exists('Memcache', false)) {
+    require_once INC_PATH . '/class_ts_memcache.php';
     $TSMemcache = new TSMemcache($memcached_host, $memcached_port);
     $UseMemcached = true;
 }
+
 $trackerdefaulttemplate = $defaulttemplate;
-$announce_urls = explode(",", $announce_urls);
-if ($gzipcompress == "yes" && extension_loaded("zlib") && ini_get("zlib.output_compression") != "1" && ini_get("output_handler") != "ob_gzhandler") {
-    @ob_start("ob_gzhandler");
+$announce_urls = explode(',', $announce_urls);
+
+// Enable GZIP compression if available
+if ($gzipcompress === 'yes' && extension_loaded('zlib') && 
+    ini_get('zlib.output_compression') != '1' && 
+    ini_get('output_handler') !== 'ob_gzhandler') {
+    ob_start('ob_gzhandler');
 }
-if (!defined("IN_FORUMS")) {
+
+// Initialize navigation breadcrumbs
+if (!defined('IN_FORUMS')) {
     $navbits = [];
-    $navbits[0]["name"] = $SITENAME;
-    $navbits[0]["url"] = $BASEURL . "/index.php";
+    $navbits[0]['name'] = $SITENAME;
+    $navbits[0]['url'] = $BASEURL . '/index.php';
 }
+
+// Handle collapse states
 $tscollapse = [];
-if (isset($_COOKIE["ts_collapse"]) && !empty($_COOKIE["ts_collapse"])) {
-    $val = preg_split("#\\n#", $_COOKIE["ts_collapse"], -1, PREG_SPLIT_NO_EMPTY);
+if (isset($_COOKIE['ts_collapse']) && !empty($_COOKIE['ts_collapse'])) {
+    $val = preg_split("#\\n#", $_COOKIE['ts_collapse'], -1, PREG_SPLIT_NO_EMPTY);
     foreach ($val as $key) {
-        $tscollapse["collapseobj_" . htmlspecialchars($key)] = "display:none;";
-        $tscollapse["collapseimg_" . htmlspecialchars($key)] = "_collapsed";
-        $tscollapse["collapsecel_" . htmlspecialchars($key)] = "_collapsed";
+        $safeKey = htmlspecialchars($key, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+        $tscollapse['collapseobj_' . $safeKey] = 'display:none;';
+        $tscollapse['collapseimg_' . $safeKey] = '_collapsed';
+        $tscollapse['collapsecel_' . $safeKey] = '_collapsed';
     }
     unset($val);
 }
-require_once INC_PATH . "/init.php";
-require_once INC_PATH . "/user_options.php";
-require_once INC_PATH . "/ts_functions.php";
-require_once INC_PATH . "/functions.php";
-require_once INC_PATH . "/class_language.php";
-require_once INC_PATH . "/functions_tsseo.php";
-define("USERIPADDRESS", TSDetectUserIP());
+
+// Load core functions and classes
+require_once INC_PATH . '/init.php';
+require_once INC_PATH . '/user_options.php';
+require_once INC_PATH . '/ts_functions.php';
+require_once INC_PATH . '/functions.php';
+require_once INC_PATH . '/class_language.php';
+require_once INC_PATH . '/functions_tsseo.php';
+
+// Detect user IP address
+define('USERIPADDRESS', TSDetectUserIP());
+
+// Initialize language system
 $lang = new trackerlanguage();
-$lang->set_path(INC_PATH . "/languages");
-if (empty($_COOKIE["ts_language"]) || !file_exists(INC_PATH . "/languages/" . $_COOKIE["ts_language"])) {
+$lang->set_path(INC_PATH . '/languages');
+
+if (empty($_COOKIE['ts_language']) || !file_exists(INC_PATH . '/languages/' . $_COOKIE['ts_language'])) {
     $lang->set_language($defaultlanguage);
 } else {
-    $lang->set_language($_COOKIE["ts_language"]);
+    $lang->set_language($_COOKIE['ts_language']);
 }
-$lang->load("global");
-if ($ctracker == "yes" && !defined("IN_AJAX")) {
-    require_once INC_PATH . "/ctracker.php";
+$lang->load('global');
+
+// Initialize click tracker if enabled
+if ($ctracker === 'yes' && !defined('IN_AJAX')) {
+    require_once INC_PATH . '/ctracker.php';
 }
-$useragent = isset($_SERVER["HTTP_USER_AGENT"]) ? htmlspecialchars_uni(strtolower($_SERVER["HTTP_USER_AGENT"])) : "";
-$querystring = isset($_SERVER["QUERY_STRING"]) ? "?" . htmlspecialchars_uni($_SERVER["QUERY_STRING"]) : "";
-$page = htmlspecialchars_uni($_SERVER["SCRIPT_NAME"]);
+
+// Get user agent and query string with proper escaping
+$useragent = isset($_SERVER['HTTP_USER_AGENT']) ? 
+    htmlspecialchars_uni(strtolower($_SERVER['HTTP_USER_AGENT'])) : '';
+$querystring = isset($_SERVER['QUERY_STRING']) ? 
+    '?' . htmlspecialchars_uni($_SERVER['QUERY_STRING']) : '';
+$page = htmlspecialchars_uni($_SERVER['SCRIPT_NAME']);
+
+// Detect forum ID for forum threads
 $FID = 0;
-if (defined("IN_FORUMS") && preg_match("#tsf_forums\\/showthread\\.php\\?$tid = ([0-9]+)#is", $page . $querystring, $Found)) {
-    $Query = sql_query("SELECT fid FROM " . TSF_PREFIX . "threads WHERE $tid = " . sqlesc(intval($Found[1])));
-    if (mysqli_num_rows($Query)) {
-        $Result = mysqli_fetch_assoc($Query);
-        $FID = $Result["fid"];
+if (defined('IN_FORUMS') && preg_match("#tsf_forums\\/showthread\\.php\\?tid=([0-9]+)#is", $page . $querystring, $Found)) {
+    $Query = sql_query('SELECT fid FROM ' . TSF_PREFIX . 'threads WHERE tid = ?', [intval($Found[1])]);
+    if ($Query && $Query->rowCount() > 0) {
+        $Result = $Query->fetch(PDO::FETCH_ASSOC);
+        $FID = $Result['fid'];
     }
 }
 TSBoot(USERIPADDRESS);
