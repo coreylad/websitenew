@@ -1,69 +1,124 @@
 <?php
+
+declare(strict_types=1);
+
+require_once __DIR__ . '/../staffcp_modern.php';
+
 checkStaffAuthentication();
-$Language = file("languages/" . getStaffLanguage() . "/all_agents.lang");
-$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'ANNOUNCE'");
-$Result = mysqli_fetch_assoc($query);
-$ANNOUNCE = unserialize($Result["content"]);
-$Message = "";
-if ($ANNOUNCE["xbt_active"] == "yes") {
-    echo "\r\n\t" . showAlertError($Language[1]);
-    $STOP = true;
-}
-if (!isset($STOP)) {
-    if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST" && isset($_POST["allowed_clients"]) && !empty($_POST["allowed_clients"])) {
-        $ANNOUNCE["allowed_clients"] = implode(",", $_POST["allowed_clients"]);
-        mysqli_query($GLOBALS["DatabaseConnect"], "REPLACE INTO `ts_config` VALUES ('ANNOUNCE', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], serialize($ANNOUNCE)) . "')");
+
+$Language = loadStaffLanguage('all_agents');
+
+$Message = '';
+$STOP = false;
+
+try {
+    $result = $TSDatabase->query("SELECT content FROM ts_config WHERE configname = ?", ['ANNOUNCE']);
+    $row = $result ? $result->fetch(PDO::FETCH_ASSOC) : null;
+    $ANNOUNCE = $row ? unserialize($row['content']) : ['xbt_active' => 'no', 'allowed_clients' => ''];
+    
+    if (($ANNOUNCE['xbt_active'] ?? 'no') === 'yes') {
+        echo showAlertErrorModern($Language[1] ?? 'XBT tracker is active');
+        $STOP = true;
     }
-    $Found = "";
-    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT agent, peer_id FROM peers GROUP BY agent DESC");
-    if (0 < mysqli_num_rows($query)) {
-        $allowed_clients = explode(",", $ANNOUNCE["allowed_clients"]);
-        $DONE = [];
-        while ($R = mysqli_fetch_assoc($query)) {
-            $Peer_ID = substr(htmlspecialchars($R["peer_id"]), 0, 8);
-            if (!in_array($Peer_ID, $DONE)) {
-                $DONE[] = $Peer_ID;
-                $Found .= "\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t\t" . $Peer_ID . "\r\n\t\t\t\t\t</td>\r\n\t\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t\t" . htmlspecialchars($R["agent"]) . "\r\n\t\t\t\t\t</td>\r\n\t\t\t\t\t<td class=\"alt1\" $align = \"center\">\r\n\t\t\t\t\t\t<input $type = \"checkbox\" $name = \"allowed_clients[]\" $value = \"" . $Peer_ID . "\" $checkme = \"group\" " . (in_array($Peer_ID, $allowed_clients) ? " $checked = \"checked\"" : "") . "/>\r\n\t\t\t\t\t</td>\r\n\t\t\t\t</tr>\r\n\t\t\t\t";
-            }
-        }
-    } else {
-        echo "\r\n\t\t\r\n\t\t" . showAlertError($Language[3]);
-    }
-    echo "\r\n\t<script $type = \"text/javascript\">\r\n\t\tfunction select_deselectAll(formname,elm,group)\r\n\t\t{\r\n\t\t\tvar $frm = document.forms[formname];\r\n\t\t\tfor($i = 0;i<frm.length;i++)\r\n\t\t\t{\r\n\t\t\t\tif(elm.attributes[\"checkall\"] != null && elm.attributes[\"checkall\"].$value == group)\r\n\t\t\t\t{\r\n\t\t\t\t\tif(frm.elements[i].attributes[\"checkme\"] != null && frm.elements[i].attributes[\"checkme\"].$value == group)\r\n\t\t\t\t\t{\r\n\t\t\t\t\t\tfrm.elements[i].$checked = elm.checked;\r\n\t\t\t\t\t}\r\n\t\t\t\t}\r\n\t\t\t\telse if(frm.elements[i].attributes[\"checkme\"] != null && frm.elements[i].attributes[\"checkme\"].$value == group)\r\n\t\t\t\t{\r\n\t\t\t\t\tif(frm.elements[i].$checked == false)\r\n\t\t\t\t\t{\r\n\t\t\t\t\t\tfrm.elements[1].$checked = false;\r\n\t\t\t\t\t}\r\n\t\t\t\t}\r\n\t\t\t}\r\n\t\t}\r\n\t</script>\r\n\t<form $action = \"" . $_SERVER["SCRIPT_NAME"] . "?do=all_agents\" $method = \"post\" $name = \"all_agents\">\r\n\t" . showAlertMessage($Language[8]) . "\r\n\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t<tr>\r\n\t\t\t<td class=\"tcat\" $align = \"center\" $colspan = \"3\">" . $Language[2] . "</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt2\">\r\n\t\t\t\t" . $Language[4] . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt2\">\r\n\t\t\t\t" . $Language[5] . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt2\" $align = \"center\">\r\n\t\t\t\t<input $type = \"checkbox\" $checkall = \"group\" $onclick = \"javascript: return select_deselectAll ('all_agents', this, 'group');\">\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t" . $Found . "\r\n\t\t<tr>\r\n\t\t\t<td class=\"tcat2\" $align = \"right\" $colspan = \"3\">\r\n\t\t\t\t<input $type = \"submit\" $value = \"" . $Language[6] . "\" /> <input $type = \"reset\" $value = \"" . $Language[7] . "\" />\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t</table>\r\n\t</form>";
-}
-function getStaffLanguage()
-{
-    if (isset($_COOKIE["staffcplanguage"]) && is_dir("languages/" . $_COOKIE["staffcplanguage"]) && is_file("languages/" . $_COOKIE["staffcplanguage"] . "/staffcp.lang")) {
-        return $_COOKIE["staffcplanguage"];
-    }
-    return "english";
-}
-function checkStaffAuthentication()
-{
-    if (!defined("IN-TSSE-STAFF-PANEL")) {
-        redirectTo("../index.php");
-    }
-}
-function redirectTo($url)
-{
-    if (!headers_sent()) {
-        header("Location: " . $url);
-    } else {
-        echo "\r\n\t\t<script $type = \"text/javascript\">\r\n\t\t\twindow.location.$href = \"" . $url . "\";\r\n\t\t</script>\r\n\t\t<noscript>\r\n\t\t\t<meta http-$equiv = \"refresh\" $content = \"0;$url = " . $url . "\" />\r\n\t\t</noscript>";
-    }
-    exit;
-}
-function showAlertError($Error)
-{
-    return "<div class=\"alert\"><div>" . $Error . "</div></div>";
-}
-function logStaffAction($log)
-{
-    mysqli_query($GLOBALS["DatabaseConnect"], "INSERT INTO ts_staffcp_logs (uid, date, log) VALUES ('" . $_SESSION["ADMIN_ID"] . "', '" . time() . "', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $log) . "')");
-}
-function showAlertMessage($message = "")
-{
-    return "<div class=\"alert\"><div>" . $message . "</div></div>";
+} catch (Exception $e) {
+    error_log('All agents error: ' . $e->getMessage());
+    $ANNOUNCE = ['xbt_active' => 'no', 'allowed_clients' => ''];
 }
 
+if (!$STOP) {
+    if (strtoupper($_SERVER['REQUEST_METHOD']) === 'POST') {
+        if (!validateFormToken($_POST['form_token'] ?? '')) {
+            $Message = showAlertErrorModern($Language[9] ?? 'Invalid form token');
+        } elseif (isset($_POST['allowed_clients']) && !empty($_POST['allowed_clients'])) {
+            try {
+                $ANNOUNCE['allowed_clients'] = implode(',', $_POST['allowed_clients']);
+                $TSDatabase->query(
+                    "REPLACE INTO ts_config VALUES (?, ?)",
+                    ['ANNOUNCE', serialize($ANNOUNCE)]
+                );
+                $Message = showAlertSuccessModern($Language[8] ?? 'Settings updated');
+            } catch (Exception $e) {
+                error_log('Update agents error: ' . $e->getMessage());
+                $Message = showAlertErrorModern('Failed to update settings');
+            }
+        }
+    }
+    
+    $Found = '';
+    try {
+        $result = $TSDatabase->query("SELECT agent, peer_id FROM peers GROUP BY agent DESC");
+        if ($result) {
+            $allowed_clients = explode(',', $ANNOUNCE['allowed_clients'] ?? '');
+            $DONE = [];
+            
+            while ($R = $result->fetch(PDO::FETCH_ASSOC)) {
+                $Peer_ID = substr(escape_html($R['peer_id']), 0, 8);
+                if (!in_array($Peer_ID, $DONE, true)) {
+                    $DONE[] = $Peer_ID;
+                    $checked = in_array($Peer_ID, $allowed_clients, true) ? ' checked="checked"' : '';
+                    $Found .= '<tr>
+                        <td class="alt1">' . $Peer_ID . '</td>
+                        <td class="alt1">' . escape_html($R['agent']) . '</td>
+                        <td class="alt1" align="center">
+                            <input type="checkbox" name="allowed_clients[]" value="' . escape_attr($Peer_ID) . '" checkme="group"' . $checked . ' />
+                        </td>
+                    </tr>';
+                }
+            }
+        }
+        
+        if (!$Found) {
+            echo showAlertErrorModern($Language[3] ?? 'No agents found');
+            $STOP = true;
+        }
+    } catch (Exception $e) {
+        error_log('Get peers error: ' . $e->getMessage());
+        echo showAlertErrorModern($Language[3] ?? 'No agents found');
+        $STOP = true;
+    }
+    
+    if (!$STOP) {
 ?>
+    <?php echo $Message; ?>
+    <script type="text/javascript">
+        function select_deselectAll(formname, elm, group) {
+            var frm = document.forms[formname];
+            for(var i = 0; i < frm.length; i++) {
+                if(elm.attributes["checkall"] != null && elm.attributes["checkall"].value == group) {
+                    if(frm.elements[i].attributes["checkme"] != null && frm.elements[i].attributes["checkme"].value == group) {
+                        frm.elements[i].checked = elm.checked;
+                    }
+                } else if(frm.elements[i].attributes["checkme"] != null && frm.elements[i].attributes["checkme"].value == group) {
+                    if(frm.elements[i].checked == false) {
+                        frm.elements[1].checked = false;
+                    }
+                }
+            }
+        }
+    </script>
+    <?php echo showAlertInfoModern($Language[8] ?? 'Select allowed clients'); ?>
+    <form action="<?php echo escape_attr($_SERVER['SCRIPT_NAME']); ?>?do=all_agents" method="post" name="all_agents">
+    <?php echo getFormTokenField(); ?>
+    <table cellpadding="0" cellspacing="0" border="0" class="mainTable">
+        <tr>
+            <td class="tcat" align="center" colspan="3"><?php echo escape_html($Language[2] ?? 'Allowed Agents'); ?></td>
+        </tr>
+        <tr>
+            <td class="alt2"><?php echo escape_html($Language[4] ?? 'Peer ID'); ?></td>
+            <td class="alt2"><?php echo escape_html($Language[5] ?? 'Agent'); ?></td>
+            <td class="alt2" align="center">
+                <input type="checkbox" checkall="group" onclick="javascript: return select_deselectAll('all_agents', this, 'group');">
+            </td>
+        </tr>
+        <?php echo $Found; ?>
+        <tr>
+            <td class="tcat2" align="right" colspan="3">
+                <input type="submit" value="<?php echo escape_attr($Language[6] ?? 'Update'); ?>" /> 
+                <input type="reset" value="<?php echo escape_attr($Language[7] ?? 'Reset'); ?>" />
+            </td>
+        </tr>
+    </table>
+    </form>
+<?php
+    }
+}
