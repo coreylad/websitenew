@@ -186,7 +186,7 @@ function get_match($regex, $content)
     preg_match($regex, $content, $matches);
     return isset($matches[1]) ? trim($matches[1]) : false;
 }
-function match($regex, $str, $i = 0)
+function matchRegex($regex, $str, $i = 0)
 {
     if (preg_match($regex, $str, $match) == 1) {
         return $match[$i];

@@ -226,7 +226,7 @@ function showAlertMessage($message = "")
 {
     return "<div class=\"alert\"><div>" . $message . "</div></div>";
 }
-function function_152($search, $subject, $hlstart = "<b><font $color = '#f7071d'>", $hlend = "</font></b>")
+function function_152($search, $subject, $hlstart = "<b><font color='#f7071d'>", $hlend = "</font></b>")
 {
     $logType = strlen($search);
     if ($logType == 0) {

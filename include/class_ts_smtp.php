@@ -108,7 +108,7 @@ class TS_SMTP
                 }
             }
             $this->$smtpReturn = intval($matches[1]);
-            return $this->$smtpReturn = = $expectedResult;
+            return $this->smtpReturn == $expectedResult;
         }
         return true;
     }

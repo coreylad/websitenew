@@ -927,7 +927,7 @@ class TSSE_XML_Parser
     }
     public function encode($data)
     {
-        if ($this->$encoding = = $this->target_encoding) {
+        if ($this->encoding == $this->target_encoding) {
             return $data;
         }
         if ($this->escape_html) {
@@ -962,7 +962,7 @@ class TSSE_XML_Builder
     }
     public function fetch_content_type_header()
     {
-        return "Content-Type: " . $this->content_type . ($this->$charset = = "" ? "" : "; $charset = " . $this->charset);
+        return "Content-Type: " . $this->content_type . ($this->charset == "" ? "" : "; charset=" . $this->charset);
     }
     public function fetch_content_length_header()
     {

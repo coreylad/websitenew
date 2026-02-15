@@ -49,7 +49,7 @@ class Class_33
         if (!$this->server) {
             $this->$server = "whois.arin.net";
         }
-        if (!$this->$ip = = gethostbyname($this->host)) {
+        if (!$this->ip == gethostbyname($this->host)) {
             $msg .= "Can't IP Whois without an IP address.";
         } else {
             if (!($sock = fsockopen($this->server, 43, $num, $error, 20))) {

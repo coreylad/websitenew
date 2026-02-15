@@ -432,7 +432,7 @@ class upload
             if ($this->uploaded) {
                 $this->$file_src_pathname = $file["tmp_name"];
                 $this->$file_src_name = $file["name"];
-                if ($this->$file_src_name = = "") {
+                if ($this->file_src_name == "") {
                     $this->$uploaded = false;
                     $this->$error = $this->translate("try_again");
                 }
@@ -459,7 +459,7 @@ class upload
                     $this->log .= "- Checking MIME type with Fileinfo PECL extension<br />";
                     if (function_exists("finfo_open")) {
                         if ($this->mime_fileinfo !== "") {
-                            if ($this->$mime_fileinfo = == true) {
+                            if ($this->mime_fileinfo === true) {
                                 if (getenv("MAGIC") === false) {
                                     if (substr(PHP_OS, 0, 3) == "WIN") {
                                         $path = realpath(ini_get("extension_dir") . "/../") . "extras/magic";

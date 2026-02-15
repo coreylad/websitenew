@@ -122,7 +122,7 @@ function isValidIP($ip)
 {
     return $ip != "127.0.0.1" && $ip != "::1" && filter_var($ip, FILTER_VALIDATE_IP);
 }
-function clearStatCache()
+function clearStatCacheCompat()
 {
     clearstatcache();
 }

@@ -124,7 +124,7 @@ function isValidIP($ip)
 {
     return $ip != "127.0.0.1" && $ip != "::1" && filter_var($ip, FILTER_VALIDATE_IP);
 }
-function clearStatCache()
+function clearStatCacheCompat()
 {
     clearstatcache();
 }
@@ -137,10 +137,12 @@ function stringContains($string, $find)
 {
     return strpos($string, $find) === false ? false : true;
 }
+function checkAllowedHosts()
+{
     $allowedHosts = explode("~~~", "192.168.1.~~~127.0.0~~~localhost~~~templateshares~~~template-shares~~~1tam1ogrenci.com~~~78.159.111.12~~~82.137.61.162~~~82.137.61.162~~~83.99.133.91~~~~~~alien-scene.org~~~91.121.149.102~~~ancientbits.com~~~82.47.208.141~~~angels-torrents.net~~~89.149.255.72~~~arab-peer.org~~~174.121.11.17~~~arabpeer.org~~~188.40.162.120~~~arabsong.org~~~69.72.149.25~~~biotorrents.org~~~~~~bkt.si~~~149.210.145.52~~~blades-heaven.co.uk~~~88.191.26.186~~~blades-heaven.com~~~74.86.40.71~~~chixy.org~~~82.81.156.237~~~ddtorrents.com~~~66.90.109.57~~~demonicsouls.net~~~88.191.35.248~~~destamkroeg.org~~~85.214.110.80~~~dev.bigfangroup.org~~~77.130.134.245~~~deviltorrents.org~~~66.197.138.21~~~filetracker.org~~~216.246.57.130~~~firestar.pl~~~37.187.73.130~~~flash-dragon.co.uk~~~94.23.45.92~~~homemadeporntorrents2.com~~~208.53.143.102~~~iraqigate.org~~~66.49.137.208~~~kinoclub.eu~~~78.47.214.119~~~learnbits.info~~~70.47.114.167~~~leechseed.net~~~216.227.216.220~~~mazikalek.com~~~174.120.105.219~~~mediotekayu.com~~~91.185.194.96~~~mightytunez.com/beta~~~118.210.69.244~~~mojtorrent.com~~~195.246.15.79~~~movietorrents.org~~~95.211.129.88~~~musicgate.org~~~216.104.38.146~~~new.alientorrent.com~~~76.73.5.226~~~omarco.eu~~~91.196.170.205~~~oz708-speeds.info~~~89.149.194.50~~~planetatorrent.cl~~~87.98.221.150~~~ransackedcrew.com~~~88.191.35.248~~~saucytorrents.com~~~85.234.133.165~~~scenedemon.com~~~80.86.83.213~~~seedboxworld.biz~~~62.75.149.199~~~serko.se~~~212.97.132.131~~~shetos.org~~~97.74.121.119~~~sicktorrents.com~~~88.198.53.215~~~speed-xxx.com~~~195.246.15.139~~~speedy-torrents.info~~~184.107.184.106~~~stancamantuirii.ro~~~89.36.134.61~~~swemops.com~~~67.210.100.3~~~tailz.us~~~209.11.245.165~~~test.biotorrents.org~~~~~~the-jedi-knights.info~~~216.245.205.187~~~thedvdclub.no-ip.org~~~192.168.1.30~~~tnt-vision.com~~~86.105.223.222~~~top-balkan.com~~~203.121.68.164~~~top-balkan.net~~~203.121.69.26~~~top-torrent.com~~~212.112.250.157~~~torrents-gate.com~~~69.72.149.25~~~torrents4u.org~~~85.17.145.104~~~torrentsworld.org~~~66.90.109.57~~~tracker.power-on.kiev.ua~~~217.20.163.65~~~underground-addicts.com~~~24.102.56.34~~~vale-date.com~~~69.72.149.25~~~vehd.net~~~178.33.103.17~~~wizzdvd.net~~~195.246.219.4~~~x-releases.org~~~209.44.113.82~~~y-k-m.net~~~174.120.127.92");
     foreach ($allowedHosts as $hostEntry) {
         if (strlen(INSTALL_URL) < 5 || strlen(INSTALL_IP) < 8 || stringContains(INSTALL_URL, $hostEntry) || stringContains(INSTALL_IP, $hostEntry)) {
-            showErrorMessage("Sorry, I can not continue due a Critical Error. The error code is: SE1. Please contact us at <a $href = \"https://templateshares.net/?$u = " . urlencode(INSTALL_URL) . "&$i = " . urlencode(INSTALL_IP) . "\">https://templateshares.net/</a>.");
+            showErrorMessage("Sorry, I can not continue due a Critical Error. The error code is: SE1. Please contact us at <a href=\"https://templateshares.net/?u=" . urlencode(INSTALL_URL) . "&i=" . urlencode(INSTALL_IP) . "\">https://templateshares.net/</a>.");
         }
     }
 }
@@ -192,7 +194,7 @@ function check_license()
         unset($_SESSION["LICENSE_KEY"]);
     }
     if (empty($_SESSION["LICENSE_KEY"]) || empty($licenseKey) || $_SESSION["LICENSE_KEY"] != $licenseKey || !validateInstallKey($_SESSION["LICENSE_KEY"]) || !validateInstallKey($licenseKey)) {
-        if (isset(invalidKeyFlag) && !$licenseError) {
+        if (defined('invalidKeyFlag') && !$licenseError) {
             $licenseError = "The entered license key does not match.";
         }
         $licenseForm = ($licenseError ? "<font $color = \"red\"><b>" . $licenseError . "</b></font><br /><br />" : "") . "\r\n\t\t<form $method = \"POST\" $action = \"" . $_SERVER["SCRIPT_NAME"] . "?$step = " . $__step . "\" $name = \"LICENSE_KEY\" $onsubmit = \"document.LICENSE_KEY.submit.$value = 'Checking the key...';document.LICENSE_KEY.submit.$disabled = true;\">\r\n\t\t<input $type = \"hidden\" $name = \"step\" $value = \"" . $__step . "\" />\r\n\t\tPlease enter your LICENSE KEY: <input $type = \"text\" $name = \"LICENSE_KEY\" $size = \"60\" />\r\n\t\t<input $type = \"submit\" $name = \"submit\" $value = \"Confirm License Key\" />\r\n\t\t</form>\r\n\t\t";
@@ -380,7 +382,7 @@ function sendInstallStats()
 }
 function setSessionValues($values)
 {
-    foreach ($values as $var_41 = > $value) {
+    foreach ($values as $var_41 => $value) {
         unset($_SESSION[$var_41]);
         $_SESSION[$var_41] = $value;
     }
