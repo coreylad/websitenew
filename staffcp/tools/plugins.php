@@ -1,24 +1,61 @@
 <?php
+declare(strict_types=1);
+
 checkStaffAuthentication();
 $Language = file("languages/" . getStaffLanguage() . "/plugins.lang");
 $Act = isset($_GET["act"]) ? trim($_GET["act"]) : (isset($_POST["act"]) ? trim($_POST["act"]) : "");
 $Message = "";
+
 if ($Act == "delete" && ($pid = intval($_GET["pid"]))) {
-    mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM ts_plugins WHERE $pid = " . $pid);
-    $Message = str_replace("{1}", $_SESSION["ADMIN_USERNAME"], $Language[3]);
-    logStaffAction($Message);
-    $Message = showAlertError($Message);
+    if (!isset($_GET['csrf_token']) || !hash_equals($_SESSION['csrf_token'] ?? '', $_GET['csrf_token'])) {
+        die('CSRF token validation failed');
+    }
+    
+    try {
+        $stmt = $GLOBALS["DatabaseConnect"]->prepare("DELETE FROM ts_plugins WHERE pid = ?");
+        $stmt->bind_param("i", $pid);
+        $stmt->execute();
+        $stmt->close();
+        
+        $Message = str_replace("{1}", $_SESSION["ADMIN_USERNAME"], $Language[3]);
+        logStaffAction($Message);
+        $Message = showAlertError($Message);
+    } catch (Exception $e) {
+        error_log("Error deleting plugin: " . $e->getMessage());
+    }
 }
+
 if ($Act == "change_status" && ($pid = intval($_GET["pid"]))) {
-    mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE ts_plugins SET $active = IF($active = 1,0,1) WHERE $pid = " . $pid);
-    $Message = str_replace("{1}", $_SESSION["ADMIN_USERNAME"], $Language[3]);
-    logStaffAction($Message);
-    $Message = showAlertError($Message);
+    if (!isset($_GET['csrf_token']) || !hash_equals($_SESSION['csrf_token'] ?? '', $_GET['csrf_token'])) {
+        die('CSRF token validation failed');
+    }
+    
+    try {
+        $stmt = $GLOBALS["DatabaseConnect"]->prepare("UPDATE ts_plugins SET active = IF(active = 1, 0, 1) WHERE pid = ?");
+        $stmt->bind_param("i", $pid);
+        $stmt->execute();
+        $stmt->close();
+        
+        $Message = str_replace("{1}", $_SESSION["ADMIN_USERNAME"], $Language[3]);
+        logStaffAction($Message);
+        $Message = showAlertError($Message);
+    } catch (Exception $e) {
+        error_log("Error changing plugin status: " . $e->getMessage());
+    }
 }
 if ($Act == "edit" && ($pid = intval($_GET["pid"])) || $Act == "new") {
     if ($Act == "edit") {
-        $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM ts_plugins WHERE $pid = " . $pid);
-        $Plugin = mysqli_fetch_assoc($query);
+        try {
+            $stmt = $GLOBALS["DatabaseConnect"]->prepare("SELECT * FROM ts_plugins WHERE pid = ?");
+            $stmt->bind_param("i", $pid);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $Plugin = $result->fetch_assoc();
+            $stmt->close();
+        } catch (Exception $e) {
+            error_log("Error fetching plugin: " . $e->getMessage());
+            $Plugin = [];
+        }
     } else {
         $pid = 0;
         $Plugin = [];
@@ -30,14 +67,20 @@ if ($Act == "edit" && ($pid = intval($_GET["pid"])) || $Act == "new") {
         $Plugin["permission"] = "0";
         $Plugin["active"] = "1";
     }
-    $name = $Plugin["name"];
-    $description = $Plugin["description"];
-    $content = $Plugin["content"];
-    $position = $Plugin["position"];
-    $sort = $Plugin["sort"];
-    $permission = $Plugin["permission"];
-    $active = $Plugin["active"];
+    
+    $name = $Plugin["name"] ?? "";
+    $description = $Plugin["description"] ?? "";
+    $content = $Plugin["content"] ?? "";
+    $position = $Plugin["position"] ?? "2";
+    $sort = $Plugin["sort"] ?? "0";
+    $permission = $Plugin["permission"] ?? "0";
+    $active = $Plugin["active"] ?? "1";
+    
     if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
+        if (!isset($_POST['csrf_token']) || !hash_equals($_SESSION['csrf_token'] ?? '', $_POST['csrf_token'])) {
+            die('CSRF token validation failed');
+        }
+        
         $name = trim($_POST["name"]);
         $description = trim($_POST["description"]);
         $content = trim($_POST["content"]);
@@ -45,67 +88,116 @@ if ($Act == "edit" && ($pid = intval($_GET["pid"])) || $Act == "new") {
         $sort = intval($_POST["sort"]);
         $permission = isset($_POST["usergroups"]) && is_array($_POST["usergroups"]) ? implode("", $_POST["usergroups"]) : "";
         $active = intval($_POST["active"]);
-        if ($Act == "edit") {
-            mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE ts_plugins SET $name = \"" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $name) . "\", $description = \"" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $description) . "\", $content = \"" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $content) . "\", $position = " . $position . ", $sort = " . $sort . ", $permission = \"" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $permission) . "\", $active = " . $active . " WHERE $pid = " . $pid);
-        } else {
-            mysqli_query($GLOBALS["DatabaseConnect"], "INSERT INTO ts_plugins (name, description, content, position, sort, permission, active) VALUES (\"" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $name) . "\", \"" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $description) . "\", \"" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $content) . "\", " . $position . ", " . $sort . ", \"" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $permission) . "\", " . $active . ")");
+        
+        try {
+            if ($Act == "edit") {
+                $stmt = $GLOBALS["DatabaseConnect"]->prepare("UPDATE ts_plugins SET name = ?, description = ?, content = ?, position = ?, sort = ?, permission = ?, active = ? WHERE pid = ?");
+                $stmt->bind_param("sssisisi", $name, $description, $content, $position, $sort, $permission, $active, $pid);
+            } else {
+                $stmt = $GLOBALS["DatabaseConnect"]->prepare("INSERT INTO ts_plugins (name, description, content, position, sort, permission, active) VALUES (?, ?, ?, ?, ?, ?, ?)");
+                $stmt->bind_param("sssisii", $name, $description, $content, $position, $sort, $permission, $active);
+            }
+            $stmt->execute();
+            $stmt->close();
+            
+            $UPDATED = true;
+            $Message = str_replace("{1}", $_SESSION["ADMIN_USERNAME"], $Language[3]);
+            logStaffAction($Message);
+            $Message = showAlertError($Message);
+        } catch (Exception $e) {
+            error_log("Error saving plugin: " . $e->getMessage());
+            $Message = showAlertError("An error occurred while saving the plugin.");
         }
-        $UPDATED = true;
-        $Message = str_replace("{1}", $_SESSION["ADMIN_USERNAME"], $Language[3]);
-        logStaffAction($Message);
-        $Message = showAlertError($Message);
     }
     if (!isset($UPDATED)) {
-        $squery = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT gid, title, namestyle FROM usergroups");
-        $sgids = "";
-        while ($gid = mysqli_fetch_assoc($squery)) {
-            $sgids .= "\r\n\t\t\t<div $style = \"margin-bottom: 3px;\">\r\n\t\t\t\t<label><input $type = \"checkbox\" $name = \"usergroups[]\" $value = \"[" . $gid["gid"] . "]\"" . ($permission && strstr($permission, "[" . $gid["gid"] . "]") ? " $checked = \"checked\"" : "") . " $style = \"vertical-align: middle;\" /> " . strip_tags(str_replace("{username}", $gid["title"], $gid["namestyle"]), "<b><span><strong><em><i><u>") . "</label>\r\n\t\t\t</div>";
+        if (!isset($_SESSION['csrf_token'])) {
+            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
         }
-        $sgids .= "\r\n\t\t\t<div $style = \"margin-bottom: 3px;\">\r\n\t\t\t\t<label><input $type = \"checkbox\" $name = \"usergroups[]\" $value = \"[guest]\"" . ($permission && strstr($permission, "[guest]") ? " $checked = \"checked\"" : "") . " $style = \"vertical-align: middle;\" /> -" . $Language[33] . "-</label>\r\n\t\t\t</div>";
-        $sgids .= "\r\n\t\t\t<div $style = \"margin-bottom: 3px;\">\r\n\t\t\t\t<label><input $type = \"checkbox\" $name = \"usergroups[]\" $value = \"[all]\"" . ($permission && strstr($permission, "[all]") ? " $checked = \"checked\"" : "") . " $style = \"vertical-align: middle;\" /> -" . $Language[34] . "-</label>\r\n\t\t\t</div>";
-        $List = loadTinyMCEEditor() . "\r\n\t\t<form $method = \"post\" $action = \"index.php?do=plugins&$act = " . $Act . "&$pid = " . $pid . "\">\r\n\t\t" . showAlertMessage("<a $href = \"index.php?do=plugins\">" . $Language[23] . "</a>") . "\r\n\t\t" . $Message . "\r\n\t\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"tcat\" $align = \"center\">\r\n\t\t\t\t\t" . $Language[2] . "\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt2\">" . $Language[16] . "<div class=\"alt2Div\">" . $Language[17] . "</div></td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt1\" $valign = \"top\">\r\n\t\t\t\t\t<input $type = \"text\" $name = \"name\" $value = \"" . $name . "\" $style = \"width: 97%;\" />\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt2\">" . $Language[18] . "<div class=\"alt2Div\">" . $Language[19] . "</div></td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt1\" $valign = \"top\">\r\n\t\t\t\t\t<input $type = \"text\" $name = \"description\" $value = \"" . $description . "\" $style = \"width: 97%;\" />\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt2\">" . $Language[20] . "<div class=\"alt2Div\">" . $Language[21] . "</div></td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt1\" $valign = \"top\">\r\n\t\t\t\t\t<textarea $name = \"content\" $style = \"width: 99%; height: 80px;\">" . $content . "</textarea>\r\n\t\t\t\t\t<p><a $href = \"javascript:toggleEditor('content');\"><img $src = \"images/tool_refresh.png\" $border = \"0\" /></a></p>\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt2\">" . $Language[10] . "<div class=\"alt2Div\">" . $Language[24] . "</div></td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt1\" $valign = \"top\">\r\n\t\t\t\t\t<select $name = \"position\">\r\n\t\t\t\t\t\t<option $value = \"1\"" . ($position == 1 ? " $selected = \"selected\"" : "") . ">" . $Language[11] . "</option>\r\n\t\t\t\t\t\t<option $value = \"2\"" . ($position == 2 ? " $selected = \"selected\"" : "") . ">" . $Language[12] . "</option>\r\n\t\t\t\t\t\t<option $value = \"3\"" . ($position == 3 ? " $selected = \"selected\"" : "") . ">" . $Language[13] . "</option>\r\n\t\t\t\t\t</select>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt2\">" . $Language[25] . "<div class=\"alt2Div\">" . $Language[28] . "</div></td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt1\" $valign = \"top\">\r\n\t\t\t\t\t<select $name = \"active\">\r\n\t\t\t\t\t\t<option $value = \"1\"" . ($active == 1 ? " $selected = \"selected\"" : "") . ">" . $Language[26] . "</option>\r\n\t\t\t\t\t\t<option $value = \"0\"" . ($active == 0 ? " $selected = \"selected\"" : "") . ">" . $Language[27] . "</option>\r\n\t\t\t\t\t</select>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt2\">" . $Language[7] . "<div class=\"alt2Div\">" . $Language[29] . "</div></td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt1\" $valign = \"top\">\r\n\t\t\t\t\t<input $type = \"text\" $name = \"sort\" $value = \"" . $sort . "\" $size = \"10\" />\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt2\">" . $Language[30] . "<div class=\"alt2Div\">" . $Language[31] . "</div></td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt1\" $valign = \"top\">\r\n\t\t\t\t\t" . $sgids . "\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"tcat2\">\r\n\t\t\t\t\t<input $type = \"submit\" $value = \"" . $Language[8] . "\" /> <input $type = \"reset\" $value = \"" . $Language[22] . "\" />\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t</table>\r\n\t\t</form>";
+        $csrfToken = $_SESSION['csrf_token'];
+        
+        try {
+            $squery = $GLOBALS["DatabaseConnect"]->query("SELECT gid, title, namestyle FROM usergroups");
+            $sgids = "";
+            while ($gid = $squery->fetch_assoc()) {
+                $sgids .= "\r\n\t\t\t<div $style = \"margin-bottom: 3px;\">\r\n\t\t\t\t<label><input $type = \"checkbox\" $name = \"usergroups[]\" $value = \"[" . htmlspecialchars($gid["gid"], ENT_QUOTES, 'UTF-8') . "]\"" . ($permission && strstr($permission, "[" . $gid["gid"] . "]") ? " $checked = \"checked\"" : "") . " $style = \"vertical-align: middle;\" /> " . htmlspecialchars(strip_tags(str_replace("{username}", $gid["title"], $gid["namestyle"]), "<b><span><strong><em><i><u>"), ENT_QUOTES, 'UTF-8') . "</label>\r\n\t\t\t</div>";
+            }
+        } catch (Exception $e) {
+            error_log("Error fetching usergroups: " . $e->getMessage());
+            $sgids = "";
+        }
+        
+        $sgids .= "\r\n\t\t\t<div $style = \"margin-bottom: 3px;\">\r\n\t\t\t\t<label><input $type = \"checkbox\" $name = \"usergroups[]\" $value = \"[guest]\"" . ($permission && strstr($permission, "[guest]") ? " $checked = \"checked\"" : "") . " $style = \"vertical-align: middle;\" /> -" . htmlspecialchars($Language[33], ENT_QUOTES, 'UTF-8') . "-</label>\r\n\t\t\t</div>";
+        $sgids .= "\r\n\t\t\t<div $style = \"margin-bottom: 3px;\">\r\n\t\t\t\t<label><input $type = \"checkbox\" $name = \"usergroups[]\" $value = \"[all]\"" . ($permission && strstr($permission, "[all]") ? " $checked = \"checked\"" : "") . " $style = \"vertical-align: middle;\" /> -" . htmlspecialchars($Language[34], ENT_QUOTES, 'UTF-8') . "-</label>\r\n\t\t\t</div>";
+        
+        $List = loadTinyMCEEditor() . "\r\n\t\t<form $method = \"post\" $action = \"index.php?do=plugins&$act = " . htmlspecialchars($Act, ENT_QUOTES, 'UTF-8') . "&$pid = " . intval($pid) . "\">\r\n\t\t<input type=\"hidden\" name=\"csrf_token\" value=\"" . htmlspecialchars($csrfToken, ENT_QUOTES, 'UTF-8') . "\" />\r\n\t\t" . showAlertMessage("<a $href = \"index.php?do=plugins\">" . htmlspecialchars($Language[23], ENT_QUOTES, 'UTF-8') . "</a>") . "\r\n\t\t" . $Message . "\r\n\t\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"tcat\" $align = \"center\">\r\n\t\t\t\t\t" . htmlspecialchars($Language[2], ENT_QUOTES, 'UTF-8') . "\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt2\">" . htmlspecialchars($Language[16], ENT_QUOTES, 'UTF-8') . "<div class=\"alt2Div\">" . htmlspecialchars($Language[17], ENT_QUOTES, 'UTF-8') . "</div></td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt1\" $valign = \"top\">\r\n\t\t\t\t\t<input $type = \"text\" $name = \"name\" $value = \"" . htmlspecialchars($name, ENT_QUOTES, 'UTF-8') . "\" $style = \"width: 97%;\" />\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt2\">" . htmlspecialchars($Language[18], ENT_QUOTES, 'UTF-8') . "<div class=\"alt2Div\">" . htmlspecialchars($Language[19], ENT_QUOTES, 'UTF-8') . "</div></td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt1\" $valign = \"top\">\r\n\t\t\t\t\t<input $type = \"text\" $name = \"description\" $value = \"" . htmlspecialchars($description, ENT_QUOTES, 'UTF-8') . "\" $style = \"width: 97%;\" />\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt2\">" . htmlspecialchars($Language[20], ENT_QUOTES, 'UTF-8') . "<div class=\"alt2Div\">" . htmlspecialchars($Language[21], ENT_QUOTES, 'UTF-8') . "</div></td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt1\" $valign = \"top\">\r\n\t\t\t\t\t<textarea $name = \"content\" $style = \"width: 99%; height: 80px;\">" . htmlspecialchars($content, ENT_QUOTES, 'UTF-8') . "</textarea>\r\n\t\t\t\t\t<p><a $href = \"javascript:toggleEditor('content');\"><img $src = \"images/tool_refresh.png\" $border = \"0\" /></a></p>\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt2\">" . htmlspecialchars($Language[10], ENT_QUOTES, 'UTF-8') . "<div class=\"alt2Div\">" . htmlspecialchars($Language[24], ENT_QUOTES, 'UTF-8') . "</div></td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt1\" $valign = \"top\">\r\n\t\t\t\t\t<select $name = \"position\">\r\n\t\t\t\t\t\t<option $value = \"1\"" . ($position == 1 ? " $selected = \"selected\"" : "") . ">" . htmlspecialchars($Language[11], ENT_QUOTES, 'UTF-8') . "</option>\r\n\t\t\t\t\t\t<option $value = \"2\"" . ($position == 2 ? " $selected = \"selected\"" : "") . ">" . htmlspecialchars($Language[12], ENT_QUOTES, 'UTF-8') . "</option>\r\n\t\t\t\t\t\t<option $value = \"3\"" . ($position == 3 ? " $selected = \"selected\"" : "") . ">" . htmlspecialchars($Language[13], ENT_QUOTES, 'UTF-8') . "</option>\r\n\t\t\t\t\t</select>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt2\">" . htmlspecialchars($Language[25], ENT_QUOTES, 'UTF-8') . "<div class=\"alt2Div\">" . htmlspecialchars($Language[28], ENT_QUOTES, 'UTF-8') . "</div></td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt1\" $valign = \"top\">\r\n\t\t\t\t\t<select $name = \"active\">\r\n\t\t\t\t\t\t<option $value = \"1\"" . ($active == 1 ? " $selected = \"selected\"" : "") . ">" . htmlspecialchars($Language[26], ENT_QUOTES, 'UTF-8') . "</option>\r\n\t\t\t\t\t\t<option $value = \"0\"" . ($active == 0 ? " $selected = \"selected\"" : "") . ">" . htmlspecialchars($Language[27], ENT_QUOTES, 'UTF-8') . "</option>\r\n\t\t\t\t\t</select>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt2\">" . htmlspecialchars($Language[7], ENT_QUOTES, 'UTF-8') . "<div class=\"alt2Div\">" . htmlspecialchars($Language[29], ENT_QUOTES, 'UTF-8') . "</div></td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt1\" $valign = \"top\">\r\n\t\t\t\t\t<input $type = \"text\" $name = \"sort\" $value = \"" . htmlspecialchars($sort, ENT_QUOTES, 'UTF-8') . "\" $size = \"10\" />\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt2\">" . htmlspecialchars($Language[30], ENT_QUOTES, 'UTF-8') . "<div class=\"alt2Div\">" . htmlspecialchars($Language[31], ENT_QUOTES, 'UTF-8') . "</div></td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt1\" $valign = \"top\">\r\n\t\t\t\t\t" . $sgids . "\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"tcat2\">\r\n\t\t\t\t\t<input $type = \"submit\" $value = \"" . htmlspecialchars($Language[8], ENT_QUOTES, 'UTF-8') . "\" /> <input $type = \"reset\" $value = \"" . htmlspecialchars($Language[22], ENT_QUOTES, 'UTF-8') . "\" />\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t</table>\r\n\t\t</form>";
     }
 }
 if ($Act == "save_order") {
-    foreach ($_POST as $row) {
-        $segments = explode(":", $row);
-        $position = str_replace("column-", "", $segments[0]);
-        $plugins = explode(",", $segments[1]);
-        foreach ($plugins as $sort => $pid) {
-            $pid = str_replace("plugin-", "", $pid);
-            $Query = "UPDATE ts_plugins SET $position = '" . $position . "', $sort = '" . $sort . "' WHERE $pid = " . $pid;
-            mysqli_query($GLOBALS["DatabaseConnect"], $Query);
-            if (mysqli_errno($GLOBALS["DatabaseConnect"])) {
-                echo $Query . "<br />" . mysqli_error($GLOBALS["DatabaseConnect"]);
-            } else {
-                echo "Moved Plugin: " . $pid . " to position: " . $position . " and updated rank to: " . $sort . "<br />";
-            }
-        }
+    if (!isset($_POST['csrf_token']) || !hash_equals($_SESSION['csrf_token'] ?? '', $_POST['csrf_token'])) {
+        die('CSRF token validation failed');
     }
-    $Message = str_replace("{1}", $_SESSION["ADMIN_USERNAME"], $Language[3]);
-    logStaffAction($Message);
+    
+    try {
+        foreach ($_POST as $row) {
+            $segments = explode(":", $row);
+            $position = str_replace("column-", "", $segments[0]);
+            $plugins = explode(",", $segments[1]);
+            
+            $stmt = $GLOBALS["DatabaseConnect"]->prepare("UPDATE ts_plugins SET position = ?, sort = ? WHERE pid = ?");
+            
+            foreach ($plugins as $sort => $pid) {
+                $pid = str_replace("plugin-", "", $pid);
+                $stmt->bind_param("sii", $position, $sort, $pid);
+                $stmt->execute();
+                
+                echo "Moved Plugin: " . intval($pid) . " to position: " . htmlspecialchars($position, ENT_QUOTES, 'UTF-8') . " and updated rank to: " . intval($sort) . "<br />";
+            }
+            
+            $stmt->close();
+        }
+        
+        $Message = str_replace("{1}", $_SESSION["ADMIN_USERNAME"], $Language[3]);
+        logStaffAction($Message);
+    } catch (Exception $e) {
+        error_log("Error saving plugin order: " . $e->getMessage());
+        echo "Error: " . htmlspecialchars($e->getMessage(), ENT_QUOTES, 'UTF-8');
+    }
+    
     exit;
 } else {
     if (!isset($List)) {
-        $LeftPlugins = [];
-        $MiddlePlugins = [];
-        $RightPlugins = [];
-        $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM ts_plugins ORDER BY active DESC, sort ASC");
-        while ($plugin = mysqli_fetch_assoc($query)) {
-            if ($plugin["position"] == "1") {
-                $LeftPlugins[] = $plugin;
-            } else {
-                if ($plugin["position"] == "2") {
-                    $MiddlePlugins[] = $plugin;
+        if (!isset($_SESSION['csrf_token'])) {
+            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+        }
+        $csrfToken = $_SESSION['csrf_token'];
+        
+        try {
+            $LeftPlugins = [];
+            $MiddlePlugins = [];
+            $RightPlugins = [];
+            
+            $query = $GLOBALS["DatabaseConnect"]->query("SELECT * FROM ts_plugins ORDER BY active DESC, sort ASC");
+            while ($plugin = $query->fetch_assoc()) {
+                if ($plugin["position"] == "1") {
+                    $LeftPlugins[] = $plugin;
                 } else {
-                    $RightPlugins[] = $plugin;
+                    if ($plugin["position"] == "2") {
+                        $MiddlePlugins[] = $plugin;
+                    } else {
+                        $RightPlugins[] = $plugin;
+                    }
                 }
             }
+            
+            $List1 = implode(" ", function_315($LeftPlugins));
+            $List2 = implode(" ", function_315($MiddlePlugins));
+            $List3 = implode(" ", function_315($RightPlugins));
+        } catch (Exception $e) {
+            error_log("Error fetching plugins: " . $e->getMessage());
+            $List1 = $List2 = $List3 = "";
         }
-        $List1 = implode(" ", function_315($LeftPlugins));
-        $List2 = implode(" ", function_315($MiddlePlugins));
-        $List3 = implode(" ", function_315($RightPlugins));
-        echo "\r\n\t<script $type = \"text/javascript\">\r\n\t\tvar settings \$t = \r\n\t\t{\r\n\t\t\t" . pluginDeactivate() . "\r\n\t\t};\r\n\t\tvar $options = \r\n\t\t{\r\n\t\t\tportal \t: \"columns\",\r\n\t\t\teditorEnabled : true,\r\n\t\t\tsaveurl : \"index.php?do=plugins&$act = save_order\",\r\n\t\t\tTSDebug : true\r\n\t\t};\r\n\t\tvar $data = {};\r\n\t\tvar portal;\r\n\t\tEvent.observe(window, \"load\", function()\r\n\t\t{\r\n\t\t\$tportal = new Portal(settings, options, data);\r\n\t\t});\r\n\t</script>\r\n\t" . showAlertMessage("<a $href = \"index.php?do=plugins&$act = new\">" . $Language[9] . "</a>") . "\r\n\t" . $Message . "\r\n\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t<tr>\r\n\t\t\t<td class=\"tcat\" $align = \"center\">\r\n\t\t\t\t" . $Language[2] . "\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\" $align = \"center\">\r\n\t\t\t\t<div $id = \"wrapper\">\r\n\t\t\t\t\t<div $id = \"columns\">\r\n\t\t\t\t\t\t<div $id = \"column-1\" class=\"column menu\"></div>\r\n\t\t\t\t\t\t<div $id = \"column-2\" class=\"column blocks\"></div>\r\n\t\t\t\t\t\t<div $id = \"column-3\" class=\"column sidebar\"></div>\r\n\t\t\t\t\t\t<div class=\"portal-column\" $id = \"portal-column-block-list\" $style = \"display: none;\">\r\n\t\t\t\t\t\t\t" . $List1 . "\r\n\t\t\t\t\t\t\t" . $List2 . "\r\n\t\t\t\t\t\t\t" . $List3 . "\r\n\t\t\t\t\t\t</div>\r\n\t\t\t\t\t</div>\r\n\t\t\t\t\t<div $style = \"clear:both;\"></div>\r\n\t\t\t\t\t<div $id = \"debug\" $style = \"display: none;\">\r\n\t\t\t\t\t\t<p $style = \"margin:0px;\" $id = \"data\"></p>\r\n\t\t\t\t\t</div>\r\n\t\t\t\t</div>\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t</table>";
+        
+        echo "\r\n\t<script $type = \"text/javascript\">\r\n\t\tvar settings \$t = \r\n\t\t{\r\n\t\t\t" . pluginDeactivate() . "\r\n\t\t};\r\n\t\tvar $options = \r\n\t\t{\r\n\t\t\tportal \t: \"columns\",\r\n\t\t\teditorEnabled : true,\r\n\t\t\tsaveurl : \"index.php?do=plugins&$act = save_order\",\r\n\t\t\tTSDebug : true\r\n\t\t};\r\n\t\tvar $data = {};\r\n\t\tvar portal;\r\n\t\tEvent.observe(window, \"load\", function()\r\n\t\t{\r\n\t\t\$tportal = new Portal(settings, options, data);\r\n\t\t});\r\n\t</script>\r\n\t" . showAlertMessage("<a $href = \"index.php?do=plugins&$act = new&csrf_token=" . htmlspecialchars($csrfToken, ENT_QUOTES, 'UTF-8') . "\">" . htmlspecialchars($Language[9], ENT_QUOTES, 'UTF-8') . "</a>") . "\r\n\t" . $Message . "\r\n\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t<tr>\r\n\t\t\t<td class=\"tcat\" $align = \"center\">\r\n\t\t\t\t" . htmlspecialchars($Language[2], ENT_QUOTES, 'UTF-8') . "\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\" $align = \"center\">\r\n\t\t\t\t<div $id = \"wrapper\">\r\n\t\t\t\t\t<div $id = \"columns\">\r\n\t\t\t\t\t\t<div $id = \"column-1\" class=\"column menu\"></div>\r\n\t\t\t\t\t\t<div $id = \"column-2\" class=\"column blocks\"></div>\r\n\t\t\t\t\t\t<div $id = \"column-3\" class=\"column sidebar\"></div>\r\n\t\t\t\t\t\t<div class=\"portal-column\" $id = \"portal-column-block-list\" $style = \"display: none;\">\r\n\t\t\t\t\t\t\t" . $List1 . "\r\n\t\t\t\t\t\t\t" . $List2 . "\r\n\t\t\t\t\t\t\t" . $List3 . "\r\n\t\t\t\t\t\t</div>\r\n\t\t\t\t\t</div>\r\n\t\t\t\t\t<div $style = \"clear:both;\"></div>\r\n\t\t\t\t\t<div $id = \"debug\" $style = \"display: none;\">\r\n\t\t\t\t\t\t<p $style = \"margin:0px;\" $id = \"data\"></p>\r\n\t\t\t\t\t</div>\r\n\t\t\t\t</div>\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t</table>";
     } else {
         echo $List;
     }
@@ -157,38 +249,58 @@ function showAlertError($Error)
 {
     return "<div class=\"alert\"><div>" . $Error . "</div></div>";
 }
-function logStaffAction($log)
+function logStaffAction($log): void
 {
-    mysqli_query($GLOBALS["DatabaseConnect"], "INSERT INTO ts_staffcp_logs (uid, date, log) VALUES (\"" . $_SESSION["ADMIN_ID"] . "\", \"" . time() . "\", \"" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $log) . "\")");
+    try {
+        $stmt = $GLOBALS["DatabaseConnect"]->prepare("INSERT INTO ts_staffcp_logs (uid, date, log) VALUES (?, ?, ?)");
+        $uid = $_SESSION["ADMIN_ID"];
+        $time = time();
+        $stmt->bind_param("sis", $uid, $time, $log);
+        $stmt->execute();
+        $stmt->close();
+    } catch (Exception $e) {
+        error_log("Error logging staff action: " . $e->getMessage());
+    }
 }
 function showAlertMessage($message = "")
 {
     return "<div class=\"alert\"><div>" . $message . "</div></div>";
 }
 // DEAD CODE: function_316() is never called. Appears to format plugin positions for JSON output.
-function function_316()
+function function_316(): string
 {
-    $plugins = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM ts_plugins ORDER BY sort ASC");
-    $pluginId = [];
-    while ($plugin = mysqli_fetch_assoc($plugins)) {
-        $pluginId["column-" . $plugin["position"]][] = $plugin;
-    }
-    $pluginName = [];
-    foreach ($pluginId as $pluginVersion => $plugins) {
-        $pluginEnabled = [];
-        foreach ($plugins as $plugin) {
-            $pluginEnabled[] = "'plugin-" . $plugin["pid"] . "'";
+    try {
+        $plugins = $GLOBALS["DatabaseConnect"]->query("SELECT * FROM ts_plugins ORDER BY sort ASC");
+        $pluginId = [];
+        while ($plugin = $plugins->fetch_assoc()) {
+            $pluginId["column-" . $plugin["position"]][] = $plugin;
         }
-        $pluginName[] = "'" . $pluginVersion . "'" . ":[" . implode(",", $pluginEnabled) . "]";
+        $pluginName = [];
+        foreach ($pluginId as $pluginVersion => $plugins) {
+            $pluginEnabled = [];
+            foreach ($plugins as $plugin) {
+                $pluginEnabled[] = "'plugin-" . intval($plugin["pid"]) . "'";
+            }
+            $pluginName[] = "'" . $pluginVersion . "'" . ":[" . implode(",", $pluginEnabled) . "]";
+        }
+        return implode(",", $pluginName);
+    } catch (Exception $e) {
+        error_log("Error in function_316: " . $e->getMessage());
+        return "";
     }
-    return implode(",", $pluginName);
 }
-function function_315($PluginArray)
+function function_315($PluginArray): array
 {
     global $Language;
     $gameId = [];
+    
+    if (!isset($_SESSION['csrf_token'])) {
+        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+    }
+    $csrfToken = $_SESSION['csrf_token'];
+    
     foreach ($PluginArray as $Plugin) {
-        $gameId[] = "\r\n\t\t<div class=\"block\" $id = \"plugin-" . $Plugin["pid"] . "\">\r\n\t\t\t<h1 class=\"draghandle\">\r\n\t\t\t\t" . $Plugin["description"] . "\r\n\t\t\t</h1>\r\n\t\t\t<p>\r\n\t\t\t\t" . ($Plugin["active"] == 1 ? "<a $href = \"index.php?do=plugins&amp;$act = change_status&amp;$pid = " . $Plugin["pid"] . "\"><img $src = \"images/accept.png\" $alt = \"" . trim($Language[15]) . "\" $title = \"" . trim($Language[15]) . "\" $border = \"0\" $style = \"vertical-align: middle;\" /></a>" : "<a $href = \"index.php?do=plugins&amp;$act = change_status&amp;$pid = " . $Plugin["pid"] . "\"><img $src = \"images/cancel.png\" $alt = \"" . trim($Language[14]) . "\" $title = \"" . trim($Language[14]) . "\" $border = \"0\" $style = \"vertical-align: middle;\" /></a>") . "\r\n\t\t\t\t<a $href = \"index.php?do=plugins&amp;$act = edit&amp;$pid = " . $Plugin["pid"] . "\"><img $src = \"images/tool_edit.png\" $alt = \"" . trim($Language[4]) . "\" $title = \"" . trim($Language[4]) . "\" $border = \"0\" $style = \"vertical-align: middle;\" /></a> <a $href = \"index.php?do=plugins&amp;$act = delete&amp;$pid = " . $Plugin["pid"] . "\" $onclick = \"return confirm('" . trim($Language[6]) . "');\"><img $src = \"images/tool_delete.png\" $alt = \"" . trim($Language[5]) . "\" $title = \"" . trim($Language[5]) . "\" $border = \"0\" $style = \"vertical-align: middle;\" /></a>\r\n\t\t\t</p>\r\n\t\t</div>";
+        $gameId[] = "\r\n\t\t<div class=\"block\" $id = \"plugin-" . intval($Plugin["pid"]) . "\">\r\n\t\t\t<h1 class=\"draghandle\">\r\n\t\t\t\t" . htmlspecialchars($Plugin["description"], ENT_QUOTES, 'UTF-8') . "\r\n\t\t\t</h1>\r\n\t\t\t<p>\r\n\t\t\t\t" . ($Plugin["active"] == 1 ? "<a $href = \"index.php?do=plugins&amp;$act = change_status&amp;$pid = " . intval($Plugin["pid"]) . "&amp;csrf_token=" . htmlspecialchars($csrfToken, ENT_QUOTES, 'UTF-8') . "\"><img $src = \"images/accept.png\" $alt = \"" . htmlspecialchars(trim($Language[15]), ENT_QUOTES, 'UTF-8') . "\" $title = \"" . htmlspecialchars(trim($Language[15]), ENT_QUOTES, 'UTF-8') . "\" $border = \"0\" $style = \"vertical-align: middle;\" /></a>" : "<a $href = \"index.php?do=plugins&amp;$act = change_status&amp;$pid = " . intval($Plugin["pid"]) . "&amp;csrf_token=" . htmlspecialchars($csrfToken, ENT_QUOTES, 'UTF-8') . "\"><img $src = \"images/cancel.png\" $alt = \"" . htmlspecialchars(trim($Language[14]), ENT_QUOTES, 'UTF-8') . "\" $title = \"" . htmlspecialchars(trim($Language[14]), ENT_QUOTES, 'UTF-8') . "\" $border = \"0\" $style = \"vertical-align: middle;\" /></a>") . "\r\n\t\t\t\t<a $href = \"index.php?do=plugins&amp;$act = edit&amp;$pid = " . intval($Plugin["pid"]) . "\"><img $src = \"images/tool_edit.png\" $alt = \"" . htmlspecialchars(trim($Language[4]), ENT_QUOTES, 'UTF-8') . "\" $title = \"" . htmlspecialchars(trim($Language[4]), ENT_QUOTES, 'UTF-8') . "\" $border = \"0\" $style = \"vertical-align: middle;\" /></a> <a $href = \"index.php?do=plugins&amp;$act = delete&amp;$pid = " . intval($Plugin["pid"]) . "&amp;csrf_token=" . htmlspecialchars($csrfToken, ENT_QUOTES, 'UTF-8') . "\" $onclick = \"return confirm('" . htmlspecialchars(trim($Language[6]), ENT_QUOTES, 'UTF-8') . "');\"><img $src = \"images/tool_delete.png\" $alt = \"" . htmlspecialchars(trim($Language[5]), ENT_QUOTES, 'UTF-8') . "\" $title = \"" . htmlspecialchars(trim($Language[5]), ENT_QUOTES, 'UTF-8') . "\" $border = \"0\" $style = \"vertical-align: middle;\" /></a>\r\n\t\t\t</p>\r\n\t\t</div>";
     }
     return $gameId;
 }

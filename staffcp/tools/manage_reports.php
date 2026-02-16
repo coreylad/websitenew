@@ -1,45 +1,84 @@
 <?php
+declare(strict_types=1);
+
 checkStaffAuthentication();
 $Language = file("languages/" . getStaffLanguage() . "/manage_reports.lang");
 $Message = "";
-if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST" && isset($_POST["reports"]) && is_array($_POST["reports"]) && count($_POST["reports"])) {
-    $Work = implode(",", $_POST["reports"]);
-    if (isset($_POST["delete"])) {
-        mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM ts_reports WHERE rid IN (0," . $Work . ")");
-        if (mysqli_affected_rows($GLOBALS["DatabaseConnect"])) {
-            $Message = str_replace(["{1}", "{2}"], [$Work, $_SESSION["ADMIN_USERNAME"]], $Language[3]);
-            logStaffAction($Message);
-            $Message = showAlertMessage($Message);
-        }
-    } else {
-        if (isset($_POST["confirm"])) {
-            mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE ts_reports SET $confirmed = '1', $confirmedby = '" . $_SESSION["ADMIN_ID"] . "' WHERE rid IN (0," . $Work . ")");
-            if (mysqli_affected_rows($GLOBALS["DatabaseConnect"])) {
-                $Message = str_replace(["{1}", "{2}"], [$Work, $_SESSION["ADMIN_USERNAME"]], $Language[4]);
-                logStaffAction($Message);
-                $Message = showAlertMessage($Message);
+
+if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
+    if (!isset($_POST['csrf_token']) || !hash_equals($_SESSION['csrf_token'] ?? '', $_POST['csrf_token'])) {
+        die('CSRF token validation failed');
+    }
+    
+    if (isset($_POST["reports"]) && is_array($_POST["reports"]) && count($_POST["reports"])) {
+        $Work = implode(",", array_map('intval', $_POST["reports"]));
+        
+        try {
+            if (isset($_POST["delete"])) {
+                $GLOBALS["DatabaseConnect"]->query("DELETE FROM ts_reports WHERE rid IN (0," . $Work . ")");
+                
+                if ($GLOBALS["DatabaseConnect"]->affected_rows) {
+                    $Message = str_replace(["{1}", "{2}"], [$Work, $_SESSION["ADMIN_USERNAME"]], $Language[3]);
+                    logStaffAction($Message);
+                    $Message = showAlertMessage($Message);
+                }
+            } else {
+                if (isset($_POST["confirm"])) {
+                    $stmt = $GLOBALS["DatabaseConnect"]->prepare("UPDATE ts_reports SET confirmed = '1', confirmedby = ? WHERE rid IN (0," . $Work . ")");
+                    $adminId = $_SESSION["ADMIN_ID"];
+                    $stmt->bind_param("s", $adminId);
+                    $stmt->execute();
+                    $stmt->close();
+                    
+                    if ($GLOBALS["DatabaseConnect"]->affected_rows) {
+                        $Message = str_replace(["{1}", "{2}"], [$Work, $_SESSION["ADMIN_USERNAME"]], $Language[4]);
+                        logStaffAction($Message);
+                        $Message = showAlertMessage($Message);
+                    }
+                } else {
+                    if (isset($_POST["deconfirm"])) {
+                        $GLOBALS["DatabaseConnect"]->query("UPDATE ts_reports SET confirmed = '0', confirmedby = '0' WHERE rid IN (0," . $Work . ")");
+                    }
+                }
             }
-        } else {
-            if (isset($_POST["deconfirm"])) {
-                mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE ts_reports SET $confirmed = '0', $confirmedby = '0' WHERE rid IN (0," . $Work . ")");
-            }
+        } catch (Exception $e) {
+            error_log("Error managing reports: " . $e->getMessage());
         }
     }
 }
 $ReportTypes = [1 => $Language[13], 2 => $Language[14], 3 => $Language[15], 4 => $Language[16], 5 => $Language[17], 6 => $Language[18], 7 => $Language[19], 8 => $Language[20], 9 => $Language[26], 10 => $Language[27]];
 $ReportColors = ["1" => "00FF00", "2" => "0033FF", "3" => "666600", "4" => "CC0000", "5" => "FFCC00", "6" => "FF00FF", "7" => "9900FF", "8" => "6633CC", "9" => "FFCC01", "10" => "FFCC01"];
-$results = mysqli_num_rows(mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM ts_reports"));
+
+try {
+    $countResult = $GLOBALS["DatabaseConnect"]->query("SELECT COUNT(*) as count FROM ts_reports");
+    $results = $countResult->fetch_assoc()['count'];
+} catch (Exception $e) {
+    error_log("Error counting reports: " . $e->getMessage());
+    $results = 0;
+}
+
 list($pagertop, $limit) = buildPaginationLinks(25, $results, $_SERVER["SCRIPT_NAME"] . "?do=manage_reports&amp;");
 $Found = "";
-$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT t.*,  u.username, uu.username as cuser, g.namestyle, gg.namestyle as cuserns FROM ts_reports t LEFT JOIN users u ON (t.$uid = u.id) LEFT JOIN users uu ON (t.$confirmedby = uu.id) LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) LEFT JOIN usergroups gg ON (uu.$usergroup = gg.gid) ORDER by t.confirmed ASC, t.date DESC " . $limit);
-if ($results) {
-    while ($R = mysqli_fetch_assoc($query)) {
-        $Found .= "\r\n\t\t<tr>\t\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t<font $color = \"#" . $ReportColors[$R["type"]] . "\"><b>" . $ReportTypes[$R["type"]] . "</b></font>\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t" . formatTimestamp($R["date"]) . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t<a $href = \"index.php?do=edit_user&amp;$username = " . $R["username"] . "\" $target = \"_blank\">" . applyUsernameStyle($R["username"], $R["namestyle"]) . "</a>\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t<a $href = \"../" . $R["url"] . "\" $target = \"_blank\">" . $Language[21] . "</a>\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t" . ($R["confirmed"] == "1" ? str_replace("{1}", "<a $href = \"index.php?do=edit_user&amp;$username = " . $R["cuser"] . "\" $target = \"_blank\">" . applyUsernameStyle($R["cuser"], $R["cuserns"]) . "</a>", $Language[23]) : $Language[22]) . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t" . htmlspecialchars($R["reason"]) . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\" $align = \"center\">\r\n\t\t\t\t<input $type = \"checkbox\" $name = \"reports[]\" $value = \"" . $R["rid"] . "\" $checkme = \"group\" />\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t";
+
+try {
+    $query = $GLOBALS["DatabaseConnect"]->query("SELECT t.*,  u.username, uu.username as cuser, g.namestyle, gg.namestyle as cuserns FROM ts_reports t LEFT JOIN users u ON (t.uid = u.id) LEFT JOIN users uu ON (t.confirmedby = uu.id) LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) LEFT JOIN usergroups gg ON (uu.usergroup = gg.gid) ORDER by t.confirmed ASC, t.date DESC " . $limit);
+    
+    if ($results) {
+        while ($R = $query->fetch_assoc()) {
+            $Found .= "\r\n\t\t<tr>\t\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t<font $color = \"#" . htmlspecialchars($ReportColors[$R["type"]], ENT_QUOTES, 'UTF-8') . "\"><b>" . htmlspecialchars($ReportTypes[$R["type"]], ENT_QUOTES, 'UTF-8') . "</b></font>\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t" . htmlspecialchars(formatTimestamp($R["date"]), ENT_QUOTES, 'UTF-8') . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t<a $href = \"index.php?do=edit_user&amp;$username = " . htmlspecialchars($R["username"], ENT_QUOTES, 'UTF-8') . "\" $target = \"_blank\">" . applyUsernameStyle($R["username"], $R["namestyle"]) . "</a>\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t<a $href = \"../" . htmlspecialchars($R["url"], ENT_QUOTES, 'UTF-8') . "\" $target = \"_blank\">" . htmlspecialchars($Language[21], ENT_QUOTES, 'UTF-8') . "</a>\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t" . ($R["confirmed"] == "1" ? str_replace("{1}", "<a $href = \"index.php?do=edit_user&amp;$username = " . htmlspecialchars($R["cuser"], ENT_QUOTES, 'UTF-8') . "\" $target = \"_blank\">" . applyUsernameStyle($R["cuser"], $R["cuserns"]) . "</a>", $Language[23]) : htmlspecialchars($Language[22], ENT_QUOTES, 'UTF-8')) . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t" . htmlspecialchars($R["reason"], ENT_QUOTES, 'UTF-8') . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\" $align = \"center\">\r\n\t\t\t\t<input $type = \"checkbox\" $name = \"reports[]\" $value = \"" . intval($R["rid"]) . "\" $checkme = \"group\" />\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t";
+        }
+    } else {
+        echo "\r\n\t" . showAlertError($Language[25]);
     }
-} else {
-    echo "\r\n\t" . showAlertError($Language[25]);
+} catch (Exception $e) {
+    error_log("Error fetching reports: " . $e->getMessage());
 }
-echo "\r\n<script $type = \"text/javascript\">\r\n\tfunction select_deselectAll(formname,elm,group)\r\n\t{\r\n\t\tvar $frm = document.forms[formname];\r\n\t\tfor($i = 0;i<frm.length;i++)\r\n\t\t{\r\n\t\t\tif(elm.attributes[\"checkall\"] != null && elm.attributes[\"checkall\"].$value == group)\r\n\t\t\t{\r\n\t\t\t\tif(frm.elements[i].attributes[\"checkme\"] != null && frm.elements[i].attributes[\"checkme\"].$value == group)\r\n\t\t\t\t{\r\n\t\t\t\t\tfrm.elements[i].$checked = elm.checked;\r\n\t\t\t\t}\r\n\t\t\t}\r\n\t\t\telse if(frm.elements[i].attributes[\"checkme\"] != null && frm.elements[i].attributes[\"checkme\"].$value == group)\r\n\t\t\t{\r\n\t\t\t\tif(frm.elements[i].$checked == false)\r\n\t\t\t\t{\r\n\t\t\t\t\tfrm.elements[1].$checked = false;\r\n\t\t\t\t}\r\n\t\t\t}\r\n\t\t}\r\n\t}\r\n</script>\r\n<form $action = \"index.php?do=manage_reports" . (isset($_GET["page"]) ? "&$page = " . intval($_GET["page"]) : "") . "\" $method = \"post\" $name = \"manage_reports\">\r\n" . $Message . "\r\n" . $pagertop . "\r\n<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t<tr>\r\n\t\t<td class=\"tcat\" $align = \"center\" $colspan = \"7\">" . $Language[2] . "</td>\r\n\t</tr>\r\n\t<tr>\r\n\t\t<td class=\"alt2\">\r\n\t\t\t" . $Language[6] . "\r\n\t\t</td>\r\n\t\t<td class=\"alt2\">\r\n\t\t\t" . $Language[7] . "\r\n\t\t</td>\r\n\t\t<td class=\"alt2\">\r\n\t\t\t" . $Language[8] . "\r\n\t\t</td>\r\n\t\t<td class=\"alt2\">\r\n\t\t\t" . $Language[9] . "\r\n\t\t</td>\r\n\t\t<td class=\"alt2\">\r\n\t\t\t" . $Language[24] . "\r\n\t\t</td>\r\n\t\t<td class=\"alt2\">\r\n\t\t\t" . $Language[10] . "\r\n\t\t</td>\r\n\t\t<td class=\"alt2\" $align = \"center\">\r\n\t\t\t<input $type = \"checkbox\" $checkall = \"group\" $onclick = \"javascript: return select_deselectAll ('manage_reports', this, 'group');\">\r\n\t\t</td>\r\n\t</tr>\r\n\t" . $Found . "\r\n\t<tr>\r\n\t\t<td class=\"tcat2\" $colspan = \"7\" $align = \"right\">\r\n\t\t\t<input $type = \"submit\" $name = \"delete\" $value = \"" . $Language[11] . "\" /> <input $type = \"submit\" $name = \"confirm\" $value = \"" . $Language[12] . "\" />\r\n\t\t</td>\r\n\t</tr>\r\n</table>\r\n" . $pagertop . "\r\n</form>";
+
+if (!isset($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+$csrfToken = $_SESSION['csrf_token'];
+echo "\r\n<script $type = \"text/javascript\">\r\n\tfunction select_deselectAll(formname,elm,group)\r\n\t{\r\n\t\tvar $frm = document.forms[formname];\r\n\t\tfor($i = 0;i<frm.length;i++)\r\n\t\t{\r\n\t\t\tif(elm.attributes[\"checkall\"] != null && elm.attributes[\"checkall\"].$value == group)\r\n\t\t\t{\r\n\t\t\t\tif(frm.elements[i].attributes[\"checkme\"] != null && frm.elements[i].attributes[\"checkme\"].$value == group)\r\n\t\t\t\t{\r\n\t\t\t\t\tfrm.elements[i].$checked = elm.checked;\r\n\t\t\t\t}\r\n\t\t\t}\r\n\t\t\telse if(frm.elements[i].attributes[\"checkme\"] != null && frm.elements[i].attributes[\"checkme\"].$value == group)\r\n\t\t\t{\r\n\t\t\t\tif(frm.elements[i].$checked == false)\r\n\t\t\t\t{\r\n\t\t\t\t\tfrm.elements[1].$checked = false;\r\n\t\t\t\t}\r\n\t\t\t}\r\n\t\t}\r\n\t}\r\n</script>\r\n<form $action = \"index.php?do=manage_reports" . (isset($_GET["page"]) ? "&$page = " . intval($_GET["page"]) : "") . "\" $method = \"post\" $name = \"manage_reports\">\r\n<input type=\"hidden\" name=\"csrf_token\" value=\"" . htmlspecialchars($csrfToken, ENT_QUOTES, 'UTF-8') . "\" />\r\n" . $Message . "\r\n" . $pagertop . "\r\n<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t<tr>\r\n\t\t<td class=\"tcat\" $align = \"center\" $colspan = \"7\">" . htmlspecialchars($Language[2], ENT_QUOTES, 'UTF-8') . "</td>\r\n\t</tr>\r\n\t<tr>\r\n\t\t<td class=\"alt2\">\r\n\t\t\t" . htmlspecialchars($Language[6], ENT_QUOTES, 'UTF-8') . "\r\n\t\t</td>\r\n\t\t<td class=\"alt2\">\r\n\t\t\t" . htmlspecialchars($Language[7], ENT_QUOTES, 'UTF-8') . "\r\n\t\t</td>\r\n\t\t<td class=\"alt2\">\r\n\t\t\t" . htmlspecialchars($Language[8], ENT_QUOTES, 'UTF-8') . "\r\n\t\t</td>\r\n\t\t<td class=\"alt2\">\r\n\t\t\t" . htmlspecialchars($Language[9], ENT_QUOTES, 'UTF-8') . "\r\n\t\t</td>\r\n\t\t<td class=\"alt2\">\r\n\t\t\t" . htmlspecialchars($Language[24], ENT_QUOTES, 'UTF-8') . "\r\n\t\t</td>\r\n\t\t<td class=\"alt2\">\r\n\t\t\t" . htmlspecialchars($Language[10], ENT_QUOTES, 'UTF-8') . "\r\n\t\t</td>\r\n\t\t<td class=\"alt2\" $align = \"center\">\r\n\t\t\t<input $type = \"checkbox\" $checkall = \"group\" $onclick = \"javascript: return select_deselectAll ('manage_reports', this, 'group');\">\r\n\t\t</td>\r\n\t</tr>\r\n\t" . $Found . "\r\n\t<tr>\r\n\t\t<td class=\"tcat2\" $colspan = \"7\" $align = \"right\">\r\n\t\t\t<input $type = \"submit\" $name = \"delete\" $value = \"" . htmlspecialchars($Language[11], ENT_QUOTES, 'UTF-8') . "\" /> <input $type = \"submit\" $name = \"confirm\" $value = \"" . htmlspecialchars($Language[12], ENT_QUOTES, 'UTF-8') . "\" />\r\n\t\t</td>\r\n\t</tr>\r\n</table>\r\n" . $pagertop . "\r\n</form>";
 function getStaffLanguage()
 {
     if (isset($_COOKIE["staffcplanguage"]) && is_dir("languages/" . $_COOKIE["staffcplanguage"]) && is_file("languages/" . $_COOKIE["staffcplanguage"] . "/staffcp.lang")) {
@@ -70,9 +109,18 @@ function showAlertMessage($message = "")
 {
     return "<div class=\"alert\"><div>" . $message . "</div></div>";
 }
-function logStaffAction($log)
+function logStaffAction($log): void
 {
-    mysqli_query($GLOBALS["DatabaseConnect"], "INSERT INTO ts_staffcp_logs (uid, date, log) VALUES ('" . $_SESSION["ADMIN_ID"] . "', '" . time() . "', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $log) . "')");
+    try {
+        $stmt = $GLOBALS["DatabaseConnect"]->prepare("INSERT INTO ts_staffcp_logs (uid, date, log) VALUES (?, ?, ?)");
+        $uid = $_SESSION["ADMIN_ID"];
+        $time = time();
+        $stmt->bind_param("sis", $uid, $time, $log);
+        $stmt->execute();
+        $stmt->close();
+    } catch (Exception $e) {
+        error_log("Error logging staff action: " . $e->getMessage());
+    }
 }
 function validatePerPage($numresults, &$page, &$perpage, $maxperpage = 20, $defaultperpage = 20)
 {
