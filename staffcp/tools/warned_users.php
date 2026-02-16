@@ -150,7 +150,7 @@ function sendPrivateMessage(int $receiver = 0, string $msg = "", string $subject
         try {
             $db = $GLOBALS["DatabaseConnect"];
             $stmt = $db->prepare("INSERT INTO messages (sender, receiver, added, subject, msg, unread, saved, location) VALUES (?, ?, NOW(), ?, ?, ?, ?, ?)");
-            $stmt->bind_param('iissss s', $sender, $receiver, $subject, $msg, $unread, $saved, $location);
+            $stmt->bind_param('iisssss', $sender, $receiver, $subject, $msg, $unread, $saved, $location);
             $stmt->execute();
             $stmt->close();
             
