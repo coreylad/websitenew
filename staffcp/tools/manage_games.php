@@ -1,181 +1,390 @@
 <?php
-checkStaffAuthentication();
-$Act = isset($_GET["act"]) ? trim($_GET["act"]) : (isset($_POST["act"]) ? trim($_POST["act"]) : "");
-$gid = isset($_GET["gid"]) ? intval($_GET["gid"]) : (isset($_POST["gid"]) ? intval($_POST["gid"]) : 0);
-$Language = file("languages/" . getStaffLanguage() . "/manage_games.lang");
-$Message = "";
-$List = "";
-if ($Act == "delete" && $gid) {
-    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT gname FROM ts_games WHERE $gid = '" . $gid . "'");
-    $Game = mysqli_fetch_assoc($query);
-    mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM ts_games WHERE $gid = '" . $gid . "'");
-    $Message = str_replace(["{1}", "{2}"], [$Game["gname"], $_SESSION["ADMIN_USERNAME"]], $Language[1]);
-    logStaffAction($Message);
-    $Message = showAlertMessage($Message);
-}
-if ($Act == "reset_champions" && $gid) {
-    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT gname FROM ts_games WHERE $gid = '" . $gid . "'");
-    $Game = mysqli_fetch_assoc($query);
-    mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM ts_games_champions WHERE $gid = '" . $gid . "'");
-    $Message = str_replace(["{1}", "{2}"], [$Game["gname"], $_SESSION["ADMIN_USERNAME"]], $Language[31]);
-    logStaffAction($Message);
-    $Message = showAlertMessage($Message);
-}
-if ($Act == "reset_score" && $gid) {
-    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT gname FROM ts_games WHERE $gid = '" . $gid . "'");
-    $Game = mysqli_fetch_assoc($query);
-    mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM ts_games_scores WHERE $gid = '" . $gid . "'");
-    $Message = str_replace(["{1}", "{2}"], [$Game["gname"], $_SESSION["ADMIN_USERNAME"]], $Language[32]);
-    logStaffAction($Message);
-    $Message = showAlertMessage($Message);
-}
-if ($Act == "delete_comments" && $gid) {
-    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT gname FROM ts_games WHERE $gid = '" . $gid . "'");
-    $Game = mysqli_fetch_assoc($query);
-    mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM ts_games_comments WHERE $gid = '" . $gid . "'");
-    $Message = str_replace(["{1}", "{2}"], [$Game["gname"], $_SESSION["ADMIN_USERNAME"]], $Language[34]);
-    logStaffAction($Message);
-    $Message = showAlertMessage($Message);
-}
-if ($Act == "edit" && $gid) {
-    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM ts_games WHERE $gid = '" . $gid . "'");
-    if (mysqli_num_rows($query)) {
-        $Game = mysqli_fetch_assoc($query);
-        if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
-            $Game = [];
-            $Game["gname"] = isset($_POST["gname"]) ? trim($_POST["gname"]) : "";
-            $Game["gwords"] = isset($_POST["gwords"]) ? trim($_POST["gwords"]) : "";
-            $Game["gtitle"] = isset($_POST["gtitle"]) ? trim($_POST["gtitle"]) : "";
-            $Game["gwidth"] = isset($_POST["gwidth"]) ? intval($_POST["gwidth"]) : "";
-            $Game["gheight"] = isset($_POST["gheight"]) ? intval($_POST["gheight"]) : "";
-            $Game["sort"] = isset($_POST["sort"]) ? intval($_POST["sort"]) : "";
-            $Game["objective"] = isset($_POST["objective"]) ? trim($_POST["objective"]) : "";
-            $Game["gkeys"] = isset($_POST["gkeys"]) ? trim($_POST["gkeys"]) : "";
-            $Game["savescore"] = isset($_POST["savescore"]) ? intval($_POST["savescore"]) : "";
-            $Game["cid"] = isset($_POST["cid"]) ? intval($_POST["cid"]) : 0;
-            if ($Game["gname"] && $Game["gwidth"] && $Game["gheight"] && $Game["cid"]) {
-                $GameFile = "./../ts_games/game_files/" . $Game["gname"] . ".swf";
-                if (is_file($GameFile)) {
-                    $query = [];
-                    foreach ($Game as $QName => $QValue) {
-                        $query[] = $QName . " = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $QValue) . "'";
+declare(strict_types=1);
+
+require_once __DIR__ . '/../staffcp_modern.php';
+
+check_staff_auth();
+
+$act = $_GET['act'] ?? $_POST['act'] ?? '';
+$gid = intval($_GET['gid'] ?? $_POST['gid'] ?? 0);
+$lang = load_staff_language('manage_games');
+$db = get_pdo();
+$message = '';
+$list = '';
+
+try {
+    if ($act === 'delete' && $gid) {
+        verify_csrf_token();
+        $stmt = $db->prepare("SELECT gname FROM ts_games WHERE gid = ?");
+        $stmt->execute([$gid]);
+        $game = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        $stmt = $db->prepare("DELETE FROM ts_games WHERE gid = ?");
+        $stmt->execute([$gid]);
+        
+        $msg = str_replace(['{1}', '{2}'], [$game['gname'], $_SESSION['ADMIN_USERNAME']], $lang[1]);
+        log_staff_action($msg);
+        $message = show_alert_message($msg);
+    }
+    
+    if ($act === 'reset_champions' && $gid) {
+        verify_csrf_token();
+        $stmt = $db->prepare("SELECT gname FROM ts_games WHERE gid = ?");
+        $stmt->execute([$gid]);
+        $game = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        $stmt = $db->prepare("DELETE FROM ts_games_champions WHERE gid = ?");
+        $stmt->execute([$gid]);
+        
+        $msg = str_replace(['{1}', '{2}'], [$game['gname'], $_SESSION['ADMIN_USERNAME']], $lang[31]);
+        log_staff_action($msg);
+        $message = show_alert_message($msg);
+    }
+    
+    if ($act === 'reset_score' && $gid) {
+        verify_csrf_token();
+        $stmt = $db->prepare("SELECT gname FROM ts_games WHERE gid = ?");
+        $stmt->execute([$gid]);
+        $game = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        $stmt = $db->prepare("DELETE FROM ts_games_scores WHERE gid = ?");
+        $stmt->execute([$gid]);
+        
+        $msg = str_replace(['{1}', '{2}'], [$game['gname'], $_SESSION['ADMIN_USERNAME']], $lang[32]);
+        log_staff_action($msg);
+        $message = show_alert_message($msg);
+    }
+    
+    if ($act === 'delete_comments' && $gid) {
+        verify_csrf_token();
+        $stmt = $db->prepare("SELECT gname FROM ts_games WHERE gid = ?");
+        $stmt->execute([$gid]);
+        $game = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        $stmt = $db->prepare("DELETE FROM ts_games_comments WHERE gid = ?");
+        $stmt->execute([$gid]);
+        
+        $msg = str_replace(['{1}', '{2}'], [$game['gname'], $_SESSION['ADMIN_USERNAME']], $lang[34]);
+        log_staff_action($msg);
+        $message = show_alert_message($msg);
+    }
+    
+    if ($act === 'edit' && $gid) {
+        $stmt = $db->prepare("SELECT * FROM ts_games WHERE gid = ?");
+        $stmt->execute([$gid]);
+        
+        if ($stmt->rowCount() > 0) {
+            $game = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                verify_csrf_token();
+                
+                $game = [];
+                $game['gname'] = trim($_POST['gname'] ?? '');
+                $game['gwords'] = trim($_POST['gwords'] ?? '');
+                $game['gtitle'] = trim($_POST['gtitle'] ?? '');
+                $game['gwidth'] = intval($_POST['gwidth'] ?? 0);
+                $game['gheight'] = intval($_POST['gheight'] ?? 0);
+                $game['sort'] = intval($_POST['sort'] ?? 0);
+                $game['objective'] = trim($_POST['objective'] ?? '');
+                $game['gkeys'] = trim($_POST['gkeys'] ?? '');
+                $game['savescore'] = intval($_POST['savescore'] ?? 0);
+                $game['cid'] = intval($_POST['cid'] ?? 0);
+                
+                if ($game['gname'] && $game['gwidth'] && $game['gheight'] && $game['cid']) {
+                    $gameFile = './../ts_games/game_files/' . $game['gname'] . '.swf';
+                    if (is_file($gameFile)) {
+                        $stmt = $db->prepare("UPDATE ts_games SET gname = ?, gwords = ?, gtitle = ?, gwidth = ?, gheight = ?, sort = ?, objective = ?, gkeys = ?, savescore = ?, cid = ? WHERE gid = ?");
+                        $stmt->execute([$game['gname'], $game['gwords'], $game['gtitle'], $game['gwidth'], $game['gheight'], $game['sort'], $game['objective'], $game['gkeys'], $game['savescore'], $game['cid'], $gid]);
+                        
+                        $msg = str_replace(['{1}', '{2}'], [$game['gname'], $_SESSION['ADMIN_USERNAME']], $lang[13]);
+                        log_staff_action($msg);
+                        $message = show_alert_message($msg);
+                        $done = true;
+                    } else {
+                        $message = show_alert_error($lang[28] . ' <b>' . escape_html($gameFile) . '</b>');
                     }
-                    mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE ts_games SET " . implode(", ", $query) . " WHERE $gid = '" . $gid . "'");
-                    $Message = str_replace(["{1}", "{2}"], [$Game["gname"], $_SESSION["ADMIN_USERNAME"]], $Language[13]);
-                    logStaffAction($Message);
-                    $Message = showAlertMessage($Message);
-                    $Done = true;
                 } else {
-                    $Message = showAlertError($Language[28] . " <b>" . $GameFile . "</b>");
+                    $message = show_alert_error($lang[12]);
                 }
-            } else {
-                $Message = showAlertError($Language[12]);
+            }
+            
+            if (!isset($done)) {
+                echo '
+            <form method="post" action="index.php?do=manage_games">
+            ' . generate_csrf_token() . '
+            <input type="hidden" name="act" value="edit" />
+            <input type="hidden" name="gid" value="' . escape_attr((string)$gid) . '" />
+            ' . show_alert_message('<a href="index.php?do=manage_games">' . escape_html($lang[17]) . '</a>') . '
+            ' . $message . '
+            <table cellpadding="0" cellspacing="0" border="0" class="mainTable">
+                <tr>
+                    <td class="tcat" align="center" colspan="2"><b>' . escape_html($lang[2]) . ' - ' . escape_html($lang[7]) . ': ' . escape_html($game['gname']) . '</b></td>
+                </tr>
+                <tr valign="top">
+                    <td class="alt1">' . escape_html($lang[3]) . '</td>
+                    <td class="alt1"><input type="text" class="bginput" name="gname" value="' . escape_attr($game['gname']) . '" size="70" dir="ltr" tabindex="1" /> <b><i><small>' . escape_html($lang[27]) . '</small></i></b></td>
+                </tr>
+                <tr valign="top">
+                    <td class="alt1">' . escape_html($lang[4]) . '</td>
+                    <td class="alt1"><input type="text" class="bginput" name="gwords" value="' . escape_attr($game['gwords']) . '" size="70" dir="ltr" tabindex="1" /></td>
+                </tr>
+                <tr valign="top">
+                    <td class="alt1">' . escape_html($lang[18]) . '</td>
+                    <td class="alt1"><input type="text" class="bginput" name="gtitle" value="' . escape_attr($game['gtitle']) . '" size="70" dir="ltr" tabindex="1" /></td>
+                </tr>
+                <tr valign="top">
+                    <td class="alt1">' . escape_html($lang[21]) . '</td>
+                    <td class="alt1"><input type="text" class="bginput" name="objective" value="' . escape_attr($game['objective']) . '" size="70" dir="ltr" tabindex="1" /></td>
+                </tr>
+                <tr valign="top">
+                    <td class="alt1">' . escape_html($lang[22]) . '</td>
+                    <td class="alt1"><input type="text" class="bginput" name="gkeys" value="' . escape_attr($game['gkeys']) . '" size="70" dir="ltr" tabindex="1" /></td>
+                </tr>
+                <tr valign="top">
+                    <td class="alt1">' . escape_html($lang[19]) . '</td>
+                    <td class="alt1"><input type="text" class="bginput" name="gwidth" value="' . escape_attr((string)$game['gwidth']) . '" size="15" dir="ltr" tabindex="1" /></td>
+                </tr>
+                <tr valign="top">
+                    <td class="alt1">' . escape_html($lang[20]) . '</td>
+                    <td class="alt1"><input type="text" class="bginput" name="gheight" value="' . escape_attr((string)$game['gheight']) . '" size="15" dir="ltr" tabindex="1" /></td>
+                </tr>
+                <tr valign="top">
+                    <td class="alt1">' . escape_html($lang[5]) . '</td>
+                    <td class="alt1"><input type="text" class="bginput" name="sort" value="' . escape_attr((string)$game['sort']) . '" size="15" dir="ltr" tabindex="1" /></td>
+                </tr>
+                <tr valign="top">
+                    <td class="alt1">' . escape_html($lang[23]) . '</td>
+                    <td class="alt1">
+                        <select name="savescore">
+                            <option value="1"' . ($game['savescore'] == '1' ? ' selected="selected"' : '') . '>' . escape_html($lang[24]) . '</option>
+                            <option value="0"' . ($game['savescore'] == '0' ? ' selected="selected"' : '') . '>' . escape_html($lang[25]) . '</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr valign="top">
+                    <td class="alt1">' . escape_html($lang[26]) . '</td>
+                    <td class="alt1">' . build_category_select($game['cid'], $db) . '</td>
+                </tr>
+                <tr>
+                <td class="tcat2"></td>
+                <td class="tcat2">
+                    <input type="submit" class="button" tabindex="1" value="' . escape_attr($lang[14]) . '" accesskey="s" />
+                    <input type="reset" class="button" tabindex="1" value="' . escape_attr($lang[15]) . '" accesskey="r" />
+                </td>
+            </tr>
+            </table>
+            </form>';
             }
         }
-        if (!isset($Done)) {
-            echo "\r\n\t\t\t<form $method = \"post\" $action = \"index.php?do=manage_games\">\r\n\t\t\t<input $type = \"hidden\" $name = \"act\" $value = \"edit\" />\r\n\t\t\t<input $type = \"hidden\" $name = \"gid\" $value = \"" . $gid . "\" />\r\n\t\t\t" . showAlertMessage("<a $href = \"index.php?do=manage_games\">" . $Language[17] . "</a>") . "\r\n\t\t\t" . $Message . "\r\n\t\t\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td class=\"tcat\" $align = \"center\" $colspan = \"2\"><b>" . $Language[2] . " - " . $Language[7] . ": " . $Game["gname"] . "</b></td>\r\n\t\t\t\t</tr>\r\n\t\t\t\t<tr $valign = \"top\">\r\n\t\t\t\t\t<td class=\"alt1\">" . $Language[3] . "</td>\r\n\t\t\t\t\t<td class=\"alt1\"><input $type = \"text\" class=\"bginput\" $name = \"gname\" $value = \"" . $Game["gname"] . "\" $size = \"70\" $dir = \"ltr\" $tabindex = \"1\" /> <b><i><small>" . $Language[27] . "</small></i></b></td>\r\n\t\t\t\t</tr>\r\n\t\t\t\t<tr $valign = \"top\">\r\n\t\t\t\t\t<td class=\"alt1\">" . $Language[4] . "</td>\r\n\t\t\t\t\t<td class=\"alt1\"><input $type = \"text\" class=\"bginput\" $name = \"gwords\" $value = \"" . $Game["gwords"] . "\" $size = \"70\" $dir = \"ltr\" $tabindex = \"1\" /></td>\r\n\t\t\t\t</tr>\r\n\t\t\t\t<tr $valign = \"top\">\r\n\t\t\t\t\t<td class=\"alt1\">" . $Language[18] . "</td>\r\n\t\t\t\t\t<td class=\"alt1\"><input $type = \"text\" class=\"bginput\" $name = \"gtitle\" $value = \"" . $Game["gtitle"] . "\" $size = \"70\" $dir = \"ltr\" $tabindex = \"1\" /></td>\r\n\t\t\t\t</tr>\r\n\t\t\t\t<tr $valign = \"top\">\r\n\t\t\t\t\t<td class=\"alt1\">" . $Language[21] . "</td>\r\n\t\t\t\t\t<td class=\"alt1\"><input $type = \"text\" class=\"bginput\" $name = \"objective\" $value = \"" . $Game["objective"] . "\" $size = \"70\" $dir = \"ltr\" $tabindex = \"1\" /></td>\r\n\t\t\t\t</tr>\r\n\t\t\t\t<tr $valign = \"top\">\r\n\t\t\t\t\t<td class=\"alt1\">" . $Language[22] . "</td>\r\n\t\t\t\t\t<td class=\"alt1\"><input $type = \"text\" class=\"bginput\" $name = \"gkeys\" $value = \"" . $Game["gkeys"] . "\" $size = \"70\" $dir = \"ltr\" $tabindex = \"1\" /></td>\r\n\t\t\t\t</tr>\r\n\t\t\t\t<tr $valign = \"top\">\r\n\t\t\t\t\t<td class=\"alt1\">" . $Language[19] . "</td>\r\n\t\t\t\t\t<td class=\"alt1\"><input $type = \"text\" class=\"bginput\" $name = \"gwidth\" $value = \"" . intval($Game["gwidth"]) . "\" $size = \"15\" $dir = \"ltr\" $tabindex = \"1\" /></td>\r\n\t\t\t\t</tr>\r\n\t\t\t\t<tr $valign = \"top\">\r\n\t\t\t\t\t<td class=\"alt1\">" . $Language[20] . "</td>\r\n\t\t\t\t\t<td class=\"alt1\"><input $type = \"text\" class=\"bginput\" $name = \"gheight\" $value = \"" . intval($Game["gheight"]) . "\" $size = \"15\" $dir = \"ltr\" $tabindex = \"1\" /></td>\r\n\t\t\t\t</tr>\r\n\t\t\t\t<tr $valign = \"top\">\r\n\t\t\t\t\t<td class=\"alt1\">" . $Language[5] . "</td>\r\n\t\t\t\t\t<td class=\"alt1\"><input $type = \"text\" class=\"bginput\" $name = \"sort\" $value = \"" . intval($Game["sort"]) . "\" $size = \"15\" $dir = \"ltr\" $tabindex = \"1\" /></td>\r\n\t\t\t\t</tr>\r\n\t\t\t\t<tr $valign = \"top\">\r\n\t\t\t\t\t<td class=\"alt1\">" . $Language[23] . "</td>\r\n\t\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t\t<select $name = \"savescore\">\r\n\t\t\t\t\t\t\t<option $value = \"1\"" . ($Game["savescore"] == "1" ? " $selected = \"selected\"" : "") . "\">" . $Language[24] . "</option>\r\n\t\t\t\t\t\t\t<option $value = \"0\"" . ($Game["savescore"] == "0" ? " $selected = \"selected\"" : "") . "\">" . $Language[25] . "</option>\r\n\t\t\t\t\t\t</select>\r\n\t\t\t\t\t</td>\r\n\t\t\t\t</tr>\r\n\t\t\t\t<tr $valign = \"top\">\r\n\t\t\t\t\t<td class=\"alt1\">" . $Language[26] . "</td>\r\n\t\t\t\t\t<td class=\"alt1\">" . function_158($Game["cid"]) . "</td>\r\n\t\t\t\t</tr>\r\n\t\t\t\t<tr>\r\n\t\t\t\t<td class=\"tcat2\"></td>\r\n\t\t\t\t<td class=\"tcat2\">\r\n\t\t\t\t\t<input $type = \"submit\" class=\"button\" $tabindex = \"1\" $value = \"" . $Language[14] . "\" $accesskey = \"s\" />\r\n\t\t\t\t\t<input $type = \"reset\" class=\"button\" $tabindex = \"1\" $value = \"" . $Language[15] . "\" $accesskey = \"r\" />\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t\t</table>\r\n\t\t\t</form>";
-        }
     }
-}
-if ($Act == "add") {
-    $Game = [];
-    $Game["gname"] = "";
-    $Game["gwords"] = "";
-    $Game["gtitle"] = "";
-    $Game["gwidth"] = "";
-    $Game["gheight"] = "";
-    $Game["sort"] = "";
-    $Game["objective"] = "";
-    $Game["gkeys"] = "";
-    $Game["savescore"] = "";
-    $Game["cid"] = "";
-    if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
-        $Game = [];
-        $Game["gname"] = isset($_POST["gname"]) ? trim($_POST["gname"]) : "";
-        $Game["gwords"] = isset($_POST["gwords"]) ? trim($_POST["gwords"]) : "";
-        $Game["gtitle"] = isset($_POST["gtitle"]) ? trim($_POST["gtitle"]) : "";
-        $Game["gwidth"] = isset($_POST["gwidth"]) ? intval($_POST["gwidth"]) : "";
-        $Game["gheight"] = isset($_POST["gheight"]) ? intval($_POST["gheight"]) : "";
-        $Game["sort"] = isset($_POST["sort"]) ? intval($_POST["sort"]) : "";
-        $Game["objective"] = isset($_POST["objective"]) ? trim($_POST["objective"]) : "";
-        $Game["gkeys"] = isset($_POST["gkeys"]) ? trim($_POST["gkeys"]) : "";
-        $Game["savescore"] = isset($_POST["savescore"]) ? intval($_POST["savescore"]) : "";
-        $Game["cid"] = isset($_POST["cid"]) ? intval($_POST["cid"]) : 0;
-        $Game["added"] = time();
-        if ($Game["gname"] && $Game["gwidth"] && $Game["gheight"] && $Game["cid"]) {
-            $GameFile = "./../ts_games/game_files/" . $Game["gname"] . ".swf";
-            if (is_file($GameFile)) {
-                $query = [];
-                foreach ($Game as $QName => $QValue) {
-                    $query[] = $QName . " = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $QValue) . "'";
+    
+    if ($act === 'add') {
+        $game = ['gname' => '', 'gwords' => '', 'gtitle' => '', 'gwidth' => 0, 'gheight' => 0, 'sort' => 0, 'objective' => '', 'gkeys' => '', 'savescore' => 1, 'cid' => 0];
+        
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            verify_csrf_token();
+            
+            $game['gname'] = trim($_POST['gname'] ?? '');
+            $game['gwords'] = trim($_POST['gwords'] ?? '');
+            $game['gtitle'] = trim($_POST['gtitle'] ?? '');
+            $game['gwidth'] = intval($_POST['gwidth'] ?? 0);
+            $game['gheight'] = intval($_POST['gheight'] ?? 0);
+            $game['sort'] = intval($_POST['sort'] ?? 0);
+            $game['objective'] = trim($_POST['objective'] ?? '');
+            $game['gkeys'] = trim($_POST['gkeys'] ?? '');
+            $game['savescore'] = intval($_POST['savescore'] ?? 0);
+            $game['cid'] = intval($_POST['cid'] ?? 0);
+            $game['added'] = time();
+            
+            if ($game['gname'] && $game['gwidth'] && $game['gheight'] && $game['cid']) {
+                $gameFile = './../ts_games/game_files/' . $game['gname'] . '.swf';
+                if (is_file($gameFile)) {
+                    $stmt = $db->prepare("INSERT INTO ts_games (gname, gwords, gtitle, gwidth, gheight, sort, objective, gkeys, savescore, cid, added) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                    $stmt->execute([$game['gname'], $game['gwords'], $game['gtitle'], $game['gwidth'], $game['gheight'], $game['sort'], $game['objective'], $game['gkeys'], $game['savescore'], $game['cid'], $game['added']]);
+                    redirect_to('index.php?do=manage_games');
+                    exit;
+                } else {
+                    $message = show_alert_error($lang[28] . ' <b>' . escape_html($gameFile) . '</b>');
                 }
-                mysqli_query($GLOBALS["DatabaseConnect"], "INSERT INTO ts_games SET " . implode(", ", $query));
-                exit(mysqli_error($GLOBALS["DatabaseConnect"]));
             } else {
-                $Message = showAlertError($Language[28] . " <b>" . $GameFile . "</b>");
+                $message = show_alert_error($lang[12]);
             }
-        } else {
-            $Message = showAlertError($Language[12]);
+        }
+        
+        if (!isset($done)) {
+            echo '
+        <form method="post" action="index.php?do=manage_games">
+        ' . generate_csrf_token() . '
+        <input type="hidden" name="act" value="add" />
+        ' . show_alert_message('<a href="index.php?do=manage_games">' . escape_html($lang[17]) . '</a>') . '
+        ' . $message . '
+        <table cellpadding="0" cellspacing="0" border="0" class="mainTable">
+            <tr>
+                <td class="tcat" align="center" colspan="2"><b>' . escape_html($lang[2]) . ' - ' . escape_html($lang[9]) . '</b></td>
+            </tr>
+            <tr valign="top">
+                <td class="alt1">' . escape_html($lang[3]) . '</td>
+                <td class="alt1"><input type="text" class="bginput" name="gname" value="' . escape_attr($game['gname']) . '" size="70" dir="ltr" tabindex="1" /> <b><i><small>' . escape_html($lang[27]) . '</small></i></b></td>
+            </tr>
+            <tr valign="top">
+                <td class="alt1">' . escape_html($lang[4]) . '</td>
+                <td class="alt1"><input type="text" class="bginput" name="gwords" value="' . escape_attr($game['gwords']) . '" size="70" dir="ltr" tabindex="1" /></td>
+            </tr>
+            <tr valign="top">
+                <td class="alt1">' . escape_html($lang[18]) . '</td>
+                <td class="alt1"><input type="text" class="bginput" name="gtitle" value="' . escape_attr($game['gtitle']) . '" size="70" dir="ltr" tabindex="1" /></td>
+            </tr>
+            <tr valign="top">
+                <td class="alt1">' . escape_html($lang[21]) . '</td>
+                <td class="alt1"><input type="text" class="bginput" name="objective" value="' . escape_attr($game['objective']) . '" size="70" dir="ltr" tabindex="1" /></td>
+            </tr>
+            <tr valign="top">
+                <td class="alt1">' . escape_html($lang[22]) . '</td>
+                <td class="alt1"><input type="text" class="bginput" name="gkeys" value="' . escape_attr($game['gkeys']) . '" size="70" dir="ltr" tabindex="1" /></td>
+            </tr>
+            <tr valign="top">
+                <td class="alt1">' . escape_html($lang[19]) . '</td>
+                <td class="alt1"><input type="text" class="bginput" name="gwidth" value="' . escape_attr((string)$game['gwidth']) . '" size="15" dir="ltr" tabindex="1" /></td>
+            </tr>
+            <tr valign="top">
+                <td class="alt1">' . escape_html($lang[20]) . '</td>
+                <td class="alt1"><input type="text" class="bginput" name="gheight" value="' . escape_attr((string)$game['gheight']) . '" size="15" dir="ltr" tabindex="1" /></td>
+            </tr>
+            <tr valign="top">
+                <td class="alt1">' . escape_html($lang[5]) . '</td>
+                <td class="alt1"><input type="text" class="bginput" name="sort" value="' . escape_attr((string)$game['sort']) . '" size="15" dir="ltr" tabindex="1" /></td>
+            </tr>
+            <tr valign="top">
+                <td class="alt1">' . escape_html($lang[23]) . '</td>
+                <td class="alt1">
+                    <select name="savescore">
+                        <option value="1"' . ($game['savescore'] == '1' ? ' selected="selected"' : '') . '>' . escape_html($lang[24]) . '</option>
+                        <option value="0"' . ($game['savescore'] == '0' ? ' selected="selected"' : '') . '>' . escape_html($lang[25]) . '</option>
+                    </select>
+                </td>
+            </tr>
+                <tr valign="top">
+                    <td class="alt1">' . escape_html($lang[26]) . '</td>
+                    <td class="alt1">' . build_category_select($game['cid'], $db) . '</td>
+                </tr>
+            <tr>
+            <td class="tcat2"></td>
+            <td class="tcat2">
+                <input type="submit" class="button" tabindex="1" value="' . escape_attr($lang[14]) . '" accesskey="s" />
+                <input type="reset" class="button" tabindex="1" value="' . escape_attr($lang[15]) . '" accesskey="r" />
+            </td>
+        </tr>
+        </table>
+        </form>';
         }
     }
-    if (!isset($Done)) {
-        echo "\r\n\t\t<form $method = \"post\" $action = \"index.php?do=manage_games\">\r\n\t\t<input $type = \"hidden\" $name = \"act\" $value = \"add\" />\r\n\t\t" . showAlertMessage("<a $href = \"index.php?do=manage_games\">" . $Language[17] . "</a>") . "\r\n\t\t" . $Message . "\r\n\t\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"tcat\" $align = \"center\" $colspan = \"2\"><b>" . $Language[2] . " - " . $Language[9] . "</b></td>\r\n\t\t\t</tr>\r\n\t\t\t<tr $valign = \"top\">\r\n\t\t\t\t<td class=\"alt1\">" . $Language[3] . "</td>\r\n\t\t\t\t<td class=\"alt1\"><input $type = \"text\" class=\"bginput\" $name = \"gname\" $value = \"" . $Game["gname"] . "\" $size = \"70\" $dir = \"ltr\" $tabindex = \"1\" /> <b><i><small>" . $Language[27] . "</small></i></b></td>\r\n\t\t\t</tr>\r\n\t\t\t<tr $valign = \"top\">\r\n\t\t\t\t<td class=\"alt1\">" . $Language[4] . "</td>\r\n\t\t\t\t<td class=\"alt1\"><input $type = \"text\" class=\"bginput\" $name = \"gwords\" $value = \"" . $Game["gwords"] . "\" $size = \"70\" $dir = \"ltr\" $tabindex = \"1\" /></td>\r\n\t\t\t</tr>\r\n\t\t\t<tr $valign = \"top\">\r\n\t\t\t\t<td class=\"alt1\">" . $Language[18] . "</td>\r\n\t\t\t\t<td class=\"alt1\"><input $type = \"text\" class=\"bginput\" $name = \"gtitle\" $value = \"" . $Game["gtitle"] . "\" $size = \"70\" $dir = \"ltr\" $tabindex = \"1\" /></td>\r\n\t\t\t</tr>\r\n\t\t\t<tr $valign = \"top\">\r\n\t\t\t\t<td class=\"alt1\">" . $Language[21] . "</td>\r\n\t\t\t\t<td class=\"alt1\"><input $type = \"text\" class=\"bginput\" $name = \"objective\" $value = \"" . $Game["objective"] . "\" $size = \"70\" $dir = \"ltr\" $tabindex = \"1\" /></td>\r\n\t\t\t</tr>\r\n\t\t\t<tr $valign = \"top\">\r\n\t\t\t\t<td class=\"alt1\">" . $Language[22] . "</td>\r\n\t\t\t\t<td class=\"alt1\"><input $type = \"text\" class=\"bginput\" $name = \"gkeys\" $value = \"" . $Game["gkeys"] . "\" $size = \"70\" $dir = \"ltr\" $tabindex = \"1\" /></td>\r\n\t\t\t</tr>\r\n\t\t\t<tr $valign = \"top\">\r\n\t\t\t\t<td class=\"alt1\">" . $Language[19] . "</td>\r\n\t\t\t\t<td class=\"alt1\"><input $type = \"text\" class=\"bginput\" $name = \"gwidth\" $value = \"" . intval($Game["gwidth"]) . "\" $size = \"15\" $dir = \"ltr\" $tabindex = \"1\" /></td>\r\n\t\t\t</tr>\r\n\t\t\t<tr $valign = \"top\">\r\n\t\t\t\t<td class=\"alt1\">" . $Language[20] . "</td>\r\n\t\t\t\t<td class=\"alt1\"><input $type = \"text\" class=\"bginput\" $name = \"gheight\" $value = \"" . intval($Game["gheight"]) . "\" $size = \"15\" $dir = \"ltr\" $tabindex = \"1\" /></td>\r\n\t\t\t</tr>\r\n\t\t\t<tr $valign = \"top\">\r\n\t\t\t\t<td class=\"alt1\">" . $Language[5] . "</td>\r\n\t\t\t\t<td class=\"alt1\"><input $type = \"text\" class=\"bginput\" $name = \"sort\" $value = \"" . intval($Game["sort"]) . "\" $size = \"15\" $dir = \"ltr\" $tabindex = \"1\" /></td>\r\n\t\t\t</tr>\r\n\t\t\t<tr $valign = \"top\">\r\n\t\t\t\t<td class=\"alt1\">" . $Language[23] . "</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t<select $name = \"savescore\">\r\n\t\t\t\t\t\t<option $value = \"1\"" . ($Game["savescore"] == "1" ? " $selected = \"selected\"" : "") . "\">" . $Language[24] . "</option>\r\n\t\t\t\t\t\t<option $value = \"0\"" . ($Game["savescore"] == "0" ? " $selected = \"selected\"" : "") . "\">" . $Language[25] . "</option>\r\n\t\t\t\t\t</select>\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t\t\t<tr $valign = \"top\">\r\n\t\t\t\t\t<td class=\"alt1\">" . $Language[26] . "</td>\r\n\t\t\t\t\t<td class=\"alt1\">" . function_158($Game["cid"]) . "</td>\r\n\t\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t<td class=\"tcat2\"></td>\r\n\t\t\t<td class=\"tcat2\">\r\n\t\t\t\t<input $type = \"submit\" class=\"button\" $tabindex = \"1\" $value = \"" . $Language[14] . "\" $accesskey = \"s\" />\r\n\t\t\t\t<input $type = \"reset\" class=\"button\" $tabindex = \"1\" $value = \"" . $Language[15] . "\" $accesskey = \"r\" />\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t</table>\r\n\t\t</form>";
+    
+    $stmt = $db->query("SELECT * FROM ts_games");
+    while ($category = $stmt->fetch(PDO::FETCH_ASSOC)) {
+        $gwords = strlen($category['gwords']) > 50 ? substr($category['gwords'], 0, 50) . '...' : $category['gwords'];
+        $saveScoreLabel = $category['savescore'] == '1' ? $lang[24] : $lang[25];
+        $categoryName = get_category_name($category['cid'], $db);
+        
+        $list .= '
+    <tr>
+        <td class="alt1" align="center">
+            <a href="./../ts_games/index.php?cid=' . escape_attr((string)$category['cid']) . '" target="_blank">' . escape_html($categoryName) . '</a>
+        </td>
+        <td class="alt1">
+            ' . escape_html($gwords) . '
+        </td>
+        <td class="alt1">
+            <a href="./../ts_games/index.php?act=play&amp;gid=' . escape_attr((string)$category['gid']) . '" target="_blank">' . escape_html($category['gtitle']) . '</a>
+        </td>
+        <td class="alt1" align="center">
+            ' . intval($category['gwidth']) . '
+        </td>
+        <td class="alt1" align="center">
+            ' . intval($category['gheight']) . '
+        </td>
+        <td class="alt1" align="center">
+            ' . escape_html($saveScoreLabel) . '
+        </td>
+        <td class="alt1" align="center">
+            ' . intval($category['sort']) . '
+        </td>
+        <td class="alt1" align="center">
+            <a href="index.php?do=manage_games&amp;act=edit&amp;gid=' . escape_attr((string)$category['gid']) . '"><img src="./images/tool_edit.png" alt="' . escape_attr($lang[7]) . '" title="' . escape_attr($lang[7]) . '" border="0" /></a>
+            <a href="index.php?do=manage_games&amp;act=reset_champions&amp;gid=' . escape_attr((string)$category['gid']) . '&amp;csrf_token=' . escape_attr(generate_csrf_token(false)) . '"><img src="./images/award_star_delete.png" alt="' . escape_attr($lang[29]) . '" title="' . escape_attr($lang[29]) . '" border="0" /></a>
+            <a href="index.php?do=manage_games&amp;act=reset_score&amp;gid=' . escape_attr((string)$category['gid']) . '&amp;csrf_token=' . escape_attr(generate_csrf_token(false)) . '"><img src="./images/chart_curve_delete.png" alt="' . escape_attr($lang[30]) . '" title="' . escape_attr($lang[30]) . '" border="0" /></a>
+            <a href="index.php?do=manage_games&amp;act=delete_comments&amp;gid=' . escape_attr((string)$category['gid']) . '&amp;csrf_token=' . escape_attr(generate_csrf_token(false)) . '"><img src="./images/comments_delete.png" alt="' . escape_attr($lang[3]) . '" title="' . escape_attr($lang[33]) . '" border="0" /></a>
+            <a href="index.php?do=manage_games&amp;act=delete&amp;gid=' . escape_attr((string)$category['gid']) . '&amp;csrf_token=' . escape_attr(generate_csrf_token(false)) . '" onclick="return ConfirmDelete();"><img src="./images/tool_delete.png" alt="' . escape_attr($lang[8]) . '" title="' . escape_attr($lang[8]) . '" border="0" /></a>
+        </td>
+    </tr>';
     }
-}
-$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM `ts_games`");
-while ($Category = mysqli_fetch_assoc($query)) {
-    $List .= "\r\n\t<tr>\r\n\t\t<td class=\"alt1\" $align = \"center\">\r\n\t\t\t<a $href = \"./../ts_games/index.php?$cid = " . $Category["cid"] . "\" $target = \"_blank\">" . function_159($Category["cid"]) . "</a>\r\n\t\t</td>\r\n\t\t<td class=\"alt1\">\r\n\t\t\t" . (50 < strlen($Category["gwords"]) ? substr($Category["gwords"], 0, 50) . "..." : $Category["gwords"]) . "\r\n\t\t</td>\r\n\t\t<td class=\"alt1\">\r\n\t\t\t<a $href = \"./../ts_games/index.php?$act = play&amp;$gid = " . $Category["gid"] . "\" $target = \"_blank\">" . $Category["gtitle"] . "</a>\r\n\t\t</td>\r\n\t\t<td class=\"alt1\" $align = \"center\">\r\n\t\t\t" . intval($Category["gwidth"]) . "\r\n\t\t</td>\r\n\t\t<td class=\"alt1\" $align = \"center\">\r\n\t\t\t" . intval($Category["gheight"]) . "\r\n\t\t</td>\r\n\t\t<td class=\"alt1\" $align = \"center\">\r\n\t\t\t" . ($Category["savescore"] == "1" ? $Language[24] : $Language[25]) . "\r\n\t\t</td>\r\n\t\t<td class=\"alt1\" $align = \"center\">\r\n\t\t\t" . intval($Category["sort"]) . "\r\n\t\t</td>\r\n\t\t<td class=\"alt1\" $align = \"center\">\r\n\t\t\t<a $href = \"index.php?do=manage_games&amp;$act = edit&amp;$gid = " . $Category["gid"] . "\"><img $src = \"./images/tool_edit.png\" $alt = \"" . $Language[7] . "\" $title = \"" . $Language[7] . "\" $border = \"0\" /></a> <a $href = \"index.php?do=manage_games&amp;$act = reset_champions&amp;$gid = " . $Category["gid"] . "\"><img $src = \"./images/award_star_delete.png\" $alt = \"" . $Language[29] . "\" $title = \"" . $Language[29] . "\" $border = \"0\" /></a> <a $href = \"index.php?do=manage_games&amp;$act = reset_score&amp;$gid = " . $Category["gid"] . "\"><img $src = \"./images/chart_curve_delete.png\" $alt = \"" . $Language[30] . "\" $title = \"" . $Language[30] . "\" $border = \"0\" /></a> <a $href = \"index.php?do=manage_games&amp;$act = delete_comments&amp;$gid = " . $Category["gid"] . "\"><img $src = \"./images/comments_delete.png\" $alt = \"" . $Language[3] . "\" $title = \"" . $Language[33] . "\" $border = \"0\" /></a> <a $href = \"index.php?do=manage_games&amp;$act = delete&amp;$gid = " . $Category["gid"] . "\" $onclick = \"return ConfirmDelete();\"><img $src = \"./images/tool_delete.png\" $alt = \"" . $Language[8] . "\" $title = \"" . $Language[8] . "\" $border = \"0\" /></a>\r\n\t\t</td>\r\n\t</tr>";
-}
-echo "\r\n<script $type = \"text/javascript\">\r\n\tfunction ConfirmDelete()\r\n\t{\r\n\t\$tCheck = confirm(\"" . trim($Language[10]) . "\");\r\n\t\tif (Check)\r\n\t\t\treturn true;\r\n\t\telse\r\n\t\t\treturn false;\r\n\t}\r\n</script>\r\n" . showAlertMessage("<a $href = \"index.php?do=manage_games&amp;$act = add\">" . $Language[9] . "</a>") . "\r\n" . $Message . "\r\n<table $cellpadding = \"5\" $cellspacing = \"0\" $border = \"0\" $align = \"center\" $width = \"90%\" $style = \"border-collapse:separate\" class=\"tborder\">\r\n\t<tr>\r\n\t\t<td class=\"tcat\" $colspan = \"8\" $align = \"center\">\r\n\t\t\t" . $Language[2] . "\r\n\t\t</td>\r\n\t</tr>\r\n\t<tr>\r\n\t\t<td class=\"alt2\" $align = \"center\">\r\n\t\t\t" . $Language[26] . "\r\n\t\t</td>\r\n\t\t<td class=\"alt2\">\r\n\t\t\t" . $Language[4] . "\r\n\t\t</td>\r\n\t\t<td class=\"alt2\">\r\n\t\t\t" . $Language[18] . "\r\n\t\t</td>\r\n\t\t<td class=\"alt2\" $align = \"center\">\r\n\t\t\t" . $Language[19] . "\r\n\t\t</td>\r\n\t\t<td class=\"alt2\" $align = \"center\">\r\n\t\t\t" . $Language[20] . "\r\n\t\t</td>\r\n\t\t<td class=\"alt2\" $align = \"center\">\r\n\t\t\t" . $Language[23] . "\r\n\t\t</td>\r\n\t\t<td class=\"alt2\" $align = \"center\">\r\n\t\t\t" . $Language[5] . "\r\n\t\t</td>\r\n\t\t<td class=\"alt2\" $align = \"center\">\r\n\t\t\t" . $Language[6] . "\r\n\t\t</td>\r\n\t</tr>\r\n\t" . $List . "\r\n</table>";
-function getStaffLanguage()
-{
-    if (isset($_COOKIE["staffcplanguage"]) && is_dir("languages/" . $_COOKIE["staffcplanguage"]) && is_file("languages/" . $_COOKIE["staffcplanguage"] . "/staffcp.lang")) {
-        return $_COOKIE["staffcplanguage"];
+    
+    echo '
+<script type="text/javascript">
+    function ConfirmDelete()
+    {
+        Check = confirm("' . escape_js(trim($lang[10])) . '");
+        if (Check)
+            return true;
+        else
+            return false;
     }
-    return "english";
-}
-function checkStaffAuthentication()
-{
-    if (!defined("IN-TSSE-STAFF-PANEL")) {
-        redirectTo("../index.php");
-    }
-}
-function redirectTo($url)
-{
-    if (!headers_sent()) {
-        header("Location: " . $url);
-    } else {
-        echo "\r\n\t\t<script $type = \"text/javascript\">\r\n\t\t\twindow.location.$href = \"" . $url . "\";\r\n\t\t</script>\r\n\t\t<noscript>\r\n\t\t\t<meta http-$equiv = \"refresh\" $content = \"0;$url = " . $url . "\" />\r\n\t\t</noscript>";
-    }
-    exit;
-}
-function showAlertError($Error)
-{
-    return "<div class=\"alert\"><div>" . $Error . "</div></div>";
-}
-function showAlertMessage($message = "")
-{
-    return "<div class=\"alert\"><div>" . $message . "</div></div>";
-}
-function function_158($selected = "")
-{
-    $gameId = "<select $name = \"cid\">";
-    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT cid, cname FROM ts_games_categories ORDER by `sort`");
-    while ($Category = mysqli_fetch_assoc($query)) {
-        $gameId .= "\r\n\t\t<option $value = \"" . $Category["cid"] . "\"" . ($selected == $Category["cid"] ? " $selected = \"selected\"" : "") . ">" . $Category["cname"] . "</option>";
-    }
-    $gameId .= "</select>";
-    return $gameId;
-}
-function logStaffAction($log)
-{
-    mysqli_query($GLOBALS["DatabaseConnect"], "INSERT INTO ts_staffcp_logs (uid, date, log) VALUES ('" . $_SESSION["ADMIN_ID"] . "', '" . time() . "', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $log) . "')");
-}
-function function_159($cid)
-{
-    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT cname FROM ts_games_categories WHERE `cid` = '" . $cid . "'");
-    $actionParam = mysqli_fetch_assoc($query);
-    return $actionParam["cname"];
+</script>
+' . show_alert_message('<a href="index.php?do=manage_games&amp;act=add">' . escape_html($lang[9]) . '</a>') . '
+' . $message . '
+<table cellpadding="5" cellspacing="0" border="0" align="center" width="90%" style="border-collapse:separate" class="tborder">
+    <tr>
+        <td class="tcat" colspan="8" align="center">
+            ' . escape_html($lang[2]) . '
+        </td>
+    </tr>
+    <tr>
+        <td class="alt2" align="center">
+            ' . escape_html($lang[26]) . '
+        </td>
+        <td class="alt2">
+            ' . escape_html($lang[4]) . '
+        </td>
+        <td class="alt2">
+            ' . escape_html($lang[18]) . '
+        </td>
+        <td class="alt2" align="center">
+            ' . escape_html($lang[19]) . '
+        </td>
+        <td class="alt2" align="center">
+            ' . escape_html($lang[20]) . '
+        </td>
+        <td class="alt2" align="center">
+            ' . escape_html($lang[23]) . '
+        </td>
+        <td class="alt2" align="center">
+            ' . escape_html($lang[5]) . '
+        </td>
+        <td class="alt2" align="center">
+            ' . escape_html($lang[6]) . '
+        </td>
+    </tr>
+    ' . $list . '
+</table>';
+} catch (Exception $e) {
+    error_log('Manage Games Error: ' . $e->getMessage());
+    echo show_alert_error('An error occurred. Please try again.');
 }
 
-?>
+function build_category_select(int $selected, PDO $db): string {
+    $html = '<select name="cid">';
+    $stmt = $db->query("SELECT cid, cname FROM ts_games_categories ORDER by sort");
+    while ($category = $stmt->fetch(PDO::FETCH_ASSOC)) {
+        $selectedAttr = $selected == $category['cid'] ? ' selected="selected"' : '';
+        $html .= '<option value="' . escape_attr((string)$category['cid']) . '"' . $selectedAttr . '>' . escape_html($category['cname']) . '</option>';
+    }
+    $html .= '</select>';
+    return $html;
+}
+
+function get_category_name(int $cid, PDO $db): string {
+    $stmt = $db->prepare("SELECT cname FROM ts_games_categories WHERE cid = ?");
+    $stmt->execute([$cid]);
+    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+    return $result['cname'] ?? '';
+}
