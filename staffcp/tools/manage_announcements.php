@@ -1,279 +1,497 @@
 <?php
+
+declare(strict_types=1);
+
+// Load modern staffcp helpers
+require_once __DIR__ . '/../staffcp_modern.php';
+
+// Check authentication
 checkStaffAuthentication();
-$Act = isset($_GET["act"]) ? trim($_GET["act"]) : (isset($_POST["act"]) ? trim($_POST["act"]) : "");
-$id = isset($_GET["id"]) ? intval($_GET["id"]) : (isset($_POST["id"]) ? intval($_POST["id"]) : "");
-$Language = file("languages/" . getStaffLanguage() . "/manage_announcements.lang");
-$Message = "";
-$subject = "";
-$message = "";
-$minclassread = ["1"];
-$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'MAIN'");
-$Result = mysqli_fetch_assoc($query);
-$MAIN = unserialize($Result["content"]);
-if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
-    $subject = trim($_POST["subject"]);
-    $message = trim($_POST["message"]);
-    $minclassread = isset($_POST["usergroups"]) ? $_POST["usergroups"] : "";
-    if ($subject && $message && is_array($minclassread) && count($minclassread)) {
-        $Work = implode(",", $minclassread);
-        if ($Act == "new") {
-            mysqli_query($GLOBALS["DatabaseConnect"], "INSERT INTO announcements (subject, message, `by`, added, minclassread) VALUES ('" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $subject) . "', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $message) . "', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $_SESSION["ADMIN_USERNAME"]) . "', NOW(), '" . $Work . "')");
-            if (mysqli_affected_rows($GLOBALS["DatabaseConnect"])) {
-                $Message = str_replace(["{1}", "{2}"], [$subject, $_SESSION["ADMIN_USERNAME"]], $Language[10]);
-                logStaffAction($Message);
-                $Message = showAlertMessage($Message);
-                mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET $announce_read = 'no' WHERE usergroup IN (0, " . $Work . ")");
-                $Act = "";
+
+// Load language
+$Language = loadStaffLanguage('manage_announcements');
+
+// Initialize variables
+$Message = '';
+$Act = $_GET['act'] ?? $_POST['act'] ?? '';
+$Act = is_string($Act) ? trim($Act) : '';
+$id = (int)($_GET['id'] ?? $_POST['id'] ?? 0);
+$subject = '';
+$message = '';
+$minclassread = ['1'];
+
+// Get MAIN config
+try {
+    $result = $TSDatabase->query('SELECT content FROM ts_config WHERE configname = ?', ['MAIN']);
+    if ($result && ($row = $result->fetch(PDO::FETCH_ASSOC))) {
+        $MAIN = unserialize($row['content']);
+    }
+} catch (Exception $e) {
+    error_log('Failed to load MAIN config: ' . $e->getMessage());
+    $MAIN = [];
+}
+
+// Process form submission (POST)
+if (strtoupper($_SERVER['REQUEST_METHOD']) === 'POST') {
+    // Validate form token
+    if (!validateFormToken($_POST['form_token'] ?? '')) {
+        $Message = showAlertErrorModern('Invalid form token. Please try again.');
+    } else {
+        $subject = trim($_POST['subject'] ?? '');
+        $message = trim($_POST['message'] ?? '');
+        $minclassread = $_POST['usergroups'] ?? [];
+        
+        if (!is_array($minclassread)) {
+            $minclassread = [];
+        }
+        
+        if ($subject && $message && is_array($minclassread) && count($minclassread)) {
+            $Work = implode(',', array_map('intval', $minclassread));
+            
+            try {
+                if ($Act === 'new') {
+                    // Insert new announcement
+                    $TSDatabase->query(
+                        'INSERT INTO announcements (subject, message, `by`, added, minclassread) VALUES (?, ?, ?, NOW(), ?)',
+                        [$subject, $message, $_SESSION['ADMIN_USERNAME'], $Work]
+                    );
+                    
+                    if ($TSDatabase->getConnection()->lastInsertId()) {
+                        $SysMsg = str_replace(
+                            ['{1}', '{2}'],
+                            [$subject, $_SESSION['ADMIN_USERNAME']],
+                            $Language[10] ?? 'Announcement {1} added by {2}'
+                        );
+                        logStaffActionModern($SysMsg);
+                        $Message = showAlertSuccessModern($SysMsg);
+                        
+                        // Update users to mark announcement as unread
+                        $TSDatabase->query(
+                            'UPDATE users SET announce_read = ? WHERE usergroup IN (0, ' . $Work . ')',
+                            ['no']
+                        );
+                        $Act = '';
+                    }
+                } elseif ($Act === 'edit' && $id) {
+                    // Update existing announcement
+                    $TSDatabase->query(
+                        'UPDATE announcements SET subject = ?, message = ?, minclassread = ? WHERE id = ?',
+                        [$subject, $message, $Work, $id]
+                    );
+                    
+                    $SysMsg = str_replace(
+                        ['{1}', '{2}'],
+                        [$subject, $_SESSION['ADMIN_USERNAME']],
+                        $Language[12] ?? 'Announcement {1} updated by {2}'
+                    );
+                    logStaffActionModern($SysMsg);
+                    $Message = showAlertSuccessModern($SysMsg);
+                    
+                    // Update users to mark announcement as unread
+                    $TSDatabase->query(
+                        'UPDATE users SET announce_read = ? WHERE usergroup IN (0, ' . $Work . ')',
+                        ['no']
+                    );
+                    $Act = '';
+                }
+            } catch (Exception $e) {
+                error_log('Announcement operation error: ' . $e->getMessage());
+                $Message = showAlertErrorModern('Failed to save announcement. Please try again.');
             }
         } else {
-            if ($Act == "edit" && $id) {
-                mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE announcements SET $subject = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $subject) . "', $message = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $message) . "', $minclassread = '" . $Work . "' WHERE `id` = '" . $id . "'");
-                if (mysqli_affected_rows($GLOBALS["DatabaseConnect"])) {
-                    $Message = str_replace(["{1}", "{2}"], [$subject, $_SESSION["ADMIN_USERNAME"]], $Language[12]);
-                    logStaffAction($Message);
-                    $Message = showAlertMessage($Message);
-                    mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET $announce_read = 'no' WHERE usergroup IN (0, " . $Work . ")");
+            $Message = showAlertErrorModern($Language[3] ?? 'All fields are required');
+        }
+    }
+}
+
+// Process delete action (GET)
+if ($Act === 'delete' && $id) {
+    // Validate form token for delete action
+    if (!validateFormToken($_GET['form_token'] ?? '')) {
+        $Message = showAlertErrorModern('Invalid form token. Please try again.');
+        $Act = '';
+    } else {
+        try {
+            $result = $TSDatabase->query('SELECT subject FROM announcements WHERE id = ?', [$id]);
+            if ($result && ($Ann = $result->fetch(PDO::FETCH_ASSOC))) {
+                $TSDatabase->query('DELETE FROM announcements WHERE id = ?', [$id]);
+                
+                $subject = $Ann['subject'];
+                $SysMsg = str_replace(
+                    ['{1}', '{2}'],
+                    [$subject, $_SESSION['ADMIN_USERNAME']],
+                    $Language[11] ?? 'Announcement {1} deleted by {2}'
+                );
+                logStaffActionModern($SysMsg);
+                $Message = showAlertSuccessModern($SysMsg);
+            }
+            $Act = '';
+        } catch (Exception $e) {
+            error_log('Announcement delete error: ' . $e->getMessage());
+            $Message = showAlertErrorModern('Failed to delete announcement. Please try again.');
+        }
+    }
+}
+
+/**
+ * Render usergroup checkboxes
+ */
+function renderUserGroupCheckboxes($selected): string
+{
+    global $TSDatabase;
+    
+    if (!is_array($selected) && preg_match('@,@', $selected)) {
+        $selected = explode(',', $selected);
+    }
+    
+    try {
+        // Get current user permissions
+        $result = $TSDatabase->query(
+            'SELECT u.id, g.cansettingspanel, g.canstaffpanel, g.issupermod 
+             FROM users u 
+             LEFT JOIN usergroups g ON u.usergroup = g.gid 
+             WHERE u.id = ? 
+             LIMIT 1',
+            [$_SESSION['ADMIN_ID']]
+        );
+        
+        $currentUserPerms = $result ? $result->fetch(PDO::FETCH_ASSOC) : [];
+        
+        $count = 0;
+        $userGroupsHtml = "\n\t<table>\n\t\t<tr>\t";
+        
+        // Get all usergroups
+        $result = $TSDatabase->query(
+            'SELECT gid, title, cansettingspanel, canstaffpanel, issupermod, namestyle 
+             FROM usergroups 
+             WHERE isbanned = ? 
+             ORDER BY disporder ASC',
+            ['no']
+        );
+        
+        if ($result) {
+            while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
+                // Check if current user has permission to assign this group
+                $canAssign = true;
+                if ($currentUserPerms) {
+                    if ($row['cansettingspanel'] === 'yes' && $currentUserPerms['cansettingspanel'] !== 'yes') {
+                        $canAssign = false;
+                    }
+                    if ($row['canstaffpanel'] === 'yes' && $currentUserPerms['canstaffpanel'] !== 'yes') {
+                        $canAssign = false;
+                    }
+                    if ($row['issupermod'] === 'yes' && $currentUserPerms['issupermod'] !== 'yes') {
+                        $canAssign = false;
+                    }
                 }
-                $Act = "";
+                
+                if ($canAssign) {
+                    if ($count && $count % 8 === 0) {
+                        $userGroupsHtml .= "</tr><tr>";
+                    }
+                    
+                    $checked = (is_array($selected) && in_array((string)$row['gid'], $selected, true)) ? ' checked="checked"' : '';
+                    $userGroupsHtml .= '<td><input type="checkbox" name="usergroups[]" value="' . escape_attr((string)$row['gid']) . '"' . $checked . ' /></td>';
+                    $userGroupsHtml .= '<td>' . escape_html(str_replace('{username}', $row['title'], $row['namestyle'])) . '</td>';
+                    $count++;
+                }
             }
         }
-    } else {
-        $Message = showAlertError($Language[3]);
+        
+        $userGroupsHtml .= "</tr></table>";
+        return $userGroupsHtml;
+        
+    } catch (Exception $e) {
+        error_log('Failed to render usergroup checkboxes: ' . $e->getMessage());
+        return '<p>Error loading usergroups</p>';
     }
 }
-if ($Act == "delete" && $id) {
-    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT subject FROM announcements WHERE `id` = '" . $id . "'");
-    if (0 < mysqli_num_rows($query)) {
-        mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM announcements WHERE `id` = '" . $id . "'");
-        if (mysqli_affected_rows($GLOBALS["DatabaseConnect"])) {
-            $Result = mysqli_fetch_assoc($query);
-            $subject = $Result["subject"];
-            $Message = str_replace(["{1}", "{2}"], [$subject, $_SESSION["ADMIN_USERNAME"]], $Language[11]);
-            logStaffAction($Message);
-            $Message = showAlertMessage($Message);
-        }
-    }
-}
-if ($Act == "new") {
-    echo loadTinyMCEEditor() . "\r\n\t<form $action = \"index.php?do=manage_announcements&$act = new\" $method = \"post\">\t\r\n\t" . $Message . "\r\n\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t<tr>\r\n\t\t\t<td class=\"tcat\" $colspan = \"2\" $align = \"center\">\r\n\t\t\t\t" . $Language[2] . " - " . $Language[6] . "\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\">" . $Language[7] . "</td>\r\n\t\t\t<td class=\"alt1\"><input $type = \"text\" $name = \"subject\" $value = \"" . htmlspecialchars($subject) . "\" $style = \"width: 99%;\" $dir = \"ltr\" $tabindex = \"1\" /></td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\" $valign = \"top\">" . $Language[8] . "</td>\r\n\t\t\t<td class=\"alt1\"><textarea $name = \"message\" $id = \"message\" $style = \"width: 100%; height: 100px;\" $dir = \"ltr\" $tabindex = \"1\">" . htmlspecialchars($message) . "</textarea>\r\n\t\t\t<p><a $href = \"javascript:toggleEditor('message');\"><img $src = \"images/tool_refresh.png\" $border = \"0\" /></a></p></td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\" $valign = \"top\">" . $Language[9] . "</td>\r\n\t\t\t<td class=\"alt1\">" . function_148($minclassread) . "</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"tcat2\"></td>\r\n\t\t\t<td class=\"tcat2\">\r\n\t\t\t\t<input $type = \"submit\" $value = \"" . $Language[14] . "\" /> <input $type = \"reset\" $value = \"" . $Language[15] . "\" />\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t</table>\r\n\t</form>";
-}
-if ($Act == "edit" && $id) {
-    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT subject, message, minclassread FROM announcements WHERE `id` = '" . $id . "'");
-    if (0 < mysqli_num_rows($query)) {
-        $Ann = mysqli_fetch_assoc($query);
-        echo loadTinyMCEEditor() . "\r\n\t\t<form $action = \"index.php?do=manage_announcements&$act = edit&$id = " . $id . "\" $method = \"post\">\r\n\t\t\r\n\t\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"tcat\" $colspan = \"2\" $align = \"center\">\r\n\t\t\t\t\t" . $Language[2] . " - " . $Language[4] . "\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt1\">" . $Language[7] . "</td>\r\n\t\t\t\t<td class=\"alt1\"><input $type = \"text\" $name = \"subject\" $value = \"" . htmlspecialchars($Ann["subject"]) . "\" $style = \"width: 99%;\" $dir = \"ltr\" $tabindex = \"1\" /></td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt1\" $valign = \"top\">" . $Language[8] . "</td>\r\n\t\t\t\t<td class=\"alt1\"><textarea $name = \"message\" $id = \"f_offlinemsg\" $style = \"width: 100%; height: 100px;\" $dir = \"ltr\" $tabindex = \"1\">" . htmlspecialchars($Ann["message"]) . "</textarea>\r\n\t\t\t\t<p><a $href = \"javascript:toggleEditor('f_offlinemsg');\"><img $src = \"images/tool_refresh.png\" $border = \"0\" /></a></p></td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt1\" $valign = \"top\">" . $Language[9] . "</td>\r\n\t\t\t\t<td class=\"alt1\">" . function_148($Ann["minclassread"]) . "</td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"tcat2\"></td>\r\n\t\t\t\t<td class=\"tcat2\">\r\n\t\t\t\t\t<input $type = \"submit\" $value = \"" . $Language[14] . "\" /> <input $type = \"reset\" $value = \"" . $Language[15] . "\" />\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t</table>\r\n\t\t</form>";
-    }
-}
-$results = mysqli_num_rows(mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM announcements"));
-list($pagertop, $limit) = buildPaginationLinks(25, $results, $_SERVER["SCRIPT_NAME"] . "?do=manage_announcements&amp;");
-$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT a.*, u.username, g.namestyle FROM announcements a LEFT JOIN users u ON (a.$by = u.username) LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) ORDER by a.added DESC " . $limit);
-if (0 < mysqli_num_rows($query)) {
-    echo showAlertMessage("<a $href = \"index.php?do=manage_announcements&amp;$act = new\">" . $Language[6] . "</a>") . "\r\n\t" . $Message . "\r\n\t" . $pagertop . "\r\n\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t<tr>\r\n\t\t\t<td class=\"tcat\" $colspan = \"6\" $align = \"center\">\r\n\t\t\t\t" . $Language[2] . " (" . $results . ")\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt2\">" . $Language[7] . "</td>\r\n\t\t\t<td class=\"alt2\">" . $Language[8] . "</td>\r\n\t\t\t<td class=\"alt2\">" . $Language[16] . "</td>\r\n\t\t\t<td class=\"alt2\">" . $Language[17] . "</td>\r\n\t\t\t<td class=\"alt2\">" . $Language[9] . "</td>\r\n\t\t\t<td class=\"alt2\" $align = \"center\">" . $Language[18] . "</td>\r\n\t\t</tr>\r\n\t\t";
-    while ($Ann = mysqli_fetch_assoc($query)) {
-        echo "\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t" . htmlspecialchars($Ann["subject"]) . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t" . strip_tags(substr($Ann["message"], 0, 150)) . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t<a $href = \"index.php?do=edit_user&amp;$username = " . $Ann["username"] . "\">" . applyUsernameStyle($Ann["username"], $Ann["namestyle"]) . "</a>\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t" . formatTimestamp($Ann["added"]) . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t" . $Ann["minclassread"] . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\" $align = \"center\">\r\n\t\t\t\t<a $href = \"index.php?do=manage_announcements&amp;$act = edit&amp;$id = " . $Ann["id"] . "\"><img $src = \"images/tool_edit.png\" $alt = \"" . $Language[4] . "\" $title = \"" . $Language[4] . "\" $border = \"0\" /></a> <a $href = \"index.php?do=manage_announcements&amp;$act = delete&amp;$id = " . $Ann["id"] . "\"><img $src = \"images/tool_delete.png\" $alt = \"" . $Language[5] . "\" $title = \"" . $Language[5] . "\" $border = \"0\" /></a>\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t";
-    }
-    echo "\r\n\t</table>\r\n\t" . $pagertop;
-} else {
-    echo showAlertError(str_replace("{1}", "index.php?do=manage_announcements&amp;$act = new", $Language[13]));
-}
-function loadTinyMCEEditor($type = 1, $mode = "textareas", $elements = "")
+
+/**
+ * Load TinyMCE editor
+ */
+function loadTinyMCEEditor(int $type = 1, string $mode = 'textareas', string $elements = ''): string
 {
-    define("EDITOR_TYPE", $type);
-    define("TINYMCE_MODE", $mode);
-    define("TINYMCE_ELEMENTS", $elements);
-    define("WORKPATH", "./../scripts/");
-    define("TINYMCE_EMOTIONS_URL", "./../tinymce_emotions.php");
+    define('EDITOR_TYPE', $type);
+    define('TINYMCE_MODE', $mode);
+    define('TINYMCE_ELEMENTS', $elements);
+    define('WORKPATH', './../scripts/');
+    define('TINYMCE_EMOTIONS_URL', './../tinymce_emotions.php');
+    
     ob_start();
-    include "./../tinymce.php";
+    include './../tinymce.php';
     $editorContent = ob_get_contents();
     ob_end_clean();
+    
     return $editorContent;
 }
-function getStaffLanguage()
+
+/**
+ * Format timestamp
+ */
+function formatTimestamp(string $timestamp = ''): string
 {
-    if (isset($_COOKIE["staffcplanguage"]) && is_dir("languages/" . $_COOKIE["staffcplanguage"]) && is_file("languages/" . $_COOKIE["staffcplanguage"] . "/staffcp.lang")) {
-        return $_COOKIE["staffcplanguage"];
+    $dateFormatPattern = 'm-d-Y h:i A';
+    
+    if (empty($timestamp)) {
+        $timestamp = (string)time();
+    } elseif (strstr($timestamp, '-')) {
+        $timestamp = (string)strtotime($timestamp);
     }
-    return "english";
+    
+    return date($dateFormatPattern, (int)$timestamp);
 }
-function checkStaffAuthentication()
+
+/**
+ * Apply username style
+ */
+function applyUsernameStyle(string $username, string $namestyle): string
 {
-    if (!defined("IN-TSSE-STAFF-PANEL")) {
-        redirectTo("../index.php");
-    }
+    return str_replace('{username}', $username, $namestyle);
 }
-function redirectTo($url)
-{
-    if (!headers_sent()) {
-        header("Location: " . $url);
-    } else {
-        echo "\r\n\t\t<script $type = \"text/javascript\">\r\n\t\t\twindow.location.$href = \"" . $url . "\";\r\n\t\t</script>\r\n\t\t<noscript>\r\n\t\t\t<meta http-$equiv = \"refresh\" $content = \"0;$url = " . $url . "\" />\r\n\t\t</noscript>";
-    }
-    exit;
-}
-function showAlertError($Error)
-{
-    return "<div class=\"alert\"><div>" . $Error . "</div></div>";
-}
-function showAlertMessage($message = "")
-{
-    return "<div class=\"alert\"><div>" . $message . "</div></div>";
-}
-function logStaffAction($log)
-{
-    mysqli_query($GLOBALS["DatabaseConnect"], "INSERT INTO ts_staffcp_logs (uid, date, log) VALUES ('" . $_SESSION["ADMIN_ID"] . "', '" . time() . "', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $log) . "')");
-}
-function function_148($selected)
-{
-    if (!is_array($selected) && preg_match("@,@Uis", $selected)) {
-        $selected = explode(",", $selected);
-    }
-    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT u.id, g.cansettingspanel, g.canstaffpanel, g.issupermod FROM users u LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) WHERE u.$id = '" . $_SESSION["ADMIN_ID"] . "' LIMIT 1");
-    $currentUserPerms = mysqli_fetch_assoc($query);
-    $count = 0;
-    $userGroupsHtml = "\r\n\t<table>\r\n\t\t<tr>\t";
-    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT gid, title, cansettingspanel, canstaffpanel, issupermod, namestyle FROM usergroups WHERE `isbanned` = 'no' ORDER by disporder ASC");
-    while ($row = mysqli_fetch_assoc($query)) {
-        if (!($row["cansettingspanel"] == "yes" && $currentUserPerms["cansettingspanel"] != "yes" || $row["canstaffpanel"] == "yes" && $currentUserPerms["canstaffpanel"] != "yes" || $row["issupermod"] == "yes" && $currentUserPerms["issupermod"] != "yes")) {
-            if ($count && $count % 8 == 0) {
-                $userGroupsHtml .= "</tr><tr>";
-            }
-            $userGroupsHtml .= "<td><input $type = \"checkbox\" $name = \"usergroups[]\" $value = \"" . $row["gid"] . "\"" . (is_array($selected) && count($selected) && in_array($row["gid"], $selected) ? " $checked = \"checked\"" : "") . " /></td><td>" . str_replace("{username}", $row["title"], $row["namestyle"]) . "</td>";
-            $count++;
-        }
-    }
-    $userGroupsHtml .= "</tr></table>";
-    return $userGroupsHtml;
-}
-function validatePerPage($numresults, &$page, &$perpage, $maxperpage = 20, $defaultperpage = 20)
-{
-    $perpage = intval($perpage);
-    if ($perpage < 1) {
-        $perpage = $defaultperpage;
-    } else {
-        if ($maxperpage < $perpage) {
-            $perpage = $maxperpage;
-        }
-    }
-    $totalPages = ceil($numresults / $perpage);
-    if ($totalPages == 0) {
-        $totalPages = 1;
-    }
-    if ($page < 1) {
-        $page = 1;
-    } else {
-        if ($totalPages < $page) {
-            $page = $totalPages;
-        }
-    }
-}
-function calculatePagination($pagenumber, $perpage, $total)
-{
-    $paginationFirstItem = $perpage * ($pagenumber - 1);
-    $paginationLastItem = $paginationFirstItem + $perpage;
-    if ($total < $paginationLastItem) {
-        $paginationLastItem = $total;
-    }
-    $paginationFirstItem++;
-    return ["first" => number_format($paginationFirstItem), "last" => number_format($paginationLastItem)];
-}
-function buildPaginationLinks($perpage, $results, $address)
+
+/**
+ * Build pagination links
+ */
+function buildPaginationLinks(int $perpage, int $results, string $address): array
 {
     if ($results < $perpage) {
-        return ["", ""];
+        return ['', ''];
     }
-    if ($results) {
-        $queryResult = @ceil($results / $perpage);
-    } else {
-        $queryResult = 0;
+    
+    $queryResult = $results ? (int)ceil($results / $perpage) : 0;
+    $pagenumber = (int)($_GET['page'] ?? $_POST['page'] ?? 1);
+    
+    if ($pagenumber < 1) {
+        $pagenumber = 1;
+    } elseif ($pagenumber > $queryResult) {
+        $pagenumber = $queryResult;
     }
-    $pagenumber = isset($_GET["page"]) ? intval($_GET["page"]) : (isset($_POST["page"]) ? intval($_POST["page"]) : "");
-    validatePerPage($results, $pagenumber, $perpage, 200);
+    
     $limitOffset = ($pagenumber - 1) * $perpage;
-    $paginationOffset = $pagenumber * $perpage;
-    if ($results < $paginationOffset) {
-        $paginationOffset = $results;
-        if ($results < $limitOffset) {
-            $limitOffset = $results - $perpage - 1;
-        }
-    }
-    if ($limitOffset < 0) {
-        $limitOffset = 0;
-    }
-    $paginationLinks = $prevPage = $nextPage = $pageLinks = $paginationHtml = "";
-    $currentPage = 0;
+    
     if ($results <= $perpage) {
-        $paginationHtml["pagenav"] = false;
-        return ["", "LIMIT " . $limitOffset . ", " . $perpage];
+        return ['', 'LIMIT ' . $limitOffset . ', ' . $perpage];
     }
-    $paginationHtml["pagenav"] = true;
+    
     $total = number_format($results);
-    $paginationHtml["last"] = false;
-    $paginationHtml["first"] = $paginationHtml["last"];
-    $paginationHtml["next"] = $paginationHtml["first"];
-    $paginationHtml["prev"] = $paginationHtml["next"];
-    if (1 < $pagenumber) {
+    $prevLink = '';
+    $nextLink = '';
+    
+    if ($pagenumber > 1) {
         $previousPage = $pagenumber - 1;
-        $previousPageInfo = calculatePagination($previousPage, $perpage, $results);
-        $paginationHtml["prev"] = true;
+        $prevLink = '<li><a class="smalltext" href="' . escape_attr($address . 'page=' . $previousPage) . '">&lt;</a></li>';
     }
+    
     if ($pagenumber < $queryResult) {
         $nextPageNumber = $pagenumber + 1;
-        $nextPageInfo = calculatePagination($nextPageNumber, $perpage, $results);
-        $paginationHtml["next"] = true;
+        $nextLink = '<li><a class="smalltext" href="' . escape_attr($address . 'page=' . $nextPageNumber) . '">&gt;</a></li>';
     }
-    $pageRangeThreshold = "3";
-    if (!isset($paginationSkipLinksArray) || !is_array($paginationSkipLinksArray)) {
-        $paginationOptions = "10 50 100 500 1000";
-        $paginationSkipLinksArray[] = preg_split("#\\s+#s", $paginationOptions, -1, PREG_SPLIT_NO_EMPTY);
-        while ($currentPage++ < $queryResult) {
+    
+    $paginationLinks = '
+    <table cellpadding="0" cellspacing="0" border="0" class="mainTableNoBorder">
+        <tr>
+            <td style="padding: 0px 0px 1px 0px;">
+                <div style="float: left;" id="navcontainer_f">
+                    <ul>
+                        <li>' . $pagenumber . ' - ' . $queryResult . '</li>
+                        ' . $prevLink . '
+                        ' . $nextLink . '
+                    </ul>
+                </div>
+            </td>
+        </tr>
+    </table>';
+    
+    return [$paginationLinks, 'LIMIT ' . $limitOffset . ', ' . $perpage];
+}
+
+// Display new announcement form
+if ($Act === 'new') {
+    echo loadTinyMCEEditor();
+    ?>
+    <form action="<?php echo escape_attr($_SERVER['SCRIPT_NAME'] . '?do=manage_announcements&act=new'); ?>" method="post">
+    <?php echo getFormTokenField(); ?>
+    <?php echo $Message; ?>
+    <table cellpadding="0" cellspacing="0" border="0" class="mainTable">
+        <tr>
+            <td class="tcat" colspan="2" align="center">
+                <?php echo escape_html($Language[2] ?? 'Announcements'); ?> - <?php echo escape_html($Language[6] ?? 'Add New'); ?>
+            </td>
+        </tr>
+        <tr>
+            <td class="alt1"><?php echo escape_html($Language[7] ?? 'Subject'); ?></td>
+            <td class="alt1">
+                <input type="text" name="subject" value="<?php echo escape_attr($subject); ?>" style="width: 99%;" dir="ltr" tabindex="1" />
+            </td>
+        </tr>
+        <tr>
+            <td class="alt1" valign="top"><?php echo escape_html($Language[8] ?? 'Message'); ?></td>
+            <td class="alt1">
+                <textarea name="message" id="message" style="width: 100%; height: 100px;" dir="ltr" tabindex="1"><?php echo escape_html($message); ?></textarea>
+                <p><a href="javascript:toggleEditor('message');"><img src="images/tool_refresh.png" border="0" alt="Toggle Editor" /></a></p>
+            </td>
+        </tr>
+        <tr>
+            <td class="alt1" valign="top"><?php echo escape_html($Language[9] ?? 'Usergroups'); ?></td>
+            <td class="alt1"><?php echo renderUserGroupCheckboxes($minclassread); ?></td>
+        </tr>
+        <tr>
+            <td class="tcat2"></td>
+            <td class="tcat2">
+                <input type="submit" value="<?php echo escape_attr($Language[14] ?? 'Submit'); ?>" /> 
+                <input type="reset" value="<?php echo escape_attr($Language[15] ?? 'Reset'); ?>" />
+            </td>
+        </tr>
+    </table>
+    </form>
+    <?php
+}
+
+// Display edit announcement form
+if ($Act === 'edit' && $id) {
+    try {
+        $result = $TSDatabase->query(
+            'SELECT subject, message, minclassread FROM announcements WHERE id = ?',
+            [$id]
+        );
+        
+        if ($result && ($Ann = $result->fetch(PDO::FETCH_ASSOC))) {
+            echo loadTinyMCEEditor();
+            ?>
+            <form action="<?php echo escape_attr($_SERVER['SCRIPT_NAME'] . '?do=manage_announcements&act=edit&id=' . $id); ?>" method="post">
+            <?php echo getFormTokenField(); ?>
+            <?php echo $Message; ?>
+            <table cellpadding="0" cellspacing="0" border="0" class="mainTable">
+                <tr>
+                    <td class="tcat" colspan="2" align="center">
+                        <?php echo escape_html($Language[2] ?? 'Announcements'); ?> - <?php echo escape_html($Language[4] ?? 'Edit'); ?>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="alt1"><?php echo escape_html($Language[7] ?? 'Subject'); ?></td>
+                    <td class="alt1">
+                        <input type="text" name="subject" value="<?php echo escape_attr($Ann['subject']); ?>" style="width: 99%;" dir="ltr" tabindex="1" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="alt1" valign="top"><?php echo escape_html($Language[8] ?? 'Message'); ?></td>
+                    <td class="alt1">
+                        <textarea name="message" id="f_offlinemsg" style="width: 100%; height: 100px;" dir="ltr" tabindex="1"><?php echo escape_html($Ann['message']); ?></textarea>
+                        <p><a href="javascript:toggleEditor('f_offlinemsg');"><img src="images/tool_refresh.png" border="0" alt="Toggle Editor" /></a></p>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="alt1" valign="top"><?php echo escape_html($Language[9] ?? 'Usergroups'); ?></td>
+                    <td class="alt1"><?php echo renderUserGroupCheckboxes($Ann['minclassread']); ?></td>
+                </tr>
+                <tr>
+                    <td class="tcat2"></td>
+                    <td class="tcat2">
+                        <input type="submit" value="<?php echo escape_attr($Language[14] ?? 'Submit'); ?>" /> 
+                        <input type="reset" value="<?php echo escape_attr($Language[15] ?? 'Reset'); ?>" />
+                    </td>
+                </tr>
+            </table>
+            </form>
+            <?php
         }
-        $previousPageQuery = isset($previousPage) && $previousPage != 1 ? "page=" . $previousPage : "";
-        $paginationLinks = "\r\n\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTableNoBorder\">\r\n\t\t<tr>\r\n\t\t\t<td $style = \"padding: 0px 0px 1px 0px;\">\r\n\t\t\t\t<div $style = \"float: left;\" $id = \"navcontainer_f\">\r\n\t\t\t\t\t<ul>\r\n\t\t\t\t\t\t<li>" . $pagenumber . " - " . $queryResult . "</li>\r\n\t\t\t\t\t\t" . ($paginationHtml["first"] ? "<li><a class=\"smalltext\" $href = \"" . $address . "\" $title = \"First Page - Show Results " . $firstPageInfo["first"] . " to " . $firstPageInfo["last"] . " of " . $total . "\">&laquo; First</a></li>" : "") . ($paginationHtml["prev"] ? "<li><a class=\"smalltext\" $href = \"" . $address . $previousPageQuery . "\" $title = \"Previous Page - Show Results " . $previousPageInfo["first"] . " to " . $previousPageInfo["last"] . " of " . $total . "\">&lt;</a></li>" : "") . "\r\n\t\t\t\t\t\t" . $paginationLinks . "\r\n\t\t\t\t\t\t" . ($paginationHtml["next"] ? "<li><a class=\"smalltext\" $href = \"" . $address . "page=" . $nextPageNumber . "\" $title = \"Next Page - Show Results " . $nextPageInfo["first"] . " to " . $nextPageInfo["last"] . " of " . $total . "\">&gt;</a></li>" : "") . ($paginationHtml["last"] ? "<li><a class=\"smalltext\" $href = \"" . $address . "page=" . $queryResult . "\" $title = \"Last Page - Show Results " . $lastPageInfo["first"] . " to " . $lastPageInfo["last"] . " of " . $total . "\">Last <strong>&raquo;</strong></a></li>" : "") . "\r\n\t\t\t\t\t</ul>\r\n\t\t\t\t</div>\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t</table>";
-        return [$paginationLinks, "LIMIT " . $limitOffset . ", " . $perpage];
+    } catch (Exception $e) {
+        error_log('Failed to load announcement for edit: ' . $e->getMessage());
+        echo showAlertErrorModern('Failed to load announcement');
     }
-    if ($pageRangeThreshold <= abs($currentPage - $pagenumber) && $pageRangeThreshold != 0) {
-        if ($currentPage == 1) {
-            $firstPageInfo = calculatePagination(1, $perpage, $results);
-            $paginationHtml["first"] = true;
-        }
-        if ($currentPage == $queryResult) {
-            $lastPageInfo = calculatePagination($queryResult, $perpage, $results);
-            $paginationHtml["last"] = true;
-        }
-        if (in_array(abs($currentPage - $pagenumber), $paginationSkipLinksArray) && $currentPage != 1 && $currentPage != $queryResult) {
-            $pageRangeInfo = calculatePagination($currentPage, $perpage, $results);
-            $pageOffsetDisplay = $currentPage - $pagenumber;
-            if (0 < $pageOffsetDisplay) {
-                $pageOffsetDisplay = "+" . $pageOffsetDisplay;
+}
+
+// Display list of announcements
+try {
+    $countResult = $TSDatabase->query('SELECT COUNT(*) as count FROM announcements');
+    $results = $countResult ? (int)$countResult->fetch(PDO::FETCH_ASSOC)['count'] : 0;
+    
+    list($pagertop, $limit) = buildPaginationLinks(25, $results, $_SERVER['SCRIPT_NAME'] . '?do=manage_announcements&');
+    
+    // Extract LIMIT values for PDO
+    preg_match('/LIMIT (\d+), (\d+)/', $limit, $matches);
+    $offset = (int)($matches[1] ?? 0);
+    $perpage = (int)($matches[2] ?? 25);
+    
+    $result = $TSDatabase->query(
+        'SELECT a.*, u.username, g.namestyle 
+         FROM announcements a 
+         LEFT JOIN users u ON a.by = u.username 
+         LEFT JOIN usergroups g ON u.usergroup = g.gid 
+         ORDER BY a.added DESC 
+         LIMIT ?, ?',
+        [$offset, $perpage]
+    );
+    
+    if ($result && $result->rowCount() > 0) {
+        $token = generateFormToken();
+        ?>
+        <?php echo showAlertSuccessModern('<a href="' . escape_attr($_SERVER['SCRIPT_NAME'] . '?do=manage_announcements&act=new') . '">' . escape_html($Language[6] ?? 'Add New') . '</a>'); ?>
+        <?php echo $Message; ?>
+        <?php echo $pagertop; ?>
+        <table cellpadding="0" cellspacing="0" border="0" class="mainTable">
+            <tr>
+                <td class="tcat" colspan="6" align="center">
+                    <?php echo escape_html($Language[2] ?? 'Announcements'); ?> (<?php echo $results; ?>)
+                </td>
+            </tr>
+            <tr>
+                <td class="alt2"><?php echo escape_html($Language[7] ?? 'Subject'); ?></td>
+                <td class="alt2"><?php echo escape_html($Language[8] ?? 'Message'); ?></td>
+                <td class="alt2"><?php echo escape_html($Language[16] ?? 'By'); ?></td>
+                <td class="alt2"><?php echo escape_html($Language[17] ?? 'Added'); ?></td>
+                <td class="alt2"><?php echo escape_html($Language[9] ?? 'Usergroups'); ?></td>
+                <td class="alt2" align="center"><?php echo escape_html($Language[18] ?? 'Options'); ?></td>
+            </tr>
+            <?php
+            while ($Ann = $result->fetch(PDO::FETCH_ASSOC)) {
+                ?>
+                <tr>
+                    <td class="alt1">
+                        <?php echo escape_html($Ann['subject']); ?>
+                    </td>
+                    <td class="alt1">
+                        <?php echo escape_html(strip_tags(substr($Ann['message'], 0, 150))); ?>
+                    </td>
+                    <td class="alt1">
+                        <a href="<?php echo escape_attr($_SERVER['SCRIPT_NAME'] . '?do=edit_user&username=' . $Ann['username']); ?>">
+                            <?php echo applyUsernameStyle(escape_html($Ann['username']), $Ann['namestyle']); ?>
+                        </a>
+                    </td>
+                    <td class="alt1">
+                        <?php echo escape_html(formatTimestamp($Ann['added'])); ?>
+                    </td>
+                    <td class="alt1">
+                        <?php echo escape_html($Ann['minclassread']); ?>
+                    </td>
+                    <td class="alt1" align="center">
+                        <a href="<?php echo escape_attr($_SERVER['SCRIPT_NAME'] . '?do=manage_announcements&act=edit&id=' . $Ann['id']); ?>">
+                            <img src="images/tool_edit.png" alt="<?php echo escape_attr($Language[4] ?? 'Edit'); ?>" title="<?php echo escape_attr($Language[4] ?? 'Edit'); ?>" border="0" />
+                        </a> 
+                        <a href="<?php echo escape_attr($_SERVER['SCRIPT_NAME'] . '?do=manage_announcements&act=delete&id=' . $Ann['id'] . '&form_token=' . $token); ?>" 
+                           onclick="return confirm('Are you sure you want to delete this announcement?');">
+                            <img src="images/tool_delete.png" alt="<?php echo escape_attr($Language[5] ?? 'Delete'); ?>" title="<?php echo escape_attr($Language[5] ?? 'Delete'); ?>" border="0" />
+                        </a>
+                    </td>
+                </tr>
+                <?php
             }
-            $paginationLinks .= "<li><a class=\"smalltext\" $href = \"" . $address . ($currentPage != 1 ? "page=" . $currentPage : "") . "\" $title = \"Show results " . $pageRangeInfo["first"] . " to " . $pageRangeInfo["last"] . " of " . $total . "\"><!--" . $pageOffsetDisplay . "-->" . $currentPage . "</a></li>";
-        }
+            ?>
+        </table>
+        <?php echo $pagertop; ?>
+        <?php
     } else {
-        if ($currentPage == $pagenumber) {
-            $currentPageInfo = calculatePagination($currentPage, $perpage, $results);
-            $paginationLinks .= "<li><a $name = \"current\" class=\"current\" $title = \"Showing results " . $currentPageInfo["first"] . " to " . $currentPageInfo["last"] . " of " . $total . "\">" . $currentPage . "</a></li>";
-        } else {
-            $pageRangeInfo = calculatePagination($currentPage, $perpage, $results);
-            $paginationLinks .= "<li><a $href = \"" . $address . ($currentPage != 1 ? "page=" . $currentPage : "") . "\" $title = \"Show results " . $pageRangeInfo["first"] . " to " . $pageRangeInfo["last"] . " of " . $total . "\">" . $currentPage . "</a></li>";
-        }
+        $noAnnouncementsMsg = str_replace(
+            '{1}',
+            $_SERVER['SCRIPT_NAME'] . '?do=manage_announcements&act=new',
+            $Language[13] ?? 'No announcements found. <a href="{1}">Add New</a>'
+        );
+        echo showAlertErrorModern($noAnnouncementsMsg);
     }
-}
-function formatTimestamp($timestamp = "")
-{
-    $dateFormatPattern = "m-d-Y h:i A";
-    if (empty($timestamp)) {
-        $timestamp = time();
-    } else {
-        if (strstr($timestamp, "-")) {
-            $timestamp = strtotime($timestamp);
-        }
-    }
-    return date($dateFormatPattern, $timestamp);
-}
-function applyUsernameStyle($username, $namestyle)
-{
-    return str_replace("{username}", $username, $namestyle);
+} catch (Exception $e) {
+    error_log('Failed to list announcements: ' . $e->getMessage());
+    echo showAlertErrorModern('Failed to load announcements list');
 }
 
 ?>
