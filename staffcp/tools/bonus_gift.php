@@ -1,99 +1,159 @@
 <?php
-checkStaffAuthentication();
-$Language = file("languages/" . getStaffLanguage() . "/bonus_gift.lang");
-$Message = "";
-$amount = "0";
+
+declare(strict_types=1);
+
+require_once __DIR__ . '/../staffcp_modern.php';
+
+checkStaffAuthenticationModern();
+
+$Language = loadStaffLanguage('bonus_gift');
+$Message = '';
+$amount = '0';
 $usergroups = [];
-$username = "";
-if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
-    $amount = intval($_POST["amount"]);
-    $usergroups = isset($_POST["usergroups"]) ? $_POST["usergroups"] : "";
-    $username = isset($_POST["username"]) ? $_POST["username"] : "";
-    if ($amount && (is_array($usergroups) && count($usergroups) || $username)) {
-        if ($username) {
-            if (preg_match("@,@", $username)) {
-                $usernames = explode(",", $username);
+$username = '';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!validateFormToken($_POST['form_token'] ?? '')) {
+        $Message = showAlertErrorModern('Invalid form token');
+    } else {
+        $amount = (int)($_POST['amount'] ?? 0);
+        $usergroups = isset($_POST['usergroups']) ? $_POST['usergroups'] : [];
+        $username = isset($_POST['username']) ? trim($_POST['username']) : '';
+        
+        if ($amount && ((!empty($usergroups) && is_array($usergroups)) || $username)) {
+            $SysMsg = '';
+            
+            if ($username) {
+                $usernames = strpos($username, ',') !== false ? array_map('trim', explode(',', $username)) : [$username];
+                
                 foreach ($usernames as $user) {
-                    $user = trim($user);
-                    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT usergroup FROM users WHERE `username` = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $user) . "'");
-                    if (0 < mysqli_num_rows($query)) {
-                        $newModComment = str_replace("'", "\"", date("Y-m-d") . " - " . str_replace(["{1}", "{2}", "{3}"], [$user, $amount, $_SESSION["ADMIN_USERNAME"]], $Language[13]) . "\\n");
-                        $newModCommentSQL = ", `modcomment` = IF(ISNULL(modcomment), '" . $newModComment . "', CONCAT('" . $newModComment . "', modcomment))";
-                        mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET $seedbonus = seedbonus + " . $amount . $newModCommentSQL . " WHERE `username` = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $user) . "'");
+                    try {
+                        $stmt = $TSDatabase->query('SELECT id FROM users WHERE username = ? LIMIT 1', [$user]);
+                        
+                        if ($stmt && $stmt->fetch(PDO::FETCH_ASSOC)) {
+                            $newModComment = date('Y-m-d') . ' - ' . str_replace(
+                                ['{1}', '{2}', '{3}'],
+                                [$user, $amount, $_SESSION['ADMIN_USERNAME']],
+                                $Language[13] ?? 'Bonus gift of {2} to {1} by {3}'
+                            ) . "\n";
+                            
+                            $TSDatabase->query(
+                                'UPDATE users SET seedbonus = seedbonus + ?, 
+                                 modcomment = IF(ISNULL(modcomment), ?, CONCAT(?, modcomment)) 
+                                 WHERE username = ?',
+                                [$amount, $newModComment, $newModComment, $user]
+                            );
+                        }
+                    } catch (Exception $e) {
+                        // Continue on error
                     }
                 }
-                $SysMsg = str_replace(["{1}", "{2}", "{3}"], [$username, $amount, $_SESSION["ADMIN_USERNAME"]], $Language[13]);
+                
+                $SysMsg = str_replace(
+                    ['{1}', '{2}', '{3}'],
+                    [$username, $amount, $_SESSION['ADMIN_USERNAME']],
+                    $Language[13] ?? 'Bonus gift of {2} to {1} by {3}'
+                );
             } else {
-                $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT usergroup FROM users WHERE `username` = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $username) . "'");
-                if (0 < mysqli_num_rows($query)) {
-                    $newModComment = str_replace("'", "\"", date("Y-m-d") . " - " . str_replace(["{1}", "{2}", "{3}"], [$username, $amount, $_SESSION["ADMIN_USERNAME"]], $Language[13]) . "\\n");
-                    $newModCommentSQL = ", `modcomment` = IF(ISNULL(modcomment), '" . $newModComment . "', CONCAT('" . $newModComment . "', modcomment))";
-                    mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET $seedbonus = seedbonus + " . $amount . $newModCommentSQL . " WHERE `username` = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $username) . "'");
-                    $SysMsg = str_replace(["{1}", "{2}", "{3}"], [$username, $amount, $_SESSION["ADMIN_USERNAME"]], $Language[13]);
-                } else {
-                    $Message = showAlertError($Language[12]);
+                try {
+                    $placeholders = implode(',', array_fill(0, count($usergroups), '?'));
+                    $SysMsg = str_replace(
+                        ['{1}', '{2}', '{3}'],
+                        [implode(',', $usergroups), $amount, $_SESSION['ADMIN_USERNAME']],
+                        $Language[3] ?? 'Bonus gift of {2} to groups {1} by {3}'
+                    );
+                    
+                    $newModComment = date('Y-m-d') . ' - ' . $SysMsg . "\n";
+                    
+                    $query = 'UPDATE users SET seedbonus = seedbonus + ?, 
+                              modcomment = IF(ISNULL(modcomment), ?, CONCAT(?, modcomment)) 
+                              WHERE usergroup IN (' . $placeholders . ')';
+                    
+                    $params = array_merge([$amount, $newModComment, $newModComment], $usergroups);
+                    $TSDatabase->query($query, $params);
+                } catch (Exception $e) {
+                    $Message = showAlertErrorModern('Database error: ' . escape_html($e->getMessage()));
                 }
             }
+            
+            if (!$Message && $SysMsg) {
+                logStaffActionModern($SysMsg);
+                $Message = showAlertSuccessModern($SysMsg);
+            }
         } else {
-            $work = implode(",", $usergroups);
-            $SysMsg = str_replace(["{1}", "{2}", "{3}"], [$work, $amount, $_SESSION["ADMIN_USERNAME"]], $Language[3]);
-            $newModComment = str_replace("'", "\"", date("Y-m-d") . " - " . $SysMsg . "\\n");
-            $newModCommentSQL = ", `modcomment` = IF(ISNULL(modcomment), '" . $newModComment . "', CONCAT('" . $newModComment . "', modcomment))";
-            mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET $seedbonus = seedbonus + " . $amount . $newModCommentSQL . " WHERE usergroup IN (0, " . $work . ")");
+            $Message = showAlertErrorModern($Language[10] ?? 'Please enter amount and select users or groups');
         }
-        if (!$Message && mysqli_affected_rows($GLOBALS["DatabaseConnect"])) {
-            logStaffAction($SysMsg);
-            $Message = showAlertError($SysMsg);
-        }
-    } else {
-        $Message = showAlertError($Language[10]);
     }
-}
-$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT u.id, g.cansettingspanel, g.canstaffpanel, g.issupermod FROM users u LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) WHERE u.$id = '" . $_SESSION["ADMIN_ID"] . "' LIMIT 1");
-$LoggedAdminDetails = mysqli_fetch_assoc($query);
-$count = 0;
-$showusergroups = "\r\n<table>\r\n\t<tr>\t";
-$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT gid, title, cansettingspanel, canstaffpanel, issupermod, namestyle FROM usergroups ORDER by disporder ASC");
-while ($UG = mysqli_fetch_assoc($query)) {
-    if (!($UG["cansettingspanel"] == "yes" && $LoggedAdminDetails["cansettingspanel"] != "yes" || $UG["canstaffpanel"] == "yes" && $LoggedAdminDetails["canstaffpanel"] != "yes" || $UG["issupermod"] == "yes" && $LoggedAdminDetails["issupermod"] != "yes")) {
-        if ($count && $count % 8 == 0) {
-            $showusergroups .= "</tr><tr>";
-        }
-        $showusergroups .= "<td><input $type = \"checkbox\" $name = \"usergroups[]\" $value = \"" . $UG["gid"] . "\"" . (is_array($usergroups) && count($usergroups) && in_array($UG["gid"], $usergroups) ? " $checked = \"checked\"" : "") . " /></td><td>" . str_replace("{username}", $UG["title"], $UG["namestyle"]) . "</td>";
-        $count++;
-    }
-}
-$showusergroups .= "</tr></table>";
-echo "\r\n\r\n" . $Message . "\r\n<form $method = \"post\" $action = \"index.php?do=bonus_gift\">\r\n<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t<tr>\r\n\t\t<td class=\"tcat\" $colspan = \"2\" $align = \"center\">\r\n\t\t\t" . $Language[2] . "\r\n\t\t</td>\r\n\t</tr>\r\n\t<tr>\r\n\t\t<td class=\"alt1\" $align = \"right\">" . $Language[4] . "</td>\r\n\t\t<td class=\"alt1\"><input $type = \"text\" $name = \"amount\" $value = \"" . htmlspecialchars($amount) . "\" $size = \"10\" /></td>\r\n\t</tr>\r\n\t<tr>\r\n\t\t<td class=\"alt2\" $align = \"right\">" . $Language[11] . "</td>\r\n\t\t<td class=\"alt2\"><input $type = \"text\" $name = \"username\" $value = \"" . htmlspecialchars($username) . "\" $size = \"45\" /> <small>" . $Language[14] . "</small></td>\r\n\t</tr>\r\n\t<tr>\r\n\t\t<td class=\"alt1\" $valign = \"top\" $align = \"right\">" . $Language[6] . "</td>\r\n\t\t<td class=\"alt1\">" . $showusergroups . "</td>\r\n\t</tr>\r\n\t<tr>\r\n\t\t<td class=\"tcat2\" $align = \"right\"></td>\r\n\t\t<td class=\"tcat2\" ><input $type = \"submit\" $value = \"" . $Language[7] . "\" /> <input $type = \"reset\" $value = \"" . $Language[8] . "\" /></td>\r\n\t</tr>\r\n</table>\r\n</form>";
-function getStaffLanguage()
-{
-    if (isset($_COOKIE["staffcplanguage"]) && is_dir("languages/" . $_COOKIE["staffcplanguage"]) && is_file("languages/" . $_COOKIE["staffcplanguage"] . "/staffcp.lang")) {
-        return $_COOKIE["staffcplanguage"];
-    }
-    return "english";
-}
-function checkStaffAuthentication()
-{
-    if (!defined("IN-TSSE-STAFF-PANEL")) {
-        redirectTo("../index.php");
-    }
-}
-function redirectTo($url)
-{
-    if (!headers_sent()) {
-        header("Location: " . $url);
-    } else {
-        echo "\r\n\t\t<script $type = \"text/javascript\">\r\n\t\t\twindow.location.$href = \"" . $url . "\";\r\n\t\t</script>\r\n\t\t<noscript>\r\n\t\t\t<meta http-$equiv = \"refresh\" $content = \"0;$url = " . $url . "\" />\r\n\t\t</noscript>";
-    }
-    exit;
-}
-function showAlertError($Error)
-{
-    return "<div class=\"alert\"><div>" . $Error . "</div></div>";
-}
-function logStaffAction($log)
-{
-    mysqli_query($GLOBALS["DatabaseConnect"], "INSERT INTO ts_staffcp_logs (uid, date, log) VALUES ('" . $_SESSION["ADMIN_ID"] . "', '" . time() . "', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $log) . "')");
 }
 
-?>
+try {
+    $stmt = $TSDatabase->query(
+        'SELECT u.id, g.cansettingspanel, g.canstaffpanel, g.issupermod 
+         FROM users u 
+         LEFT JOIN usergroups g ON u.usergroup = g.gid 
+         WHERE u.id = ? 
+         LIMIT 1',
+        [$_SESSION['ADMIN_ID']]
+    );
+    $LoggedAdminDetails = $stmt ? $stmt->fetch(PDO::FETCH_ASSOC) : null;
+} catch (Exception $e) {
+    $LoggedAdminDetails = null;
+}
+
+$count = 0;
+$showusergroups = '<table><tr>';
+
+try {
+    $stmt = $TSDatabase->query('SELECT gid, title, cansettingspanel, canstaffpanel, issupermod, namestyle FROM usergroups ORDER BY disporder ASC');
+    if ($stmt) {
+        while ($UG = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            if ($LoggedAdminDetails && (
+                ($UG['cansettingspanel'] === 'yes' && $LoggedAdminDetails['cansettingspanel'] !== 'yes') ||
+                ($UG['canstaffpanel'] === 'yes' && $LoggedAdminDetails['canstaffpanel'] !== 'yes') ||
+                ($UG['issupermod'] === 'yes' && $LoggedAdminDetails['issupermod'] !== 'yes')
+            )) {
+                continue;
+            }
+            
+            if ($count && $count % 8 === 0) {
+                $showusergroups .= '</tr><tr>';
+            }
+            
+            $showusergroups .= '<td><input type="checkbox" name="usergroups[]" value="' . (int)$UG['gid'] . '"' .
+                (is_array($usergroups) && in_array($UG['gid'], $usergroups, true) ? ' checked="checked"' : '') .
+                ' /></td><td>' . str_replace('{username}', escape_html($UG['title']), $UG['namestyle']) . '</td>';
+            $count++;
+        }
+    }
+} catch (Exception $e) {
+    // Continue with empty list
+}
+
+$showusergroups .= '</tr></table>';
+
+echo '
+' . $Message . '
+<form method="post" action="index.php?do=bonus_gift">
+' . getFormTokenField() . '
+<table cellpadding="0" cellspacing="0" border="0" class="mainTable">
+    <tr>
+        <td class="tcat" colspan="2" align="center">' . ($Language[2] ?? 'Bonus Gift') . '</td>
+    </tr>
+    <tr>
+        <td class="alt1" align="right">' . ($Language[4] ?? 'Amount') . '</td>
+        <td class="alt1"><input type="text" name="amount" value="' . escape_attr($amount) . '" size="10" /></td>
+    </tr>
+    <tr>
+        <td class="alt2" align="right">' . ($Language[11] ?? 'Username(s)') . '</td>
+        <td class="alt2"><input type="text" name="username" value="' . escape_attr($username) . '" size="45" /> <small>' . ($Language[14] ?? 'Comma separated') . '</small></td>
+    </tr>
+    <tr>
+        <td class="alt1" valign="top" align="right">' . ($Language[6] ?? 'User Groups') . '</td>
+        <td class="alt1">' . $showusergroups . '</td>
+    </tr>
+    <tr>
+        <td class="tcat2" align="right"></td>
+        <td class="tcat2"><input type="submit" value="' . ($Language[7] ?? 'Submit') . '" /> <input type="reset" value="' . ($Language[8] ?? 'Reset') . '" /></td>
+    </tr>
+</table>
+</form>';

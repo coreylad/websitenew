@@ -1,65 +1,97 @@
 <?php
+declare(strict_types=1);
+
 checkStaffAuthentication();
 $Language = file("languages/" . getStaffLanguage() . "/manage_database.lang");
 $Message = "";
+
 if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
+    if (!isset($_POST['csrf_token']) || !hash_equals($_SESSION['csrf_token'] ?? '', $_POST['csrf_token'])) {
+        die('CSRF token validation failed');
+    }
+    
     $table_names = isset($_POST["table_names"]) ? $_POST["table_names"] : "";
     if (is_array($table_names) && count($table_names)) {
-        if (isset($_POST["backup"])) {
-            if (function_263($table_names)) {
-                $Message = showAlertError($Language[18]);
-            } else {
-                $Message = showAlertError($Language[17]);
-            }
-        } else {
-            if (isset($_POST["repair"])) {
-                $Message = "\r\n\t\t\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td $colspan = \"2\" class=\"tcat\" $align = \"center\">\r\n\t\t\t\t\t\t" . $Language[8] . "\r\n\t\t\t\t\t</td>\r\n\t\t\t\t</tr>\r\n\t\t\t";
-                foreach ($table_names as $Table) {
-                    $query = mysqli_query($GLOBALS["DatabaseConnect"], "REPAIR TABLE `" . $Table . "`");
-                    $Res = mysqli_fetch_array($query);
-                    $Message .= "\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t\t" . $Table . "\r\n\t\t\t\t\t</td>\r\n\t\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t\t" . $Res["Msg_text"] . "\r\n\t\t\t\t\t</td>\r\n\t\t\t\t</tr>\r\n\t\t\t\t";
+        try {
+            if (isset($_POST["backup"])) {
+                if (function_263($table_names)) {
+                    $Message = showAlertError($Language[18]);
+                } else {
+                    $Message = showAlertError($Language[17]);
                 }
-                $Message .= "\r\n\t\t\t</table>";
             } else {
-                if (isset($_POST["optimize"])) {
-                    $Message = "\r\n\t\t\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td $colspan = \"2\" class=\"tcat\" $align = \"center\">\r\n\t\t\t\t\t\t" . $Language[15] . "\r\n\t\t\t\t\t</td>\r\n\t\t\t\t</tr>\r\n\t\t\t";
+                if (isset($_POST["repair"])) {
+                    $Message = "\r\n\t\t\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td $colspan = \"2\" class=\"tcat\" $align = \"center\">\r\n\t\t\t\t\t\t" . htmlspecialchars($Language[8], ENT_QUOTES, 'UTF-8') . "\r\n\t\t\t\t\t</td>\r\n\t\t\t\t</tr>\r\n\t\t\t";
                     foreach ($table_names as $Table) {
-                        $query = mysqli_query($GLOBALS["DatabaseConnect"], "OPTIMIZE TABLE `" . $Table . "`");
-                        $Res = mysqli_fetch_array($query);
-                        $Message .= "\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t\t" . $Table . "\r\n\t\t\t\t\t</td>\r\n\t\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t\t" . $Res["Msg_text"] . "\r\n\t\t\t\t\t</td>\r\n\t\t\t\t</tr>\r\n\t\t\t\t";
+                        $Table = preg_replace('/[^a-zA-Z0-9_]/', '', $Table);
+                        $query = $GLOBALS["DatabaseConnect"]->query("REPAIR TABLE `" . $Table . "`");
+                        $Res = $query->fetch_array();
+                        $Message .= "\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t\t" . htmlspecialchars($Table, ENT_QUOTES, 'UTF-8') . "\r\n\t\t\t\t\t</td>\r\n\t\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t\t" . htmlspecialchars($Res["Msg_text"], ENT_QUOTES, 'UTF-8') . "\r\n\t\t\t\t\t</td>\r\n\t\t\t\t</tr>\r\n\t\t\t\t";
                     }
                     $Message .= "\r\n\t\t\t</table>";
                 } else {
-                    if (isset($_POST["check"])) {
-                        $Message = "\r\n\t\t\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td $colspan = \"2\" class=\"tcat\" $align = \"center\">\r\n\t\t\t\t\t\t" . $Language[16] . "\r\n\t\t\t\t\t</td>\r\n\t\t\t\t</tr>\r\n\t\t\t";
+                    if (isset($_POST["optimize"])) {
+                        $Message = "\r\n\t\t\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td $colspan = \"2\" class=\"tcat\" $align = \"center\">\r\n\t\t\t\t\t\t" . htmlspecialchars($Language[15], ENT_QUOTES, 'UTF-8') . "\r\n\t\t\t\t\t</td>\r\n\t\t\t\t</tr>\r\n\t\t\t";
                         foreach ($table_names as $Table) {
-                            $query = mysqli_query($GLOBALS["DatabaseConnect"], "CHECK TABLE `" . $Table . "`");
-                            $Res = mysqli_fetch_array($query);
-                            $Message .= "\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t\t" . $Table . "\r\n\t\t\t\t\t</td>\r\n\t\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t\t" . $Res["Msg_text"] . "\r\n\t\t\t\t\t</td>\r\n\t\t\t\t</tr>\r\n\t\t\t\t";
+                            $Table = preg_replace('/[^a-zA-Z0-9_]/', '', $Table);
+                            $query = $GLOBALS["DatabaseConnect"]->query("OPTIMIZE TABLE `" . $Table . "`");
+                            $Res = $query->fetch_array();
+                            $Message .= "\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t\t" . htmlspecialchars($Table, ENT_QUOTES, 'UTF-8') . "\r\n\t\t\t\t\t</td>\r\n\t\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t\t" . htmlspecialchars($Res["Msg_text"], ENT_QUOTES, 'UTF-8') . "\r\n\t\t\t\t\t</td>\r\n\t\t\t\t</tr>\r\n\t\t\t\t";
                         }
                         $Message .= "\r\n\t\t\t</table>";
+                    } else {
+                        if (isset($_POST["check"])) {
+                            $Message = "\r\n\t\t\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td $colspan = \"2\" class=\"tcat\" $align = \"center\">\r\n\t\t\t\t\t\t" . htmlspecialchars($Language[16], ENT_QUOTES, 'UTF-8') . "\r\n\t\t\t\t\t</td>\r\n\t\t\t\t</tr>\r\n\t\t\t";
+                            foreach ($table_names as $Table) {
+                                $Table = preg_replace('/[^a-zA-Z0-9_]/', '', $Table);
+                                $query = $GLOBALS["DatabaseConnect"]->query("CHECK TABLE `" . $Table . "`");
+                                $Res = $query->fetch_array();
+                                $Message .= "\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t\t" . htmlspecialchars($Table, ENT_QUOTES, 'UTF-8') . "\r\n\t\t\t\t\t</td>\r\n\t\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t\t" . htmlspecialchars($Res["Msg_text"], ENT_QUOTES, 'UTF-8') . "\r\n\t\t\t\t\t</td>\r\n\t\t\t\t</tr>\r\n\t\t\t\t";
+                            }
+                            $Message .= "\r\n\t\t\t</table>";
+                        }
                     }
                 }
             }
+        } catch (Exception $e) {
+            error_log("Error managing database: " . $e->getMessage());
+            $Message = showAlertError("An error occurred while performing the operation.");
         }
     }
 }
-echo "\r\n<script $type = \"text/javascript\">\r\n\tfunction select_deselectAll(formname,elm,group)\r\n\t{\r\n\t\tvar $frm = document.forms[formname];\r\n\t\tfor($i = 0;i<frm.length;i++)\r\n\t\t{\r\n\t\t\tif(elm.attributes[\"checkall\"] != null && elm.attributes[\"checkall\"].$value = = group)\r\n\t\t\t{\r\n\t\t\t\tif(frm.elements[i].attributes[\"checkme\"] != null && frm.elements[i].attributes[\"checkme\"].$value = = group)\r\n\t\t\t\t{\r\n\t\t\t\t\tfrm.elements[i].$checked = elm.checked;\r\n\t\t\t\t}\r\n\t\t\t}\r\n\t\t\telse if(frm.elements[i].attributes[\"checkme\"] != null && frm.elements[i].attributes[\"checkme\"].$value = = group)\r\n\t\t\t{\r\n\t\t\t\tif(frm.elements[i].$checked = = false)\r\n\t\t\t\t{\r\n\t\t\t\t\tfrm.elements[1].$checked = false;\r\n\t\t\t\t}\r\n\t\t\t}\r\n\t\t}\r\n\t}\r\n</script>\r\n<form $action = \"" . $_SERVER["SCRIPT_NAME"] . "?do=manage_database\" $method = \"post\" $name = \"manage_database\">\r\n\r\n" . $Message . "\r\n<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t<tr>\r\n\t\t<td $colspan = \"11\" class=\"tcat\" $align = \"center\">\r\n\t\t\t" . $Language[2] . "\r\n\t\t</td>\r\n\t</tr>\r\n\t<tr>\r\n\t\t<td class=\"alt2\">" . $Language[3] . "</td>\r\n\t\t<td class=\"alt2\">" . $Language[4] . "</td>\r\n\t\t<td class=\"alt2\">" . $Language[5] . "</td>\r\n\t\t<td class=\"alt2\">" . $Language[7] . "</td>\r\n\t\t<td class=\"alt2\">" . $Language[9] . "</td>\r\n\t\t<td class=\"alt2\">" . $Language[10] . "</td>\r\n\t\t<td class=\"alt2\">" . $Language[11] . "</td>\r\n\t\t<td class=\"alt2\">" . $Language[12] . "</td>\r\n\t\t<td class=\"alt2\">" . $Language[13] . "</td>\r\n\t\t<td class=\"alt2\">" . $Language[14] . "</td>\r\n\t\t<td class=\"alt2\" $align = \"center\"><input $type = \"checkbox\" $checkall = \"group\" $onclick = \"javascript: return select_deselectAll ('manage_database', this, 'group');\"></td>\r\n\t</tr>\r\n";
-$DBTables = [];
-$query = mysqli_query($GLOBALS["DatabaseConnect"], "SHOW TABLES");
-while ($mysql = mysqli_fetch_row($query)) {
-    $DBTables[] = $mysql[0];
+
+if (!isset($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }
-$totalrows = $totaldsize = $totalisize = 0;
-foreach ($DBTables as $Table) {
-    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SHOW TABLE STATUS LIKE '" . $Table . "'");
-    $Res = mysqli_fetch_assoc($query);
-    echo "\r\n\t<tr>\r\n\t\t<td class=\"alt1\">" . $Res["Name"] . "</td>\r\n\t\t<td class=\"alt1\">" . $Res["Engine"] . "</td>\r\n\t\t<td class=\"alt1\">" . number_format($Res["Rows"]) . "</td>\r\n\t\t<td class=\"alt1\">" . formatBytes($Res["Data_length"]) . "</td>\r\n\t\t<td class=\"alt1\">" . formatBytes($Res["Index_length"]) . "</td>\r\n\t\t<td class=\"alt1\">" . (0 < $Res["Data_free"] ? "<font $color = \"red\"><b>" . formatBytes($Res["Data_free"]) . "</b></font>" : formatBytes($Res["Data_free"])) . "</td>\r\n\t\t<td class=\"alt1\">" . formatTimestamp($Res["Create_time"]) . "</td>\r\n\t\t<td class=\"alt1\">" . formatTimestamp($Res["Update_time"]) . "</td>\r\n\t\t<td class=\"alt1\">" . formatTimestamp($Res["Check_time"]) . "</td>\r\n\t\t<td class=\"alt1\">" . $Res["Collation"] . "</td>\r\n\t\t<td class=\"alt1\" $align = \"center\"><input $type = \"checkbox\" $name = \"table_names[]\" $value = \"" . $Res["Name"] . "\" $checkme = \"group\" /></td>\r\n\t</tr>\r\n\t";
-    $totalrows += $Res["Rows"];
-    $totaldsize += $Res["Data_length"];
-    $totalisize += $Res["Index_length"];
+$csrfToken = $_SESSION['csrf_token'];
+echo "\r\n<script $type = \"text/javascript\">\r\n\tfunction select_deselectAll(formname,elm,group)\r\n\t{\r\n\t\tvar $frm = document.forms[formname];\r\n\t\tfor($i = 0;i<frm.length;i++)\r\n\t\t{\r\n\t\t\tif(elm.attributes[\"checkall\"] != null && elm.attributes[\"checkall\"].$value == group)\r\n\t\t\t{\r\n\t\t\t\tif(frm.elements[i].attributes[\"checkme\"] != null && frm.elements[i].attributes[\"checkme\"].$value == group)\r\n\t\t\t\t{\r\n\t\t\t\t\tfrm.elements[i].$checked = elm.checked;\r\n\t\t\t\t}\r\n\t\t\t}\r\n\t\t\telse if(frm.elements[i].attributes[\"checkme\"] != null && frm.elements[i].attributes[\"checkme\"].$value == group)\r\n\t\t\t{\r\n\t\t\t\tif(frm.elements[i].$checked == false)\r\n\t\t\t\t{\r\n\t\t\t\t\tfrm.elements[1].$checked = false;\r\n\t\t\t\t}\r\n\t\t\t}\r\n\t\t}\r\n\t}\r\n</script>\r\n<form $action = \"" . htmlspecialchars($_SERVER["SCRIPT_NAME"], ENT_QUOTES, 'UTF-8') . "?do=manage_database\" $method = \"post\" $name = \"manage_database\">\r\n<input type=\"hidden\" name=\"csrf_token\" value=\"" . htmlspecialchars($csrfToken, ENT_QUOTES, 'UTF-8') . "\" />\r\n\r\n" . $Message . "\r\n<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t<tr>\r\n\t\t<td $colspan = \"11\" class=\"tcat\" $align = \"center\">\r\n\t\t\t" . htmlspecialchars($Language[2], ENT_QUOTES, 'UTF-8') . "\r\n\t\t</td>\r\n\t</tr>\r\n\t<tr>\r\n\t\t<td class=\"alt2\">" . htmlspecialchars($Language[3], ENT_QUOTES, 'UTF-8') . "</td>\r\n\t\t<td class=\"alt2\">" . htmlspecialchars($Language[4], ENT_QUOTES, 'UTF-8') . "</td>\r\n\t\t<td class=\"alt2\">" . htmlspecialchars($Language[5], ENT_QUOTES, 'UTF-8') . "</td>\r\n\t\t<td class=\"alt2\">" . htmlspecialchars($Language[7], ENT_QUOTES, 'UTF-8') . "</td>\r\n\t\t<td class=\"alt2\">" . htmlspecialchars($Language[9], ENT_QUOTES, 'UTF-8') . "</td>\r\n\t\t<td class=\"alt2\">" . htmlspecialchars($Language[10], ENT_QUOTES, 'UTF-8') . "</td>\r\n\t\t<td class=\"alt2\">" . htmlspecialchars($Language[11], ENT_QUOTES, 'UTF-8') . "</td>\r\n\t\t<td class=\"alt2\">" . htmlspecialchars($Language[12], ENT_QUOTES, 'UTF-8') . "</td>\r\n\t\t<td class=\"alt2\">" . htmlspecialchars($Language[13], ENT_QUOTES, 'UTF-8') . "</td>\r\n\t\t<td class=\"alt2\">" . htmlspecialchars($Language[14], ENT_QUOTES, 'UTF-8') . "</td>\r\n\t\t<td class=\"alt2\" $align = \"center\"><input $type = \"checkbox\" $checkall = \"group\" $onclick = \"javascript: return select_deselectAll ('manage_database', this, 'group');\"></td>\r\n\t</tr>\r\n";
+
+try {
+    $DBTables = [];
+    $query = $GLOBALS["DatabaseConnect"]->query("SHOW TABLES");
+    while ($mysql = $query->fetch_row()) {
+        $DBTables[] = $mysql[0];
+    }
+    
+    $totalrows = $totaldsize = $totalisize = 0;
+    foreach ($DBTables as $Table) {
+        $stmt = $GLOBALS["DatabaseConnect"]->prepare("SHOW TABLE STATUS LIKE ?");
+        $stmt->bind_param("s", $Table);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $Res = $result->fetch_assoc();
+        $stmt->close();
+        
+        echo "\r\n\t<tr>\r\n\t\t<td class=\"alt1\">" . htmlspecialchars($Res["Name"], ENT_QUOTES, 'UTF-8') . "</td>\r\n\t\t<td class=\"alt1\">" . htmlspecialchars($Res["Engine"], ENT_QUOTES, 'UTF-8') . "</td>\r\n\t\t<td class=\"alt1\">" . number_format($Res["Rows"]) . "</td>\r\n\t\t<td class=\"alt1\">" . htmlspecialchars(formatBytes($Res["Data_length"]), ENT_QUOTES, 'UTF-8') . "</td>\r\n\t\t<td class=\"alt1\">" . htmlspecialchars(formatBytes($Res["Index_length"]), ENT_QUOTES, 'UTF-8') . "</td>\r\n\t\t<td class=\"alt1\">" . (0 < $Res["Data_free"] ? "<font $color = \"red\"><b>" . htmlspecialchars(formatBytes($Res["Data_free"]), ENT_QUOTES, 'UTF-8') . "</b></font>" : htmlspecialchars(formatBytes($Res["Data_free"]), ENT_QUOTES, 'UTF-8')) . "</td>\r\n\t\t<td class=\"alt1\">" . htmlspecialchars(formatTimestamp($Res["Create_time"]), ENT_QUOTES, 'UTF-8') . "</td>\r\n\t\t<td class=\"alt1\">" . htmlspecialchars(formatTimestamp($Res["Update_time"]), ENT_QUOTES, 'UTF-8') . "</td>\r\n\t\t<td class=\"alt1\">" . htmlspecialchars(formatTimestamp($Res["Check_time"]), ENT_QUOTES, 'UTF-8') . "</td>\r\n\t\t<td class=\"alt1\">" . htmlspecialchars($Res["Collation"], ENT_QUOTES, 'UTF-8') . "</td>\r\n\t\t<td class=\"alt1\" $align = \"center\"><input $type = \"checkbox\" $name = \"table_names[]\" $value = \"" . htmlspecialchars($Res["Name"], ENT_QUOTES, 'UTF-8') . "\" $checkme = \"group\" /></td>\r\n\t</tr>\r\n\t";
+        $totalrows += $Res["Rows"];
+        $totaldsize += $Res["Data_length"];
+        $totalisize += $Res["Index_length"];
+    }
+} catch (Exception $e) {
+    error_log("Error fetching database tables: " . $e->getMessage());
 }
-echo "\r\n\t<tr>\r\n\t\t<td class=\"tcat2\" $align = \"right\" $colspan = \"11\">\r\n\t\t\t<input $type = \"submit\" $name = \"backup\" $value = \"" . $Language[6] . "\" /> <input $type = \"submit\" $name = \"repair\" $value = \"" . $Language[8] . "\" /> <input $type = \"submit\" $name = \"optimize\" $value = \"" . $Language[15] . "\" /> <input $type = \"submit\" $name = \"check\" $value = \"" . $Language[16] . "\" />\r\n\t\t</td>\r\n\t</tr>\r\n</table>";
+
+echo "\r\n\t<tr>\r\n\t\t<td class=\"tcat2\" $align = \"right\" $colspan = \"11\">\r\n\t\t\t<input $type = \"submit\" $name = \"backup\" $value = \"" . htmlspecialchars($Language[6], ENT_QUOTES, 'UTF-8') . "\" /> <input $type = \"submit\" $name = \"repair\" $value = \"" . htmlspecialchars($Language[8], ENT_QUOTES, 'UTF-8') . "\" /> <input $type = \"submit\" $name = \"optimize\" $value = \"" . htmlspecialchars($Language[15], ENT_QUOTES, 'UTF-8') . "\" /> <input $type = \"submit\" $name = \"check\" $value = \"" . htmlspecialchars($Language[16], ENT_QUOTES, 'UTF-8') . "\" />\r\n\t\t</td>\r\n\t</tr>\r\n</table>";
 function getStaffLanguage()
 {
     if (isset($_COOKIE["staffcplanguage"]) && is_dir("languages/" . $_COOKIE["staffcplanguage"]) && is_file("languages/" . $_COOKIE["staffcplanguage"] . "/staffcp.lang")) {
@@ -86,9 +118,18 @@ function showAlertError($Error)
 {
     return "<div class=\"alert\"><div>" . $Error . "</div></div>";
 }
-function logStaffAction($log)
+function logStaffAction($log): void
 {
-    mysqli_query($GLOBALS["DatabaseConnect"], "INSERT INTO ts_staffcp_logs (uid, date, log) VALUES ('" . $_SESSION["ADMIN_ID"] . "', '" . time() . "', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $log) . "')");
+    try {
+        $stmt = $GLOBALS["DatabaseConnect"]->prepare("INSERT INTO ts_staffcp_logs (uid, date, log) VALUES (?, ?, ?)");
+        $uid = $_SESSION["ADMIN_ID"];
+        $time = time();
+        $stmt->bind_param("sis", $uid, $time, $log);
+        $stmt->execute();
+        $stmt->close();
+    } catch (Exception $e) {
+        error_log("Error logging staff action: " . $e->getMessage());
+    }
 }
 function formatBytes($bytes = 0)
 {
@@ -133,33 +174,41 @@ function function_263($tables)
         $time = date("dS F Y \\a\\t H:i", time());
         $header = "-- -------------------------------------\n-- TS SE Database Backup\n-- Generated: " . $time . "\n-- -------------------------------------\n\n";
         $tableRow = $header;
-        foreach ($tables as $dbUser) {
-            $dbPass = [];
-            $dbName = dbBackup($dbUser);
-            foreach ($dbName as $dbTable) {
-                $dbPass[] = $dbTable["Field"];
-            }
-            $dbQuery = implode(",", $dbPass);
-            $dbResult = dbRestore($dbUser) . ";\n";
-            $tableRow .= $dbResult;
-            dbOptimize($fp, $tableRow);
-            $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM " . $dbUser);
-            while ($row = mysqli_fetch_array($query)) {
-                $dbError = "INSERT INTO " . $dbUser . " (" . $dbQuery . ") VALUES (";
-                $dbConnection = "";
-                foreach ($dbPass as $dbTable) {
-                    if (!isset($row[$dbTable]) || trim($row[$dbTable]) == "") {
-                        $dbError .= $dbConnection . "''";
-                    } else {
-                        $dbError .= $dbConnection . "'" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $row[$dbTable]) . "'";
-                    }
-                    $dbConnection = ",";
+        
+        try {
+            foreach ($tables as $dbUser) {
+                $dbPass = [];
+                $dbName = function_265($dbUser);
+                foreach ($dbName as $dbTable) {
+                    $dbPass[] = $dbTable["Field"];
                 }
-                $dbError .= ");\n";
-                $tableRow .= $dbError;
-                dbOptimize($fp, $tableRow);
+                $dbQuery = implode(",", $dbPass);
+                $dbResult = function_266($dbUser) . ";\n";
+                $tableRow .= $dbResult;
+                function_267($fp, $tableRow);
+                
+                $query = $GLOBALS["DatabaseConnect"]->query("SELECT * FROM " . $dbUser);
+                while ($row = $query->fetch_array()) {
+                    $dbError = "INSERT INTO " . $dbUser . " (" . $dbQuery . ") VALUES (";
+                    $dbConnection = "";
+                    foreach ($dbPass as $dbTable) {
+                        if (!isset($row[$dbTable]) || trim($row[$dbTable]) == "") {
+                            $dbError .= $dbConnection . "''";
+                        } else {
+                            $dbError .= $dbConnection . "'" . $GLOBALS["DatabaseConnect"]->real_escape_string($row[$dbTable]) . "'";
+                        }
+                        $dbConnection = ",";
+                    }
+                    $dbError .= ");\n";
+                    $tableRow .= $dbError;
+                    function_267($fp, $tableRow);
+                }
             }
+        } catch (Exception $e) {
+            error_log("Error during backup: " . $e->getMessage());
+            return false;
         }
+        
         return true;
     } else {
         return false;
@@ -167,18 +216,28 @@ function function_263($tables)
 }
 function function_265($table)
 {
-    $dbBackup = [];
-    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SHOW FIELDS FROM " . $table);
-    while ($dbTable = mysqli_fetch_array($query)) {
-        $dbBackup[] = $dbTable;
+    try {
+        $dbBackup = [];
+        $query = $GLOBALS["DatabaseConnect"]->query("SHOW FIELDS FROM " . $table);
+        while ($dbTable = $query->fetch_array()) {
+            $dbBackup[] = $dbTable;
+        }
+        return $dbBackup;
+    } catch (Exception $e) {
+        error_log("Error getting table fields: " . $e->getMessage());
+        return [];
     }
-    return $dbBackup;
 }
 function function_266($table)
 {
-    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SHOW CREATE TABLE " . $table);
-    $dbResult = mysqli_fetch_array($query);
-    return $dbResult["Create Table"];
+    try {
+        $query = $GLOBALS["DatabaseConnect"]->query("SHOW CREATE TABLE " . $table);
+        $dbResult = $query->fetch_array();
+        return $dbResult["Create Table"];
+    } catch (Exception $e) {
+        error_log("Error getting table create statement: " . $e->getMessage());
+        return "";
+    }
 }
 function function_267($fp, &$contents)
 {

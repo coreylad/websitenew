@@ -1,75 +1,92 @@
 <?php
+
+declare(strict_types=1);
+
+require_once __DIR__ . '/../staffcp_modern.php';
+
 checkStaffAuthentication();
-$Language = file("languages/" . getStaffLanguage() . "/traceroute_ip.lang");
-$Message = "";
-$ip = "";
-if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
-    $ip = preg_replace("/[^A-Za-z0-9.]/", "", trim($_POST["ip"]));
-    if ($ip) {
-        if (strtoupper(substr(PHP_OS, 0, 3) == "WIN")) {
-            $windows = 1;
-            $unix = 0;
-        } else {
-            $windows = 0;
-            $unix = 1;
-        }
-        if ($unix) {
-            system("traceroute " . $ip);
-            system("killall -q traceroute");
-            $output = ob_get_contents();
-        } else {
-            system("tracert " . $ip);
-            $output = ob_get_contents();
-        }
-        @ob_end_clean();
-        $Message = "\r\n\t\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"tcat\" $align = \"center\"><b>" . $Language[4] . "</b></td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t<pre>\r\n\t\t\t\t\t\t" . $output . "\r\n\t\t\t\t\t</pre>\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t</table>";
+
+$Language = loadStaffLanguage('traceroute_ip');
+
+$Message = '';
+$ip = '';
+
+if (strtoupper($_SERVER['REQUEST_METHOD']) === 'POST') {
+    if (!validateFormToken($_POST['form_token'] ?? '')) {
+        $Message = showAlertErrorModern($Language[8] ?? 'Invalid form token');
     } else {
-        $Message = showAlertError($Language[5]);
+        $ip = preg_replace('/[^A-Za-z0-9.]/', '', trim($_POST['ip'] ?? ''));
+        
+        if ($ip) {
+            $isWindows = strtoupper(substr(PHP_OS, 0, 3)) === 'WIN';
+            
+            ob_start();
+            if ($isWindows) {
+                system('tracert ' . escapeshellarg($ip));
+            } else {
+                system('traceroute ' . escapeshellarg($ip));
+                system('killall -q traceroute 2>/dev/null');
+            }
+            $output = ob_get_contents();
+            ob_end_clean();
+            
+            $Message = '<table cellpadding="0" cellspacing="0" border="0" class="mainTable">
+                <tr>
+                    <td class="tcat" align="center"><b>' . escape_html($Language[4] ?? 'Results') . '</b></td>
+                </tr>
+                <tr>
+                    <td class="alt1">
+                        <pre>' . escape_html($output) . '</pre>
+                    </td>
+                </tr>
+            </table>';
+        } else {
+            $Message = showAlertErrorModern($Language[5] ?? 'Please enter a valid IP');
+        }
     }
+    
     exit($Message);
-}
-echo "<form $action = \"";
-echo $_SERVER["SCRIPT_NAME"];
-echo "?do=traceroute_ip\" $method = \"post\" $id = \"traceroute_ip\">\r\n";
-echo $Message;
-echo "<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t<tr>\r\n\t\t<td class=\"tcat\" $align = \"center\" $colspan = \"2\"><b>";
-echo $Language[2];
-echo "</b></td>\r\n\t</tr>\r\n\t<tr $valign = \"top\">\r\n\t\t<td class=\"alt1\" $align = \"right\">";
-echo $Language[3];
-echo "</td>\r\n\t\t<td class=\"alt1\"><input $type = \"text\" class=\"bginput\" $name = \"ip\" $value = \"";
-echo htmlspecialchars($ip);
-echo "\" $size = \"35\" $dir = \"ltr\" $tabindex = \"1\" /></td>\r\n\t</tr>\r\n\t<tr>\r\n\t\t<td class=\"tcat2\"></td>\r\n\t\t<td class=\"tcat2\">\t\r\n\t\t\t<input $type = \"submit\" class=\"button\" $tabindex = \"1\" $value = \"";
-echo $Language[6];
-echo "\" $accesskey = \"s\" />\r\n\t\t\t<input $type = \"reset\" class=\"button\" $tabindex = \"1\" $value = \"";
-echo $Language[7];
-echo "\" $accesskey = \"r\" />\r\n\t\t</td>\r\n\t</tr>\r\n</table>\r\n</form>\r\n<script $type = \"text/javascript\">\r\n\t\$(\"#traceroute_ip\").submit(function(e)\r\n\t{\r\n\t\te.preventDefault();\r\n\t\tvar \$form = \$(this), \$fields = \$form.serialize();\r\n\t\t\r\n\t\t\$.ajax\r\n\t\t({\r\n\t\t\turl: '";
-echo $_SERVER["SCRIPT_NAME"];
-echo "?do=traceroute_ip',\r\n\t\t\ttype: 'POST',\r\n\t\t\tdata: \$fields,\r\n\t\t\tsuccess: function(response)\r\n\t\t\t{\r\n\t\t\t\t\$('<div>'+response+'</div>').insertAfter(\$form);\r\n\t\t\t}\r\n\t\t});\r\n\r\n\t\treturn false;\r\n\t});\r\n</script>";
-function getStaffLanguage()
-{
-    if (isset($_COOKIE["staffcplanguage"]) && is_dir("languages/" . $_COOKIE["staffcplanguage"]) && is_file("languages/" . $_COOKIE["staffcplanguage"] . "/staffcp.lang")) {
-        return $_COOKIE["staffcplanguage"];
-    }
-    return "english";
-}
-function checkStaffAuthentication()
-{
-    if (!defined("IN-TSSE-STAFF-PANEL")) {
-        redirectTo("../index.php");
-    }
-}
-function redirectTo($url)
-{
-    if (!headers_sent()) {
-        header("Location: " . $url);
-    } else {
-        echo "\r\n\t\t<script $type = \"text/javascript\">\r\n\t\t\twindow.location.$href = \"" . $url . "\";\r\n\t\t</script>\r\n\t\t<noscript>\r\n\t\t\t<meta http-$equiv = \"refresh\" $content = \"0;$url = " . $url . "\" />\r\n\t\t</noscript>";
-    }
-    exit;
-}
-function showAlertError($Error)
-{
-    return "<div class=\"alert\"><div>" . $Error . "</div></div>";
 }
 
 ?>
+<form action="<?php echo escape_attr($_SERVER['SCRIPT_NAME']); ?>?do=traceroute_ip" method="post" id="traceroute_ip">
+<?php echo getFormTokenField(); ?>
+<?php echo $Message; ?>
+<table cellpadding="0" cellspacing="0" border="0" class="mainTable">
+    <tr>
+        <td class="tcat" align="center" colspan="2">
+            <b><?php echo escape_html($Language[2] ?? 'Traceroute IP'); ?></b>
+        </td>
+    </tr>
+    <tr valign="top">
+        <td class="alt1" align="right"><?php echo escape_html($Language[3] ?? 'IP Address'); ?></td>
+        <td class="alt1">
+            <input type="text" class="bginput" name="ip" value="<?php echo escape_attr($ip); ?>" size="35" dir="ltr" tabindex="1" />
+        </td>
+    </tr>
+    <tr>
+        <td class="tcat2"></td>
+        <td class="tcat2">
+            <input type="submit" class="button" tabindex="1" value="<?php echo escape_attr($Language[6] ?? 'Trace'); ?>" accesskey="s" />
+            <input type="reset" class="button" tabindex="1" value="<?php echo escape_attr($Language[7] ?? 'Reset'); ?>" accesskey="r" />
+        </td>
+    </tr>
+</table>
+</form>
+<script type="text/javascript">
+    $("#traceroute_ip").submit(function(e) {
+        e.preventDefault();
+        var $form = $(this), $fields = $form.serialize();
+        
+        $.ajax({
+            url: '<?php echo escape_js($_SERVER['SCRIPT_NAME']); ?>?do=traceroute_ip',
+            type: 'POST',
+            data: $fields,
+            success: function(response) {
+                $('<div>'+response+'</div>').insertAfter($form);
+            }
+        });
+        
+        return false;
+    });
+</script>

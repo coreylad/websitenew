@@ -1,48 +1,82 @@
 <?php
+
+declare(strict_types=1);
+
+// Load modern staffcp helpers
+require_once __DIR__ . '/../staffcp_modern.php';
+
+// Check authentication
 checkStaffAuthentication();
-$Language = file("languages/" . getStaffLanguage() . "/ip_bans.lang");
-$Message = "";
-$value = "";
-if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
-    $value = trim($_POST["value"]);
-    mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE ipbans SET $value = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $value) . "', $date = NOW(), $modifier = '" . $_SESSION["ADMIN_ID"] . "' WHERE `id` = 1");
-    if (mysqli_affected_rows($GLOBALS["DatabaseConnect"])) {
-        $SysMsg = str_replace("{1}", $_SESSION["ADMIN_USERNAME"], $Language[5]);
-        logStaffAction($SysMsg);
+
+// Load language
+$Language = loadStaffLanguage('ip_bans');
+
+// Initialize variables
+$Message = '';
+$value = '';
+
+// Process form submission
+if (strtoupper($_SERVER['REQUEST_METHOD']) === 'POST') {
+    // Validate form token
+    if (!validateFormToken($_POST['form_token'] ?? '')) {
+        $Message = showAlertErrorModern($Language[4] ?? 'Invalid form token');
     }
-}
-$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT value FROM ipbans WHERE `id` = 1");
-$IPBANS = mysqli_fetch_assoc($query);
-echo "\t\t\t\t\r\n\r\n" . $Message . "\r\n<form $method = \"post\" $action = \"index.php?do=ip_bans\">\r\n<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t<tr>\r\n\t\t<td class=\"tcat\" $align = \"center\">\r\n\t\t\t" . $Language[2] . "\r\n\t\t</td>\r\n\t</tr>\r\n\t<tr>\r\n\t\t<td class=\"alt1\">\r\n\t\t\t<textarea $style = \"width: 99%; height: 400px;\" $name = \"value\">" . $IPBANS["value"] . "</textarea>\r\n\t\t\t<small>" . $Language[8] . "</small>\r\n\t\t</td>\r\n\t</tr>\r\n\t<tr>\r\n\t\t<td class=\"tcat2\"><input $type = \"submit\" $value = \"" . $Language[6] . "\" /> <input $type = \"reset\" $value = \"" . $Language[7] . "\" /></td>\r\n\t</tr>\r\n</table>\r\n</form>";
-function getStaffLanguage()
-{
-    if (isset($_COOKIE["staffcplanguage"]) && is_dir("languages/" . $_COOKIE["staffcplanguage"]) && is_file("languages/" . $_COOKIE["staffcplanguage"] . "/staffcp.lang")) {
-        return $_COOKIE["staffcplanguage"];
+    else {
+        $value = trim($_POST['value'] ?? '');
+        
+        try {
+            // Update IP bans list
+            $TSDatabase->query(
+                'UPDATE ipbans SET value = ?, date = NOW(), modifier = ? WHERE id = 1',
+                [$value, $_SESSION['ADMIN_ID']]
+            );
+            
+            if ($TSDatabase->rowCount() > 0) {
+                $SysMsg = str_replace('{1}', $_SESSION['ADMIN_USERNAME'], 
+                                    $Language[5] ?? 'IP bans updated by {1}');
+                logStaffActionModern($SysMsg);
+                
+                $Message = showAlertSuccessModern($Language[9] ?? 'IP bans updated successfully');
+            }
+        } catch (Exception $e) {
+            error_log('IP bans error: ' . $e->getMessage());
+            $Message = showAlertErrorModern($Language[10] ?? 'Failed to update IP bans');
+        }
     }
-    return "english";
-}
-function checkStaffAuthentication()
-{
-    if (!defined("IN-TSSE-STAFF-PANEL")) {
-        redirectTo("../index.php");
-    }
-}
-function redirectTo($url)
-{
-    if (!headers_sent()) {
-        header("Location: " . $url);
-    } else {
-        echo "\r\n\t\t<script $type = \"text/javascript\">\r\n\t\t\twindow.location.$href = \"" . $url . "\";\r\n\t\t</script>\r\n\t\t<noscript>\r\n\t\t\t<meta http-$equiv = \"refresh\" $content = \"0;$url = " . $url . "\" />\r\n\t\t</noscript>";
-    }
-    exit;
-}
-function showAlertError($Error)
-{
-    return "<div class=\"alert\"><div>" . $Error . "</div></div>";
-}
-function logStaffAction($log)
-{
-    mysqli_query($GLOBALS["DatabaseConnect"], "INSERT INTO ts_staffcp_logs (uid, date, log) VALUES ('" . $_SESSION["ADMIN_ID"] . "', '" . time() . "', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $log) . "')");
 }
 
+// Get current IP bans
+try {
+    $result = $TSDatabase->query('SELECT value FROM ipbans WHERE id = 1');
+    $IPBANS = $result ? $result->fetch(PDO::FETCH_ASSOC) : ['value' => ''];
+    $value = $IPBANS['value'] ?? '';
+} catch (Exception $e) {
+    error_log('Get IP bans error: ' . $e->getMessage());
+    $value = '';
+}
+
+// Output form
 ?>
+<?php echo $Message; ?>
+<form method="post" action="index.php?do=ip_bans">
+<?php echo getFormTokenField(); ?>
+<table cellpadding="0" cellspacing="0" border="0" class="mainTable">
+    <tr>
+        <td class="tcat" align="center">
+            <?php echo escape_html($Language[2] ?? 'IP Bans'); ?>
+        </td>
+    </tr>
+    <tr>
+        <td class="alt1">
+            <textarea style="width: 99%; height: 400px;" name="value"><?php echo escape_html($value); ?></textarea>
+            <small><?php echo escape_html($Language[8] ?? 'Enter IPs separated by spaces'); ?></small>
+        </td>
+    </tr>
+    <tr>
+        <td class="tcat2">
+            <input type="submit" value="<?php echo escape_attr($Language[6] ?? 'Update'); ?>" />
+            <input type="reset" value="<?php echo escape_attr($Language[7] ?? 'Reset'); ?>" />
+        </td>
+    </tr>
+</table>
+</form>

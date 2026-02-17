@@ -1,75 +1,190 @@
 <?php
+declare(strict_types=1);
+
 checkStaffAuthentication();
+
 $Language = file("languages/" . getStaffLanguage() . "/invite_tree.lang");
+if ($Language === false) {
+    die('Failed to load language file');
+}
+
 $Message = "";
 $username = isset($_GET["username"]) ? trim($_GET["username"]) : (isset($_POST["username"]) ? trim($_POST["username"]) : "");
 $Found = "";
 $IFound = "";
-if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
+
+if (strtoupper($_SERVER["REQUEST_METHOD"]) === "POST") {
+    if (!isset($_POST['csrf_token']) || !hash_equals($_SESSION['csrf_token'] ?? '', $_POST['csrf_token'])) {
+        die('CSRF token validation failed');
+    }
+    
     if ($username) {
-        $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT u.id, u.username, u.added, u.last_access, u.invites, u.uploaded, u.downloaded, g.namestyle FROM users u LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) WHERE u.$username = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $username) . "' LIMIT 1");
-        if (0 < mysqli_num_rows($query)) {
-            $User = mysqli_fetch_assoc($query);
-            $Found = "\t\t\t\r\n\t\t\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td class=\"tcat\" $colspan = \"6\" $align = \"center\">\r\n\t\t\t\t\t\t" . $Language[2] . " - " . $User["username"] . "\r\n\t\t\t\t\t</td>\r\n\t\t\t\t</tr>\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td class=\"alt2\">\r\n\t\t\t\t\t\t" . $Language[4] . "\r\n\t\t\t\t\t</td>\r\n\t\t\t\t\t<td class=\"alt2\">\r\n\t\t\t\t\t\t" . $Language[9] . "\r\n\t\t\t\t\t</td>\r\n\t\t\t\t\t<td class=\"alt2\">\r\n\t\t\t\t\t\t" . $Language[10] . "\r\n\t\t\t\t\t</td>\r\n\t\t\t\t\t<td class=\"alt2\">\r\n\t\t\t\t\t\t" . $Language[11] . "\r\n\t\t\t\t\t</td>\r\n\t\t\t\t\t<td class=\"alt2\">\r\n\t\t\t\t\t\t" . $Language[12] . "\r\n\t\t\t\t\t</td>\r\n\t\t\t\t\t<td class=\"alt2\">\r\n\t\t\t\t\t\t" . $Language[13] . "\r\n\t\t\t\t\t</td>\r\n\t\t\t\t</tr>\r\n\t\t\t\t<tr>\r\n\t\t\t\t\t<td class=\"alt1\" $width = \"20%\">\r\n\t\t\t\t\t\t<a $href = \"index.php?do=edit_user&amp;$username = " . $User["username"] . "\">" . applyUsernameStyle($User["username"], $User["namestyle"]) . "</a>\r\n\t\t\t\t\t</td>\r\n\t\t\t\t\t<td class=\"alt1\" $width = \"20%\">\r\n\t\t\t\t\t\t" . formatTimestamp($User["added"]) . "\r\n\t\t\t\t\t</td>\r\n\t\t\t\t\t<td class=\"alt1\" $width = \"20%\">\r\n\t\t\t\t\t\t" . formatTimestamp($User["last_access"]) . "\r\n\t\t\t\t\t</td>\r\n\t\t\t\t\t<td class=\"alt1\" $width = \"10%\">\r\n\t\t\t\t\t\t" . number_format($User["invites"]) . "\r\n\t\t\t\t\t</td>\r\n\t\t\t\t\t<td class=\"alt1\" $width = \"15%\">\r\n\t\t\t\t\t\t" . formatBytes($User["uploaded"]) . "\r\n\t\t\t\t\t</td>\r\n\t\t\t\t\t<td class=\"alt1\" $width = \"15%\">\r\n\t\t\t\t\t\t" . formatBytes($User["downloaded"]) . "\r\n\t\t\t\t\t</td>\r\n\t\t\t\t</tr>\r\n\t\t\t</table>\r\n\t\t\t";
-            $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT u.username, u.added, u.last_access, u.invites, u.uploaded, u.downloaded, g.namestyle FROM users u LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) WHERE u.$invited_by = '" . $User["id"] . "' ORDER by u.username ASC");
-            if (0 < mysqli_num_rows($query)) {
-                $IFound = "\r\n\t\t\t\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t\t\t";
-                while ($IUser = mysqli_fetch_assoc($query)) {
-                    $IFound .= "\r\n\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t<td class=\"alt1\" $width = \"20%\">\r\n\t\t\t\t\t\t\t<a $href = \"index.php?do=edit_user&amp;$username = " . $IUser["username"] . "\">" . applyUsernameStyle($IUser["username"], $IUser["namestyle"]) . "</a>\r\n\t\t\t\t\t\t</td>\r\n\t\t\t\t\t\t<td class=\"alt1\" $width = \"20%\">\r\n\t\t\t\t\t\t\t" . formatTimestamp($IUser["added"]) . "\r\n\t\t\t\t\t\t</td>\r\n\t\t\t\t\t\t<td class=\"alt1\" $width = \"20%\">\r\n\t\t\t\t\t\t\t" . formatTimestamp($IUser["last_access"]) . "\r\n\t\t\t\t\t\t</td>\r\n\t\t\t\t\t\t<td class=\"alt1\" $width = \"10%\">\r\n\t\t\t\t\t\t\t" . number_format($IUser["invites"]) . "\r\n\t\t\t\t\t\t</td>\r\n\t\t\t\t\t\t<td class=\"alt1\" $width = \"15%\">\r\n\t\t\t\t\t\t\t" . formatBytes($IUser["uploaded"]) . "\r\n\t\t\t\t\t\t</td>\r\n\t\t\t\t\t\t<td class=\"alt1\" $width = \"15%\">\r\n\t\t\t\t\t\t\t" . formatBytes($IUser["downloaded"]) . "\r\n\t\t\t\t\t\t</td>\r\n\t\t\t\t\t</tr>\r\n\t\t\t\t\t";
+        try {
+            $pdo = $GLOBALS["DatabaseConnect"];
+            $stmt = $pdo->prepare("SELECT u.id, u.username, u.added, u.last_access, u.invites, u.uploaded, u.downloaded, g.namestyle FROM users u LEFT JOIN usergroups g ON (u.usergroup = g.gid) WHERE u.username = ? LIMIT 1");
+            $stmt->execute([$username]);
+            
+            if ($User = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                $Found = "\t\t\t
+\t\t\t<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" class=\"mainTable\">
+\t\t\t\t<tr>
+\t\t\t\t\t<td class=\"tcat\" colspan=\"6\" align=\"center\">
+\t\t\t\t\t\t" . htmlspecialchars($Language[2]) . " - " . htmlspecialchars($User["username"]) . "
+\t\t\t\t\t</td>
+\t\t\t\t</tr>
+\t\t\t\t<tr>
+\t\t\t\t\t<td class=\"alt2\">
+\t\t\t\t\t\t" . htmlspecialchars($Language[4]) . "
+\t\t\t\t\t</td>
+\t\t\t\t\t<td class=\"alt2\">
+\t\t\t\t\t\t" . htmlspecialchars($Language[9]) . "
+\t\t\t\t\t</td>
+\t\t\t\t\t<td class=\"alt2\">
+\t\t\t\t\t\t" . htmlspecialchars($Language[10]) . "
+\t\t\t\t\t</td>
+\t\t\t\t\t<td class=\"alt2\">
+\t\t\t\t\t\t" . htmlspecialchars($Language[11]) . "
+\t\t\t\t\t</td>
+\t\t\t\t\t<td class=\"alt2\">
+\t\t\t\t\t\t" . htmlspecialchars($Language[12]) . "
+\t\t\t\t\t</td>
+\t\t\t\t\t<td class=\"alt2\">
+\t\t\t\t\t\t" . htmlspecialchars($Language[13]) . "
+\t\t\t\t\t</td>
+\t\t\t\t</tr>
+\t\t\t\t<tr>
+\t\t\t\t\t<td class=\"alt1\" width=\"20%\">
+\t\t\t\t\t\t<a href=\"index.php?do=edit_user&amp;username=" . urlencode($User["username"]) . "\">" . applyUsernameStyle(htmlspecialchars($User["username"]), htmlspecialchars($User["namestyle"])) . "</a>
+\t\t\t\t\t</td>
+\t\t\t\t\t<td class=\"alt1\" width=\"20%\">
+\t\t\t\t\t\t" . htmlspecialchars(formatTimestamp($User["added"])) . "
+\t\t\t\t\t</td>
+\t\t\t\t\t<td class=\"alt1\" width=\"20%\">
+\t\t\t\t\t\t" . htmlspecialchars(formatTimestamp($User["last_access"])) . "
+\t\t\t\t\t</td>
+\t\t\t\t\t<td class=\"alt1\" width=\"10%\">
+\t\t\t\t\t\t" . htmlspecialchars(number_format((int)$User["invites"])) . "
+\t\t\t\t\t</td>
+\t\t\t\t\t<td class=\"alt1\" width=\"15%\">
+\t\t\t\t\t\t" . htmlspecialchars(formatBytes((float)$User["uploaded"])) . "
+\t\t\t\t\t</td>
+\t\t\t\t\t<td class=\"alt1\" width=\"15%\">
+\t\t\t\t\t\t" . htmlspecialchars(formatBytes((float)$User["downloaded"])) . "
+\t\t\t\t\t</td>
+\t\t\t\t</tr>
+\t\t\t</table>
+\t\t\t";
+                
+                $stmt = $pdo->prepare("SELECT u.username, u.added, u.last_access, u.invites, u.uploaded, u.downloaded, g.namestyle FROM users u LEFT JOIN usergroups g ON (u.usergroup = g.gid) WHERE u.invited_by = ? ORDER BY u.username ASC");
+                $stmt->execute([$User["id"]]);
+                
+                if ($stmt->rowCount() > 0) {
+                    $IFound = "
+\t\t\t\t<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" class=\"mainTable\">
+\t\t\t\t";
+                    while ($IUser = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                        $IFound .= "
+\t\t\t\t\t<tr>
+\t\t\t\t\t\t<td class=\"alt1\" width=\"20%\">
+\t\t\t\t\t\t\t<a href=\"index.php?do=edit_user&amp;username=" . urlencode($IUser["username"]) . "\">" . applyUsernameStyle(htmlspecialchars($IUser["username"]), htmlspecialchars($IUser["namestyle"])) . "</a>
+\t\t\t\t\t\t</td>
+\t\t\t\t\t\t<td class=\"alt1\" width=\"20%\">
+\t\t\t\t\t\t\t" . htmlspecialchars(formatTimestamp($IUser["added"])) . "
+\t\t\t\t\t\t</td>
+\t\t\t\t\t\t<td class=\"alt1\" width=\"20%\">
+\t\t\t\t\t\t\t" . htmlspecialchars(formatTimestamp($IUser["last_access"])) . "
+\t\t\t\t\t\t</td>
+\t\t\t\t\t\t<td class=\"alt1\" width=\"10%\">
+\t\t\t\t\t\t\t" . htmlspecialchars(number_format((int)$IUser["invites"])) . "
+\t\t\t\t\t\t</td>
+\t\t\t\t\t\t<td class=\"alt1\" width=\"15%\">
+\t\t\t\t\t\t\t" . htmlspecialchars(formatBytes((float)$IUser["uploaded"])) . "
+\t\t\t\t\t\t</td>
+\t\t\t\t\t\t<td class=\"alt1\" width=\"15%\">
+\t\t\t\t\t\t\t" . htmlspecialchars(formatBytes((float)$IUser["downloaded"])) . "
+\t\t\t\t\t\t</td>
+\t\t\t\t\t</tr>
+\t\t\t\t\t";
+                    }
+                    $IFound .= "
+\t\t\t\t</table>";
+                } else {
+                    $Message = showAlertError(htmlspecialchars($Language[8]));
                 }
-                $IFound .= "\r\n\t\t\t\t</table>";
             } else {
-                $Message = showAlertError($Language[8]);
+                $Message = showAlertError(htmlspecialchars($Language[3]));
             }
-        } else {
-            $Message = showAlertError($Language[3]);
+        } catch (PDOException $e) {
+            error_log("Database error in invite_tree.php: " . $e->getMessage());
+            $Message = showAlertError("Database error occurred");
         }
     } else {
-        $Message = showAlertError($Language[7]);
+        $Message = showAlertError(htmlspecialchars($Language[7]));
     }
 }
-echo "<form $action = \"";
-echo $_SERVER["SCRIPT_NAME"];
-echo "?do=invite_tree\" $method = \"post\">\r\n";
+
+if (!isset($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+
+echo "<form action=\"" . htmlspecialchars($_SERVER["SCRIPT_NAME"]) . "?do=invite_tree\" method=\"post\">\n";
+echo "<input type=\"hidden\" name=\"csrf_token\" value=\"" . htmlspecialchars($_SESSION['csrf_token']) . "\">\n";
 echo $Message . $Found . $IFound;
-echo "<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t<tr>\r\n\t\t<td class=\"tcat\" $align = \"center\" $colspan = \"2\"><b>";
-echo $Language[2];
-echo "</b></td>\r\n\t</tr>\t\r\n\t<tr $valign = \"top\">\r\n\t\t<td class=\"alt1\" $align = \"right\">";
-echo $Language[4];
-echo "</td>\r\n\t\t<td class=\"alt1\"><input $type = \"text\" class=\"bginput\" $name = \"username\" $value = \"";
-echo htmlspecialchars($username);
-echo "\" $size = \"35\" $dir = \"ltr\" $tabindex = \"1\" /></td>\r\n\t</tr>\r\n\t<tr>\r\n\t\t<td class=\"tcat2\"></td>\r\n\t\t<td class=\"tcat2\">\t\r\n\t\t\t<input $type = \"submit\" class=\"button\" $tabindex = \"1\" $value = \"";
-echo $Language[5];
-echo "\" $accesskey = \"s\" />\r\n\t\t\t<input $type = \"reset\" class=\"button\" $tabindex = \"1\" $value = \"";
-echo $Language[6];
-echo "\" $accesskey = \"r\" />\r\n\t\t</td>\r\n\t</tr>\r\n</table>\r\n</form>";
-function getStaffLanguage()
+echo "<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" class=\"mainTable\">
+\t<tr>
+\t\t<td class=\"tcat\" align=\"center\" colspan=\"2\"><b>" . htmlspecialchars($Language[2]) . "</b></td>
+\t</tr>\t
+\t<tr valign=\"top\">
+\t\t<td class=\"alt1\" align=\"right\">" . htmlspecialchars($Language[4]) . "</td>
+\t\t<td class=\"alt1\"><input type=\"text\" class=\"bginput\" name=\"username\" value=\"" . htmlspecialchars($username) . "\" size=\"35\" dir=\"ltr\" tabindex=\"1\" /></td>
+\t</tr>
+\t<tr>
+\t\t<td class=\"tcat2\"></td>
+\t\t<td class=\"tcat2\">\t
+\t\t\t<input type=\"submit\" class=\"button\" tabindex=\"1\" value=\"" . htmlspecialchars($Language[5]) . "\" accesskey=\"s\" />
+\t\t\t<input type=\"reset\" class=\"button\" tabindex=\"1\" value=\"" . htmlspecialchars($Language[6]) . "\" accesskey=\"r\" />
+\t\t</td>
+\t</tr>
+</table>
+</form>";
+
+function getStaffLanguage(): string
 {
     if (isset($_COOKIE["staffcplanguage"]) && is_dir("languages/" . $_COOKIE["staffcplanguage"]) && is_file("languages/" . $_COOKIE["staffcplanguage"] . "/staffcp.lang")) {
         return $_COOKIE["staffcplanguage"];
     }
     return "english";
 }
-function checkStaffAuthentication()
+
+function checkStaffAuthentication(): void
 {
     if (!defined("IN-TSSE-STAFF-PANEL")) {
         redirectTo("../index.php");
     }
 }
-function redirectTo($url)
+
+function redirectTo(string $url): void
 {
     if (!headers_sent()) {
         header("Location: " . $url);
     } else {
-        echo "\r\n\t\t<script $type = \"text/javascript\">\r\n\t\t\twindow.location.$href = \"" . $url . "\";\r\n\t\t</script>\r\n\t\t<noscript>\r\n\t\t\t<meta http-$equiv = \"refresh\" $content = \"0;$url = " . $url . "\" />\r\n\t\t</noscript>";
+        echo "
+\t\t<script type=\"text/javascript\">
+\t\t\twindow.location.href = \"" . htmlspecialchars($url, ENT_QUOTES, 'UTF-8') . "\";
+\t\t</script>
+\t\t<noscript>
+\t\t\t<meta http-equiv=\"refresh\" content=\"0;url=" . htmlspecialchars($url, ENT_QUOTES, 'UTF-8') . "\" />
+\t\t</noscript>";
     }
     exit;
 }
-function showAlertError($Error)
+
+function showAlertError(string $Error): string
 {
     return "<div class=\"alert\"><div>" . $Error . "</div></div>";
 }
-function formatTimestamp($timestamp = "")
+
+function formatTimestamp(string $timestamp = ""): string
 {
     $dateFormatPattern = "m-d-Y h:i A";
     if (empty($timestamp)) {
@@ -79,9 +194,10 @@ function formatTimestamp($timestamp = "")
             $timestamp = strtotime($timestamp);
         }
     }
-    return date($dateFormatPattern, $timestamp);
+    return date($dateFormatPattern, (int)$timestamp);
 }
-function formatBytes($bytes = 0)
+
+function formatBytes(float $bytes = 0): string
 {
     if ($bytes < 1024000) {
         return number_format($bytes / 1024, 2) . " KB";
@@ -89,12 +205,13 @@ function formatBytes($bytes = 0)
     if ($bytes < 1048576000) {
         return number_format($bytes / 1048576, 2) . " MB";
     }
-    if ($bytes < 0) {
+    if ($bytes < 1073741824000) {
         return number_format($bytes / 1073741824, 2) . " GB";
     }
-    return number_format($bytes / 0, 2) . " TB";
+    return number_format($bytes / 1099511627776, 2) . " TB";
 }
-function applyUsernameStyle($username, $namestyle)
+
+function applyUsernameStyle(string $username, string $namestyle): string
 {
     return str_replace("{username}", $username, $namestyle);
 }

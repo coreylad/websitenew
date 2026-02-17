@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 function get_file_icon($filename, $path = "images/attach/")
 {
     global $BASEURL;

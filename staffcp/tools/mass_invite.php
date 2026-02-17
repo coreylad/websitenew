@@ -1,47 +1,85 @@
 <?php
+
+declare(strict_types=1);
+
+// Load modern staffcp helpers
+require_once __DIR__ . '/../staffcp_modern.php';
+
+// Check authentication
 checkStaffAuthentication();
-$Language = file("languages/" . getStaffLanguage() . "/mass_invite.lang");
-$Message = "";
-$amount = isset($_POST["amount"]) ? intval($_POST["amount"]) : 5;
-if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST" && $amount) {
-    $HashArray = [];
-    for ($i = 1; $i <= $amount; $i++) {
-        $hash = substr(md5(md5(rand())), 0, 32);
-        $HashArray[] = "<li>" . $hash . "</li>";
-        mysqli_query($GLOBALS["DatabaseConnect"], "INSERT INTO invites (inviter, invitee, hash, time_invited) VALUES ('" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $_SESSION["ADMIN_ID"]) . "', 'manual', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $hash) . "', NOW())");
+
+// Load language
+$Language = loadStaffLanguage('mass_invite');
+
+// Initialize variables
+$Message = '';
+$amount = isset($_POST['amount']) ? (int)$_POST['amount'] : 5;
+
+// Process form submission
+if (strtoupper($_SERVER['REQUEST_METHOD']) === 'POST') {
+    // Validate form token
+    if (!validateFormToken($_POST['form_token'] ?? '')) {
+        $Message = showAlertErrorModern($Language[7] ?? 'Invalid form token');
     }
-    $Message = showAlertError(str_replace("{1}", number_format($amount), $Language[6]) . "<hr /><ol>" . implode(" ", $HashArray) . "</ol>");
-}
-echo "\r\n\r\n" . $Message . "\r\n<form $method = \"post\" $action = \"index.php?do=mass_invite\">\r\n<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t<tr>\r\n\t\t<td class=\"tcat\" $colspan = \"2\" $align = \"center\">\r\n\t\t\t" . $Language[2] . "\r\n\t\t</td>\r\n\t</tr>\r\n\t\r\n\t<tr>\r\n\t\t<td class=\"alt1\" $align = \"right\">" . $Language[5] . "</td>\r\n\t\t<td class=\"alt1\"><input $type = \"text\" $name = \"amount\" $value = \"" . $amount . "\" $style = \"width: 50px;\" /></td>\r\n\t</tr>\r\n\t<tr>\r\n\t\t<td $align = \"right\" class=\"tcat2\"></td>\r\n\t\t<td class=\"tcat2\"><input $type = \"submit\" $value = \"" . $Language[3] . "\" /> <input $type = \"reset\" $value = \"" . $Language[4] . "\" /></td>\r\n\t</tr>\r\n</table>\r\n</form>";
-function getStaffLanguage()
-{
-    if (isset($_COOKIE["staffcplanguage"]) && is_dir("languages/" . $_COOKIE["staffcplanguage"]) && is_file("languages/" . $_COOKIE["staffcplanguage"] . "/staffcp.lang")) {
-        return $_COOKIE["staffcplanguage"];
+    elseif ($amount < 1 || $amount > 1000) {
+        $Message = showAlertErrorModern($Language[8] ?? 'Amount must be between 1 and 1000');
     }
-    return "english";
-}
-function checkStaffAuthentication()
-{
-    if (!defined("IN-TSSE-STAFF-PANEL")) {
-        redirectTo("../index.php");
+    else {
+        try {
+            $HashArray = [];
+            
+            for ($i = 1; $i <= $amount; $i++) {
+                $hash = substr(md5(md5((string)rand())), 0, 32);
+                $HashArray[] = '<li>' . escape_html($hash) . '</li>';
+                
+                // Insert invite with prepared statement
+                $TSDatabase->query(
+                    'INSERT INTO invites (inviter, invitee, hash, time_invited) VALUES (?, ?, ?, NOW())',
+                    [$_SESSION['ADMIN_ID'], 'manual', $hash]
+                );
+            }
+            
+            $SysMsg = str_replace('{1}', (string)number_format($amount), $Language[6] ?? '{1} invites created');
+            logStaffActionModern($SysMsg);
+            
+            $Message = showAlertSuccessModern($SysMsg . '<hr /><ol>' . implode(' ', $HashArray) . '</ol>');
+            
+            // Reset amount after success
+            $amount = 5;
+        } catch (Exception $e) {
+            error_log('Mass invite error: ' . $e->getMessage());
+            $Message = showAlertErrorModern($Language[9] ?? 'Failed to create invites');
+        }
     }
-}
-function redirectTo($url)
-{
-    if (!headers_sent()) {
-        header("Location: " . $url);
-    } else {
-        echo "\r\n\t\t<script $type = \"text/javascript\">\r\n\t\t\twindow.location.$href = \"" . $url . "\";\r\n\t\t</script>\r\n\t\t<noscript>\r\n\t\t\t<meta http-$equiv = \"refresh\" $content = \"0;$url = " . $url . "\" />\r\n\t\t</noscript>";
-    }
-    exit;
-}
-function showAlertError($Error)
-{
-    return "<div class=\"alert\"><div>" . $Error . "</div></div>";
-}
-function logStaffAction($log)
-{
-    mysqli_query($GLOBALS["DatabaseConnect"], "INSERT INTO ts_staffcp_logs (uid, date, log) VALUES ('" . $_SESSION["ADMIN_ID"] . "', '" . time() . "', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $log) . "')");
 }
 
+// Output form
 ?>
+<?php echo $Message; ?>
+<form action="<?php echo escape_attr($_SERVER['SCRIPT_NAME'] . '?do=mass_invite'); ?>" method="post">
+<?php echo getFormTokenField(); ?>
+<table cellpadding="0" cellspacing="0" border="0" class="mainTable">
+    <tr>
+        <td class="tcat" colspan="2" align="center">
+            <b><?php echo escape_html($Language[2] ?? 'Mass Invite Generator'); ?></b>
+        </td>
+    </tr>
+    <tr>
+        <td class="alt1" align="right"><?php echo escape_html($Language[5] ?? 'Number of Invites:'); ?></td>
+        <td class="alt1">
+            <input type="text" class="bginput" name="amount" 
+                   value="<?php echo escape_attr((string)$amount); ?>" 
+                   style="width: 50px;" />
+        </td>
+    </tr>
+    <tr>
+        <td align="right" class="tcat2"></td>
+        <td class="tcat2">
+            <input type="submit" class="button" 
+                   value="<?php echo escape_attr($Language[3] ?? 'Generate'); ?>" />
+            <input type="reset" class="button" 
+                   value="<?php echo escape_attr($Language[4] ?? 'Reset'); ?>" />
+        </td>
+    </tr>
+</table>
+</form>

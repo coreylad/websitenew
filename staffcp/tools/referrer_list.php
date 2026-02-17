@@ -1,48 +1,99 @@
 <?php
+declare(strict_types=1);
+
 checkStaffAuthentication();
 $Language = file("languages/" . getStaffLanguage() . "/referrer_list.lang");
 $Act = isset($_GET["act"]) ? trim($_GET["act"]) : (isset($_POST["act"]) ? trim($_POST["act"]) : "");
 $Message = "";
 $Found = "";
-if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST" && isset($_POST["urls"]) && count($_POST["urls"])) {
-    foreach ($_POST["urls"] as $url) {
-        mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM referrer WHERE $referrer_url = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $url) . "'");
+
+if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
+    if (!isset($_POST['csrf_token']) || !hash_equals($_SESSION['csrf_token'] ?? '', $_POST['csrf_token'])) {
+        die('CSRF token validation failed');
+    }
+    
+    if (isset($_POST["urls"]) && count($_POST["urls"])) {
+        try {
+            $stmt = $GLOBALS["DatabaseConnect"]->prepare("DELETE FROM referrer WHERE referrer_url = ?");
+            foreach ($_POST["urls"] as $url) {
+                $stmt->bind_param("s", $url);
+                $stmt->execute();
+            }
+            $stmt->close();
+        } catch (Exception $e) {
+            error_log("Error deleting referrer: " . $e->getMessage());
+        }
     }
 }
+
 if ($Act == "delete_all") {
-    mysqli_query($GLOBALS["DatabaseConnect"], "TRUNCATE TABLE `referrer`");
+    if (!isset($_GET['csrf_token']) || !hash_equals($_SESSION['csrf_token'] ?? '', $_GET['csrf_token'])) {
+        die('CSRF token validation failed');
+    }
+    
+    try {
+        $GLOBALS["DatabaseConnect"]->query("TRUNCATE TABLE `referrer`");
+    } catch (Exception $e) {
+        error_log("Error truncating referrer table: " . $e->getMessage());
+    }
 }
-$results = mysqli_num_rows(mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM referrer"));
+try {
+    $countResult = $GLOBALS["DatabaseConnect"]->query("SELECT COUNT(*) as count FROM referrer");
+    $results = $countResult->fetch_assoc()['count'];
+} catch (Exception $e) {
+    error_log("Error counting referrers: " . $e->getMessage());
+    $results = 0;
+}
+
 list($pagertop, $limit) = buildPaginationLinks(25, $results, $_SERVER["SCRIPT_NAME"] . "?do=referrer_list&amp;");
-$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT referrer_url FROM referrer ORDER by referrer_url ASC " . $limit);
-if (mysqli_num_rows($query) == 0) {
-    $Message = showAlertError($Language[2]);
-} else {
-    $Cache = [];
-    $DeleteArray = [];
-    $Count = 0;
-    while ($Url = mysqli_fetch_assoc($query)) {
-        $RUrl = htmlspecialchars($Url["referrer_url"]);
-        if (!in_array($RUrl, $Cache)) {
-            $class = $Count % 2 == 1 ? "alt2" : "alt1";
-            $Cache[] = $RUrl;
-            $Found .= "\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"" . $class . "\"><a $href = \"" . $RUrl . "\" $target = \"_blank\">" . $RUrl . "</a></td>\t\t\t\r\n\t\t\t\t<td class=\"" . $class . "\" $align = \"center\"><input $type = \"checkbox\" $name = \"urls[]\" $value = \"" . $RUrl . "\" $checkme = \"group\" /></td>\r\n\t\t\t</td>\r\n\t\t\t";
-            $Count++;
-        } else {
-            $DeleteArray[] = $RUrl;
+
+try {
+    $query = $GLOBALS["DatabaseConnect"]->query("SELECT referrer_url FROM referrer ORDER by referrer_url ASC " . $limit);
+    
+    if ($query->num_rows == 0) {
+        $Message = showAlertError($Language[2]);
+    } else {
+        $Cache = [];
+        $DeleteArray = [];
+        $Count = 0;
+        
+        while ($Url = $query->fetch_assoc()) {
+            $RUrl = htmlspecialchars($Url["referrer_url"], ENT_QUOTES, 'UTF-8');
+            if (!in_array($RUrl, $Cache)) {
+                $class = $Count % 2 == 1 ? "alt2" : "alt1";
+                $Cache[] = $RUrl;
+                $Found .= "\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"" . htmlspecialchars($class, ENT_QUOTES, 'UTF-8') . "\"><a $href = \"" . htmlspecialchars($RUrl, ENT_QUOTES, 'UTF-8') . "\" $target = \"_blank\">" . htmlspecialchars($RUrl, ENT_QUOTES, 'UTF-8') . "</a></td>\t\t\t\r\n\t\t\t\t<td class=\"" . htmlspecialchars($class, ENT_QUOTES, 'UTF-8') . "\" $align = \"center\"><input $type = \"checkbox\" $name = \"urls[]\" $value = \"" . htmlspecialchars($RUrl, ENT_QUOTES, 'UTF-8') . "\" $checkme = \"group\" /></td>\r\n\t\t\t</td>\r\n\t\t\t";
+                $Count++;
+            } else {
+                $DeleteArray[] = $RUrl;
+            }
         }
-    }
-    if (count($DeleteArray)) {
-        foreach ($DeleteArray as $url) {
-            mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM referrer WHERE $referrer_url = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $url) . "'");
+        
+        if (count($DeleteArray)) {
+            $stmt = $GLOBALS["DatabaseConnect"]->prepare("DELETE FROM referrer WHERE referrer_url = ?");
+            foreach ($DeleteArray as $url) {
+                $stmt->bind_param("s", $url);
+                $stmt->execute();
+            }
+            $stmt->close();
         }
+        
+        $Found .= "\r\n\t\t<tr>\r\n\t\t\t<td class=\"tcat2\"></td>\r\n\t\t\t<td class=\"tcat2\" $align = \"center\" $style = \"width: 100px;\"><input $type = \"submit\" $value = \"" . htmlspecialchars($Language[5], ENT_QUOTES, 'UTF-8') . "\" /></td>\r\n\t\t</tr>";
     }
-    $Found .= "\r\n\t\t<tr>\r\n\t\t\t<td class=\"tcat2\"></td>\r\n\t\t\t<td class=\"tcat2\" $align = \"center\" $style = \"width: 100px;\"><input $type = \"submit\" $value = \"" . $Language[5] . "\" /></td>\r\n\t\t</tr>";
+} catch (Exception $e) {
+    error_log("Error fetching referrers: " . $e->getMessage());
+    $Message = showAlertError("An error occurred while fetching referrers.");
 }
+if (!isset($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+$csrfToken = $_SESSION['csrf_token'];
+
 if ($Message) {
     echo "\r\n\t\r\n\t" . $Message;
 } else {
-    echo "\r\n\t<script $type = \"text/javascript\">\r\n\t\tfunction select_deselectAll(formname,elm,group)\r\n\t\t{\r\n\t\t\tvar $frm = document.forms[formname];\r\n\t\t\tfor($i = 0;i<frm.length;i++)\r\n\t\t\t{\r\n\t\t\t\tif(elm.attributes[\"checkall\"] != null && elm.attributes[\"checkall\"].$value = = group)\r\n\t\t\t\t{\r\n\t\t\t\t\tif(frm.elements[i].attributes[\"checkme\"] != null && frm.elements[i].attributes[\"checkme\"].$value = = group)\r\n\t\t\t\t\t{\r\n\t\t\t\t\t\tfrm.elements[i].$checked = elm.checked;\r\n\t\t\t\t\t}\r\n\t\t\t\t}\r\n\t\t\t\telse if(frm.elements[i].attributes[\"checkme\"] != null && frm.elements[i].attributes[\"checkme\"].$value = = group)\r\n\t\t\t\t{\r\n\t\t\t\t\tif(frm.elements[i].$checked = = false)\r\n\t\t\t\t\t{\r\n\t\t\t\t\t\tfrm.elements[1].$checked = false;\r\n\t\t\t\t\t}\r\n\t\t\t\t}\r\n\t\t\t}\r\n\t\t}\r\n\t</script>\r\n\t\r\n\t" . showAlertMessage("<a $href = \"index.php?do=referrer_list&amp;$act = delete_all\">" . $Language[6] . "</a>") . "\r\n\t<form $action = \"index.php?do=referrer_list" . (isset($_GET["page"]) ? "&$page = " . intval($_GET["page"]) : "") . "\" $method = \"post\" $name = \"referrer_list\">\r\n\t" . $pagertop . "\r\n\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t<tr>\r\n\t\t\t<td class=\"tcat\" $align = \"center\" $colspan = \"4\"><b>" . $Language[3] . "</b></td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt2\"><b>" . $Language[4] . "</b></td>\r\n\t\t\t<td class=\"alt2\" $align = \"center\"><input $type = \"checkbox\" $checkall = \"group\" $onclick = \"javascript: return select_deselectAll ('referrer_list', this, 'group');\"></td>\r\n\t\t</tr>\r\n\t\t" . $Found . "\r\n\t</table>\r\n\t" . $pagertop . "\r\n\t</form>\r\n\t";
+    $deleteAllUrl = "index.php?do=referrer_list&amp;act=delete_all&amp;csrf_token=" . htmlspecialchars($csrfToken, ENT_QUOTES, 'UTF-8');
+    echo "\r\n\t<script $type = \"text/javascript\">\r\n\t\tfunction select_deselectAll(formname,elm,group)\r\n\t\t{\r\n\t\t\tvar $frm = document.forms[formname];\r\n\t\t\tfor($i = 0;i<frm.length;i++)\r\n\t\t\t{\r\n\t\t\t\tif(elm.attributes[\"checkall\"] != null && elm.attributes[\"checkall\"].$value == group)\r\n\t\t\t\t{\r\n\t\t\t\t\tif(frm.elements[i].attributes[\"checkme\"] != null && frm.elements[i].attributes[\"checkme\"].$value == group)\r\n\t\t\t\t\t{\r\n\t\t\t\t\t\tfrm.elements[i].$checked = elm.checked;\r\n\t\t\t\t\t}\r\n\t\t\t\t}\r\n\t\t\t\telse if(frm.elements[i].attributes[\"checkme\"] != null && frm.elements[i].attributes[\"checkme\"].$value == group)\r\n\t\t\t\t{\r\n\t\t\t\t\tif(frm.elements[i].$checked == false)\r\n\t\t\t\t\t{\r\n\t\t\t\t\t\tfrm.elements[1].$checked = false;\r\n\t\t\t\t\t}\r\n\t\t\t\t}\r\n\t\t\t}\r\n\t\t}\r\n\t</script>\r\n\t\r\n\t" . showAlertMessage("<a $href = \"" . htmlspecialchars($deleteAllUrl, ENT_QUOTES, 'UTF-8') . "\">" . htmlspecialchars($Language[6], ENT_QUOTES, 'UTF-8') . "</a>") . "\r\n\t<form $action = \"index.php?do=referrer_list" . (isset($_GET["page"]) ? "&$page = " . intval($_GET["page"]) : "") . "\" $method = \"post\" $name = \"referrer_list\">\r\n\t<input type=\"hidden\" name=\"csrf_token\" value=\"" . htmlspecialchars($csrfToken, ENT_QUOTES, 'UTF-8') . "\" />\r\n\t" . $pagertop . "\r\n\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t<tr>\r\n\t\t\t<td class=\"tcat\" $align = \"center\" $colspan = \"4\"><b>" . htmlspecialchars($Language[3], ENT_QUOTES, 'UTF-8') . "</b></td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt2\"><b>" . htmlspecialchars($Language[4], ENT_QUOTES, 'UTF-8') . "</b></td>\r\n\t\t\t<td class=\"alt2\" $align = \"center\"><input $type = \"checkbox\" $checkall = \"group\" $onclick = \"javascript: return select_deselectAll ('referrer_list', this, 'group');\"></td>\r\n\t\t</tr>\r\n\t\t" . $Found . "\r\n\t</table>\r\n\t" . $pagertop . "\r\n\t</form>\r\n\t";
 }
 function getStaffLanguage()
 {

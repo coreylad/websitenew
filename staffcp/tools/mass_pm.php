@@ -1,94 +1,163 @@
 <?php
-checkStaffAuthentication();
-$Language = file("languages/" . getStaffLanguage() . "/mass_pm.lang");
-$Message = "";
-$subject = "";
-$msg = "";
-$sender = "0";
+
+declare(strict_types=1);
+
+require_once __DIR__ . '/../staffcp_modern.php';
+
+checkStaffAuthenticationModern();
+
+$Language = loadStaffLanguage('mass_pm');
+$Message = '';
+$subject = '';
+$msg = '';
+$sender = '0';
 $usergroups = [];
-if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST") {
-    $subject = isset($_POST["subject"]) ? trim($_POST["subject"]) : "";
-    $msg = isset($_POST["msg"]) ? trim($_POST["msg"]) : "";
-    $sender = isset($_POST["sender"]) ? intval($_POST["sender"]) : "0";
-    $usergroups = isset($_POST["usergroups"]) ? $_POST["usergroups"] : [];
-    if ($subject && $msg && $usergroups && $usergroups[0] != "") {
-        $work = implode(",", $usergroups);
-        $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id FROM users WHERE usergroup IN (" . $work . ")");
-        $total = mysqli_num_rows($query);
-        if (0 < $total) {
-            while ($User = mysqli_fetch_assoc($query)) {
-                sendPrivateMessage($User["id"], $msg, $subject, $sender);
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!validateFormToken($_POST['form_token'] ?? '')) {
+        $Message = showAlertErrorModern('Invalid form token');
+    } else {
+        $subject = isset($_POST['subject']) ? trim($_POST['subject']) : '';
+        $msg = isset($_POST['msg']) ? trim($_POST['msg']) : '';
+        $sender = isset($_POST['sender']) ? (int)$_POST['sender'] : 0;
+        $usergroups = isset($_POST['usergroups']) ? $_POST['usergroups'] : [];
+        
+        if ($subject && $msg && !empty($usergroups)) {
+            try {
+                $placeholders = implode(',', array_fill(0, count($usergroups), '?'));
+                $stmt = $TSDatabase->query(
+                    'SELECT id FROM users WHERE usergroup IN (' . $placeholders . ')',
+                    $usergroups
+                );
+                
+                $total = 0;
+                if ($stmt) {
+                    while ($User = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                        try {
+                            $TSDatabase->query(
+                                'INSERT INTO messages (sender, receiver, added, subject, msg, unread, saved, location) 
+                                 VALUES (?, ?, NOW(), ?, ?, ?, ?, ?)',
+                                [$sender, $User['id'], $subject, $msg, 'yes', 'no', '1']
+                            );
+                            $TSDatabase->query(
+                                'UPDATE users SET pmunread = pmunread + 1 WHERE id = ?',
+                                [$User['id']]
+                            );
+                            $total++;
+                        } catch (Exception $e) {
+                            // Continue on error
+                        }
+                    }
+                }
+                
+                if ($total > 0) {
+                    $Message = showAlertSuccessModern(str_replace('{1}', number_format($total), $Language[12] ?? 'Sent to {1} users'));
+                    logStaffActionModern(str_replace(
+                        ['{1}', '{2}', '{3}'],
+                        [$_SESSION['ADMIN_USERNAME'], implode(',', $usergroups), $subject],
+                        $Language[13] ?? 'Mass PM sent by {1} to groups {2}: {3}'
+                    ));
+                }
+            } catch (Exception $e) {
+                $Message = showAlertErrorModern('Database error: ' . escape_html($e->getMessage()));
             }
-            $Message = showAlertError(str_replace("{1}", number_format($total), $Language[12]));
-            logStaffAction(str_replace(["{1}", "{2}", "{3}"], [$_SESSION["ADMIN_USERNAME"], $work, $subject], $Language[13]));
+        } else {
+            $Message = showAlertErrorModern($Language[3] ?? 'All fields are required');
         }
-    } else {
-        $Message = showAlertError($Language[3]);
-    }
-}
-$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT u.id, g.cansettingspanel, g.canstaffpanel, g.issupermod FROM users u LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) WHERE u.$id = '" . $_SESSION["ADMIN_ID"] . "' LIMIT 1");
-$LoggedAdminDetails = mysqli_fetch_assoc($query);
-$showusergroups = "";
-$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT gid, title, cansettingspanel, canstaffpanel, issupermod, namestyle FROM usergroups ORDER by disporder ASC");
-while ($UG = mysqli_fetch_assoc($query)) {
-    $showusergroups .= "\r\n\t<div $style = \"margin-bottom: 3px;\">\r\n\t\t<label><input $type = \"checkbox\" $name = \"usergroups[]\" $value = \"" . $UG["gid"] . "\"" . (in_array($UG["gid"], $usergroups) ? " $checked = \"checked\"" : "") . " $style = \"vertical-align: middle;\" /> " . strip_tags(str_replace("{username}", $UG["title"], $UG["namestyle"]), "<b><span><strong><em><i><u>") . "</label>\r\n\t</div>";
-}
-echo loadTinyMCEEditor(2, "exact", "textarea1") . "\r\n\r\n" . $Message . "\r\n<form $method = \"post\" $action = \"index.php?do=mass_pm\">\r\n<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t<tr>\r\n\t\t<td class=\"tcat\" $colspan = \"2\" $align = \"center\">\r\n\t\t\t" . $Language[2] . "\r\n\t\t</td>\r\n\t</tr>\r\n\r\n\t<tr>\r\n\t\t<td class=\"alt1\" $valign = \"top\" $style = \"width: 155px;\">" . $Language[6] . "</td>\r\n\t\t<td class=\"alt1\">\r\n\t\t\t<select $name = \"sender\">\r\n\t\t\t\t<option $value = \"0\"" . ($sender == "0" ? " $selected = \"selected\"" : "") . ">" . $Language[7] . "</option>\r\n\t\t\t\t<option $value = \"" . $_SESSION["ADMIN_ID"] . "\"" . ($sender == $_SESSION["ADMIN_ID"] ? " $selected = \"selected\"" : "") . ">" . $Language[8] . " (" . $_SESSION["ADMIN_USERNAME"] . ")</option>\r\n\t\t\t</select>\r\n\t\t</td>\r\n\t</tr>\r\n\r\n\t<tr>\r\n\t\t<td class=\"alt1\">" . $Language[4] . "</td>\r\n\t\t<td class=\"alt1\"><input $type = \"text\" $name = \"subject\" $value = \"" . htmlspecialchars($subject) . "\" $style = \"width: 99%;\" /></td>\r\n\t</tr>\r\n\t\r\n\t<tr>\r\n\t\t<td class=\"alt1\" $valign = \"top\">" . $Language[5] . "</td>\r\n\t\t<td class=\"alt1\"><textarea $name = \"msg\" $id = \"textarea1\" $style = \"width: 100%; height: 200px;\">" . htmlspecialchars($msg) . "</textarea>\r\n\t\t<p><a $href = \"javascript:toggleEditor('textarea1');\"><img $src = \"images/tool_refresh.png\" $border = \"0\" /></a></p></td>\r\n\t</tr>\r\n\t\r\n\t<tr>\r\n\t\t<td class=\"alt1\" $valign = \"top\">" . $Language[9] . "</td>\r\n\t\t<td class=\"alt1\">" . $showusergroups . "</td>\r\n\t</tr>\r\n\t<tr>\r\n\t\t<td  class=\"tcat2\"></td>\r\n\t\t<td class=\"tcat2\"><input $type = \"submit\" $value = \"" . $Language[10] . "\" /> <input $type = \"reset\" $value = \"" . $Language[11] . "\" /></td>\r\n\t</tr>\r\n</table>\r\n</form>";
-function loadTinyMCEEditor($type = 1, $mode = "textareas", $elements = "")
-{
-    define("EDITOR_TYPE", $type);
-    define("TINYMCE_MODE", $mode);
-    define("TINYMCE_ELEMENTS", $elements);
-    define("WORKPATH", "./../scripts/");
-    define("TINYMCE_EMOTIONS_URL", "./../tinymce_emotions.php");
-    $configQuery = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'MAIN'");
-    $configRow = mysqli_fetch_assoc($configQuery);
-    $configData = unserialize($configRow["content"]);
-    $formMethod2 = $configData["pic_base_url"];
-    unset($formAction);
-    define("PIC_BASEURL", $formMethod2);
-    ob_start();
-    include "./../tinymce.php";
-    $editorContent = ob_get_contents();
-    ob_end_clean();
-    return $editorContent;
-}
-function getStaffLanguage()
-{
-    if (isset($_COOKIE["staffcplanguage"]) && is_dir("languages/" . $_COOKIE["staffcplanguage"]) && is_file("languages/" . $_COOKIE["staffcplanguage"] . "/staffcp.lang")) {
-        return $_COOKIE["staffcplanguage"];
-    }
-    return "english";
-}
-function checkStaffAuthentication()
-{
-    if (!defined("IN-TSSE-STAFF-PANEL")) {
-        redirectTo("../index.php");
-    }
-}
-function redirectTo($url)
-{
-    if (!headers_sent()) {
-        header("Location: " . $url);
-    } else {
-        echo "\r\n\t\t<script $type = \"text/javascript\">\r\n\t\t\twindow.location.$href = \"" . $url . "\";\r\n\t\t</script>\r\n\t\t<noscript>\r\n\t\t\t<meta http-$equiv = \"refresh\" $content = \"0;$url = " . $url . "\" />\r\n\t\t</noscript>";
-    }
-    exit;
-}
-function showAlertError($Error)
-{
-    return "<div class=\"alert\"><div>" . $Error . "</div></div>";
-}
-function logStaffAction($log)
-{
-    mysqli_query($GLOBALS["DatabaseConnect"], "INSERT INTO ts_staffcp_logs (uid, date, log) VALUES ('" . $_SESSION["ADMIN_ID"] . "', '" . time() . "', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $log) . "')");
-}
-function sendPrivateMessage($receiver = 0, $msg = "", $subject = "", $sender = 0, $saved = "no", $location = "1", $unread = "yes")
-{
-    if (!($sender != 0 && !$sender || !$receiver || empty($msg))) {
-        mysqli_query($GLOBALS["DatabaseConnect"], "\r\n\t\t\t\t\tINSERT INTO messages\r\n\t\t\t\t\t\t(sender, receiver, added, subject, msg, unread, saved, location)\r\n\t\t\t\t\t\tVALUES\r\n\t\t\t\t\t\t('" . $sender . "', '" . $receiver . "', NOW(), '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $subject) . "', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $msg) . "', '" . $unread . "', '" . $saved . "', '" . $location . "')\r\n\t\t\t\t\t");
-        mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET $pmunread = pmunread + 1 WHERE `id` = '" . $receiver . "'");
     }
 }
 
-?>
+try {
+    $stmt = $TSDatabase->query(
+        'SELECT u.id, g.cansettingspanel, g.canstaffpanel, g.issupermod 
+         FROM users u 
+         LEFT JOIN usergroups g ON u.usergroup = g.gid 
+         WHERE u.id = ? 
+         LIMIT 1',
+        [$_SESSION['ADMIN_ID']]
+    );
+    $LoggedAdminDetails = $stmt ? $stmt->fetch(PDO::FETCH_ASSOC) : null;
+} catch (Exception $e) {
+    $LoggedAdminDetails = null;
+}
+
+$showusergroups = '';
+try {
+    $stmt = $TSDatabase->query('SELECT gid, title, cansettingspanel, canstaffpanel, issupermod, namestyle FROM usergroups ORDER BY disporder ASC');
+    if ($stmt) {
+        while ($UG = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $showusergroups .= '<div style="margin-bottom: 3px;">
+                <label><input type="checkbox" name="usergroups[]" value="' . (int)$UG['gid'] . '"' . 
+                (in_array($UG['gid'], $usergroups, true) ? ' checked="checked"' : '') . 
+                ' style="vertical-align: middle;" /> ' . 
+                strip_tags(str_replace('{username}', escape_html($UG['title']), $UG['namestyle']), '<b><span><strong><em><i><u>') . 
+                '</label>
+            </div>';
+        }
+    }
+} catch (Exception $e) {
+    // Continue with empty list
+}
+
+function loadTinyMCEEditor(int $type, string $mode, string $elements): string {
+    define('EDITOR_TYPE', $type);
+    define('TINYMCE_MODE', $mode);
+    define('TINYMCE_ELEMENTS', $elements);
+    define('WORKPATH', './../scripts/');
+    define('TINYMCE_EMOTIONS_URL', './../tinymce_emotions.php');
+    
+    global $TSDatabase;
+    try {
+        $stmt = $TSDatabase->query('SELECT content FROM ts_config WHERE configname = ?', ['MAIN']);
+        if ($stmt && $row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $configData = @unserialize($row['content']);
+            define('PIC_BASEURL', $configData['pic_base_url'] ?? '');
+        }
+    } catch (Exception $e) {
+        define('PIC_BASEURL', '');
+    }
+    
+    ob_start();
+    if (file_exists('./../tinymce.php')) {
+        include './../tinymce.php';
+    }
+    return ob_get_clean();
+}
+
+echo loadTinyMCEEditor(2, 'exact', 'textarea1') . '
+
+' . $Message . '
+<form method="post" action="index.php?do=mass_pm">
+' . getFormTokenField() . '
+<table cellpadding="0" cellspacing="0" border="0" class="mainTable">
+    <tr>
+        <td class="tcat" colspan="2" align="center">' . ($Language[2] ?? 'Mass PM') . '</td>
+    </tr>
+    <tr>
+        <td class="alt1" valign="top" style="width: 155px;">' . ($Language[6] ?? 'Sender') . '</td>
+        <td class="alt1">
+            <select name="sender">
+                <option value="0"' . ($sender === '0' ? ' selected="selected"' : '') . '>' . ($Language[7] ?? 'System') . '</option>
+                <option value="' . (int)$_SESSION['ADMIN_ID'] . '"' . ($sender === $_SESSION['ADMIN_ID'] ? ' selected="selected"' : '') . '>' . ($Language[8] ?? 'Me') . ' (' . escape_html($_SESSION['ADMIN_USERNAME']) . ')</option>
+            </select>
+        </td>
+    </tr>
+    <tr>
+        <td class="alt1">' . ($Language[4] ?? 'Subject') . '</td>
+        <td class="alt1"><input type="text" name="subject" value="' . escape_attr($subject) . '" style="width: 99%;" /></td>
+    </tr>
+    <tr>
+        <td class="alt1" valign="top">' . ($Language[5] ?? 'Message') . '</td>
+        <td class="alt1"><textarea name="msg" id="textarea1" style="width: 100%; height: 200px;">' . escape_html($msg) . '</textarea>
+        <p><a href="javascript:toggleEditor(\'textarea1\');"><img src="images/tool_refresh.png" border="0" /></a></p></td>
+    </tr>
+    <tr>
+        <td class="alt1" valign="top">' . ($Language[9] ?? 'User Groups') . '</td>
+        <td class="alt1">' . $showusergroups . '</td>
+    </tr>
+    <tr>
+        <td class="tcat2"></td>
+        <td class="tcat2"><input type="submit" value="' . ($Language[10] ?? 'Send') . '" /> <input type="reset" value="' . ($Language[11] ?? 'Reset') . '" /></td>
+    </tr>
+</table>
+</form>';

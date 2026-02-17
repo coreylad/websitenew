@@ -135,7 +135,7 @@ function check_email($email)
 {
     return preg_match("#^[a-z0-9.!\\#\$%&'*+-/=?^_`{|}~]+@([0-9.]+|([^\\s'\"<>@,;]+\\.+[a-z]{2,6}))\$#si", $email);
 }
-function highlight($search, $subject, $hlstart = "<b><font $color = '#f7071d'>", $hlend = "</font></b>")
+function highlight($search, $subject, $hlstart = "<b><font color='#f7071d'>", $hlend = "</font></b>")
 {
     $srchlen = strlen($search);
     if ($srchlen == 0) {
