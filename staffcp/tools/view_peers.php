@@ -1,22 +1,31 @@
 <?php
-checkStaffAuthentication();
-$Language = file("languages/" . getStaffLanguage() . "/view_peers.lang");
+
+declare(strict_types=1);
+
+require_once __DIR__ . '/../staffcp_modern.php';
+
+checkStaffAuthenticationModern();
+$Language = loadStaffLanguage('view_peers');
 $Message = "";
 $ShowType = isset($_GET["type"]) && in_array($_GET["type"], ["s", "l"]) ? $_GET["type"] : "";
-$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'ANNOUNCE'");
-$Result = mysqli_fetch_assoc($query);
-$ANNOUNCE = unserialize($Result["content"]);
+
+$result = $TSDatabase->query("SELECT `content` FROM `ts_config` WHERE `configname` = 'ANNOUNCE'");
+$row = $result->fetch(PDO::FETCH_ASSOC);
+$ANNOUNCE = unserialize($row["content"]);
+
 if ($ANNOUNCE["xbt_active"] == "yes") {
-    $results = mysqli_num_rows(mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM xbt_files_users WHERE $active = 1"));
+    $countResult = $TSDatabase->query("SELECT COUNT(*) as count FROM xbt_files_users WHERE active = 1");
+    $results = $countResult->fetch(PDO::FETCH_ASSOC)['count'];
 } else {
-    $results = mysqli_num_rows(mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM peers"));
+    $countResult = $TSDatabase->query("SELECT COUNT(*) as count FROM peers");
+    $results = $countResult->fetch(PDO::FETCH_ASSOC)['count'];
 }
 list($pagertop, $limit) = buildPaginationLinks(30, $results, $_SERVER["SCRIPT_NAME"] . "?do=view_peers&amp;" . ($ShowType ? "type=" . $ShowType . "&amp;" : ""));
 $Found = "";
 if ($ANNOUNCE["xbt_active"] == "yes") {
-    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT value FROM xbt_config WHERE $name = 'announce_interval'");
-    $Result = mysqli_fetch_assoc($query);
-    $xbt_announce_interval = $Result["value"];
+    $result = $TSDatabase->query("SELECT value FROM xbt_config WHERE name = 'announce_interval'");
+    $row = $result->fetch(PDO::FETCH_ASSOC);
+    $xbt_announce_interval = $row["value"];
     $ORDERBY = "p.uploaded DESC, p.downloaded DESC, p.announced DESC";
     if ($ShowType) {
         switch ($ShowType) {
@@ -28,18 +37,18 @@ if ($ANNOUNCE["xbt_active"] == "yes") {
                 break;
         }
     }
-    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT p.uploaded, p.downloaded, p.fid, p.uid, p.active, p.announced, p.completed, p.`left`, p.mtime, p.down_rate, p.up_rate, u.id, u.enabled, u.username, u.options, u.warned, u.donor, g.namestyle, tr.name as torrentname, tr.size FROM xbt_files_users p LEFT JOIN users u ON (p.$uid = u.id) LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) LEFT JOIN torrents tr ON (p.$fid = tr.id) WHERE p.$active = 1 ORDER by " . $ORDERBY . " " . $limit);
+    $query = $TSDatabase->query("SELECT p.uploaded, p.downloaded, p.fid, p.uid, p.active, p.announced, p.completed, p.`left`, p.mtime, p.down_rate, p.up_rate, u.id, u.enabled, u.username, u.options, u.warned, u.donor, g.namestyle, tr.name as torrentname, tr.size FROM xbt_files_users p LEFT JOIN users u ON (p.uid = u.id) LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) LEFT JOIN torrents tr ON (p.fid = tr.id) WHERE p.active = 1 ORDER by " . $ORDERBY . " " . $limit);
     if ($results) {
-        while ($R = mysqli_fetch_assoc($query)) {
+        while ($R = $query->fetch(PDO::FETCH_ASSOC)) {
             $Left = 0 < $R["left"] ? round($R["size"] / $R["left"] * 100) . "%" : "";
             $seedtime = formatSecondsToTime($R["announced"] * $xbt_announce_interval);
             $ratio = 0 < $R["uploaded"] && 0 < $R["downloaded"] ? number_format($R["uploaded"] / $R["downloaded"], 2) : "0.0";
-            $Found .= "\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t<a $href = \"index.php?do=edit_user&amp;$username = " . $R["username"] . "\">" . applyUsernameStyle($R["username"], $R["namestyle"]) . "</a>\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t<a $href = \"../details.php?$id = " . $R["fid"] . "\" $alt = \"" . htmlspecialchars($R["torrentname"]) . "\" $title = \"" . htmlspecialchars($R["torrentname"]) . "\">" . substr(htmlspecialchars($R["torrentname"]), 0, 20) . "...</a>\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . formatBytes($R["uploaded"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . formatBytes($R["up_rate"]) . "/s\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . formatBytes($R["downloaded"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . formatBytes($R["down_rate"]) . "/s\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . $ratio . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t<font $color = \"" . (0 < $R["left"] ? "red\">" . $Language[19] : "green\">" . $Language[18]) . "</font>\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . formatTimestamp($R["mtime"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . number_format($R["announced"]) . " x " . $Language[38] . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . $seedtime . "\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t\t";
+            $Found .= "\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t<a href=\"index.php?do=edit_user&amp;username=" . escape_attr($R["username"]) . "\">" . applyUsernameStyle(escape_html($R["username"]), escape_html($R["namestyle"])) . "</a>\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t<a href=\"../details.php?id=" . (int)$R["fid"] . "\" alt=\"" . escape_attr($R["torrentname"]) . "\" title=\"" . escape_attr($R["torrentname"]) . "\">" . escape_html(substr($R["torrentname"], 0, 20)) . "...</a>\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . escape_html(formatBytes($R["uploaded"])) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . escape_html(formatBytes($R["up_rate"])) . "/s\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . escape_html(formatBytes($R["downloaded"])) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . escape_html(formatBytes($R["down_rate"])) . "/s\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . escape_html($ratio) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t<font color=\"" . (0 < $R["left"] ? "red\">" . escape_html($Language[19]) : "green\">" . escape_html($Language[18])) . "</font>\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . escape_html(formatTimestamp($R["mtime"])) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . escape_html(number_format($R["announced"])) . " x " . escape_html($Language[38]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . $seedtime . "\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t\t";
         }
     } else {
-        echo "\r\n\t\t" . showAlertError($Language[17]);
+        echo "\r\n\t\t" . showAlertErrorModern($Language[17]);
     }
-    echo "\r\n\t" . showAlertMessage("<a $href = \"index.php?do=view_peers&amp;$type = l\">Leechers</a> | <a $href = \"index.php?do=view_peers&amp;$type = s\">Seeders</a>") . "\r\n\t" . $pagertop . "\r\n\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t<tr>\r\n\t\t\t<td class=\"tcat\" $align = \"center\" $colspan = \"11\">" . $Language[2] . " (" . number_format($results) . ")</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt2\">\r\n\t\t\t\t<b>" . $Language[3] . "</b>\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt2\">\r\n\t\t\t\t<b>" . $Language[4] . "</b>\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt2\">\r\n\t\t\t\t<b>" . $Language[6] . "</b>\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt2\">\r\n\t\t\t\t<b>" . $Language[39] . "</b>\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt2\">\r\n\t\t\t\t<b>" . $Language[7] . "</b>\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt2\">\r\n\t\t\t\t<b>" . $Language[40] . "</b>\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt2\">\r\n\t\t\t\t<b>" . $Language[21] . "</b>\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt2\">\r\n\t\t\t\t<b>" . $Language[10] . "</b>\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt2\">\r\n\t\t\t\t<b>" . $Language[12] . "</b>\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt2\">\r\n\t\t\t\t<b>" . $Language[20] . "</b>\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt2\">\r\n\t\t\t\t<b>" . $Language[23] . "</b>\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t" . $Found . "\r\n\t</table>\r\n\t" . $pagertop;
+    echo "\r\n\t" . showAlertInfoModern("<a href=\"index.php?do=view_peers&amp;type=l\">Leechers</a> | <a href=\"index.php?do=view_peers&amp;type=s\">Seeders</a>") . "\r\n\t" . $pagertop . "\r\n\t<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" class=\"mainTable\">\r\n\t\t<tr>\r\n\t\t\t<td class=\"tcat\" align=\"center\" colspan=\"11\">" . escape_html($Language[2]) . " (" . escape_html(number_format($results)) . ")</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt2\">\r\n\t\t\t\t<b>" . escape_html($Language[3]) . "</b>\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt2\">\r\n\t\t\t\t<b>" . escape_html($Language[4]) . "</b>\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt2\">\r\n\t\t\t\t<b>" . escape_html($Language[6]) . "</b>\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt2\">\r\n\t\t\t\t<b>" . escape_html($Language[39]) . "</b>\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt2\">\r\n\t\t\t\t<b>" . escape_html($Language[7]) . "</b>\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt2\">\r\n\t\t\t\t<b>" . escape_html($Language[40]) . "</b>\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt2\">\r\n\t\t\t\t<b>" . escape_html($Language[21]) . "</b>\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt2\">\r\n\t\t\t\t<b>" . escape_html($Language[10]) . "</b>\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt2\">\r\n\t\t\t\t<b>" . escape_html($Language[12]) . "</b>\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt2\">\r\n\t\t\t\t<b>" . escape_html($Language[20]) . "</b>\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt2\">\r\n\t\t\t\t<b>" . escape_html($Language[23]) . "</b>\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t" . $Found . "\r\n\t</table>\r\n\t" . $pagertop;
 } else {
     $ORDERBY = "t.last_action DESC";
     if ($ShowType) {
@@ -52,50 +61,97 @@ if ($ANNOUNCE["xbt_active"] == "yes") {
                 break;
         }
     }
-    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT t.*,  u.username, g.namestyle, tr.name as torrentname FROM peers t LEFT JOIN users u ON (t.$userid = u.id) LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) LEFT JOIN torrents tr ON (t.$torrent = tr.id) ORDER by " . $ORDERBY . " " . $limit);
+    $query = $TSDatabase->query("SELECT t.*,  u.username, g.namestyle, tr.name as torrentname FROM peers t LEFT JOIN users u ON (t.userid = u.id) LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) LEFT JOIN torrents tr ON (t.torrent = tr.id) ORDER by " . $ORDERBY . " " . $limit);
     if ($results) {
-        while ($R = mysqli_fetch_assoc($query)) {
-            $Found .= "\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t<a $href = \"index.php?do=edit_user&amp;$username = " . $R["username"] . "\">" . applyUsernameStyle($R["username"], $R["namestyle"]) . "</a>\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t<a $href = \"../details.php?$id = " . $R["torrent"] . "\" $alt = \"" . htmlspecialchars($R["torrentname"]) . "\" $title = \"" . htmlspecialchars($R["torrentname"]) . "\">" . substr(htmlspecialchars($R["torrentname"]), 0, 25) . "</a>\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . htmlspecialchars($R["ip"]) . ":" . intval($R["port"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . formatBytes($R["uploaded"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . formatBytes($R["downloaded"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . substr(htmlspecialchars($R["peer_id"]), 0, 8) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . $R["connectable"] . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . $R["seeder"] . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . formatTimestamp($R["started"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . formatTimestamp($R["last_action"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . formatTimestamp($R["prev_action"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . formatBytes($R["uploadoffset"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . formatBytes($R["downloadoffset"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . formatBytes($R["to_go"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t\t";
+        while ($R = $query->fetch(PDO::FETCH_ASSOC)) {
+            $Found .= "\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t<a href=\"index.php?do=edit_user&amp;username=" . escape_attr($R["username"]) . "\">" . applyUsernameStyle(escape_html($R["username"]), escape_html($R["namestyle"])) . "</a>\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t<a href=\"../details.php?id=" . (int)$R["torrent"] . "\" alt=\"" . escape_attr($R["torrentname"]) . "\" title=\"" . escape_attr($R["torrentname"]) . "\">" . escape_html(substr($R["torrentname"], 0, 25)) . "</a>\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . escape_html($R["ip"]) . ":" . (int)$R["port"] . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . escape_html(formatBytes($R["uploaded"])) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . escape_html(formatBytes($R["downloaded"])) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . escape_html(substr($R["peer_id"], 0, 8)) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . escape_html($R["connectable"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . escape_html($R["seeder"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . escape_html(formatTimestamp($R["started"])) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . escape_html(formatTimestamp($R["last_action"])) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . escape_html(formatTimestamp($R["prev_action"])) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . escape_html(formatBytes($R["uploadoffset"])) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . escape_html(formatBytes($R["downloadoffset"])) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"alt1\">\r\n\t\t\t\t\t" . escape_html(formatBytes($R["to_go"])) . "\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t\t";
         }
     } else {
-        echo "\r\n\t\t" . showAlertError($Language[17]);
+        echo "\r\n\t\t" . showAlertErrorModern($Language[17]);
     }
-    echo "\r\n\t" . showAlertMessage("<a $href = \"index.php?do=view_peers&amp;$type = l\">Leechers</a> | <a $href = \"index.php?do=view_peers&amp;$type = s\">Seeders</a>") . "\r\n\t" . $pagertop . "\r\n\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t<tr>\r\n\t\t\t<td class=\"tcat\" $align = \"center\" $colspan = \"14\">" . $Language[2] . " (" . number_format($results) . ")</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt2\">\r\n\t\t\t\t<b>" . $Language[3] . "</b>\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt2\">\r\n\t\t\t\t<b>" . $Language[4] . "</b>\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt2\">\r\n\t\t\t\t<b>" . $Language[5] . "</b>\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt2\">\r\n\t\t\t\t<b>" . $Language[6] . "</b>\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt2\">\r\n\t\t\t\t<b>" . $Language[7] . "</b>\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt2\">\r\n\t\t\t\t<b>" . $Language[8] . "</b>\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt2\">\r\n\t\t\t\t<b>" . $Language[9] . "</b>\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt2\">\r\n\t\t\t\t<b>" . $Language[10] . "</b>\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt2\">\r\n\t\t\t\t<b>" . $Language[11] . "</b>\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt2\">\r\n\t\t\t\t<b>" . $Language[12] . "</b>\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt2\">\r\n\t\t\t\t<b>" . $Language[13] . "</b>\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt2\">\r\n\t\t\t\t<b>" . $Language[14] . "</b>\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt2\">\r\n\t\t\t\t<b>" . $Language[15] . "</b>\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt2\">\r\n\t\t\t\t<b>" . $Language[16] . "</b>\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t" . $Found . "\r\n\t</table>\r\n\t" . $pagertop;
+    echo "\r\n\t" . showAlertInfoModern("<a href=\"index.php?do=view_peers&amp;type=l\">Leechers</a> | <a href=\"index.php?do=view_peers&amp;type=s\">Seeders</a>") . "\r\n\t" . $pagertop . "\r\n\t<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" class=\"mainTable\">\r\n\t\t<tr>\r\n\t\t\t<td class=\"tcat\" align=\"center\" colspan=\"14\">" . escape_html($Language[2]) . " (" . escape_html(number_format($results)) . ")</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt2\">\r\n\t\t\t\t<b>" . escape_html($Language[3]) . "</b>\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt2\">\r\n\t\t\t\t<b>" . escape_html($Language[4]) . "</b>\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt2\">\r\n\t\t\t\t<b>" . escape_html($Language[5]) . "</b>\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt2\">\r\n\t\t\t\t<b>" . escape_html($Language[6]) . "</b>\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt2\">\r\n\t\t\t\t<b>" . escape_html($Language[7]) . "</b>\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt2\">\r\n\t\t\t\t<b>" . escape_html($Language[8]) . "</b>\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt2\">\r\n\t\t\t\t<b>" . escape_html($Language[9]) . "</b>\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt2\">\r\n\t\t\t\t<b>" . escape_html($Language[10]) . "</b>\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt2\">\r\n\t\t\t\t<b>" . escape_html($Language[11]) . "</b>\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt2\">\r\n\t\t\t\t<b>" . escape_html($Language[12]) . "</b>\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt2\">\r\n\t\t\t\t<b>" . escape_html($Language[13]) . "</b>\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt2\">\r\n\t\t\t\t<b>" . escape_html($Language[14]) . "</b>\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt2\">\r\n\t\t\t\t<b>" . escape_html($Language[15]) . "</b>\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt2\">\r\n\t\t\t\t<b>" . escape_html($Language[16]) . "</b>\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t" . $Found . "\r\n\t</table>\r\n\t" . $pagertop;
 }
-function getStaffLanguage()
+
+function formatSecondsToTime($sec, $padHours = false)
 {
-    if (isset($_COOKIE["staffcplanguage"]) && is_dir("languages/" . $_COOKIE["staffcplanguage"]) && is_file("languages/" . $_COOKIE["staffcplanguage"] . "/staffcp.lang")) {
-        return $_COOKIE["staffcplanguage"];
-    }
-    return "english";
-}
-function checkStaffAuthentication()
-{
-    if (!defined("IN-TSSE-STAFF-PANEL")) {
-        redirectTo("../index.php");
-    }
-}
-function redirectTo($url)
-{
-    if (!headers_sent()) {
-        header("Location: " . $url);
+    global $Language;
+    $dateFrom = 31536000;
+    $dateTo = 2678400;
+    $dateFormatted = 604800;
+    $timeStamp = 86400;
+    $duration = 3600;
+    $durationFormatted = 60;
+    $timeDiff = floor($sec / $dateFrom);
+    $sec %= $dateFrom;
+    $timeString = floor($sec / $dateTo);
+    $sec %= $dateTo;
+    $timeDisplay = floor($sec / $dateFormatted);
+    $sec %= $dateFormatted;
+    $periodDisplay = floor($sec / $timeStamp);
+    $sec %= $timeStamp;
+    $endTime = floor($sec / $duration);
+    $sec %= $duration;
+    $timeRange = floor($sec / $durationFormatted);
+    $sec %= $durationFormatted;
+    $timePeriod = $sec;
+    $timePeriodDisplay = [];
+    if ($timeDiff == 1) {
+        $timePeriodDisplay["years"] = "<b>1</b> " . escape_html($Language[24]);
     } else {
-        echo "\r\n\t\t<script $type = \"text/javascript\">\r\n\t\t\twindow.location.$href = \"" . $url . "\";\r\n\t\t</script>\r\n\t\t<noscript>\r\n\t\t\t<meta http-$equiv = \"refresh\" $content = \"0;$url = " . $url . "\" />\r\n\t\t</noscript>";
+        if (1 < $timeDiff) {
+            $timePeriodDisplay["years"] = "<b>" . $timeDiff . "</b> " . escape_html($Language[25]);
+        }
     }
-    exit;
+    if ($timeString == 1) {
+        $timePeriodDisplay["months"] = "<b>1</b> " . escape_html($Language[26]);
+    } else {
+        if (1 < $timeString) {
+            $timePeriodDisplay["months"] = "<b>" . $timeString . "</b> " . escape_html($Language[27]);
+        }
+    }
+    if ($timeDisplay == 1) {
+        $timePeriodDisplay["weeks"] = "<b>1</b> " . escape_html($Language[28]);
+    } else {
+        if (1 < $timeDisplay) {
+            $timePeriodDisplay["weeks"] = "<b>" . $timeDisplay . "</b> " . escape_html($Language[29]);
+        }
+    }
+    if ($periodDisplay == 1) {
+        $timePeriodDisplay["days"] = "<b>1</b> " . escape_html($Language[30]);
+    } else {
+        if (1 < $periodDisplay) {
+            $timePeriodDisplay["days"] = "<b>" . $periodDisplay . "</b> " . escape_html($Language[31]);
+        }
+    }
+    if ($endTime == 1) {
+        $timePeriodDisplay["hours"] = "<b>1</b> " . escape_html($Language[32]);
+    } else {
+        if (1 < $endTime) {
+            $timePeriodDisplay["hours"] = "<b>" . $endTime . "</b> " . escape_html($Language[33]);
+        }
+    }
+    if ($timeRange == 1) {
+        $timePeriodDisplay["minutes"] = "<b>1</b> " . escape_html($Language[34]);
+    } else {
+        if (1 < $timeRange) {
+            $timePeriodDisplay["minutes"] = "<b>" . $timeRange . "</b> " . escape_html($Language[35]);
+        }
+    }
+    if ($timePeriod == 1) {
+        $timePeriodDisplay["seconds"] = "<b>1</b> " . escape_html($Language[36]);
+    } else {
+        if (1 < $timePeriod) {
+            $timePeriodDisplay["seconds"] = "<b>" . $timePeriod . "</b> " . escape_html($Language[37]);
+        }
+    }
+    if (isset($timePeriodDisplay) && is_array($timePeriodDisplay) && count($timePeriodDisplay) > 0) {
+        $total = implode(", ", $timePeriodDisplay);
+    } else {
+        $total = "0 " . escape_html($Language[36]);
+    }
+    return "<small>" . $total . "</small>";
 }
-function showAlertError($Error)
-{
-    return "<div class=\"alert\"><div>" . $Error . "</div></div>";
-}
-function logStaffAction($log)
-{
-    mysqli_query($GLOBALS["DatabaseConnect"], "INSERT INTO ts_staffcp_logs (uid, date, log) VALUES ('" . $_SESSION["ADMIN_ID"] . "', '" . time() . "', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $log) . "')");
-}
-function showAlertMessage($message = "")
-{
-    return "<div class=\"alert\"><div>" . $message . "</div></div>";
-}
+
 function validatePerPage($numresults, &$page, &$perpage, $maxperpage = 20, $defaultperpage = 20)
 {
     $perpage = intval($perpage);
@@ -118,6 +174,7 @@ function validatePerPage($numresults, &$page, &$perpage, $maxperpage = 20, $defa
         }
     }
 }
+
 function calculatePagination($pagenumber, $perpage, $total)
 {
     $paginationFirstItem = $perpage * ($pagenumber - 1);
@@ -128,6 +185,7 @@ function calculatePagination($pagenumber, $perpage, $total)
     $paginationFirstItem++;
     return ["first" => number_format($paginationFirstItem), "last" => number_format($paginationLastItem)];
 }
+
 function buildPaginationLinks($perpage, $results, $address)
 {
     if ($results < $perpage) {
@@ -180,7 +238,7 @@ function buildPaginationLinks($perpage, $results, $address)
         while ($currentPage++ < $queryResult) {
         }
         $previousPageQuery = isset($previousPage) && $previousPage != 1 ? "page=" . $previousPage : "";
-        $paginationLinks = "\r\n\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTableNoBorder\">\r\n\t\t<tr>\r\n\t\t\t<td $style = \"padding: 0px 0px 1px 0px;\">\r\n\t\t\t\t<div $style = \"float: left;\" $id = \"navcontainer_f\">\r\n\t\t\t\t\t<ul>\r\n\t\t\t\t\t\t<li>" . $pagenumber . " - " . $queryResult . "</li>\r\n\t\t\t\t\t\t" . ($paginationHtml["first"] ? "<li><a class=\"smalltext\" $href = \"" . $address . "\" $title = \"First Page - Show Results " . $firstPageInfo["first"] . " to " . $firstPageInfo["last"] . " of " . $total . "\">&laquo; First</a></li>" : "") . ($paginationHtml["prev"] ? "<li><a class=\"smalltext\" $href = \"" . $address . $previousPageQuery . "\" $title = \"Previous Page - Show Results " . $previousPageInfo["first"] . " to " . $previousPageInfo["last"] . " of " . $total . "\">&lt;</a></li>" : "") . "\r\n\t\t\t\t\t\t" . $paginationLinks . "\r\n\t\t\t\t\t\t" . ($paginationHtml["next"] ? "<li><a class=\"smalltext\" $href = \"" . $address . "page=" . $nextPageNumber . "\" $title = \"Next Page - Show Results " . $nextPageInfo["first"] . " to " . $nextPageInfo["last"] . " of " . $total . "\">&gt;</a></li>" : "") . ($paginationHtml["last"] ? "<li><a class=\"smalltext\" $href = \"" . $address . "page=" . $queryResult . "\" $title = \"Last Page - Show Results " . $lastPageInfo["first"] . " to " . $lastPageInfo["last"] . " of " . $total . "\">Last <strong>&raquo;</strong></a></li>" : "") . "\r\n\t\t\t\t\t</ul>\r\n\t\t\t\t</div>\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t</table>";
+        $paginationLinks = "\r\n\t<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" class=\"mainTableNoBorder\">\r\n\t\t<tr>\r\n\t\t\t<td style=\"padding: 0px 0px 1px 0px;\">\r\n\t\t\t\t<div style=\"float: left;\" id=\"navcontainer_f\">\r\n\t\t\t\t\t<ul>\r\n\t\t\t\t\t\t<li>" . $pagenumber . " - " . $queryResult . "</li>\r\n\t\t\t\t\t\t" . ($paginationHtml["first"] ? "<li><a class=\"smalltext\" href=\"" . escape_attr($address) . "\" title=\"First Page - Show Results " . escape_attr($firstPageInfo["first"]) . " to " . escape_attr($firstPageInfo["last"]) . " of " . escape_attr($total) . "\">&laquo; First</a></li>" : "") . ($paginationHtml["prev"] ? "<li><a class=\"smalltext\" href=\"" . escape_attr($address . $previousPageQuery) . "\" title=\"Previous Page - Show Results " . escape_attr($previousPageInfo["first"]) . " to " . escape_attr($previousPageInfo["last"]) . " of " . escape_attr($total) . "\">&lt;</a></li>" : "") . "\r\n\t\t\t\t\t\t" . $paginationLinks . "\r\n\t\t\t\t\t\t" . ($paginationHtml["next"] ? "<li><a class=\"smalltext\" href=\"" . escape_attr($address) . "page=" . $nextPageNumber . "\" title=\"Next Page - Show Results " . escape_attr($nextPageInfo["first"]) . " to " . escape_attr($nextPageInfo["last"]) . " of " . escape_attr($total) . "\">&gt;</a></li>" : "") . ($paginationHtml["last"] ? "<li><a class=\"smalltext\" href=\"" . escape_attr($address) . "page=" . $queryResult . "\" title=\"Last Page - Show Results " . escape_attr($lastPageInfo["first"]) . " to " . escape_attr($lastPageInfo["last"]) . " of " . escape_attr($total) . "\">Last <strong>&raquo;</strong></a></li>" : "") . "\r\n\t\t\t\t\t</ul>\r\n\t\t\t\t</div>\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t</table>";
         return [$paginationLinks, "LIMIT " . $limitOffset . ", " . $perpage];
     }
     if ($pageRangeThreshold <= abs($currentPage - $pagenumber) && $pageRangeThreshold != 0) {
@@ -198,18 +256,19 @@ function buildPaginationLinks($perpage, $results, $address)
             if (0 < $pageOffsetDisplay) {
                 $pageOffsetDisplay = "+" . $pageOffsetDisplay;
             }
-            $paginationLinks .= "<li><a class=\"smalltext\" $href = \"" . $address . ($currentPage != 1 ? "page=" . $currentPage : "") . "\" $title = \"Show results " . $pageRangeInfo["first"] . " to " . $pageRangeInfo["last"] . " of " . $total . "\"><!--" . $pageOffsetDisplay . "-->" . $currentPage . "</a></li>";
+            $paginationLinks .= "<li><a class=\"smalltext\" href=\"" . escape_attr($address) . ($currentPage != 1 ? "page=" . $currentPage : "") . "\" title=\"Show results " . escape_attr($pageRangeInfo["first"]) . " to " . escape_attr($pageRangeInfo["last"]) . " of " . escape_attr($total) . "\"><!--" . $pageOffsetDisplay . "-->" . $currentPage . "</a></li>";
         }
     } else {
         if ($currentPage == $pagenumber) {
             $currentPageInfo = calculatePagination($currentPage, $perpage, $results);
-            $paginationLinks .= "<li><a $name = \"current\" class=\"current\" $title = \"Showing results " . $currentPageInfo["first"] . " to " . $currentPageInfo["last"] . " of " . $total . "\">" . $currentPage . "</a></li>";
+            $paginationLinks .= "<li><a name=\"current\" class=\"current\" title=\"Showing results " . escape_attr($currentPageInfo["first"]) . " to " . escape_attr($currentPageInfo["last"]) . " of " . escape_attr($total) . "\">" . $currentPage . "</a></li>";
         } else {
             $pageRangeInfo = calculatePagination($currentPage, $perpage, $results);
-            $paginationLinks .= "<li><a $href = \"" . $address . ($currentPage != 1 ? "page=" . $currentPage : "") . "\" $title = \"Show results " . $pageRangeInfo["first"] . " to " . $pageRangeInfo["last"] . " of " . $total . "\">" . $currentPage . "</a></li>";
+            $paginationLinks .= "<li><a href=\"" . escape_attr($address) . ($currentPage != 1 ? "page=" . $currentPage : "") . "\" title=\"Show results " . escape_attr($pageRangeInfo["first"]) . " to " . escape_attr($pageRangeInfo["last"]) . " of " . escape_attr($total) . "\">" . $currentPage . "</a></li>";
         }
     }
 }
+
 function formatTimestamp($timestamp = "")
 {
     $dateFormatPattern = "m-d-Y h:i A";
@@ -222,6 +281,7 @@ function formatTimestamp($timestamp = "")
     }
     return date($dateFormatPattern, $timestamp);
 }
+
 function formatBytes($bytes = 0)
 {
     if ($bytes < 1024000) {
@@ -235,87 +295,10 @@ function formatBytes($bytes = 0)
     }
     return number_format($bytes / 0, 2) . " TB";
 }
+
 function applyUsernameStyle($username, $namestyle)
 {
     return str_replace("{username}", $username, $namestyle);
-}
-function function_89($stamp = "")
-{
-    global $Language;
-    $dateFrom = 31536000;
-    $dateTo = 2678400;
-    $dateFormatted = 604800;
-    $timeStamp = 86400;
-    $duration = 3600;
-    $durationFormatted = 60;
-    $timeDiff = floor($stamp / $dateFrom);
-    $stamp %= $dateFrom;
-    $timeString = floor($stamp / $dateTo);
-    $stamp %= $dateTo;
-    $timeDisplay = floor($stamp / $dateFormatted);
-    $stamp %= $dateFormatted;
-    $periodDisplay = floor($stamp / $timeStamp);
-    $stamp %= $timeStamp;
-    $endTime = floor($stamp / $duration);
-    $stamp %= $duration;
-    $timeRange = floor($stamp / $durationFormatted);
-    $stamp %= $durationFormatted;
-    $timePeriod = $stamp;
-    if ($timeDiff == 1) {
-        $timePeriodDisplay["years"] = "<b>1</b> " . $Language[24];
-    } else {
-        if (1 < $timeDiff) {
-            $timePeriodDisplay["years"] = "<b>" . $timeDiff . "</b> " . $Language[25];
-        }
-    }
-    if ($timeString == 1) {
-        $timePeriodDisplay["months"] = "<b>1</b> " . $Language[26];
-    } else {
-        if (1 < $timeString) {
-            $timePeriodDisplay["months"] = "<b>" . $timeString . "</b> " . $Language[27];
-        }
-    }
-    if ($timeDisplay == 1) {
-        $timePeriodDisplay["weeks"] = "<b>1</b> " . $Language[28];
-    } else {
-        if (1 < $timeDisplay) {
-            $timePeriodDisplay["weeks"] = "<b>" . $timeDisplay . "</b> " . $Language[29];
-        }
-    }
-    if ($periodDisplay == 1) {
-        $timePeriodDisplay["days"] = "<b>1</b> " . $Language[30];
-    } else {
-        if (1 < $periodDisplay) {
-            $timePeriodDisplay["days"] = "<b>" . $periodDisplay . "</b> " . $Language[31];
-        }
-    }
-    if ($endTime == 1) {
-        $timePeriodDisplay["hours"] = "<b>1</b> " . $Language[32];
-    } else {
-        if (1 < $endTime) {
-            $timePeriodDisplay["hours"] = "<b>" . $endTime . "</b> " . $Language[33];
-        }
-    }
-    if ($timeRange == 1) {
-        $timePeriodDisplay["minutes"] = "<b>1</b> " . $Language[34];
-    } else {
-        if (1 < $timeRange) {
-            $timePeriodDisplay["minutes"] = "<b>" . $timeRange . "</b> " . $Language[35];
-        }
-    }
-    if ($timePeriod == 1) {
-        $timePeriodDisplay["seconds"] = "<b>1</b> " . $Language[36];
-    } else {
-        if (1 < $timePeriod) {
-            $timePeriodDisplay["seconds"] = "<b>" . $timePeriod . "</b> " . $Language[37];
-        }
-    }
-    if (isset($timePeriodDisplay) && is_array($timePeriodDisplay)) {
-        $total = implode(", ", $timePeriodDisplay);
-    } else {
-        $total = "0 " . $Language[36];
-    }
-    return "<small\">" . $total . "</small>";
 }
 
 ?>

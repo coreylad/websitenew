@@ -1,11 +1,17 @@
 <?php
+
+declare(strict_types=1);
+
+require_once __DIR__ . '/../staffcp_modern.php';
+
 checkStaffAuthentication();
+
 $Act = isset($_GET["act"]) ? trim($_GET["act"]) : (isset($_POST["act"]) ? trim($_POST["act"]) : "");
-$Language = file("languages/" . getStaffLanguage() . "/who_is_online.lang");
+$Language = loadStaffLanguage('who_is_online');
 $Message = "";
 $Found = "";
 if (isset($_GET["ip"]) && !empty($_GET["ip"])) {
-    $IP = htmlspecialchars($_GET["ip"]);
+    $IP = escape_html($_GET["ip"]);
     $Host = gethostbyaddr($IP);
     if (!$Host || $IP == $Host) {
         $Host = $Language[12];
@@ -13,49 +19,65 @@ if (isset($_GET["ip"]) && !empty($_GET["ip"])) {
     $Message = "\r\n\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t<tr>\r\n\t\t\t<td class=\"tcat\" $align = \"center\" $colspan = \"2\"><b>" . $Language[9] . "</b></td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt2\">\r\n\t\t\t\t" . $Language[4] . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt2\">\r\n\t\t\t\t" . $Language[11] . "\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t" . $IP . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t" . $Host . "\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t</table>";
 }
 if ($Act == "today") {
-    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT u.username, u.ip, u.last_access, u.page, u.uploaded, u.downloaded, g.namestyle FROM users u LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) WHERE UNIX_TIMESTAMP(u.last_access) > " . (time() - 86400) . " ORDER BY u.last_access DESC, u.username ASC");
-    $Found .= "\r\n\t" . showAlertMessage("<a $href = \"index.php?do=who_is_online\">" . $Language[2] . "</a>") . "\r\n\t" . $Message . "\r\n\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t<tr>\r\n\t\t<td class=\"tcat\" $align = \"center\" $colspan = \"5\"><b>" . $Language[8] . " (" . number_format(mysqli_num_rows($query)) . ")</b></td>\r\n\t</tr>\r\n\t<tr>\r\n\t\t<td class=\"alt2\"><b>" . $Language[3] . "</b></td>\r\n\t\t<td class=\"alt2\"><b>" . $Language[6] . "</b></td>\r\n\t\t<td class=\"alt2\"><b>" . $Language[13] . "</b></td>\r\n\t\t<td class=\"alt2\"><b>" . $Language[14] . "</b></td>\r\n\t\t<td class=\"alt2\"><b>" . $Language[7] . "</b></td>\r\n\t</tr>\r\n\t";
-    for ($Count = 0; $User = mysqli_fetch_assoc($query); $Count++) {
-        $class = $Count % 2 == 1 ? "alt2" : "alt1";
-        $Found .= "\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"" . $class . "\">\r\n\t\t\t\t\t<a $href = \"index.php?do=edit_user&amp;$username = " . $User["username"] . "\">" . applyUsernameStyle($User["username"], $User["namestyle"]) . "</a>\r\n\t\t\t\t\t<br />\r\n\t\t\t\t\t<small>" . $Language[4] . ": <a $href = \"index.php?do=who_is_online&amp;$act = today&amp;$ip = " . htmlspecialchars($User["ip"]) . "\">" . htmlspecialchars($User["ip"]) . "</a></small>\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"" . $class . "\">\r\n\t\t\t\t\t" . formatTimestamp($User["last_access"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"" . $class . "\">\r\n\t\t\t\t\t" . formatBytes($User["uploaded"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"" . $class . "\">\r\n\t\t\t\t\t" . formatBytes($User["downloaded"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"" . $class . "\">\r\n\t\t\t\t\t<a $href = \"" . str_replace("&amp;", "&", htmlspecialchars($User["page"])) . "\">" . identifyUserLocation($User["page"]) . "</a>\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t\t";
+    try {
+        $result = $TSDatabase->query(
+            "SELECT u.username, u.ip, u.last_access, u.page, u.uploaded, u.downloaded, g.namestyle 
+             FROM users u 
+             LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) 
+             WHERE UNIX_TIMESTAMP(u.last_access) > ? 
+             ORDER BY u.last_access DESC, u.username ASC",
+            [time() - 86400]
+        );
+        
+        $users = $result ? $result->fetchAll(PDO::FETCH_ASSOC) : [];
+        $totalCount = count($users);
+        
+        $Found .= "\r\n\t" . showAlertMessage("<a $href = \"index.php?do=who_is_online\">" . $Language[2] . "</a>") . "\r\n\t" . $Message . "\r\n\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t<tr>\r\n\t\t<td class=\"tcat\" $align = \"center\" $colspan = \"5\"><b>" . $Language[8] . " (" . number_format($totalCount) . ")</b></td>\r\n\t</tr>\r\n\t<tr>\r\n\t\t<td class=\"alt2\"><b>" . $Language[3] . "</b></td>\r\n\t\t<td class=\"alt2\"><b>" . $Language[6] . "</b></td>\r\n\t\t<td class=\"alt2\"><b>" . $Language[13] . "</b></td>\r\n\t\t<td class=\"alt2\"><b>" . $Language[14] . "</b></td>\r\n\t\t<td class=\"alt2\"><b>" . $Language[7] . "</b></td>\r\n\t</tr>\r\n\t";
+        
+        $Count = 0;
+        foreach ($users as $User) {
+            $class = $Count % 2 == 1 ? "alt2" : "alt1";
+            $Found .= "\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"" . $class . "\">\r\n\t\t\t\t\t<a $href = \"index.php?do=edit_user&amp;$username = " . escape_attr($User["username"]) . "\">" . applyUsernameStyle($User["username"], $User["namestyle"]) . "</a>\r\n\t\t\t\t\t<br />\r\n\t\t\t\t\t<small>" . $Language[4] . ": <a $href = \"index.php?do=who_is_online&amp;$act = today&amp;$ip = " . escape_attr($User["ip"]) . "\">" . escape_html($User["ip"]) . "</a></small>\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"" . $class . "\">\r\n\t\t\t\t\t" . formatTimestamp($User["last_access"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"" . $class . "\">\r\n\t\t\t\t\t" . formatBytes($User["uploaded"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"" . $class . "\">\r\n\t\t\t\t\t" . formatBytes($User["downloaded"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"" . $class . "\">\r\n\t\t\t\t\t<a $href = \"" . str_replace("&amp;", "&", escape_html($User["page"])) . "\">" . identifyUserLocation($User["page"]) . "</a>\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t\t";
+            $Count++;
+        }
+        
+        $Found .= "\r\n\t</table>";
+        echo $Found;
+    } catch (Exception $e) {
+        error_log('Who is online (today) error: ' . $e->getMessage());
+        echo showAlertErrorModern('Failed to fetch user data');
     }
-    $Found .= "\r\n\t</table>";
-    echo $Found;
 }
 if (!$Found) {
-    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT s.*, u.username, g.namestyle FROM ts_sessions s LEFT JOIN users u ON (s.`userid` = u.id) LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) WHERE s.lastactivity > '" . (time() - 3600) . "' GROUP BY u.id ORDER BY s.lastactivity DESC, u.username ASC");
-    for ($Count = 0; $User = mysqli_fetch_assoc($query); $Count++) {
-        $class = $Count % 2 == 1 ? "alt2" : "alt1";
-        $Found .= "\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"" . $class . "\">\r\n\t\t\t\t\t" . ($User["userid"] ? "<a $href = \"index.php?do=edit_user&amp;$username = " . $User["username"] . "\">" . applyUsernameStyle($User["username"], $User["namestyle"]) . "</a>" : identifyUserAgentBot($User["useragent"])) . "\r\n\t\t\t\t\t<br />\r\n\t\t\t\t\t<small>" . $Language[4] . ": <a $href = \"index.php?do=who_is_online&amp;$ip = " . htmlspecialchars($User["host"]) . "\">" . htmlspecialchars($User["host"]) . "</a></small>\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"" . $class . "\">\r\n\t\t\t\t\t" . htmlspecialchars($User["useragent"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"" . $class . "\">\r\n\t\t\t\t\t" . formatTimestamp($User["lastactivity"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"" . $class . "\">\r\n\t\t\t\t\t<a $href = \"" . str_replace("&amp;", "&", htmlspecialchars($User["location"])) . "\">" . identifyUserLocation($User["location"]) . "</a>\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t\t";
+    try {
+        $result = $TSDatabase->query(
+            "SELECT s.*, u.username, g.namestyle 
+             FROM ts_sessions s 
+             LEFT JOIN users u ON (s.`userid` = u.id) 
+             LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) 
+             WHERE s.lastactivity > ? 
+             GROUP BY u.id 
+             ORDER BY s.lastactivity DESC, u.username ASC",
+            [time() - 3600]
+        );
+        
+        $sessions = $result ? $result->fetchAll(PDO::FETCH_ASSOC) : [];
+        $Count = 0;
+        
+        foreach ($sessions as $User) {
+            $class = $Count % 2 == 1 ? "alt2" : "alt1";
+            $Found .= "\r\n\t\t\t<tr>\r\n\t\t\t\t<td class=\"" . $class . "\">\r\n\t\t\t\t\t" . ($User["userid"] ? "<a $href = \"index.php?do=edit_user&amp;$username = " . escape_attr($User["username"]) . "\">" . applyUsernameStyle($User["username"], $User["namestyle"]) . "</a>" : identifyUserAgentBot($User["useragent"])) . "\r\n\t\t\t\t\t<br />\r\n\t\t\t\t\t<small>" . $Language[4] . ": <a $href = \"index.php?do=who_is_online&amp;$ip = " . escape_attr($User["host"]) . "\">" . escape_html($User["host"]) . "</a></small>\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"" . $class . "\">\r\n\t\t\t\t\t" . escape_html($User["useragent"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"" . $class . "\">\r\n\t\t\t\t\t" . formatTimestamp($User["lastactivity"]) . "\r\n\t\t\t\t</td>\r\n\t\t\t\t<td class=\"" . $class . "\">\r\n\t\t\t\t\t<a $href = \"" . str_replace("&amp;", "&", escape_html($User["location"])) . "\">" . identifyUserLocation($User["location"]) . "</a>\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t\t";
+            $Count++;
+        }
+        
+        $totalCount = count($sessions);
+        echo "\r\n\t" . showAlertMessage("<a $href = \"index.php?do=who_is_online&amp;$act = today\">" . $Language[8] . "</a>") . "\r\n\t" . $Message . "\r\n\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t<tr>\r\n\t\t\t<td class=\"tcat\" $align = \"center\" $colspan = \"4\"><b>" . $Language[2] . " (" . number_format($totalCount) . ")</b></td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt2\"><b>" . $Language[3] . "</b></td>\r\n\t\t\t<td class=\"alt2\"><b>" . $Language[5] . "</b></td>\r\n\t\t\t<td class=\"alt2\"><b>" . $Language[6] . "</b></td>\r\n\t\t\t<td class=\"alt2\"><b>" . $Language[7] . "</b></td>\r\n\t\t</tr>\r\n\t\t" . $Found . "\r\n\t</table>";
+    } catch (Exception $e) {
+        error_log('Who is online error: ' . $e->getMessage());
+        echo showAlertErrorModern('Failed to fetch session data');
     }
-    echo "\r\n\t" . showAlertMessage("<a $href = \"index.php?do=who_is_online&amp;$act = today\">" . $Language[8] . "</a>") . "\r\n\t" . $Message . "\r\n\t<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t\t<tr>\r\n\t\t\t<td class=\"tcat\" $align = \"center\" $colspan = \"4\"><b>" . $Language[2] . " (" . number_format(mysqli_num_rows($query)) . ")</b></td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td class=\"alt2\"><b>" . $Language[3] . "</b></td>\r\n\t\t\t<td class=\"alt2\"><b>" . $Language[5] . "</b></td>\r\n\t\t\t<td class=\"alt2\"><b>" . $Language[6] . "</b></td>\r\n\t\t\t<td class=\"alt2\"><b>" . $Language[7] . "</b></td>\r\n\t\t</tr>\r\n\t\t" . $Found . "\r\n\t</table>";
 }
-function getStaffLanguage()
-{
-    if (isset($_COOKIE["staffcplanguage"]) && is_dir("languages/" . $_COOKIE["staffcplanguage"]) && is_file("languages/" . $_COOKIE["staffcplanguage"] . "/staffcp.lang")) {
-        return $_COOKIE["staffcplanguage"];
-    }
-    return "english";
-}
-function checkStaffAuthentication()
-{
-    if (!defined("IN-TSSE-STAFF-PANEL")) {
-        redirectTo("../index.php");
-    }
-}
-function redirectTo($url)
-{
-    if (!headers_sent()) {
-        header("Location: " . $url);
-    } else {
-        echo "\r\n\t\t<script $type = \"text/javascript\">\r\n\t\t\twindow.location.$href = \"" . $url . "\";\r\n\t\t</script>\r\n\t\t<noscript>\r\n\t\t\t<meta http-$equiv = \"refresh\" $content = \"0;$url = " . $url . "\" />\r\n\t\t</noscript>";
-    }
-    exit;
-}
-function showAlertError($Error)
-{
-    return "<div class=\"alert\"><div>" . $Error . "</div></div>";
-}
+
 function formatTimestamp($timestamp = "")
 {
     $dateFormatPattern = "m-d-Y h:i A";
@@ -74,9 +96,19 @@ function applyUsernameStyle($username, $namestyle)
 }
 function identifyUserLocation($location)
 {
-    $configQuery = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'MAIN'");
-    $configRow = mysqli_fetch_assoc($configQuery);
-    $configData = unserialize($configRow["content"]);
+    global $Language, $TSDatabase;
+    
+    try {
+        $result = $TSDatabase->query(
+            "SELECT `content` FROM `ts_config` WHERE `configname` = ?",
+            ['MAIN']
+        );
+        $configRow = $result ? $result->fetch(PDO::FETCH_ASSOC) : null;
+        $configData = $configRow ? unserialize($configRow["content"]) : ['staffcp_path' => 'staffcp'];
+    } catch (Exception $e) {
+        error_log('Config fetch error: ' . $e->getMessage());
+        $configData = ['staffcp_path' => 'staffcp'];
+    }
     $userLocationDescription = "<font $color = \"red\"><b>Unknown Location!</b></font>";
     if (strstr($location, "tsf_forums") && !strstr($location, "returnto")) {
         preg_match_all("#\\/tsf_forums\\/(.*)\\.php#U", $location, $results, PREG_SET_ORDER);

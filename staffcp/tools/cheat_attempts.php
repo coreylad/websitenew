@@ -1,70 +1,121 @@
 <?php
+
+declare(strict_types=1);
+
+// Load modern staffcp helpers
+require_once __DIR__ . '/../staffcp_modern.php';
+
 checkStaffAuthentication();
 $Language = file("languages/" . getStaffLanguage() . "/cheat_attempts.lang");
 $Message = "";
-$query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT `content` FROM `ts_config` WHERE `configname` = 'ANNOUNCE'");
-$Result = mysqli_fetch_assoc($query);
-$ANNOUNCE = unserialize($Result["content"]);
+
+// Get ANNOUNCE config
+try {
+    $result = $TSDatabase->query("SELECT content FROM ts_config WHERE configname = ?", ['ANNOUNCE']);
+    $Result = $result ? $result->fetch(PDO::FETCH_ASSOC) : null;
+    $ANNOUNCE = $Result ? unserialize($Result["content"]) : [];
+} catch (Exception $e) {
+    error_log('Failed to get ANNOUNCE config: ' . $e->getMessage());
+    $ANNOUNCE = [];
+}
+
 if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST" && isset($_POST["ids"]) && is_array($_POST["ids"]) && count($_POST["ids"])) {
-    $Work = implode(",", $_POST["ids"]);
-    if (isset($_POST["delete"])) {
-        mysqli_query($GLOBALS["DatabaseConnect"], "DELETE FROM cheat_attempts WHERE uid IN (0," . $Work . ")");
-        if (mysqli_affected_rows($GLOBALS["DatabaseConnect"])) {
-            $Message = str_replace(["{1}", "{2}"], [$Work, $_SESSION["ADMIN_USERNAME"]], $Language[16]);
-            logStaffAction($Message);
-            $Message = showAlertMessage($Message);
-        }
+    // Validate form token
+    if (!validateFormToken($_POST['form_token'] ?? '')) {
+        $Message = showAlertErrorModern($Language[20] ?? 'Invalid form token');
     } else {
-        if (isset($_POST["ban"])) {
-            $Message = str_replace("{1}", $_SESSION["ADMIN_USERNAME"], $Language[18]);
-            $modcomment = gmdate("Y-m-d") . " - " . trim($Message) . "\n";
-            mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET `enabled` = 'no', $modcomment = CONCAT('" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $modcomment) . "', modcomment), $notifs = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $Message) . "' WHERE id IN (0," . $Work . ")");
-            if (mysqli_affected_rows($GLOBALS["DatabaseConnect"])) {
-                $Message = str_replace(["{1}", "{2}"], [$Work, $_SESSION["ADMIN_USERNAME"]], $Language[14]);
-                logStaffAction($Message);
-                $Message = showAlertMessage($Message);
+        $Work = implode(",", array_map('intval', $_POST["ids"]));
+        if (isset($_POST["delete"])) {
+            try {
+                $placeholders = implode(',', array_fill(0, count($_POST["ids"]), '?'));
+                $TSDatabase->query("DELETE FROM cheat_attempts WHERE uid IN (" . $placeholders . ")", array_map('intval', $_POST["ids"]));
+                if ($TSDatabase->rowCount() > 0) {
+                    $Message = str_replace(["{1}", "{2}"], [$Work, $_SESSION["ADMIN_USERNAME"]], $Language[16]);
+                    logStaffActionModern($Message);
+                    $Message = showAlertMessage($Message);
+                }
+            } catch (Exception $e) {
+                error_log('Failed to delete cheat attempts: ' . $e->getMessage());
             }
         } else {
-            if (isset($_POST["warn"])) {
-                $warneduntil = date("Y-m-d H:i:s", strtotime("+1 week"));
-                $Message = str_replace("{1}", $_SESSION["ADMIN_USERNAME"], $Language[17]);
+            if (isset($_POST["ban"])) {
+                $Message = str_replace("{1}", $_SESSION["ADMIN_USERNAME"], $Language[18]);
                 $modcomment = gmdate("Y-m-d") . " - " . trim($Message) . "\n";
-                mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET $warned = 'yes', $timeswarned = timeswarned + 1, $warneduntil = '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $warneduntil) . "', $modcomment = CONCAT('" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $modcomment) . "', modcomment) WHERE id IN (0," . $Work . ")");
-                if (mysqli_affected_rows($GLOBALS["DatabaseConnect"])) {
-                    $Message2 = str_replace(["{1}", "{2}"], [$Work, $_SESSION["ADMIN_USERNAME"]], $Language[15]);
-                    logStaffAction($Message2);
-                    $Message2 = showAlertMessage($Message2);
-                    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT id FROM users WHERE id IN (0," . $Work . ")");
-                    while ($User = mysqli_fetch_assoc($query)) {
-                        sendPrivateMessage($User["id"], $Message, $Language[2]);
+                try {
+                    $placeholders = implode(',', array_fill(0, count($_POST["ids"]), '?'));
+                    $params = array_merge([$modcomment, $Message], array_map('intval', $_POST["ids"]));
+                    $TSDatabase->query("UPDATE users SET enabled = 'no', modcomment = CONCAT(?, modcomment), notifs = ? WHERE id IN (" . $placeholders . ")", $params);
+                    if ($TSDatabase->rowCount() > 0) {
+                        $Message = str_replace(["{1}", "{2}"], [$Work, $_SESSION["ADMIN_USERNAME"]], $Language[14]);
+                        logStaffActionModern($Message);
+                        $Message = showAlertMessage($Message);
                     }
-                    $Message = $Message2;
+                } catch (Exception $e) {
+                    error_log('Failed to ban users: ' . $e->getMessage());
+                }
+            } else {
+                if (isset($_POST["warn"])) {
+                    $warneduntil = date("Y-m-d H:i:s", strtotime("+1 week"));
+                    $Message = str_replace("{1}", $_SESSION["ADMIN_USERNAME"], $Language[17]);
+                    $modcomment = gmdate("Y-m-d") . " - " . trim($Message) . "\n";
+                    try {
+                        $placeholders = implode(',', array_fill(0, count($_POST["ids"]), '?'));
+                        $params = array_merge([$warneduntil, $modcomment], array_map('intval', $_POST["ids"]));
+                        $TSDatabase->query("UPDATE users SET warned = 'yes', timeswarned = timeswarned + 1, warneduntil = ?, modcomment = CONCAT(?, modcomment) WHERE id IN (" . $placeholders . ")", $params);
+                        if ($TSDatabase->rowCount() > 0) {
+                            $Message2 = str_replace(["{1}", "{2}"], [$Work, $_SESSION["ADMIN_USERNAME"]], $Language[15]);
+                            logStaffActionModern($Message2);
+                            $Message2 = showAlertMessage($Message2);
+                            $result = $TSDatabase->query("SELECT id FROM users WHERE id IN (" . $placeholders . ")", array_map('intval', $_POST["ids"]));
+                            if ($result) {
+                                while ($User = $result->fetch(PDO::FETCH_ASSOC)) {
+                                    sendPrivateMessage($User["id"], $Message, $Language[2]);
+                                }
+                            }
+                            $Message = $Message2;
+                        }
+                    } catch (Exception $e) {
+                        error_log('Failed to warn users: ' . $e->getMessage());
+                    }
                 }
             }
         }
     }
 }
 $Found = "";
-if ($ANNOUNCE["xbt_active"] == "yes") {
-    $queryxa = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT value FROM xbt_config WHERE $name = 'announce_interval'");
-    $Result = mysqli_fetch_assoc($queryxa);
-    $xbt_announce_interval = $Result["value"];
-    $results = mysqli_num_rows(mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM xbt_files_users WHERE up_rate > " . $ANNOUNCE["max_rate"]));
-    list($pagertop, $limit) = buildPaginationLinks(25, $results, $_SERVER["SCRIPT_NAME"] . "?do=cheat_attempts&amp;");
-    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT t.announced, t.mtime as added, t.up_rate as transfer_rate, t.uploaded as upthis, t.ipa as ip, u.username, g.namestyle, tr.id as torrentid, tr.name as torrentname FROM xbt_files_users t LEFT JOIN users u ON (t.$uid = u.id) LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) LEFT JOIN torrents tr ON (t.$fid = tr.id) WHERE t.up_rate > " . $ANNOUNCE["max_rate"] . " ORDER by t.up_rate DESC " . $limit);
-} else {
-    $results = mysqli_num_rows(mysqli_query($GLOBALS["DatabaseConnect"], "SELECT * FROM cheat_attempts"));
-    list($pagertop, $limit) = buildPaginationLinks(25, $results, $_SERVER["SCRIPT_NAME"] . "?do=cheat_attempts&amp;");
-    $query = mysqli_query($GLOBALS["DatabaseConnect"], "SELECT t.*,  u.username, g.namestyle, tr.name as torrentname FROM cheat_attempts t LEFT JOIN users u ON (t.$uid = u.id) LEFT JOIN usergroups g ON (u.`usergroup` = g.gid) LEFT JOIN torrents tr ON (t.$torrentid = tr.id) ORDER by t.added DESC " . $limit);
+$xbt_announce_interval = 0;
+$results = 0;
+$query = null;
+
+try {
+    if (isset($ANNOUNCE["xbt_active"]) && $ANNOUNCE["xbt_active"] == "yes") {
+        $result = $TSDatabase->query("SELECT value FROM xbt_config WHERE name = ?", ['announce_interval']);
+        $Result = $result ? $result->fetch(PDO::FETCH_ASSOC) : null;
+        $xbt_announce_interval = $Result ? $Result["value"] : 0;
+        
+        $countResult = $TSDatabase->query("SELECT COUNT(*) as cnt FROM xbt_files_users WHERE up_rate > ?", [$ANNOUNCE["max_rate"]]);
+        $results = $countResult ? $countResult->fetch(PDO::FETCH_ASSOC)['cnt'] : 0;
+        
+        list($pagertop, $limit) = buildPaginationLinks(25, $results, $_SERVER["SCRIPT_NAME"] . "?do=cheat_attempts&amp;");
+        $query = $TSDatabase->query("SELECT t.announced, t.mtime as added, t.up_rate as transfer_rate, t.uploaded as upthis, t.ipa as ip, u.username, g.namestyle, tr.id as torrentid, tr.name as torrentname FROM xbt_files_users t LEFT JOIN users u ON (t.uid = u.id) LEFT JOIN usergroups g ON (u.usergroup = g.gid) LEFT JOIN torrents tr ON (t.fid = tr.id) WHERE t.up_rate > ? ORDER by t.up_rate DESC " . $limit, [$ANNOUNCE["max_rate"]]);
+    } else {
+        $countResult = $TSDatabase->query("SELECT COUNT(*) as cnt FROM cheat_attempts");
+        $results = $countResult ? $countResult->fetch(PDO::FETCH_ASSOC)['cnt'] : 0;
+        
+        list($pagertop, $limit) = buildPaginationLinks(25, $results, $_SERVER["SCRIPT_NAME"] . "?do=cheat_attempts&amp;");
+        $query = $TSDatabase->query("SELECT t.*, u.username, g.namestyle, tr.name as torrentname FROM cheat_attempts t LEFT JOIN users u ON (t.uid = u.id) LEFT JOIN usergroups g ON (u.usergroup = g.gid) LEFT JOIN torrents tr ON (t.torrentid = tr.id) ORDER by t.added DESC " . $limit);
+    }
+} catch (Exception $e) {
+    error_log('Failed to query cheat attempts: ' . $e->getMessage());
 }
-if ($results) {
-    while ($R = mysqli_fetch_assoc($query)) {
-        $Found .= "\r\n\t\t<tr>\t\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t<a $href = \"index.php?do=edit_user&amp;$username = " . $R["username"] . "\">" . applyUsernameStyle($R["username"], $R["namestyle"]) . "</a>\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t" . formatTimestamp($R["added"]) . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t<a $href = \"../details.php?$id = " . $R["torrentid"] . "\">" . $R["torrentname"] . "</a>\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t" . ($ANNOUNCE["xbt_active"] == "yes" ? "----" : htmlspecialchars($R["agent"])) . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t" . formatBytes($R["transfer_rate"]) . "/s\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t" . formatBytes($R["upthis"]) . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t" . ($ANNOUNCE["xbt_active"] == "yes" ? formatSecondsToTime($R["announced"] * $xbt_announce_interval) : formatSecondsToTime($R["timediff"])) . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t" . ($ANNOUNCE["xbt_active"] == "yes" ? long2ip($R["ip"]) : htmlspecialchars($R["ip"])) . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\" $align = \"center\">\r\n\t\t\t\t<input $type = \"checkbox\" $name = \"ids[]\" $value = \"" . $R["uid"] . "\" $checkme = \"group\" />\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t";
+if ($results && $query) {
+    while ($R = $query->fetch(PDO::FETCH_ASSOC)) {
+        $Found .= "\r\n\t\t<tr>\t\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t<a href=\"index.php?do=edit_user&amp;username=" . escape_attr($R["username"]) . "\">" . applyUsernameStyle(escape_html($R["username"]), $R["namestyle"]) . "</a>\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t" . escape_html(formatTimestamp($R["added"])) . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t<a href=\"../details.php?id=" . intval($R["torrentid"]) . "\">" . escape_html($R["torrentname"]) . "</a>\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t" . (isset($ANNOUNCE["xbt_active"]) && $ANNOUNCE["xbt_active"] == "yes" ? "----" : escape_html($R["agent"] ?? '')) . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t" . escape_html(formatBytes($R["transfer_rate"])) . "/s\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t" . escape_html(formatBytes($R["upthis"])) . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t" . (isset($ANNOUNCE["xbt_active"]) && $ANNOUNCE["xbt_active"] == "yes" ? escape_html(formatSecondsToTime($R["announced"] * $xbt_announce_interval)) : escape_html(formatSecondsToTime($R["timediff"]))) . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\">\r\n\t\t\t\t" . (isset($ANNOUNCE["xbt_active"]) && $ANNOUNCE["xbt_active"] == "yes" ? escape_html(long2ip($R["ip"])) : escape_html($R["ip"])) . "\r\n\t\t\t</td>\r\n\t\t\t<td class=\"alt1\" align=\"center\">\r\n\t\t\t\t<input type=\"checkbox\" name=\"ids[]\" value=\"" . intval($R["uid"]) . "\" checkme=\"group\" />\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t";
     }
 } else {
-    echo "\r\n\t\r\n\t" . showAlertError($Language[19]);
+    echo "\r\n\t\r\n\t" . showAlertErrorModern($Language[19]);
 }
-echo "\r\n<script $type = \"text/javascript\">\r\n\tfunction select_deselectAll(formname,elm,group)\r\n\t{\r\n\t\tvar $frm = document.forms[formname];\r\n\t\tfor($i = 0;i<frm.length;i++)\r\n\t\t{\r\n\t\t\tif(elm.attributes[\"checkall\"] != null && elm.attributes[\"checkall\"].$value == group)\r\n\t\t\t{\r\n\t\t\t\tif(frm.elements[i].attributes[\"checkme\"] != null && frm.elements[i].attributes[\"checkme\"].$value == group)\r\n\t\t\t\t{\r\n\t\t\t\t\tfrm.elements[i].$checked = elm.checked;\r\n\t\t\t\t}\r\n\t\t\t}\r\n\t\t\telse if(frm.elements[i].attributes[\"checkme\"] != null && frm.elements[i].attributes[\"checkme\"].$value == group)\r\n\t\t\t{\r\n\t\t\t\tif(frm.elements[i].$checked == false)\r\n\t\t\t\t{\r\n\t\t\t\t\tfrm.elements[1].$checked = false;\r\n\t\t\t\t}\r\n\t\t\t}\r\n\t\t}\r\n\t}\r\n</script>\r\n<form $action = \"index.php?do=cheat_attempts" . (isset($_GET["page"]) ? "&$page = " . intval($_GET["page"]) : "") . "\" $method = \"post\" $name = \"cheat_attempts\">\r\n" . $Message . "\r\n" . $pagertop . "\r\n<table $cellpadding = \"0\" $cellspacing = \"0\" $border = \"0\" class=\"mainTable\">\r\n\t<tr>\r\n\t\t<td class=\"tcat\" $align = \"center\" $colspan = \"9\">" . $Language[2] . " " . ($ANNOUNCE["xbt_active"] == "yes" ? "Min. " . formatBytes($ANNOUNCE["max_rate"]) . "/s" : "") . "</td>\r\n\t</tr>\r\n\t<tr>\r\n\t\t<td class=\"alt2\">\r\n\t\t\t" . $Language[3] . "\r\n\t\t</td>\r\n\t\t<td class=\"alt2\">\r\n\t\t\t" . $Language[4] . "\r\n\t\t</td>\r\n\t\t<td class=\"alt2\">\r\n\t\t\t" . $Language[5] . "\r\n\t\t</td>\r\n\t\t<td class=\"alt2\">\r\n\t\t\t" . $Language[6] . "\r\n\t\t</td>\r\n\t\t<td class=\"alt2\">\r\n\t\t\t" . $Language[7] . "\r\n\t\t</td>\r\n\t\t<td class=\"alt2\">\r\n\t\t\t" . $Language[8] . "\r\n\t\t</td>\r\n\t\t<td class=\"alt2\">\r\n\t\t\t" . $Language[9] . "\r\n\t\t</td>\r\n\t\t<td class=\"alt2\">\r\n\t\t\t" . $Language[10] . "\r\n\t\t</td>\r\n\t\t<td class=\"alt2\" $align = \"center\">\r\n\t\t\t<input $type = \"checkbox\" $checkall = \"group\" $onclick = \"javascript: return select_deselectAll ('cheat_attempts', this, 'group');\">\r\n\t\t</td>\r\n\t</tr>\r\n\t" . $Found . "\r\n\t<tr>\r\n\t\t<td class=\"tcat2\" $colspan = \"9\" $align = \"right\">\r\n\t\t\t" . ($ANNOUNCE["xbt_active"] == "yes" ? "" : "<input $type = \"submit\" $name = \"delete\" $value = \"" . $Language[13] . "\" /> ") . "<input $type = \"submit\" $name = \"warn\" $value = \"" . $Language[12] . "\" /> <input $type = \"submit\" $name = \"ban\" $value = \"" . $Language[11] . "\" />\r\n\t\t</td>\r\n\t</tr>\r\n</table>\r\n" . $pagertop . "\r\n</form>";
+echo "\r\n<script type=\"text/javascript\">\r\n\tfunction select_deselectAll(formname,elm,group)\r\n\t{\r\n\t\tvar frm = document.forms[formname];\r\n\t\tfor(i = 0;i<frm.length;i++)\r\n\t\t{\r\n\t\t\tif(elm.attributes[\"checkall\"] != null && elm.attributes[\"checkall\"].value == group)\r\n\t\t\t{\r\n\t\t\t\tif(frm.elements[i].attributes[\"checkme\"] != null && frm.elements[i].attributes[\"checkme\"].value == group)\r\n\t\t\t\t{\r\n\t\t\t\t\tfrm.elements[i].checked = elm.checked;\r\n\t\t\t\t}\r\n\t\t\t}\r\n\t\t\telse if(frm.elements[i].attributes[\"checkme\"] != null && frm.elements[i].attributes[\"checkme\"].value == group)\r\n\t\t\t{\r\n\t\t\t\tif(frm.elements[i].checked == false)\r\n\t\t\t\t{\r\n\t\t\t\t\tfrm.elements[1].checked = false;\r\n\t\t\t\t}\r\n\t\t\t}\r\n\t\t}\r\n\t}\r\n</script>\r\n<form action=\"index.php?do=cheat_attempts" . (isset($_GET["page"]) ? "&page=" . intval($_GET["page"]) : "") . "\" method=\"post\" name=\"cheat_attempts\">\r\n" . getFormTokenField() . "\r\n" . $Message . "\r\n" . $pagertop . "\r\n<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" class=\"mainTable\">\r\n\t<tr>\r\n\t\t<td class=\"tcat\" align=\"center\" colspan=\"9\">" . escape_html($Language[2]) . " " . (isset($ANNOUNCE["xbt_active"]) && $ANNOUNCE["xbt_active"] == "yes" ? "Min. " . escape_html(formatBytes($ANNOUNCE["max_rate"])) . "/s" : "") . "</td>\r\n\t</tr>\r\n\t<tr>\r\n\t\t<td class=\"alt2\">\r\n\t\t\t" . escape_html($Language[3]) . "\r\n\t\t</td>\r\n\t\t<td class=\"alt2\">\r\n\t\t\t" . escape_html($Language[4]) . "\r\n\t\t</td>\r\n\t\t<td class=\"alt2\">\r\n\t\t\t" . escape_html($Language[5]) . "\r\n\t\t</td>\r\n\t\t<td class=\"alt2\">\r\n\t\t\t" . escape_html($Language[6]) . "\r\n\t\t</td>\r\n\t\t<td class=\"alt2\">\r\n\t\t\t" . escape_html($Language[7]) . "\r\n\t\t</td>\r\n\t\t<td class=\"alt2\">\r\n\t\t\t" . escape_html($Language[8]) . "\r\n\t\t</td>\r\n\t\t<td class=\"alt2\">\r\n\t\t\t" . escape_html($Language[9]) . "\r\n\t\t</td>\r\n\t\t<td class=\"alt2\">\r\n\t\t\t" . escape_html($Language[10]) . "\r\n\t\t</td>\r\n\t\t<td class=\"alt2\" align=\"center\">\r\n\t\t\t<input type=\"checkbox\" checkall=\"group\" onclick=\"javascript: return select_deselectAll ('cheat_attempts', this, 'group');\">\r\n\t\t</td>\r\n\t</tr>\r\n\t" . $Found . "\r\n\t<tr>\r\n\t\t<td class=\"tcat2\" colspan=\"9\" align=\"right\">\r\n\t\t\t" . (isset($ANNOUNCE["xbt_active"]) && $ANNOUNCE["xbt_active"] == "yes" ? "" : "<input type=\"submit\" name=\"delete\" value=\"" . escape_attr($Language[13]) . "\" /> ") . "<input type=\"submit\" name=\"warn\" value=\"" . escape_attr($Language[12]) . "\" /> <input type=\"submit\" name=\"ban\" value=\"" . escape_attr($Language[11]) . "\" />\r\n\t\t</td>\r\n\t</tr>\r\n</table>\r\n" . $pagertop . "\r\n</form>";
 function getStaffLanguage()
 {
     if (isset($_COOKIE["staffcplanguage"]) && is_dir("languages/" . $_COOKIE["staffcplanguage"]) && is_file("languages/" . $_COOKIE["staffcplanguage"] . "/staffcp.lang")) {
@@ -223,9 +274,21 @@ function formatTimestamp($timestamp = "")
 }
 function sendPrivateMessage($receiver = 0, $msg = "", $subject = "", $sender = 0, $saved = "no", $location = "1", $unread = "yes")
 {
+    global $TSDatabase;
+    
     if (!($sender != 0 && !$sender || !$receiver || empty($msg))) {
-        mysqli_query($GLOBALS["DatabaseConnect"], "\r\n\t\t\t\t\tINSERT INTO messages \r\n\t\t\t\t\t\t(sender, receiver, added, subject, msg, unread, saved, location)\r\n\t\t\t\t\t\tVALUES \r\n\t\t\t\t\t\t('" . $sender . "', '" . $receiver . "', NOW(), '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $subject) . "', '" . mysqli_real_escape_string($GLOBALS["DatabaseConnect"], $msg) . "', '" . $unread . "', '" . $saved . "', '" . $location . "')\r\n\t\t\t\t\t");
-        mysqli_query($GLOBALS["DatabaseConnect"], "UPDATE users SET $pmunread = pmunread + 1 WHERE `id` = '" . $receiver . "'");
+        try {
+            $TSDatabase->query(
+                "INSERT INTO messages 
+                    (sender, receiver, added, subject, msg, unread, saved, location)
+                VALUES 
+                    (?, ?, NOW(), ?, ?, ?, ?, ?)",
+                [$sender, $receiver, $subject, $msg, $unread, $saved, $location]
+            );
+            $TSDatabase->query("UPDATE users SET pmunread = pmunread + 1 WHERE id = ?", [$receiver]);
+        } catch (Exception $e) {
+            error_log('Failed to send private message: ' . $e->getMessage());
+        }
     }
 }
 function formatSecondsToTime($sec, $padHours = false)
