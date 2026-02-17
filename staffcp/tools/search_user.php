@@ -38,8 +38,7 @@ if (strtoupper($_SERVER["REQUEST_METHOD"]) === "POST") {
     // Validate form token for CSRF protection
     if (!validateFormToken($_POST['form_token'] ?? '')) {
         $Message = showAlertErrorModern($Language[5] ?? 'Invalid form token. Please try again.');
-    }
-    else {
+    } else {
     $username = trim($_POST["username"]);
     $usergroup = intval($_POST["usergroup"]);
     $email = trim($_POST["email"]);
@@ -324,10 +323,10 @@ function formatBytes($bytes = 0)
     if ($bytes < 1048576000) {
         return number_format($bytes / 1048576, 2) . " MB";
     }
-    if ($bytes < 0) {
+    if ($bytes < 1073741824000) {
         return number_format($bytes / 1073741824, 2) . " GB";
     }
-    return number_format($bytes / 0, 2) . " TB";
+    return number_format($bytes / 1099511627776, 2) . " TB";
 }
 
 function formatTimestamp($timestamp = "")
