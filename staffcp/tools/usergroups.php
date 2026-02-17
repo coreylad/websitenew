@@ -280,6 +280,13 @@ function showAlertMessage($message = "")
 {
     return "<div class=\"alert\"><div>" . $message . "</div></div>";
 }
+/**
+ * Format a form section row with title, description, and form controls
+ * @param string $first Section title (will be escaped)
+ * @param string $second Section description (will be escaped)
+ * @param string $third Pre-built HTML form controls (NOT escaped - must be safe HTML)
+ * @return string Formatted HTML row
+ */
 function formatFormSectionRow($first, $second, $third)
 {
     $groupId = "";
